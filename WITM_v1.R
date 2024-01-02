@@ -42,12 +42,12 @@ library("datapasta")
 
 ####se puede importar la base directamente de KOBO
 
-###Insertar nombre de usuario y contraseña de KOBOr
+###Insertar nombre de usuario y contraseña de KOBO (ESTO YA LO HICE Y ME DIO EL CÓDIGO QUE AGREGUÉ EN LA PRÓXIMA LÍNEA POR ESO LO DEJO COMENTADO)
 
 
-kobo_token(username = "XXX",
-           password = "XXX",
-           url = "https://eu.kobotoolbox.org")
+#kobo_token(username = "XXX",
+ #          password = "XXX",
+  #         url = "https://eu.kobotoolbox.org")
 
 ###Se recibe un token de kobo que hay que insertar a continuación
 
