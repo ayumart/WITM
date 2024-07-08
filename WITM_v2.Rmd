@@ -1,0 +1,934 @@
+---
+title: "Where is the Money for Feminist Organizing? Survey for feminist, women’s rights and gender justice movements, groups and organizations"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+```{r setup, include=FALSE, echo=F}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+
+```{r library, echo=F, message=F, warning=F}
+
+#Library upload
+
+library(tidyverse)
+library(readxl)
+library(janitor)
+library(dplyr)
+library(writexl)
+library(eph)
+library(openxlsx)
+library(rmarkdown)
+library(knitr)
+library(kableExtra)
+
+```
+
+**Database upload**
+
+```{r upload, echo=T, message=F, warning=F}
+
+
+# To upload CSV file
+datos <- read.csv2("Data/WITM_csv_last.csv")
+
+# To upload xlsx file
+#datos<- read_xlsx("WITM_xls_value2.xlsx", sheet = 1)
+```
+
+names(datos)
+
+```{r}
+
+#Convertir campos vacíos de la variable country en NA
+ datos <- datos %>%
+  mutate(q8_country = na_if(q8_country, ""))
+
+datos1<-datos %>% 
+  filter(q6_geo_scope=="locally_focused"| q6_geo_scope=="nationally_focused") %>% 
+  mutate(q7_region_one=forcats::fct_recode(as_factor(q7_region_one),
+                                                     "South America" = "samerica",
+                                            "Central America & Mexico" = "camerica",
+                                    "North America" = "namerica",
+                                    "Caribbean" = "caribbean",
+                                    "South Asia" = "sasia",
+                                    "Southeast Asia" = "seasia",
+                                    "East Asia" = "easia",
+                                    "The Pacific" = "pacific",
+                                    "South West Asia/Middle East" = "swasiamiddleeast",
+                                    "Central Asia & Caucasus" = "casia",
+                                    "Eastern Europe, Southeast Europe and Central Europe" = "caucasuseurope",
+                                    "Western Europe" = "weurope",
+                                    "West Africa"="wafrica",
+                                    "East Africa"="eafrica",
+                                    "Southern Africa"="safrica",
+                                    "Central Africa"="cafrica",
+                                    "North Africa"="nafrica")) %>%
+  mutate(q8_country=forcats::fct_recode(as_factor(q8_country),
+                                      "Afghanistan"="afghanistan",
+                                      "Albania"="albania",
+                                      "Algeria"="algeria",
+                                      "American Samoa"="american_samoa",
+                                      "Andorra"="andorra",
+                                      "Angola"="angola",
+                                      "Anguilla"="anguilla",
+                                      "Antigua and Barbuda"="antigua_and_barbuda",
+                                      "Argentina"="argentina",
+                                      "Armenia"="armenia",
+                                      "Aruba"="aruba",
+                                      "Australia"="australia",
+                                      "Austria"="austria",
+                                      "Azerbaijan"="azerbaijan",
+                                      "Bahamas"="bahamas",
+                                      "Bahrain"="bahrain",
+                                      "Bangladesh"="bangladesh",
+                                      "Barbados"="barbados",
+                                      "Belarus"="belarus",
+                                      "Belgium"="belgium",
+                                      "Belize"="belize",
+                                      "Benin"="benin",
+                                      "Bhutan"="bhutan",
+                                      "Bolivia"="bolivia",
+                                      "Bonaire, Sint Eustatius and Saba"="bonaire_sint_eustatius_saba",
+                                      "Bosnia and Herzegovina"="bosnia_and_herzegovina",
+                                      "Botswana"="botswana",
+                                      "Brazil"="brazil",
+                                      "British Virgin Islands"="british_virgin_islands",
+                                      "Brunei Darussalam"="brunei_darussalam",
+                                      "Bulgaria"="bulgaria",
+                                      "Burkina Faso"="burkina_faso",
+                                      "Burundi"="burundi",
+                                      "Cabo Verde"="cabo_verde",
+                                      "Cambodia"="cambodia",
+                                      "Cameroon"="cameroon",
+                                      "Canada"="canada",
+                                      "Cayman Islands"="cayman_islands",
+                                      "Central African Republic"="cafrican_republic",
+                                      "Chad"="chad",
+                                      "Chile"="chile",
+                                      "China"="china",
+                                      "Colombia"="colombia",
+                                      "Comoros"="comoros",
+                                      "Congo"="congo",
+                                      "Cook Islands"="cook_islands",
+                                      "Costa Rica"="costa_rica",
+                                      "Côte d'Ivoire"="côte_divoire",
+                                      "Croatia"="croatia",
+                                      "Cuba"="cuba",
+                                      "Curaçao"="curaçao",
+                                      "Cyprus"="cyprus",
+                                      "Czech Republic"="czech_republic",
+                                      "Dem. People's Republic of Korea"="dem_peoples_rep_of_korea",
+                                      "Democratic Republic of the Congo"="democratic_republic_of_the_congo",
+                                      "Denmark"="denmark",
+                                      "Djibouti"="djibouti",
+                                      "Dominica"="dominica",
+                                      "Dominican Republic"="dominican_republic",
+                                      "Ecuador"="ecuador",
+                                      "Egypt"="egypt",
+                                      "El Salvador"="el_salvador",
+                                      "Equatorial Guinea"="equatorial_guinea",
+                                      "Eritrea"="eritrea",
+                                      "Estonia"="estonia",
+                                      "Eswatini"="eswatini",
+                                      "Ethiopia"="ethiopia",
+                                      "Fiji"="fiji",
+                                      "Finland"="finland",
+                                      "France"="france",
+                                      "French Guiana"="french_guiana",
+                                      "French Polynesia"="french_polynesia",
+                                      "Gabon"="gabon",
+                                      "Gambia"="gambia",
+                                      "Georgia"="georgia",
+                                      "Germany"="germany",
+                                      "Ghana"="ghana",
+                                      "Greece"="greece",
+                                      "Greenland"="greenland",
+                                      "Grenada"="grenada",
+                                      "Guadeloupe"="guadeloupe",
+                                      "Guam"="guam",
+                                      "Guatemala"="guatemala",
+                                      "Guinea"="guinea",
+                                  "Guinea-Bissau"="guinea_bissau",
+                                      "Guyana"="guyana",
+                                      "Haiti"="haiti",
+                                      "Honduras"="honduras",
+                                      "Hong Kong"="hong_kong",
+                                      "Hungary"="hungary",
+                                      "Iceland"="iceland",
+                                      "India"="india",
+                                      "Indonesia"="indonesia",
+                                      "Iran"="iran",
+                                      "Iraq"="iraq",
+                                      "Ireland"="ireland",
+                                      "Israel"="israel",
+                                      "Italy"="italy",
+                                      "Jamaica"="jamaica",
+                                      "Japan"="japan",
+                                      "Jordan"="jordan",  
+                                      "Kazakhstan"="kazakhstan",
+                                  "Kenya"="kenya",
+                                  "Kiribati"="kiribati",
+                                  "Kuwait"="kuwait",
+                                  "Kyrgyzstan"="kyrgyzstan",
+                                  "Lao People's Democratic Republic"="lao_peoples_democratic_republic",
+                                  "Latvia"="latvia",
+                                  "Lebanon"="lebanon",
+                                  "Lesotho"="lesotho",
+                                  "Liberia"="liberia",
+                                  "Libya"="libya",
+                                  "Liechtenstein"="liechtenstein",
+                                  "Lithuania"="lithuania",
+                                  "Luxembourg"="luxembourg",
+                                  "Macao"="macao",
+                                  "Madagascar"="madagascar",
+                                  "Malawi"="malawi",
+                                  "Malaysia"="malaysia",
+                                  "Maldives"="maldives",
+                                  "Mali"="mali",
+                                  "Malta"="malta",
+                                  "Marshall
+                                  Islands"="marshall_islands",
+                                  "Martinique"="martinique",
+                                  "Mauritania"="mauritania",
+                                  "Mauritius"="mauritius",
+                                  "Mayotte"="mayotte",
+                                  "Mexico"="mexico",
+                                  "Micronesia (Fed. States of)"="micronesia_fed_states_of",
+                                  "Monaco"="monaco",
+                                  "Mongolia"="mongolia",
+                                  "Montenegro"="montenegro",
+                                  "Montserrat"="montserrat",
+                                  "Morocco"="morocco",
+                                  "Mozambique"="mozambique",
+                                  "Myanmar"="myanmar",
+                                  "Namibia"="namibia",
+                                  "Nauru"="nauru",
+                                  "Nepal"="nepal",
+                                  "Netherlands"="netherlands",
+                                  "New Caledonia"="new_caledonia",
+                                  "New Zealand"="new_zealand",
+                                  "Nicaragua"="nicaragua",
+                                  "Niger"="niger",
+                                  "Nigeria"="nigeria",
+                                "Niue"="niue",
+                                "North Macedonia"="north_macedonia",
+                                "Northern Mariana Islands"="northern_mariana_islands",
+                                "Norway"="norway",
+                                "Oman"="oman",
+                                "Pakistan"="pakistan",
+                                "Palau"="palau",
+                                "Palestine"="palestine",
+                                "Panama"="panama",
+                                "Papua New Guinea"="papua_new_guinea",
+                                "Paraguay"="paraguay",
+                                "Peru"="peru",
+                                "Philippines"="philippines",
+                                "Poland"="poland",
+                                "Portugal"="portugal",
+                                "Puerto Rico"="puerto_rico",
+                                "Qatar"="qatar",
+                                "Republic of Korea"="republic_of_korea",
+                                "Republic of Moldova"="republic_of_moldova",
+                                "Réunion"="reunion",
+                                "Romania"="romania",
+                                "Russia"="russia",
+                                "Rwanda"="rwanda",
+                                "Saint Barthélemy"="saint_barthelemy",
+                                "Saint Helena"="saint_helena",
+                                "Saint Kitts and Nevis"="saint_kitts_and_nevis",
+                                "Saint Lucia"="saint_lucia",
+                                "Saint Martin (French part)"="saint_martin_french_part",
+                                "Saint Vincent and the Grenadines"="saint_vincent_and_the_grenadines",
+                                "Samoa"="samoa",
+                                "San Marino"="san_marino",
+                                "Sao Tome and Principe"="sao_tome_and_principe",
+                                "Saudi Arabia"="saudi_arabia",
+                                "Senegal"="senegal",
+                                "Serbia"="serbia",
+                                "Seychelles"="seychelles",
+                                "Sierra Leone"="sierra_leone",
+                                "Singapore"="singapore",
+                                "Sint Maarten (Dutch part)"="sint_maarten_dutch_part",
+                                "Slovakia"="slovakia",
+                                "Slovenia"="slovenia",
+                                "Solomon Islands"="solomon_islands",
+                                "Somalia"="somalia",
+                                "South Africa"="south_africa",
+                                "South Sudan"="south_sudan",
+                                "Spain"="spain",
+                                "Sri Lanka"="sri_lanka",
+                                "Sudan"="sudan",
+                                "Suriname"="suriname",
+                                "Sweden"="sweden",
+                                "Switzerland"="switzerland",
+                                "Syrian Arab Republic"="syrian_arab_republic",
+                                "Taiwan"="taiwan",
+                                "Tajikistan"="tajikistan",
+                                "Tanzania"="tanzania",
+                                "Thailand"="thailand",
+                                "Timor-Leste"="timor_leste",
+                                "Togo"="togo",
+                                "Tokelau"="tokelau",
+                                "Tonga"="tonga",
+                                "Trinidad and Tobago"="trinidad_and_tobago",
+                                "Tunisia"="tunisia",
+                                "Turkey"="turkey",
+                                "Turkmenistan"="turkmenistan",
+                                "Turks and Caicos Islands"="turks_and_caicos_islands",
+                                "Tuvalu"="tuvalu",
+                                "Uganda"="uganda",
+                                "Ukraine"="ukraine",
+                                "United Arab Emirates"="united_arab_emirates",
+                                "United Kingdom"="united_kingdom",
+                                "United States of America"="united_states_of_america",
+                                "Uruguay"="uruguay",
+                                "Uzbekistan"="uzbekistan",
+                                "Vanuatu"="vanuatu",
+                                "Venezuela (Bolivarian Republic of)"="venezuela_bolivarian_republic_of",
+                                "Viet Nam"="viet_nam",
+                                "Wallis and Futuna Islands"="wallis_and_futuna_islands",
+                                "Western Sahara"="western_sahara",
+                                "Yemen"="yemen",
+                                "Zambia"="zambia",
+                                "Zimbabwe"="zimbabwe",
+                                "Other South America"="country_other1",
+                                "Other Central America & Mexico"="country_other2",
+                                "Other North America"="country_other3",
+                                "Other Caribbean"="country_other4",
+                                "Other South Asia"="country_other5",
+                                "Other Southeast Asia"="country_other6",
+                                "Other East Asia"="country_other7",
+                                "Other The Pacific"="country_other8",
+                                "Other South West Asia/Middle East"="country_other9",
+                                "Other Central Asia & Caucasus"="country_other10",
+                                "Other Eastern Europe, Southeast Europe and Central Europe"="country_other11",
+                                "Other Western Europe"="country_other13",
+
+                              "Other West Africa"="country_other14",
+                              "Other East Africa"="country_other15",
+                              "Other Southern Africa"="country_other16",
+                              "Other Central Africa"="country_other17",
+                              "Other North Africa"="country_other18"))
+
+
+
+
+
+
+q8<-calculate_tabulates(base=datos1,
+                        x='q8_country',
+                        y='q7_region_one',
+                        add.totals = 'row')
+
+
+
+q8<-base %>% 
+  filter(q6_geo_scope=="locally_focused"| q6_geo_scope=="nationally_focused") %>% 
+  group_by(q7_region_one, q8_country) %>% 
+  summarise(n=n()) %>% 
+  mutate(Percentage=round((n/sum(n))*100,1))
+
+regiones_one<-datos %>% 
+  filter(q6_geo_scope=="locally_focused"| q6_geo_scope=="nationally_focused") %>% 
+  group_by(q7_region_one) %>% 
+  summarise(n=n())
+
+regiones_multiple<-datos %>% 
+
+
+knitr::kable(q8) %>% 
+  kable_minimal()
+
+```
+
+
+
+```{r}
+#Convertir campos vacíos de la variable q10 en NA
+ datos <- datos %>%
+  mutate(q10_budget_year_2021 = na_if(q10_budget_year_2021, ""))
+
+ datos <- datos %>%
+  mutate(q10_budget_year_2022 = na_if(q10_budget_year_2022, ""))
+ 
+  datos <- datos %>%
+  mutate(q10_budget_year_2023 = na_if(q10_budget_year_2023, ""))
+ 
+#Organizaciones fondos anuales
+
+q10_2021<-datos %>% 
+  filter(q9_year_formation<2022) %>% 
+  group_by(q10_budget_year_2021) %>% 
+  summarise(n=n()) %>% 
+  mutate(Percentage=round((n/sum(n))*100,1)) %>% 
+  rename("Annual_budget"=q10_budget_year_2021) %>% 
+  mutate(Year=2021)
+
+q10_2022<-datos %>% 
+  filter(q9_year_formation<2023) %>% 
+  group_by(q10_budget_year_2022) %>% 
+  summarise(n=n()) %>% 
+  mutate(Percentage=round((n/sum(n))*100,1)) %>% 
+  rename("Annual_budget"=q10_budget_year_2022) %>% 
+  mutate(Year=2022)
+
+q10_2023<-datos %>% 
+  filter(!is.na(q10_budget_year_2023)) %>% 
+  group_by(q10_budget_year_2023) %>% 
+  summarise(n=n()) %>% 
+  mutate(Percentage=round((n/sum(n))*100,1)) %>% 
+  rename("Annual_budget"=q10_budget_year_2023) %>% 
+  mutate(Year=2023)
+
+
+# Unir los dataframes
+q10_total <- bind_rows(q10_2021, q10_2022, q10_2023)
+
+
+# Crear un nuevo data frame con los resultados
+q10_total <- q10_total %>%
+  pivot_wider(names_from = Year, values_from = c(n, Percentage)) %>% 
+  select(1,5:7)
+
+
+knitr::kable(q10_total) %>% 
+  kable_minimal() #imprime cuadro
+```
+
+```{r}
+
+#Convertir campos vacíos de la variable q13 en NA
+ datos <- datos %>%
+  mutate(q13_ext_funding = na_if(q13_ext_funding, ""))
+
+q13<-datos %>%
+  filter(!is.na(q13_ext_funding)) %>% 
+  group_by(q13_ext_funding) %>% 
+  summarise(n=n()) %>% 
+  mutate(Percentage=round((n/sum(n))*100,1)) %>% 
+  rename("External funding"=q13_ext_funding)
+ 
+
+knitr::kable(q13) %>% 
+  kable_minimal()
+
+```
+
+
+```{r}
+#Distribución por año de recepción de fondos externos
+funding <- datos %>%
+  filter(q13_ext_funding == "yes") %>%
+  summarise(Total = n(),
+            year_2023 = sum(q14_funding_annual_budget_2023 > 0, na.rm = TRUE),
+            year_2022 = sum(q14_funding_annual_budget_2022 > 0, na.rm = TRUE),
+            year_2021 = sum(q14_funding_annual_budget_2021 > 0, na.rm = TRUE),
+            'Year 2023' = round(year_2023 / Total * 100, 1),
+            'Year 2022' = round(year_2022 / Total * 100, 1),
+            'Year 2021' = round(year_2021 / Total * 100, 1)) %>% 
+  select(1,5:7)
+
+
+#Cambia filas por columnas para presentar la información
+
+funding <- funding %>%
+  pivot_longer(cols = -Total, names_to = "Years", values_to = "Percentage")
+
+#Elimina primera columna del cuadro
+funding<-funding %>% 
+  select(-1)
+
+
+# Calcular porcentaje de fondos para el año 2023
+q14_2023 <- datos1 %>% 
+  filter(q13_ext_funding == "yes") %>% 
+  group_by(q14_funding_annual_budget_2023) %>% 
+  summarise(n = n()) %>% 
+  mutate(Percentage_2023 = round((n / sum(n)) * 100, 1)) %>% 
+  rename("Range"=q14_funding_annual_budget_2023)
+
+# Calcular porcentaje de fondos para el año 2022
+q14_2022 <- datos1 %>% 
+  filter(q13_ext_funding == "yes" & q9_year_formation < 2023) %>% 
+  group_by(q14_funding_annual_budget_2022) %>% 
+  summarise(n = n()) %>% 
+  mutate(Percentage_2022 = round((n / sum(n)) * 100, 1)) %>% 
+  rename("Range"=q14_funding_annual_budget_2022)
+
+# Calcular porcentaje de fondos para el año 2021
+q14_2021 <- datos1 %>% 
+  filter(q13_ext_funding == "yes" & q9_year_formation < 2022) %>% 
+  group_by(q14_funding_annual_budget_2021) %>% 
+  summarise(n = n()) %>% 
+  mutate(Percentage_2021 = round((n / sum(n)) * 100, 1)) %>% 
+  rename("Range"=q14_funding_annual_budget_2021)
+
+# Unir los resultados en un solo data frame
+funding_summary <- q14_2023 %>%
+  full_join(q14_2022, by = "Range") %>%
+  full_join(q14_2021, by = "Range") %>%
+  select(
+    Range = Range,
+    Percentage_2023,
+    Percentage_2022,
+    Percentage_2021
+  )
+
+# Ordenar el data frame si es necesario
+# funding_summary <- funding_summary %>% arrange(Category)
+
+# Mostrar el resultado final
+print(funding_summary)
+
+
+knitr::kable(q13) %>% 
+  kable_minimal() #imprime cuadro
+knitr::kable(funding) %>% 
+  kable_minimal() #imprime cuadro
+knitr::kable(funding_summary) %>% 
+  kable_minimal() #imprime cuadro
+
+```
+
+```{r}
+
+#Convertir campos vacíos de la variable q5_descendencia en NA
+ datos <- datos %>%
+  mutate(q13_ext_funding = na_if(q13_ext_funding, ""))
+ 
+#Organizaciones según recepción de fondos externos
+q13<-datos %>% 
+  filter(!is.na(q13_ext_funding)) %>% 
+  group_by(q13_ext_funding) %>% 
+  summarise(n=n()) %>% 
+  mutate(Percentage=round((n/sum(n))*100,1))
+
+
+#Distribución por año de recepción de fondos externos
+funding <- datos %>%
+  filter(q13_ext_funding == "yes") %>%
+  summarise(Total = n(),
+            year_2023 = sum(q14_funding_annual_budget_2023 > 0, na.rm = TRUE),
+            year_2022 = sum(q14_funding_annual_budget_2022 > 0, na.rm = TRUE),
+            year_2021 = sum(q14_funding_annual_budget_2021 > 0, na.rm = TRUE),
+            'Year 2023' = round(year_2023 / Total * 100, 1),
+            'Year 2022' = round(year_2022 / Total * 100, 1),
+            'Year 2021' = round(year_2021 / Total * 100, 1)) %>% 
+  select(1,5:7)
+
+
+#Cambia filas por columnas para presentar la información
+
+funding <- funding %>%
+  pivot_longer(cols = -Total, names_to = "Years", values_to = "Percentage")
+
+#Elimina primera columna del cuadro
+funding<-funding %>% 
+  select(-1)
+
+
+# Calcular porcentaje de fondos para el año 2023
+q14_2023 <- datos1 %>% 
+  filter(q13_ext_funding == "yes") %>% 
+  group_by(q14_funding_annual_budget_2023) %>% 
+  summarise(n = n()) %>% 
+  mutate(Percentage_2023 = round((n / sum(n)) * 100, 1)) %>% 
+  rename("Range"=q14_funding_annual_budget_2023)
+
+# Calcular porcentaje de fondos para el año 2022
+q14_2022 <- datos1 %>% 
+  filter(q13_ext_funding == "yes" & q9_year_formation < 2023) %>% 
+  group_by(q14_funding_annual_budget_2022) %>% 
+  summarise(n = n()) %>% 
+  mutate(Percentage_2022 = round((n / sum(n)) * 100, 1)) %>% 
+  rename("Range"=q14_funding_annual_budget_2022)
+
+# Calcular porcentaje de fondos para el año 2021
+q14_2021 <- datos1 %>% 
+  filter(q13_ext_funding == "yes" & q9_year_formation < 2022) %>% 
+  group_by(q14_funding_annual_budget_2021) %>% 
+  summarise(n = n()) %>% 
+  mutate(Percentage_2021 = round((n / sum(n)) * 100, 1)) %>% 
+  rename("Range"=q14_funding_annual_budget_2021)
+
+# Unir los resultados en un solo data frame
+funding_summary <- q14_2023 %>%
+  full_join(q14_2022, by = "Range") %>%
+  full_join(q14_2021, by = "Range") %>%
+  select(
+    Range = Range,
+    Percentage_2023,
+    Percentage_2022,
+    Percentage_2021
+  )
+
+# Ordenar el data frame si es necesario
+# funding_summary <- funding_summary %>% arrange(Category)
+
+# Mostrar el resultado final
+print(funding_summary)
+
+
+knitr::kable(q13) %>% 
+  kable_minimal() #imprime cuadro
+knitr::kable(funding) %>% 
+  kable_minimal() #imprime cuadro
+knitr::kable(funding_summary) %>% 
+  kable_minimal() #imprime cuadro
+
+```
+
+#q15
+
+```{r}
+
+#Convertir campos vacíos de la variable q15 en NA
+ datos <- datos %>%
+  mutate(q15_key_sources = na_if(q15_key_sources, ""))
+
+#Total valid responses for calculating percentage
+
+total<-datos %>%
+  count(q15_key_sources) %>% 
+  summarise(sum(n))
+
+#Choose only multiple-choice answers -Q15-
+q15_select<-datos %>% 
+  filter(!is.na(q15_key_sources)) %>% 
+  select(starts_with("q15_key_sources."))
+
+#q15 calculation
+q15<-q15_select%>% 
+  summarize_all(sum) %>% 
+  gather(q15, n) %>%
+  mutate(q15=forcats::fct_recode(as_factor(q15),
+                                "Multirateral funders"="q15_key_sources.multilateral_funders",
+                                "Bilateral funders"="q15_key_sources.bilateral_funders",
+                                "Philanthropic foundations"="q15_key_sources.philanthropic_foundations",
+                                "Womens and feminist founds"="q15_key_sources.womens_feminist_funds",
+                                "Private sector"="q15_key_sources.private_sector",
+                                "INGOs"="q15_key_sources.ingos",
+                                "Individual donors"="q15_key_sources.individual_donors",
+                                "National and local goverments or bodies"="q15_key_sources.national_local_goverment_or_bodies",
+                                "Other"="q15_key_sources.98")) %>%
+  mutate(Percentage=round(n/403*100,1)) %>% 
+  arrange(desc(Percentage)) %>% 
+  rename("Funding source"=q15)
+
+
+
+```
+
+
+```{r}
+
+names(datos)
+
+#Convertir campos vacíos de la variable q15 en NA
+ datos <- datos %>%
+  mutate(q15_key_sources = na_if(q15_key_sources, ""))
+
+#Total valid responses for calculating percentage
+
+total<-datos %>%
+  count(q15_key_sources) %>% 
+  summarise(sum(n))
+
+#Choose only multiple-choice answers -Q15-
+q15_select<-datos %>% 
+  filter(!is.na(q15_key_sources)) %>% 
+  select(starts_with("q15_key_sources."))
+
+#q15 calculation
+q15<-q15_select%>% 
+  summarize_all(sum) %>% 
+  gather(q15, n) %>%
+  mutate(q15=forcats::fct_recode(as_factor(q15),
+                                "Multirateral funders"="q15_key_sources.multilateral_funders",
+                                "Bilateral funders"="q15_key_sources.bilateral_funders",
+                                "Philanthropic foundations"="q15_key_sources.philanthropic_foundations",
+                                "Womens and feminist founds"="q15_key_sources.womens_feminist_funds",
+                                "Private sector"="q15_key_sources.private_sector",
+                                "INGOs"="q15_key_sources.ingos",
+                                "Individual donors"="q15_key_sources.individual_donors",
+                                "National and local goverments or bodies"="q15_key_sources.national_local_goverment_or_bodies",
+                                "Other"="q15_key_sources.98")) %>%
+  mutate(Percentage=round(n/403*100,1)) %>% 
+  arrange(desc(Percentage)) %>% 
+  rename("Funding source"=q15)
+```
+
+```{r}
+
+
+#Convertir campos vacíos de la variable q13 en NA
+ datos <- datos %>%
+  mutate(q13_ext_funding = na_if(q13_ext_funding, ""))
+ 
+#MULTIRATERAL
+q16_multirateral_2023<- datos %>% 
+  filter(q13_ext_funding == "yes" & q15_key_sources.multilateral_funders==1) %>% 
+  group_by(q16_funding_source_2023_multilateral) %>% 
+  summarise(n = n()) %>% 
+  mutate(Percentage = round((n / sum(n)) * 100, 1)) %>% 
+  rename_with(~ "2023", 1) %>% 
+  mutate(Type="Multirateral")
+
+q16_multirateral_2022<- datos %>% 
+  filter(q13_ext_funding == "yes" & q15_key_sources.multilateral_funders==1) %>% 
+  group_by(q16_funding_source_2022_multilateral) %>% 
+  summarise(n = n()) %>% 
+  mutate(Percentage = round((n / sum(n)) * 100, 1)) %>% 
+  rename_with(~ "2022", 1) %>% 
+  mutate(Type="Multirateral")
+
+q16_multirateral_2021<- datos %>% 
+  filter(q13_ext_funding == "yes" & q15_key_sources.multilateral_funders==1) %>% 
+  group_by(q16_funding_source_2021_multilateral) %>% 
+  summarise(n = n()) %>% 
+  mutate(Percentage = round((n / sum(n)) * 100, 1)) %>% 
+  rename_with(~ "2021", 1)%>% 
+  mutate(Type="Multirateral")
+
+#BILATERAL
+q16_bilateral_2023<- datos %>% 
+  filter(q13_ext_funding == "yes" & q15_key_sources.bilateral_funders==1) %>% 
+  group_by(q16_funding_source_2023_bilateral) %>% 
+  summarise(n = n()) %>% 
+  mutate(Percentage = round((n / sum(n)) * 100, 1)) %>% 
+  rename_with(~ "2023", 1) %>% 
+  mutate(Type="Bilateral")
+
+q16_bilateral_2022<- datos %>% 
+  filter(q13_ext_funding == "yes" & q15_key_sources.bilateral_funders==1) %>% 
+  group_by(q16_funding_source_2022_bilateral) %>% 
+  summarise(n = n()) %>% 
+  mutate(Percentage = round((n / sum(n)) * 100, 1))%>% 
+  rename_with(~ "2022", 1) %>% 
+  mutate(Type="Bilateral")
+
+q16_bilateral_2021<- datos %>% 
+  filter(q13_ext_funding == "yes" & q15_key_sources.bilateral_funders==1) %>% 
+  group_by(q16_funding_source_2021_bilateral) %>% 
+  summarise(n = n()) %>% 
+  mutate(Percentage = round((n / sum(n)) * 100, 1))%>% 
+  rename_with(~ "2021", 1) %>% 
+  mutate(Type="Bilateral")
+
+#PHILANTHROPIC
+q16_philanthropic_2023<- datos %>% 
+  filter(q13_ext_funding == "yes" & q15_key_sources.philanthropic_foundations==1) %>% 
+  group_by(q16_funding_source_2023_philanthropic) %>% 
+  summarise(n = n()) %>% 
+  mutate(Percentage = round((n / sum(n)) * 100, 1))%>% 
+  rename_with(~ "2023", 1) %>% 
+  mutate(Type="Philanthropic")
+
+q16_philanthropic_2022<- datos %>% 
+  filter(q13_ext_funding == "yes" & q15_key_sources.philanthropic_foundations==1) %>% 
+  group_by(q16_funding_source_2022_philanthropic) %>% 
+  summarise(n = n()) %>% 
+  mutate(Percentage = round((n / sum(n)) * 100, 1))%>% 
+  rename_with(~ "2022", 1) %>% 
+  mutate(Type="Philanthropic")
+
+q16_philanthropic_2021<- datos %>% 
+  filter(q13_ext_funding == "yes" & q15_key_sources.philanthropic_foundations==1) %>% 
+  group_by(q16_funding_source_2021_philanthropic) %>% 
+  summarise(n = n()) %>% 
+  mutate(Percentage = round((n / sum(n)) * 100, 1))%>% 
+  rename_with(~ "2021", 1) %>% 
+  mutate(Type="Philanthropic")
+
+#FEMINIST
+q16_feminist_2023<- datos %>% 
+  filter(q13_ext_funding == "yes" & q15_key_sources.womens_feminist_funds ==1) %>% 
+  group_by(q16_funding_source_2023_feminist) %>% 
+  summarise(n = n()) %>% 
+  mutate(Percentage = round((n / sum(n)) * 100, 1))%>% 
+  rename_with(~ "2023", 1) %>% 
+  mutate(Type="Feminist")
+
+q16_feminist_2022<- datos %>% 
+  filter(q13_ext_funding == "yes" & q15_key_sources.womens_feminist_funds ==1) %>% 
+  group_by(q16_funding_source_2022_feminist) %>% 
+  summarise(n = n()) %>% 
+  mutate(Percentage = round((n / sum(n)) * 100, 1))%>% 
+  rename_with(~ "2022", 1) %>% 
+  mutate(Type="Feminist")
+
+
+q16_feminist_2021<- datos %>% 
+  filter(q13_ext_funding == "yes" & q15_key_sources.womens_feminist_funds ==1) %>% 
+  group_by(q16_funding_source_2021_feminist) %>% 
+  summarise(n = n()) %>% 
+  mutate(Percentage = round((n / sum(n)) * 100, 1))%>% 
+  rename_with(~ "2021", 1) %>% 
+  mutate(Type="Feminist")
+
+
+#PRIVATE
+q16_private_2023<- datos %>% 
+  filter(q13_ext_funding == "yes" & q15_key_sources.private_sector ==1) %>% 
+  group_by(q16_funding_source_2023_private) %>% 
+  summarise(n = n()) %>% 
+  mutate(Percentage = round((n / sum(n)) * 100, 1))%>% 
+  rename_with(~ "2023", 1) %>% 
+  mutate(Type="Private")
+
+
+q16_private_2022<- datos %>% 
+  filter(q13_ext_funding == "yes" & q15_key_sources.private_sector ==1) %>% 
+  group_by(q16_funding_source_2022_private) %>% 
+  summarise(n = n()) %>% 
+  mutate(Percentage = round((n / sum(n)) * 100, 1))%>% 
+  rename_with(~ "2022", 1) %>% 
+  mutate(Type="Private")
+
+q16_private_2021<- datos %>% 
+  filter(q13_ext_funding == "yes" & q15_key_sources.private_sector ==1) %>% 
+  group_by(q16_funding_source_2021_private) %>% 
+  summarise(n = n()) %>% 
+  mutate(Percentage = round((n / sum(n)) * 100, 1))%>% 
+  rename_with(~ "2021", 1) %>% 
+  mutate(Type="Private")
+
+#INGOS
+q16_ingos_2023<- datos %>% 
+  filter(q13_ext_funding == "yes" & q15_key_sources.ingos==1) %>% 
+  group_by(q16_funding_source_2023_ingos) %>% 
+  summarise(n = n()) %>% 
+  mutate(Percentage = round((n / sum(n)) * 100, 1))%>% 
+  rename_with(~ "2023", 1) %>% 
+  mutate(Type="INGOS")
+
+q16_ingos_2022<- datos %>% 
+  filter(q13_ext_funding == "yes" & q15_key_sources.ingos==1) %>% 
+  group_by(q16_funding_source_2022_ingos) %>% 
+  summarise(n = n()) %>% 
+  mutate(Percentage = round((n / sum(n)) * 100, 1))%>% 
+  rename_with(~ "2022", 1) %>% 
+  mutate(Type="INGOS")
+
+q16_ingos_2021<- datos %>% 
+  filter(q13_ext_funding == "yes" & q15_key_sources.ingos==1) %>% 
+  group_by(q16_funding_source_2021_ingos) %>% 
+  summarise(n = n()) %>% 
+  mutate(Percentage = round((n / sum(n)) * 100, 1))%>% 
+  rename_with(~ "2021", 1) %>% 
+  mutate(Type="INGOS")
+
+#INDIVIDUAL
+q16_individual_2023<- datos %>% 
+  filter(q13_ext_funding == "yes" & q15_key_sources.individual_donors==1) %>% 
+  group_by(q16_funding_source_2023_individual) %>% 
+  summarise(n = n()) %>% 
+  mutate(Percentage = round((n / sum(n)) * 100, 1))%>% 
+  rename_with(~ "2023", 1) %>% 
+  mutate(Type="Individual")
+
+q16_individual_2022<- datos %>% 
+  filter(q13_ext_funding == "yes" & q15_key_sources.individual_donors==1) %>% 
+  group_by(q16_funding_source_2022_individual) %>% 
+  summarise(n = n()) %>% 
+  mutate(Percentage = round((n / sum(n)) * 100, 1))%>% 
+  rename_with(~ "2022", 1) %>% 
+  mutate(Type="Individual")
+
+q16_individual_2021<- datos %>% 
+  filter(q13_ext_funding == "yes" & q15_key_sources.individual_donors==1) %>% 
+  group_by(q16_funding_source_2021_individual) %>% 
+  summarise(n = n()) %>% 
+  mutate(Percentage = round((n / sum(n)) * 100, 1))%>% 
+  rename_with(~ "2021", 1) %>% 
+  mutate(Type="Individual")
+
+#GOVERMENT
+q16_goverment_2023<- datos %>% 
+  filter(q13_ext_funding == "yes" & q15_key_sources.national_local_goverment_or_bodies ==1) %>% 
+  group_by(q16_funding_source_2023_goverment) %>% 
+  summarise(n = n()) %>% 
+  mutate(Percentage = round((n / sum(n)) * 100, 1))%>% 
+  rename_with(~ "2023", 1) %>% 
+  mutate(Type="Goverment")
+
+q16_goverment_2022<- datos %>% 
+  filter(q13_ext_funding == "yes" & q15_key_sources.national_local_goverment_or_bodies ==1) %>% 
+  group_by(q16_funding_source_2022_goverment) %>% 
+  summarise(n = n()) %>% 
+  mutate(Percentage = round((n / sum(n)) * 100, 1))%>% 
+  rename_with(~ "2022", 1) %>% 
+  mutate(Type="Goverment")
+
+q16_goverment_2021<- datos %>% 
+  filter(q13_ext_funding == "yes" & q15_key_sources.national_local_goverment_or_bodies ==1) %>% 
+  group_by(q16_funding_source_2021_goverment) %>% 
+  summarise(n = n()) %>% 
+  mutate(Percentage = round((n / sum(n)) * 100, 1))%>% 
+  rename_with(~ "2021", 1) %>% 
+  mutate(Type="Goverment")
+
+#OTHER
+q16_other_2023<- datos %>% 
+  filter(q13_ext_funding == "yes" & q15_key_sources.98==1) %>% 
+  group_by(q16_funding_source_2023_other) %>% 
+  summarise(n = n()) %>% 
+  mutate(Percentage = round((n / sum(n)) * 100, 1))%>% 
+  rename_with(~ "2023", 1) %>% 
+  mutate(Type="Other")
+
+q16_other_2022<- datos %>% 
+  filter(q13_ext_funding == "yes" & q15_key_sources.98==1) %>% 
+  group_by(q16_funding_source_2022_other) %>% 
+  summarise(n = n()) %>% 
+  mutate(Percentage = round((n / sum(n)) * 100, 1))%>% 
+  rename_with(~ "2022", 1) %>% 
+  mutate(Type="Other")
+
+q16_other_2021<- datos %>% 
+  filter(q13_ext_funding == "yes" & q15_key_sources.98==1) %>% 
+  group_by(q16_funding_source_2021_other) %>% 
+  summarise(n = n()) %>% 
+  mutate(Percentage = round((n / sum(n)) * 100, 1))%>% 
+  rename_with(~ "2021", 1) %>% 
+  mutate(Type="Other")
+
+```
+
+
+```{r}
+#2023
+# Unir los dataframes
+ext_2023 <- bind_rows(q16_bilateral_2023,q16_feminist_2023, q16_goverment_2023, q16_individual_2023, q16_ingos_2023, q16_multirateral_2023, q16_other_2023, q16_philanthropic_2023, q16_private_2023)
+
+# Crear un nuevo data frame con los resultados
+q16_2023 <- ext_2023 %>%
+  pivot_wider(names_from = Type, values_from = c(n, Percentage)) %>% 
+  select(1,11:19) %>% 
+  rename_with(~ "Range", 1)
+
+#2022
+# Unir los dataframes
+ext_2022 <- bind_rows(q16_bilateral_2022,q16_feminist_2022, q16_goverment_2022, q16_individual_2022, q16_ingos_2022, q16_multirateral_2022, q16_other_2022, q16_philanthropic_2022, q16_private_2022)
+
+# Crear un nuevo data frame con los resultados
+q16_2022 <- ext_2022 %>%
+  pivot_wider(names_from = Type, values_from = c(n, Percentage)) %>% 
+  select(1,11:19)%>% 
+  rename_with(~ "Range", 1)
+
+#2021
+# Unir los dataframes
+ext_2021 <- bind_rows(q16_bilateral_2021,q16_feminist_2021, q16_goverment_2021, q16_individual_2021, q16_ingos_2021, q16_multirateral_2021, q16_other_2021, q16_philanthropic_2021, q16_private_2021)
+
+# Crear un nuevo data frame con los resultados
+q16_2021 <- ext_2021 %>%
+  pivot_wider(names_from = Type, values_from = c(n, Percentage)) %>% 
+  select(1,11:19)%>% 
+  rename_with(~ "Range", 1)
+
+```
+
