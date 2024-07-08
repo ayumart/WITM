@@ -6,16 +6,16 @@ rm(list = ls())
 
 ##instalación de paquetes
 
-#install.packages("ggplot2")
-#install.packages("datapasta")
-#install.packages('visdat')
-#install.packages("remotes")
-#install.packages("DiagrammeR")
-#install.packages('dplyr')
-#remotes::install_github("dickoa/robotoolbox")
-#install.packages("eph")
-#install.packages("remotes")
-#remotes::install_github("matherion/userfriendlyscience", dependencies = FALSE, force = TRUE)
+# install.packages("ggplot2")
+# install.packages("datapasta")
+# install.packages('visdat')
+# install.packages("remotes")
+# install.packages("DiagrammeR")
+# install.packages('dplyr')
+# remotes::install_github("dickoa/robotoolbox")
+# install.packages("eph")
+# install.packages("remotes")
+# remotes::install_github("matherion/userfriendlyscience", dependencies = FALSE, force = TRUE)
 
 
 

@@ -26,6 +26,8 @@ library(rmarkdown)
 library(knitr)
 library(kableExtra)
 
+rm(list = ls())
+
 ```
 
 
@@ -35,11 +37,41 @@ library(kableExtra)
 
 
 # To upload CSV file
-datos <- read.csv2("Data/WITM_csv_last.csv")
+datos <- read.csv2("Data/WITM_csv_0708.csv")
 
 # To upload xlsx file
 #datos<- read_xlsx("WITM_xls_value2.xlsx", sheet = 1)
 ```
+
+
+___
+
+**Answers**
+
+Number oi answers by date
+
+
+```{r}
+
+#2024-05-23 08:37:41.178000-04:00
+datos$date <-  as.Date(datos$end,'%Y-%m-%d')
+
+
+
+answers_by_date<-datos  %>% 
+  group_by(date) %>%  
+  summarise(qt=n())
+
+
+ggplot(answers_by_date, aes(x = date, y=qt)) +                      
+  geom_bar(stat="identity",width=0.5, colour="red", fill="skyblue") +
+  labs(x="date",y= "Number") +                 
+  ggtitle("Number of answers by date") +                
+  theme_bw(base_size = 12)+  
+  geom_text(aes(label = signif(qt)), nudge_y = 3)
+```
+
+
 ___
 
 **Consent:**
@@ -51,7 +83,7 @@ Q1. I consent to take the WITM survey on behalf of my group, organization or mov
 q0<-datos %>%
   group_by(q0_consent) %>% 
   summarise(n=n()) %>% 
-  mutate(Percentage=round((n/sum(n))*100,1)) %>% 
+  mutate(porcentaje=round((n/sum(n))*100,1)) %>% 
   rename("Consent"=q0_consent)
 
 knitr::kable(q0) %>% 
@@ -77,7 +109,7 @@ q1<-base %>%
                                             "We promote the rights of women or girls or trans or gender diverse people with intersecting identities 'through specific project(s)', but not as the primary focus of our work" = "specific_projects",
                                             "Other" = "98")) %>%
   summarise(n=n()) %>% 
-  mutate(Percentage=round((n/sum(n))*100,1)) %>% 
+  mutate(porcentaje=round((n/sum(n))*100,1)) %>% 
   arrange(desc(q1_description)) %>% 
   rename("Description"=q1_description)
 
@@ -175,8 +207,8 @@ q4<-q4_select%>%
                                 "Girls’ movements"="q4_forms_organizing.girls_movements",
                                 "Human rights defenders at risk"="q4_forms_organizing.hr_defenders_at_risk",
                                 "Other"="q4_forms_organizing.98"))%>% 
-  mutate(Percentage=round(n/165*100,1)) %>% 
-  arrange(desc(Percentage)) %>% 
+  mutate(porcentaje=round(n/165*100,1)) %>% 
+  arrange(desc(porcentaje)) %>% 
   rename("Organization type"=q4)
 
 
@@ -200,7 +232,7 @@ q5<-base %>%
     q5_registered==98 ~ "Other",
     TRUE ~ NA)) %>%  
   summarise(n=n()) %>% 
-  mutate(Percentage=round((n/sum(n))*100,1)) %>% 
+  mutate(porcentaje=round((n/sum(n))*100,1)) %>% 
   arrange(desc(q5_registered)) %>% 
   rename("Register"=q5_registered)
 
@@ -227,7 +259,7 @@ q6<-base %>%
                                           "Transnationally" = "transnationally_focused",
                                           "Global" = "globally_focused")) %>% 
   summarise(n=n()) %>% 
-  mutate(Percentage=round((n/sum(n))*100,1)) %>% 
+  mutate(porcentaje=round((n/sum(n))*100,1)) %>% 
   arrange(q6_geo_scope) %>% 
   rename("Geo scope"=q6_geo_scope)
 
@@ -303,8 +335,8 @@ q7_b<-q7_select%>%
 q7_final <- q7_a %>% left_join(q7_b, by = "q7") %>% 
   mutate(n=n.x+n.y) %>% 
   select(-n.x,-n.y, "Region"=q7) %>%
-  mutate(Percentage=round((n/153)*100,1)) %>% 
-  arrange(desc(Percentage)) 
+  mutate(porcentaje=round((n/153)*100,1)) %>% 
+  arrange(desc(porcentaje)) 
   
 
 
@@ -324,13 +356,13 @@ q8<-base %>%
   filter(q6_geo_scope=="locally_focused"| q6_geo_scope=="nationally_focused") %>% 
   group_by(q7_region_one, q8_country) %>% 
   summarise(n=n()) %>% 
-  mutate(Percentage=round((n/sum(n))*100,1))
+  mutate(porcentaje=round((n/sum(n))*100,1))
 
 q8<-base %>% 
   filter(q6_geo_scope=="locally_focused"| q6_geo_scope=="nationally_focused") %>% 
   group_by(q7_region_one, q8_country) %>% 
   summarise(n=n()) %>% 
-  mutate(Percentage=round((n/sum(n))*100,1))
+  mutate(porcentaje=round((n/sum(n))*100,1))
 
 
 knitr::kable(q8) %>% 
@@ -365,7 +397,7 @@ q9<-base %>%
   filter(!is.na(q9_year_formation_agrup)) %>% 
   group_by(q9_year_formation_agrup) %>% 
   summarise(total=n()) %>% 
-  mutate(Percentage=round((total/sum(total))*100,1)) %>% 
+  mutate(porcentaje=round((total/sum(total))*100,1)) %>% 
   arrange(q9_year_formation_agrup) %>% 
   rename("Year formation"=q9_year_formation_agrup)
 
@@ -384,7 +416,7 @@ Q13. Between 2021 and 2023, has your group, organization and/or movement receive
 q13<-base %>%
   group_by(q13_ext_funding) %>% 
   summarise(n=n()) %>% 
-  mutate(Percentage=round((n/sum(n))*100,1)) %>% 
+  mutate(porcentaje=round((n/sum(n))*100,1)) %>% 
   rename("External funding"=q13_ext_funding)
  
 
@@ -410,7 +442,7 @@ q46<-base %>%
     TRUE ~ NA)) %>% 
   group_by(q46_language) %>% 
   summarise(n=n()) %>% 
-  mutate(Percentage=round((n/sum(n))*100,1)) %>% 
+  mutate(porcentaje=round((n/sum(n))*100,1)) %>% 
   arrange(q46_language) %>% 
   rename("Language"=q46_language)
 
@@ -436,7 +468,7 @@ q45<-base %>%
                                             "No" = "no",
                                             "Don't know" = "99")) %>% 
   summarise(n=n()) %>% 
-  mutate(Percentage=round((n/sum(n))*100,1)) %>% 
+  mutate(porcentaje=round((n/sum(n))*100,1)) %>% 
   arrange(desc(q45_previous_response)) %>% 
   rename("Previous response"=q45_previous_response)
 

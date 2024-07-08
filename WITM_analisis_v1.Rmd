@@ -1,0 +1,521 @@
+---
+title: "Where is the Money for Feminist Organizing? Survey for feminist, women’s rights and gender justice movements, groups and organizations"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+#WITM follow up
+
+```{r setup, include=FALSE, echo=F}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+
+```{r library, echo=F, message=F, warning=F}
+
+#Library upload
+
+library(tidyverse)
+library(readxl)
+library(janitor)
+library(dplyr)
+library(writexl)
+library(eph)
+library(openxlsx)
+library(rmarkdown)
+library(knitr)
+library(kableExtra)
+
+library(readr)
+library(xlsx)
+
+rm(list = ls())
+
+```
+
+
+**Database upload**
+
+```{r upload, echo=T, message=F, warning=F}
+
+
+# To upload CSV file
+witm <- read.csv2("Data/WITM_csv_0708.csv")
+
+#2024-05-23 08:37:41.178000-04:00
+witm$date <-  as.Date(witm$end,'%Y-%m-%d')
+
+
+#names(witm)
+# To upload xlsx file
+#datos<- read_xlsx("WITM_xls_value2.xlsx", sheet = 1)
+```
+
+```{r}
+#witm$date
+
+witm$date_s <-  paste(format(as.Date(witm$date,format="%Y-%m-%d"), format = "%m"), format(as.Date(witm$date,format="%Y-%m-%d"), format = "%d"), sep ="-", collapse=NULL)
+
+#tmp = cbind("GAD", "AB")
+```
+
+
+___
+
+**Number of answers by date** 
+
+```{r}
+answers_by_date<-witm  %>% 
+  group_by(date) %>%  
+  summarise(qt=n())
+
+
+ggplot(answers_by_date, aes(x =  as.POSIXct(date), y=qt)) +                      
+  geom_bar(stat="identity",width=0.5, colour="red", fill="skyblue") +
+  labs(x="date",y= "Number") +                 
+  ggtitle("Number of answers by date") +                
+  theme_bw(base_size = 12)+  
+  scale_x_datetime(breaks=scales::breaks_pretty(8))+
+  geom_text(aes(label = signif(qt)), nudge_y = 3)
+```
+
+**--Analysis notes-----------------------------------------------------------------------**
+
+In general the polls always have a high peak on the first day, WITM also shows this. Then there is another spike on 27-28 June, probably a strengthening of communication. On the 4th of July it increases again.
+
+**------------------------------------------------------------------------------------------------**
+
+
+**Consent:**
+
+Q1. I consent to take the WITM survey on behalf of my group, organization or movement.
+
+```{r consent, echo=F, message=F, warning=F}
+
+q0<-witm %>%
+  group_by(q0_consent) %>% 
+  summarise(n=n()) %>% 
+  mutate(porcentaje=round((n/sum(n))*100,1)) %>% 
+  rename("Consent"=q0_consent)
+
+knitr::kable(q0) %>% 
+  kable_minimal()
+
+#write.xlsx2(as.data.frame(q0), "Output/section1.xlsx", row.names = FALSE, sheetName ="q1",append = TRUE)
+
+
+#From now on, only those who have given their consent to respond to the survey will be considered for analysis
+
+base<-witm %>% 
+  filter(q0_consent=="yes")
+```
+___
+
+**Group information:**
+
+Q2. Which of the following statements best describes your group, organization and/or movement?
+
+```{r info, echo=F, message=F, warning=F}
+q1<-base %>%
+  group_by(q1_description) %>% 
+  mutate(q1_description=forcats::fct_recode(as_factor(q1_description),
+                                                     "We promote the rights of women or girls or trans or gender diverse people in all their intersecting identities and this is the 'primary focus of all our work'" = "primary_focus",
+                                            "We promote the rights of women or girls or trans or gender diverse people with intersecting identities 'through specific project(s)', but not as the primary focus of our work" = "specific_projects",
+                                            "Other" = "98")) %>%
+  summarise(n=n()) %>% 
+  mutate(porcentaje=round((n/sum(n))*100,1)) %>% 
+  arrange(desc(q1_description)) %>% 
+  rename("Description"=q1_description)
+
+
+knitr::kable(q1) %>% 
+  kable_minimal()
+```
+
+
+```{r info_other, echo=F, message=F, warning=F}
+#Other responses
+
+q1_otro<-base %>%
+  filter(q1_description==98) %>% 
+  group_by(q1_description_group) %>% 
+  summarise(n=n()) %>% 
+  select("Other"=q1_description_group)
+
+knitr::kable(q1_otro) %>% 
+  kable_minimal()
+
+```
+___
+
+**Organization names:**
+
+Q3. The name of your group, organization and/or movement
+
+
+```{r name1, echo=F, message=F, warning=F}
+
+n_temp<-sum(base$q2_name=="")
+print(paste("The number of organisations that did not answer their name is:",n_temp))
+
+
+```
+
+
+```{r name, echo=F, message=F, warning=F}
+q2<-base %>%
+  filter(!is.na(q2_name)) %>% 
+  group_by(q2_name) %>% 
+  summarise(n=n()) %>% 
+  select("Organization names"=q2_name) %>% 
+  slice(-1)
+
+#knitr::kable(q2) %>% 
+#  kable_minimal()
+
+```
+___
+
+**Type of organization**
+
+Q4. Which of the following forms of organizing best describes your group, organization and/or movement?
+
+*This is a multiple-choice question so the sum of the % does NOT add up to 100.*
+
+```{r}
+#Total valid responses for calculating percentage
+
+total<-base %>%
+  count(q4_forms_organizing) %>% 
+  summarise(sum(n))
+
+total
+```
+
+
+```{r type, echo=F, message=F, warning=F}
+
+#Total valid responses for calculating percentage
+
+total<-base %>%
+  count(q4_forms_organizing) %>% 
+  summarise(n=sum(n))
+
+total<-total$n
+
+#Choose only multiple-choice answers -Q4-
+q4_select<-base %>% 
+  select(starts_with("q4_forms_organizing."))
+q4_select
+
+#q4 calculation
+q4<-q4_select%>% 
+  summarize_all(sum) %>% 
+  gather(q4, n) %>%
+  mutate(q4=forcats::fct_recode(as_factor(q4),
+                                "Anti-caste"="q4_forms_organizing.anti_caste",
+                                "Anti-militarization and peace"="q4_forms_organizing.anti_militarization",
+                                "Black rights/ Black feminist rights"="q4_forms_organizing.black_rights",
+                                "Climate and environmental justice"="q4_forms_organizing.climate_justice",
+                                "Crisis response"="q4_forms_organizing.crisis_response",
+                                "Countering anti-gender and anti-rights"="q4_forms_organizing.countering_anti_gender",
+                                "Digital rights"="q4_forms_organizing.digital_rights",
+                                "Disability rights and justice"="q4_forms_organizing.disability_rights",
+                                "Displaced, migrant and refugee rights"="q4_forms_organizing.displaced_migrant_refugee_rights",
+                                "Economic justice, rights and alternatives"="q4_forms_organizing.economic_justice",
+                                "Freedom of information and media"="q4_forms_organizing.information_media_freedom",
+                                "Harm reduction"="q4_forms_organizing.harm_reduction",
+                                "Ending gender based violence"="q4_forms_organizing.end_gender_violence",
+                                "Pleasure and bodily care"="q4_forms_organizing.pleasure_bodily_care",
+                                "Resisting the war on drugs"="q4_forms_organizing.resisting_war_on_drugs",
+                                "Rights for people living with HIV+"="q4_forms_organizing.rights_for_people_living_with_hiv",
+                                "Holistic safety, protection and collective care"="q4_forms_organizing.holistic_safety_protection_collective_care",
+                                "Human rights"="q4_forms_organizing.human_rights",
+                                "Indigenous rights"="q4_forms_organizing.indigenous_rights",
+                                "Intersex rights"="q4_forms_organizing.intersex_rights",
+                                "Labour rights"="q4_forms_organizing.labour_rights",
+                                "Lesbian, Bisexual and queer rights"="q4_forms_organizing.lesbian_bisexual_queer_rights",
+                                "Racial justice"="q4_forms_organizing.racial_justice",
+                                "Religious and ethnic minority rights"="q4_forms_organizing.religious_ethnic_minority_rights",
+                                "Sex workers rights"="q4_forms_organizing.sex_workers_rights",
+                                "Sexual and reproductive health & rights (SRHR) and bodily autonomy"="q4_forms_organizing.srhr_bodily_autonomy",
+                                "Trans and non-binary rights"="q4_forms_organizing.trans_non_binary_rights",
+                                "Women's rights"="q4_forms_organizing.womens_rights",
+                                "Young feminists"="q4_forms_organizing.young_feminists",
+                                "Girls’ movements"="q4_forms_organizing.girls_movements",
+                                "Human rights defenders at risk"="q4_forms_organizing.hr_defenders_at_risk",
+                                "Other"="q4_forms_organizing.98"))%>% 
+  mutate(porcentaje=round(n/total*100,1)) %>% 
+  arrange(desc(porcentaje)) %>% 
+  rename("Organization type"=q4)
+
+#write.xlsx2(as.data.frame(q4), "Output/section1.xlsx", row.names = FALSE, sheetName ="q4",append = TRUE)
+
+
+
+
+knitr::kable(q4) %>% 
+  kable_minimal()
+
+```
+___
+
+**Register**
+
+Q5. Is your group, organization and/or movement registered?
+
+```{r registered, echo=F, message=F, warning=F}
+
+q5<-base %>%
+  group_by(q5_registered) %>% 
+  mutate(q5_registered= case_when(
+    q5_registered=="y_registered" ~ "Yes",
+    q5_registered=="n_registered" ~ "No",
+    q5_registered==98 ~ "Other",
+    TRUE ~ NA)) %>%  
+  summarise(n=n()) %>% 
+  mutate(porcentaje=round((n/sum(n))*100,1)) %>% 
+  arrange(desc(q5_registered)) %>% 
+  rename("Register"=q5_registered)
+
+
+knitr::kable(q5) %>% 
+  kable_minimal()
+
+```
+___
+
+**Scope:**
+
+Q6. What is the geographical scope of your work?
+
+```{r scope, echo=F, message=F, warning=F}
+
+q6<-base %>% 
+  group_by(q6_geo_scope) %>% 
+  mutate(q6_geo_scope=forcats::fct_recode(as_factor(q6_geo_scope),
+                                                     "Locally" = "locally_focused",
+                                            "Nationally" = "nationally_focused",
+                                          "Work from diaspora, refuge and/or exile" = "diaspora_and_or_exile",
+                                          "Regionally" = "regionally_focused",
+                                          "Transnationally" = "transnationally_focused",
+                                          "Global" = "globally_focused")) %>% 
+  summarise(n=n()) %>% 
+  mutate(porcentaje=round((n/sum(n))*100,1)) %>% 
+  arrange(q6_geo_scope) %>% 
+  rename("Geo scope"=q6_geo_scope)
+
+
+knitr::kable(q6) %>% 
+  kable_minimal()
+```
+___
+
+**Region:**
+
+Q7. Indicate in which region(s) your group, organization and/or movement works
+
+*Reading: 22% of the organizations work in South Asia.
+Organizations working locally, regionally or globally were consolidated.*
+
+
+```{r region, echo=F, message=F, warning=F}
+
+q7_a<-base %>% 
+  filter(q6_geo_scope=="locally_focused" | q6_geo_scope=="nationally_focused") %>% 
+  group_by(q7_region_one) %>%
+    mutate(q7_region_one=forcats::fct_recode(as_factor(q7_region_one),
+                                                     "South America" = "samerica",
+                                            "Central America & Mexico" = "camerica",
+                                    "North America" = "namerica",
+                                    "Caribbean" = "caribbean",
+                                    "South Asia" = "sasia",
+                                    "Southeast Asia" = "seasia",
+                                    "East Asia" = "easia",
+                                    "The Pacific" = "pacific",
+                                    "South West Asia/Middle East" = "swasiamiddleeast",
+                                    "Central Asia & Caucasus" = "casia",
+                                    "Eastern Europe, Southeast Europe and Central Europe" = "caucasuseurope",
+                                    "Western Europe" = "weurope",
+                                    "West Africa"="wafrica",
+                                    "East Africa"="eafrica",
+                                    "Southern Africa"="safrica",
+                                    "Central Africa"="cafrica",
+                                    "North Africa"="nafrica")) %>%   summarise(n=n())%>% 
+  rename(q7=q7_region_one) %>% 
+  arrange(q7)
+
+q7_select<-base %>% 
+  select(starts_with("q7_region_multiple.")) %>% 
+  filter(!is.na(q7_region_multiple.samerica))
+
+
+q7_b<-q7_select%>% 
+  summarize_all(sum) %>% 
+  gather(q7, n) %>% 
+  mutate(q7= str_replace(q7, "q7_region_multiple.", "")) %>% 
+  mutate(q7=forcats::fct_recode(as_factor(q7),
+                                                     "South America" = "samerica",
+                                            "Central America & Mexico" = "camerica",
+                                    "North America" = "namerica",
+                                    "Caribbean" = "caribbean",
+                                    "South Asia" = "sasia",
+                                    "Southeast Asia" = "seasia",
+                                    "East Asia" = "easia",
+                                    "The Pacific" = "pacific",
+                                    "South West Asia/Middle East" = "swasiamiddleeast",
+                                    "Central Asia & Caucasus" = "casia",
+                                    "Eastern Europe, Southeast Europe and Central Europe" = "caucasuseurope",
+                                    "Western Europe" = "weurope",
+                                    "West Africa"="wafrica",
+                                    "East Africa"="eafrica",
+                                    "Southern Africa"="safrica",
+                                    "Central Africa"="cafrica",
+                                    "North Africa"="nafrica"))
+
+
+q7_final <- q7_a %>% left_join(q7_b, by = "q7") %>% 
+  mutate(n=n.x+n.y) %>% 
+  select(-n.x,-n.y, "Region"=q7) %>%
+  mutate(porcentaje=round((n/153)*100,1)) %>% 
+  arrange(desc(porcentaje)) 
+  
+
+
+knitr::kable(q7_final) %>% 
+  kable_minimal()
+
+```
+___
+
+**Country:**
+
+Q8. Which countries are you working in?
+
+```{r country, include=F, echo=F, message=F, warning=F}
+
+q8<-base %>% 
+  filter(q6_geo_scope=="locally_focused"| q6_geo_scope=="nationally_focused") %>% 
+  group_by(q7_region_one, q8_country) %>% 
+  summarise(n=n()) %>% 
+  mutate(porcentaje=round((n/sum(n))*100,1))
+
+q8<-base %>% 
+  filter(q6_geo_scope=="locally_focused"| q6_geo_scope=="nationally_focused") %>% 
+  group_by(q7_region_one, q8_country) %>% 
+  summarise(n=n()) %>% 
+  mutate(porcentaje=round((n/sum(n))*100,1))
+
+
+knitr::kable(q8) %>% 
+  kable_minimal()
+```
+___
+
+**Year of formation:**
+
+Q9. What year was your group, organization and/ or movement formed?
+
+*Reading: 36% of the respondent organizations were formed between the years 2015 and 2020, while around 13% were formed from the year 2021 onwards*
+```{r year, echo=F, message=F, warning=F}
+q9<-base %>% 
+  mutate(q9_year_formation_agrup=case_when(
+    q9_year_formation==2023 ~  1,
+    q9_year_formation==2022 ~  2,
+    q9_year_formation==2021 ~  3,
+    q9_year_formation<2021 & q9_year_formation>2014 ~  4,
+    q9_year_formation<2015 & q9_year_formation>2009 ~  5,
+    q9_year_formation<2010 & q9_year_formation>1999 ~  6,
+    is.na(q9_year_formation) ~ NA,
+    TRUE ~  7)) %>%
+  mutate(q9_year_formation_agrup=forcats::fct_recode(as_factor(q9_year_formation_agrup),
+                                                     "Año 2023" = "1",
+                                                     "Año 2022" = "2",
+                                                     "Año 2021" = "3",
+                                                     "Entre 2015 y 2020" = "4",
+                                                     "Entre 2010 y 2014" = "5",
+                                                     "Entre 2000 y 2009" = "6",
+                                                     "Antes del 2000" = "7")) %>% 
+  filter(!is.na(q9_year_formation_agrup)) %>% 
+  group_by(q9_year_formation_agrup) %>% 
+  summarise(total=n()) %>% 
+  mutate(porcentaje=round((total/sum(total))*100,1)) %>% 
+  arrange(q9_year_formation_agrup) %>% 
+  rename("Year formation"=q9_year_formation_agrup)
+
+
+knitr::kable(q9) %>% 
+  kable_minimal()
+```
+___
+
+**External founding:**
+
+Q13. Between 2021 and 2023, has your group, organization and/or movement received any external funding?
+
+
+```{r ef, echo=F, message=F, warning=F}
+q13<-base %>%
+  group_by(q13_ext_funding) %>% 
+  summarise(n=n()) %>% 
+  mutate(porcentaje=round((n/sum(n))*100,1)) %>% 
+  rename("External funding"=q13_ext_funding)
+ 
+
+knitr::kable(q13) %>% 
+  kable_minimal()
+```
+___
+
+**Language:**
+
+Q46. In which language did you answer the survey?
+
+```{r language, echo=F, message=F, warning=F}
+
+q46<-base %>% 
+  mutate(q46_language=case_when(
+    q46_language=="english" ~ "English",
+    q46_language=="spanish" ~ "Spanish",
+    q46_language=="french" ~ "French",
+    q46_language=="portuguese" ~ "Portuguese",
+    q46_language=="arabic" ~ "Arabic",
+    q46_language=="russian" ~ "Russian",
+    TRUE ~ NA)) %>% 
+  group_by(q46_language) %>% 
+  summarise(n=n()) %>% 
+  mutate(porcentaje=round((n/sum(n))*100,1)) %>% 
+  arrange(q46_language) %>% 
+  rename("Language"=q46_language)
+
+
+knitr::kable(q46) %>% 
+  kable_minimal()
+
+```
+
+___
+
+##Previous WITM:
+
+Q45. Did anyone from your group, organization and/or movement respond to AWID’s Where is the Money survey in 2008 or 2011?
+
+```{r previous, echo=F, message=F, warning=F}
+
+
+q45<-base %>%
+  group_by(q45_previous_response) %>% 
+  mutate(q45_previous_response=forcats::fct_recode(as_factor(q45_previous_response),
+                                                     "Yes" = "yes",
+                                            "No" = "no",
+                                            "Don't know" = "99")) %>% 
+  summarise(n=n()) %>% 
+  mutate(porcentaje=round((n/sum(n))*100,1)) %>% 
+  arrange(desc(q45_previous_response)) %>% 
+  rename("Previous response"=q45_previous_response)
+
+
+knitr::kable(q45) %>% 
+  kable_minimal()
+```
+

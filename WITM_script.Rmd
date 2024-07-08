@@ -1,0 +1,364 @@
+---
+title: "WITM"
+output: html_document
+date: "`r Sys.Date()`"
+---
+
+```{r}
+
+library(tidyverse)
+library(readxl)
+library(janitor)
+library(dplyr)
+library(writexl)
+library(eph)
+library(openxlsx)
+
+```
+
+
+```{r}
+
+#Llamo encuesta
+
+base_completa<- read_xlsx("WITM_value.xlsx", sheet = 1)
+```
+
+```{r}
+#Elimino columnas sin datos
+
+base<-base_completa %>% 
+  select_if(~any(!is.na(.)))
+
+names(base)
+
+#guardo base limpia
+write.xlsx(base, file = "Base_clean.xlsx")
+
+```
+
+```{r}
+
+#frecuencias: summary general
+
+frecuencias<-lapply(base_limpia, summary)
+
+
+```
+
+```{r}
+#reviso si hay encuesta que duren menos de 10 minutos
+base<-base %>% 
+  mutate(duration=(end-start)/60) %>% 
+  mutate(check1=if_else((q0_consent=="yes" & duration<10),1,0))
+
+#reviso cantidad de encuestas con duración menor a 10 minutos
+check<-base %>%
+  summarise(n=sum(check1))
+
+#ver registros que dieron consentimiento y duraron menos de 10 minutos
+base1<-base %>% 
+  filter(check1==1)
+```
+
+
+frecuencia de variables
+```{r}
+q0<-base %>% 
+  group_by(q0_consent) %>% 
+  summarise(total=n()) %>% 
+  mutate(porcentaje=round((total/sum(total))*100,1))
+
+#considero solo aquellos que prestaron consetimiento
+
+base<-base %>% 
+  filter(q0_consent=="yes")
+
+
+q1<-base %>% 
+  filter(!is.na(q1_description)) %>% 
+  group_by(q1_description) %>% 
+  summarise(total=n()) %>% 
+  mutate(porcentaje=round((total/sum(total))*100,1)) %>% 
+  mutate(q1_description=if_else(q1_description==98, "other",q1_description))
+    
+
+q2<-base %>% 
+  filter(!is.na(q2_name)) %>% 
+  group_by(q2_name) %>% 
+  summarise(total=n())
+
+q5<-base %>% 
+  filter(!is.na(q5_registered)) %>% 
+  group_by(q5_registered) %>% 
+  summarise(total=n()) %>% 
+  mutate(porcentaje=round((total/sum(total))*100,1)) %>% 
+  mutate(q5_registered=if_else(q5_registered==98, "other",q5_registered))
+
+
+q6<-base %>% 
+  filter(!is.na(q6_geo_scope)) %>% 
+  group_by(q6_geo_scope) %>% 
+  summarise(total=n()) %>% 
+  mutate(porcentaje=round((total/sum(total))*100,1))
+
+q7<-base %>% 
+  filter(!is.na(q7_region_one)) %>% 
+  group_by(q7_region_one) %>% 
+  summarise(total=n()) %>% 
+  mutate(porcentaje=round((total/sum(total))*100,1))
+
+q8<-base %>% 
+  filter(!is.na(q8_country)) %>% 
+  group_by(q8_country) %>% 
+  summarise(total=n()) %>% 
+  mutate(porcentaje=round((total/sum(total))*100,1))
+
+
+q9<-base %>% 
+  mutate(q9_year_formation_agrup=case_when(
+    q9_year_formation==2023 ~  "2023",
+    q9_year_formation==2022 ~  "2022",
+    q9_year_formation==2021 ~  "2021",
+    q9_year_formation<2021 & q9_year_formation>2014 ~  "Entre 2015 y 2020",
+    q9_year_formation<2015 & q9_year_formation>2009 ~  "Entre 2010 y 2014",
+    is.na(q9_year_formation) ~ NA,
+    TRUE ~  "Antes de 2010")) %>%
+  filter(!is.na(q9_year_formation_agrup)) %>% 
+  group_by(q9_year_formation_agrup) %>% 
+  summarise(total=n()) %>% 
+  mutate(porcentaje=round((total/sum(total))*100,1))
+
+```
+
+```{r}
+
+q10_2023<-base %>% 
+  filter(!is.na(q10_budget_year_2023)) %>% 
+  group_by(q10_budget_year_2023) %>% 
+  summarise(total=n()) %>% 
+  mutate(porcentaje=round((total/sum(total))*100,1))
+
+
+q10_2022<-base %>% 
+  filter(!is.na(q10_budget_year_2022)) %>% 
+  group_by(q10_budget_year_2022) %>% 
+  summarise(total=n()) %>% 
+  mutate(porcentaje=round((total/sum(total))*100,1))
+
+
+q10_2021<-base %>% 
+  filter(!is.na(q10_budget_year_2021)) %>% 
+  group_by(q10_budget_year_2021) %>% 
+  summarise(total=n()) %>% 
+  mutate(porcentaje=round((total/sum(total))*100,1))
+
+```
+
+
+```{r}
+q11<-base %>% 
+  filter(!is.na(q11_covid_incidence)) %>% 
+  group_by(q11_covid_incidence) %>% 
+  summarise(total=n()) %>% 
+  mutate(porcentaje=round((total/sum(total))*100,1))
+
+q13<-base %>% 
+  filter(!is.na(q13_ext_funding)) %>% 
+  group_by(q13_ext_funding) %>% 
+  summarise(total=n()) %>% 
+  mutate(porcentaje=round((total/sum(total))*100,1))
+
+```
+
+
+```{r}
+
+q14_2023<-base %>% 
+  mutate(q14_2023_agrup=case_when(
+    q14_funding_annual_budget_2023<26 ~"Hasta 25%",
+    q14_funding_annual_budget_2023>25 & q14_funding_annual_budget_2023<51 ~ "Entre 26% y 50%",
+    q14_funding_annual_budget_2023>50 & q14_funding_annual_budget_2023<76 ~ "Entre 51% y 75%",
+    is.na(q14_funding_annual_budget_2023) ~ NA,
+    TRUE ~ "Entre 76% y 100%")) %>% 
+  filter(!is.na(q14_2023_agrup)) %>% 
+  group_by(q14_2023_agrup) %>% 
+  summarise(total=n()) %>% 
+  mutate(porcentaje=round((total/sum(total))*100,1))  
+
+
+q14_2022<-base %>% 
+  mutate(q14_2022_agrup=case_when(
+    q14_funding_annual_budget_2022<26 ~"Hasta 25%",
+    q14_funding_annual_budget_2022>25 & q14_funding_annual_budget_2022<51 ~ "Entre 26% y 50%",
+    q14_funding_annual_budget_2022>50 & q14_funding_annual_budget_2022<76 ~ "Entre 51% y 75%",
+    is.na(q14_funding_annual_budget_2022) ~ NA,
+    TRUE ~ "Entre 76% y 100%")) %>% 
+  filter(!is.na(q14_2022_agrup)) %>% 
+  group_by(q14_2022_agrup) %>% 
+  summarise(total=n()) %>% 
+  mutate(porcentaje=round((total/sum(total))*100,1))
+
+
+q14_2021<-base %>% 
+  mutate(q14_2021_agrup=case_when(
+    q14_funding_annual_budget_2021<26 ~"Hasta 25%",
+    q14_funding_annual_budget_2021>25 & q14_funding_annual_budget_2021<51 ~ "Entre 26% y 50%",
+    q14_funding_annual_budget_2021>50 & q14_funding_annual_budget_2021<76 ~ "Entre 51% y 75%",
+    is.na(q14_funding_annual_budget_2021) ~ NA,
+    TRUE ~ "Entre 76% y 100%")) %>% 
+  filter(!is.na(q14_2021_agrup)) %>% 
+  group_by(q14_2021_agrup) %>% 
+  summarise(total=n()) %>% 
+  mutate(porcentaje=round((total/sum(total))*100,1))
+
+
+```
+
+
+```{r}
+q15_tot<- base %>% 
+  filter(!is.na(q15_key_sources)) %>% 
+  summarise(total=n())
+
+names
+q15<-base %>%
+  filter(!is.na(q15_key_sources)) %>% 
+  summarise_at(vars(starts_with("q15_key_sources/")), sum, na.rm=TRUE) 
+
+q18<-base %>%
+  filter(!is.na(q18_new_funders)) %>% 
+  summarise_at(vars(starts_with("q18_new_funders/")), sum, na.rm=TRUE) 
+
+q19<-base %>%
+  filter(!is.na(q19_lose_funding)) %>% 
+  summarise_at(vars(starts_with("q19_lose_funding/")), sum, na.rm=TRUE) 
+
+q20<-base %>%
+  filter(!is.na(q20_loss_impact)) %>% 
+  summarise_at(vars(starts_with("q20_loss_impact/")), sum, na.rm=TRUE) 
+
+```
+
+
+```{r}
+
+q21_core_2023<-base %>% 
+  mutate(q21_core_2023=case_when(
+    q21_types_funding_2023_core<26 ~"Hasta 25%",
+    q21_types_funding_2023_core>25 & q21_types_funding_2023_core<51 ~ "Entre 26% y 50%",
+    q21_types_funding_2023_core>50 & q21_types_funding_2023_core<76 ~ "Entre 51% y 75%",
+    is.na(q21_types_funding_2023_core) ~ NA,
+    TRUE ~ "Entre 76% y 100%")) %>% 
+  filter(!is.na(q21_types_funding_2023_core)) %>% 
+  group_by(q21_core_2023) %>% 
+  summarise(total=n()) %>% 
+  mutate(porcentaje=round((total/sum(total))*100,1))
+
+q21_project_2023<-base %>% 
+  mutate(q21_project_2023=case_when(
+    q21_types_funding_2023_project<26 ~"Hasta 25%",
+    q21_types_funding_2023_project>25 & q21_types_funding_2023_project<51 ~ "Entre 26% y 50%",
+    q21_types_funding_2023_project>50 & q21_types_funding_2023_project<76 ~ "Entre 51% y 75%",
+    is.na(q21_types_funding_2023_project) ~ NA,
+    TRUE ~ "Entre 76% y 100%")) %>% 
+  filter(!is.na(q21_types_funding_2023_project)) %>% 
+  group_by(q21_project_2023) %>% 
+  summarise(total=n()) %>% 
+  mutate(porcentaje=round((total/sum(total))*100,1))
+
+q21_emergency_2023<-base %>% 
+  mutate(q21_emergency_2023=case_when(
+    q21_types_funding_2023_emergency<26 ~"Hasta 25%",
+    q21_types_funding_2023_emergency>25 & q21_types_funding_2023_emergency<51 ~ "Entre 26% y 50%",
+    q21_types_funding_2023_emergency>50 & q21_types_funding_2023_emergency<76 ~ "Entre 51% y 75%",
+    is.na(q21_types_funding_2023_emergency) ~ NA,
+    TRUE ~ "Entre 76% y 100%")) %>% 
+  filter(!is.na(q21_types_funding_2023_emergency)) %>% 
+  group_by(q21_emergency_2023) %>% 
+  summarise(total=n()) %>% 
+  mutate(porcentaje=round((total/sum(total))*100,1))
+
+
+```
+
+
+```{r}
+
+q21_core_2022<-base %>% 
+  mutate(q21_core_2022=case_when(
+    q21_types_funding_2022_core<26 ~"Hasta 25%",
+    q21_types_funding_2022_core>25 & q21_types_funding_2022_core<51 ~ "Entre 26% y 50%",
+    q21_types_funding_2022_core>50 & q21_types_funding_2022_core<76 ~ "Entre 51% y 75%",
+    is.na(q21_types_funding_2022_core) ~ NA,
+    TRUE ~ "Entre 76% y 100%")) %>% 
+  filter(!is.na(q21_types_funding_2022_core)) %>% 
+  group_by(q21_core_2022) %>% 
+  summarise(total=n()) %>% 
+  mutate(porcentaje=round((total/sum(total))*100,1))
+
+q21_project_2022<-base %>% 
+  mutate(q21_project_2022=case_when(
+    q21_types_funding_2022_project<26 ~"Hasta 25%",
+    q21_types_funding_2022_project>25 & q21_types_funding_2022_project<51 ~ "Entre 26% y 50%",
+    q21_types_funding_2022_project>50 & q21_types_funding_2022_project<76 ~ "Entre 51% y 75%",
+    is.na(q21_types_funding_2022_project) ~ NA,
+    TRUE ~ "Entre 76% y 100%")) %>% 
+  filter(!is.na(q21_types_funding_2022_project)) %>% 
+  group_by(q21_project_2022) %>% 
+  summarise(total=n()) %>% 
+  mutate(porcentaje=round((total/sum(total))*100,1))
+
+q21_emergency_2022<-base %>% 
+  mutate(q21_emergency_2022=case_when(
+    q21_types_funding_2022_emergency<26 ~"Hasta 25%",
+    q21_types_funding_2022_emergency>25 & q21_types_funding_2022_emergency<51 ~ "Entre 26% y 50%",
+    q21_types_funding_2022_emergency>50 & q21_types_funding_2022_emergency<76 ~ "Entre 51% y 75%",
+    is.na(q21_types_funding_2022_emergency) ~ NA,
+    TRUE ~ "Entre 76% y 100%")) %>% 
+  filter(!is.na(q21_types_funding_2022_emergency)) %>% 
+  group_by(q21_emergency_2022) %>% 
+  summarise(total=n()) %>% 
+  mutate(porcentaje=round((total/sum(total))*100,1))
+```
+
+```{r}
+
+q21_core_2021<-base %>% 
+  mutate(q21_core_2021=case_when(
+    q21_types_funding_2021_core<26 ~"Hasta 25%",
+    q21_types_funding_2021_core>25 & q21_types_funding_2021_core<51 ~ "Entre 26% y 50%",
+    q21_types_funding_2021_core>50 & q21_types_funding_2021_core<76 ~ "Entre 51% y 75%",
+    is.na(q21_types_funding_2021_core) ~ NA,
+    TRUE ~ "Entre 76% y 100%")) %>% 
+  filter(!is.na(q21_types_funding_2021_core)) %>% 
+  group_by(q21_core_2021) %>% 
+  summarise(total=n()) %>% 
+  mutate(porcentaje=round((total/sum(total))*100,1))
+
+q21_project_2021<-base %>% 
+  mutate(q21_project_2021=case_when(
+    q21_types_funding_2021_project<26 ~"Hasta 25%",
+    q21_types_funding_2021_project>25 & q21_types_funding_2021_project<51 ~ "Entre 26% y 50%",
+    q21_types_funding_2021_project>50 & q21_types_funding_2021_project<76 ~ "Entre 51% y 75%",
+    is.na(q21_types_funding_2021_project) ~ NA,
+    TRUE ~ "Entre 76% y 100%")) %>% 
+  filter(!is.na(q21_types_funding_2021_project)) %>% 
+  group_by(q21_project_2021) %>% 
+  summarise(total=n()) %>% 
+  mutate(porcentaje=round((total/sum(total))*100,1))
+
+q21_emergency_2021<-base %>% 
+  mutate(q21_emergency_2021=case_when(
+    q21_types_funding_2021_emergency<26 ~"Hasta 25%",
+    q21_types_funding_2021_emergency>25 & q21_types_funding_2021_emergency<51 ~ "Entre 26% y 50%",
+    q21_types_funding_2021_emergency>50 & q21_types_funding_2021_emergency<76 ~ "Entre 51% y 75%",
+    is.na(q21_types_funding_2021_emergency) ~ NA,
+    TRUE ~ "Entre 76% y 100%")) %>% 
+  filter(!is.na(q21_types_funding_2021_emergency)) %>% 
+  group_by(q21_emergency_2021) %>% 
+  summarise(total=n()) %>% 
+  mutate(porcentaje=round((total/sum(total))*100,1))
+
+```
+
