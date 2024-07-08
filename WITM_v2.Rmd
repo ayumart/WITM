@@ -418,80 +418,6 @@ knitr::kable(q13) %>%
 ```
 
 
-```{r}
-#Distribución por año de recepción de fondos externos
-funding <- datos %>%
-  filter(q13_ext_funding == "yes") %>%
-  summarise(Total = n(),
-            year_2023 = sum(q14_funding_annual_budget_2023 > 0, na.rm = TRUE),
-            year_2022 = sum(q14_funding_annual_budget_2022 > 0, na.rm = TRUE),
-            year_2021 = sum(q14_funding_annual_budget_2021 > 0, na.rm = TRUE),
-            'Year 2023' = round(year_2023 / Total * 100, 1),
-            'Year 2022' = round(year_2022 / Total * 100, 1),
-            'Year 2021' = round(year_2021 / Total * 100, 1)) %>% 
-  select(1,5:7)
-
-
-#Cambia filas por columnas para presentar la información
-
-funding <- funding %>%
-  pivot_longer(cols = -Total, names_to = "Years", values_to = "Percentage")
-
-#Elimina primera columna del cuadro
-funding<-funding %>% 
-  select(-1)
-
-
-# Calcular porcentaje de fondos para el año 2023
-q14_2023 <- datos1 %>% 
-  filter(q13_ext_funding == "yes") %>% 
-  group_by(q14_funding_annual_budget_2023) %>% 
-  summarise(n = n()) %>% 
-  mutate(Percentage_2023 = round((n / sum(n)) * 100, 1)) %>% 
-  rename("Range"=q14_funding_annual_budget_2023)
-
-# Calcular porcentaje de fondos para el año 2022
-q14_2022 <- datos1 %>% 
-  filter(q13_ext_funding == "yes" & q9_year_formation < 2023) %>% 
-  group_by(q14_funding_annual_budget_2022) %>% 
-  summarise(n = n()) %>% 
-  mutate(Percentage_2022 = round((n / sum(n)) * 100, 1)) %>% 
-  rename("Range"=q14_funding_annual_budget_2022)
-
-# Calcular porcentaje de fondos para el año 2021
-q14_2021 <- datos1 %>% 
-  filter(q13_ext_funding == "yes" & q9_year_formation < 2022) %>% 
-  group_by(q14_funding_annual_budget_2021) %>% 
-  summarise(n = n()) %>% 
-  mutate(Percentage_2021 = round((n / sum(n)) * 100, 1)) %>% 
-  rename("Range"=q14_funding_annual_budget_2021)
-
-# Unir los resultados en un solo data frame
-funding_summary <- q14_2023 %>%
-  full_join(q14_2022, by = "Range") %>%
-  full_join(q14_2021, by = "Range") %>%
-  select(
-    Range = Range,
-    Percentage_2023,
-    Percentage_2022,
-    Percentage_2021
-  )
-
-# Ordenar el data frame si es necesario
-# funding_summary <- funding_summary %>% arrange(Category)
-
-# Mostrar el resultado final
-print(funding_summary)
-
-
-knitr::kable(q13) %>% 
-  kable_minimal() #imprime cuadro
-knitr::kable(funding) %>% 
-  kable_minimal() #imprime cuadro
-knitr::kable(funding_summary) %>% 
-  kable_minimal() #imprime cuadro
-
-```
 
 ```{r}
 
@@ -565,12 +491,6 @@ funding_summary <- q14_2023 %>%
     Percentage_2021
   )
 
-# Ordenar el data frame si es necesario
-# funding_summary <- funding_summary %>% arrange(Category)
-
-# Mostrar el resultado final
-print(funding_summary)
-
 
 knitr::kable(q13) %>% 
   kable_minimal() #imprime cuadro
@@ -583,6 +503,8 @@ knitr::kable(funding_summary) %>%
 
 #q15
 
+
+**Principales fuentes de financiamiento externo**
 ```{r}
 
 #Convertir campos vacíos de la variable q15 en NA
@@ -619,48 +541,13 @@ q15<-q15_select%>%
   rename("Funding source"=q15)
 
 
+knitr::kable(q15) %>% 
+  kable_minimal()
 
 ```
 
 
-```{r}
-
-names(datos)
-
-#Convertir campos vacíos de la variable q15 en NA
- datos <- datos %>%
-  mutate(q15_key_sources = na_if(q15_key_sources, ""))
-
-#Total valid responses for calculating percentage
-
-total<-datos %>%
-  count(q15_key_sources) %>% 
-  summarise(sum(n))
-
-#Choose only multiple-choice answers -Q15-
-q15_select<-datos %>% 
-  filter(!is.na(q15_key_sources)) %>% 
-  select(starts_with("q15_key_sources."))
-
-#q15 calculation
-q15<-q15_select%>% 
-  summarize_all(sum) %>% 
-  gather(q15, n) %>%
-  mutate(q15=forcats::fct_recode(as_factor(q15),
-                                "Multirateral funders"="q15_key_sources.multilateral_funders",
-                                "Bilateral funders"="q15_key_sources.bilateral_funders",
-                                "Philanthropic foundations"="q15_key_sources.philanthropic_foundations",
-                                "Womens and feminist founds"="q15_key_sources.womens_feminist_funds",
-                                "Private sector"="q15_key_sources.private_sector",
-                                "INGOs"="q15_key_sources.ingos",
-                                "Individual donors"="q15_key_sources.individual_donors",
-                                "National and local goverments or bodies"="q15_key_sources.national_local_goverment_or_bodies",
-                                "Other"="q15_key_sources.98")) %>%
-  mutate(Percentage=round(n/403*100,1)) %>% 
-  arrange(desc(Percentage)) %>% 
-  rename("Funding source"=q15)
-```
-
+**Principales fuentes de financiamiento externo por tipo y año**
 ```{r}
 
 
@@ -910,6 +797,9 @@ q16_2023 <- ext_2023 %>%
   select(1,11:19) %>% 
   rename_with(~ "Range", 1)
 
+knitr::kable(q16_2023) %>% 
+  kable_minimal()
+
 #2022
 # Unir los dataframes
 ext_2022 <- bind_rows(q16_bilateral_2022,q16_feminist_2022, q16_goverment_2022, q16_individual_2022, q16_ingos_2022, q16_multirateral_2022, q16_other_2022, q16_philanthropic_2022, q16_private_2022)
@@ -920,6 +810,10 @@ q16_2022 <- ext_2022 %>%
   select(1,11:19)%>% 
   rename_with(~ "Range", 1)
 
+knitr::kable(q16_2022) %>% 
+  kable_minimal()
+
+
 #2021
 # Unir los dataframes
 ext_2021 <- bind_rows(q16_bilateral_2021,q16_feminist_2021, q16_goverment_2021, q16_individual_2021, q16_ingos_2021, q16_multirateral_2021, q16_other_2021, q16_philanthropic_2021, q16_private_2021)
@@ -929,6 +823,10 @@ q16_2021 <- ext_2021 %>%
   pivot_wider(names_from = Type, values_from = c(n, Percentage)) %>% 
   select(1,11:19)%>% 
   rename_with(~ "Range", 1)
+
+knitr::kable(q16_2021) %>% 
+  kable_minimal()
+
 
 ```
 
