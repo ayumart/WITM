@@ -40,7 +40,7 @@ rm(list = ls())
 
 
 # To upload CSV file
-witm <- read.csv2("Data/WITM_csv_0708.csv")
+witm <- read.csv2("Data/WITM_csv_0710.csv")
 
 #2024-05-23 08:37:41.178000-04:00
 witm$date <-  as.Date(witm$end,'%Y-%m-%d')
@@ -374,7 +374,9 @@ knitr::kable(q4) %>%
   kable_minimal()
 
 ```
+___
 
+**Organisation type & focused**
 
 
 ```{r q2_q4, echo=F, message=F, warning=F}
@@ -411,6 +413,7 @@ It can be seen that the distribution of issues of feminist organisations (primar
 
 **------------------------------------------------------------------------------------------------**
 
+___
 
 
 **Register**
@@ -428,29 +431,33 @@ q5<-base %>%
     TRUE ~ NA)) %>%  
   summarise(n=n()) %>% 
   mutate(porcentaje=round((n/sum(n))*100,1)) %>% 
-  arrange(desc(q5_registered)) %>% 
+  arrange(desc(n)) %>% 
   rename("Register"=q5_registered)
-
 
 knitr::kable(q5) %>% 
   kable_minimal()
 
 ```
 
+___
+
+
 **Register by type of organisation**
+
 
 
 ```{r q5_q2, echo=F, message=F, warning=F}
 
 q5q2<-base %>%
   filter(!is.na(q5_registered) & q5_registered!="" & !is.na(q1_description)) %>%
-  group_by(q1_description, q5_registered)%>%
+  group_by(q1_description,q5_registered)%>%
   summarise(n=n()) %>%
   mutate(percentage=round((n/sum(n))*100,1))%>%
-  select(q1_description, q5_registered,percentage)
+  arrange(desc(n)) %>% 
+  select( q1_description,q5_registered,percentage)
 q5q2
 
-qry_w<-q5q2 %>% pivot_wider(names_from = q5_registered, values_from = percentage)
+qry_w<-q5q2 %>% pivot_wider(names_from = q1_description, values_from = percentage)
 
 
 knitr::kable(qry_w) %>% 
@@ -458,6 +465,42 @@ knitr::kable(qry_w) %>%
 
 
 ```
+
+___
+
+
+**Register by subject or area**
+
++++++++REVISAR no esta OK el cruce+++
+
+```{r q5_q4, echo=F, message=F, warning=F}
+
+##AYE CORREGIR ESTO
+
+q5q4<-base %>%
+  group_by(q5_registered) %>%
+  summarise(total=n(),
+            fem=sum(q4_grouped_feminist==1),
+            hr=sum(q4_grouped_hr==1),
+            min=sum(q4_grouped_minorities==1),
+            srhr=sum(q4_grouped_srhr==1),
+        'Specific feminist subjects'=round(sum(q4_grouped_feminist==1)/total*100,2),
+        'General HR Subjects'=round(sum(q4_grouped_hr==1)/total*100,2),
+        'Intersectionality (minority groups)'=round(sum(q4_grouped_minorities==1)/total*100,2),
+        'Sexual and reproductive health & rights'=round(sum(q4_grouped_srhr==1)/total*100,2))
+
+q5q4<-arrange(q5q4, desc(q5_registered))
+
+knitr::kable(q5q4) %>% 
+  kable_minimal()
+
+```
+**--Analysis notes-----------------------------------------------------------------------**
+
+It is more common to find unregistered feminist organizations than those that address gender issues through specific projects. It is necessary to verify whether this trend continues 
+
+**------------------------------------------------------------------------------------------------**
+
 ___
 
 **Scope:**

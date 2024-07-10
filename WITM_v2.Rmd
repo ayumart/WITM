@@ -32,7 +32,10 @@ library(kableExtra)
 
 
 # To upload CSV file
-datos <- read.csv2("Data/WITM_csv_last.csv")
+
+datos <- read.csv2("Data/WITM_csv_0710.csv")
+
+#datos <- read.csv2("Data/WITM_csv_last.csv")
 
 # To upload xlsx file
 #datos<- read_xlsx("WITM_xls_value2.xlsx", sheet = 1)
@@ -318,10 +321,10 @@ datos1<-datos %>%
 
 
 
-q8<-calculate_tabulates(base=datos1,
-                        x='q8_country',
-                        y='q7_region_one',
-                        add.totals = 'row')
+#q8<-calculate_tabulates(base=datos1,
+  #                      x='q8_country',
+    #                    y='q7_region_one',
+   #                     add.totals = 'row')
 
 
 
