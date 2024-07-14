@@ -325,7 +325,7 @@ q8<-calculate_tabulates(base=datos1,
 
 
 
-q8<-base %>% 
+q8<-datos %>% 
   filter(q6_geo_scope=="locally_focused"| q6_geo_scope=="nationally_focused") %>% 
   group_by(q7_region_one, q8_country) %>% 
   summarise(n=n()) %>% 
@@ -336,7 +336,6 @@ regiones_one<-datos %>%
   group_by(q7_region_one) %>% 
   summarise(n=n())
 
-regiones_multiple<-datos %>% 
 
 
 knitr::kable(q8) %>% 
@@ -517,6 +516,8 @@ total<-datos %>%
   count(q15_key_sources) %>% 
   summarise(sum(n))
 
+total<-total$n
+
 #Choose only multiple-choice answers -Q15-
 q15_select<-datos %>% 
   filter(!is.na(q15_key_sources)) %>% 
@@ -536,7 +537,7 @@ q15<-q15_select%>%
                                 "Individual donors"="q15_key_sources.individual_donors",
                                 "National and local goverments or bodies"="q15_key_sources.national_local_goverment_or_bodies",
                                 "Other"="q15_key_sources.98")) %>%
-  mutate(Percentage=round(n/403*100,1)) %>% 
+  mutate(Percentage=round(n/total*100,1)) %>% 
   arrange(desc(Percentage)) %>% 
   rename("Funding source"=q15)
 
