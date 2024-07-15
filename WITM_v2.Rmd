@@ -38,15 +38,20 @@ datos <- read.csv2("Data/WITM_csv_last.csv")
 #datos<- read_xlsx("WITM_xls_value2.xlsx", sheet = 1)
 ```
 
-names(datos)
 
-```{r}
+```{r filter, echo=F, message=F, warning=F}
+
+base<-datos %>% 
+  filter(q0_consent=="yes")
+```
+
+```{r q6, recho=F, message=F, warning=F}
 
 #Convertir campos vacíos de la variable country en NA
- datos <- datos %>%
+ base <- base %>%
   mutate(q8_country = na_if(q8_country, ""))
 
-datos1<-datos %>% 
+base1<-base %>% 
   filter(q6_geo_scope=="locally_focused"| q6_geo_scope=="nationally_focused") %>% 
   mutate(q7_region_one=forcats::fct_recode(as_factor(q7_region_one),
                                                      "South America" = "samerica",
@@ -318,20 +323,20 @@ datos1<-datos %>%
 
 
 
-q8<-calculate_tabulates(base=datos1,
+q8<-calculate_tabulates(base=base1,
                         x='q8_country',
                         y='q7_region_one',
                         add.totals = 'row')
 
 
 
-q8<-datos %>% 
+q8<-base %>% 
   filter(q6_geo_scope=="locally_focused"| q6_geo_scope=="nationally_focused") %>% 
   group_by(q7_region_one, q8_country) %>% 
   summarise(n=n()) %>% 
   mutate(Percentage=round((n/sum(n))*100,1))
 
-regiones_one<-datos %>% 
+regiones_one<-base %>% 
   filter(q6_geo_scope=="locally_focused"| q6_geo_scope=="nationally_focused") %>% 
   group_by(q7_region_one) %>% 
   summarise(n=n())
@@ -345,20 +350,20 @@ knitr::kable(q8) %>%
 
 
 
-```{r}
+```{r q10, echo=F, message=F, warning=F}
 #Convertir campos vacíos de la variable q10 en NA
- datos <- datos %>%
+base <- base %>%
   mutate(q10_budget_year_2021 = na_if(q10_budget_year_2021, ""))
 
- datos <- datos %>%
+base <- base %>%
   mutate(q10_budget_year_2022 = na_if(q10_budget_year_2022, ""))
  
-  datos <- datos %>%
+  base <- base %>%
   mutate(q10_budget_year_2023 = na_if(q10_budget_year_2023, ""))
  
 #Organizaciones fondos anuales
 
-q10_2021<-datos %>% 
+q10_2021<-base %>% 
   filter(q9_year_formation<2022) %>% 
   group_by(q10_budget_year_2021) %>% 
   summarise(n=n()) %>% 
@@ -366,7 +371,7 @@ q10_2021<-datos %>%
   rename("Annual_budget"=q10_budget_year_2021) %>% 
   mutate(Year=2021)
 
-q10_2022<-datos %>% 
+q10_2022<-base %>% 
   filter(q9_year_formation<2023) %>% 
   group_by(q10_budget_year_2022) %>% 
   summarise(n=n()) %>% 
@@ -374,7 +379,7 @@ q10_2022<-datos %>%
   rename("Annual_budget"=q10_budget_year_2022) %>% 
   mutate(Year=2022)
 
-q10_2023<-datos %>% 
+q10_2023<-base %>% 
   filter(!is.na(q10_budget_year_2023)) %>% 
   group_by(q10_budget_year_2023) %>% 
   summarise(n=n()) %>% 
@@ -400,32 +405,28 @@ knitr::kable(q10_total) %>%
 ```{r}
 
 #Convertir campos vacíos de la variable q13 en NA
- datos <- datos %>%
+ base <- base %>%
   mutate(q13_ext_funding = na_if(q13_ext_funding, ""))
 
-q13<-datos %>%
+q13<-base %>%
   filter(!is.na(q13_ext_funding)) %>% 
   group_by(q13_ext_funding) %>% 
   summarise(n=n()) %>% 
   mutate(Percentage=round((n/sum(n))*100,1)) %>% 
   rename("External funding"=q13_ext_funding)
  
-
-knitr::kable(q13) %>% 
-  kable_minimal()
-
 ```
 
 
 
-```{r}
+```{r q13, echo=F, message=F, warning=F}
 
 #Convertir campos vacíos de la variable q5_descendencia en NA
- datos <- datos %>%
+ base <- base %>%
   mutate(q13_ext_funding = na_if(q13_ext_funding, ""))
  
 #Organizaciones según recepción de fondos externos
-q13<-datos %>% 
+q13<-base %>% 
   filter(!is.na(q13_ext_funding)) %>% 
   group_by(q13_ext_funding) %>% 
   summarise(n=n()) %>% 
@@ -433,7 +434,7 @@ q13<-datos %>%
 
 
 #Distribución por año de recepción de fondos externos
-funding <- datos %>%
+funding <- base %>%
   filter(q13_ext_funding == "yes") %>%
   summarise(Total = n(),
             year_2023 = sum(q14_funding_annual_budget_2023 > 0, na.rm = TRUE),
@@ -456,7 +457,7 @@ funding<-funding %>%
 
 
 # Calcular porcentaje de fondos para el año 2023
-q14_2023 <- datos1 %>% 
+q14_2023 <- base %>% 
   filter(q13_ext_funding == "yes") %>% 
   group_by(q14_funding_annual_budget_2023) %>% 
   summarise(n = n()) %>% 
@@ -464,7 +465,7 @@ q14_2023 <- datos1 %>%
   rename("Range"=q14_funding_annual_budget_2023)
 
 # Calcular porcentaje de fondos para el año 2022
-q14_2022 <- datos1 %>% 
+q14_2022 <- base %>% 
   filter(q13_ext_funding == "yes" & q9_year_formation < 2023) %>% 
   group_by(q14_funding_annual_budget_2022) %>% 
   summarise(n = n()) %>% 
@@ -472,7 +473,7 @@ q14_2022 <- datos1 %>%
   rename("Range"=q14_funding_annual_budget_2022)
 
 # Calcular porcentaje de fondos para el año 2021
-q14_2021 <- datos1 %>% 
+q14_2021 <- base %>% 
   filter(q13_ext_funding == "yes" & q9_year_formation < 2022) %>% 
   group_by(q14_funding_annual_budget_2021) %>% 
   summarise(n = n()) %>% 
@@ -504,22 +505,22 @@ knitr::kable(funding_summary) %>%
 
 
 **Principales fuentes de financiamiento externo**
-```{r}
+```{r q15, echo=F, message=F, warning=F}
 
 #Convertir campos vacíos de la variable q15 en NA
- datos <- datos %>%
+ base <- base %>%
   mutate(q15_key_sources = na_if(q15_key_sources, ""))
 
 #Total valid responses for calculating percentage
 
-total<-datos %>%
+total<-base %>%
   count(q15_key_sources) %>% 
   summarise(sum(n))
 
 total<-total$n
 
 #Choose only multiple-choice answers -Q15-
-q15_select<-datos %>% 
+q15_select<-base %>% 
   filter(!is.na(q15_key_sources)) %>% 
   select(starts_with("q15_key_sources."))
 
@@ -569,20 +570,6 @@ q15 <- base %>%
                names_to = "Source",
                values_to = "Percentage")
 
-# Seleccionar las columnas deseadas
-q15 <- q15 %>% 
-  select(1, 3:2) 
-
-
-#Cambia filas por columnas para presentar la información
-
-q15 <- q15 %>%
-  pivot_longer(cols = -genero_agrup, names_to = "Motivo", values_to = "Porcentaje") %>%
-  pivot_wider(names_from = genero_agrup, values_from = Porcentaje)
-
-
-  select("Registered"="q5_registered",2,12:20) %>% 
-  mutate(Registered=recode(Registered, "98"="Other", "n_registered"="No registered", "y_registered"="Registered"))
 
 knitr::kable(q15) %>% 
   kable_minimal()
@@ -590,8 +577,89 @@ knitr::kable(q15) %>%
 ```
 
 
+*Cruce entre respuesta múltiple y simple con  q15 y q1*
+
+
+```{r q15b, echo=F, message=F, warning=F}
+
+#Convertir campos vacíos de la variable country en NA
+ base <- base %>%
+  mutate(q15_key_sources = na_if(q15_key_sources, ""))
+
+q15_q1 <- base %>%
+  filter(!is.na(q1_description) & !is.na(q15_key_sources)) %>%
+  group_by(q1_description) %>%
+  summarise(Total = n(),
+    multirateral = sum(q15_key_sources.multilateral_funders == 1),
+    bilateral = sum(q15_key_sources.bilateral_funders == 1),
+    philanthropic = sum(q15_key_sources.philanthropic_foundations == 1),
+    womens = sum(q15_key_sources.womens_feminist_funds == 1),
+    private = sum(q15_key_sources.private_sector == 1),
+    ingos = sum(q15_key_sources.ingos == 1),
+    individual = sum(q15_key_sources.individual_donors == 1),
+    gov = sum(q15_key_sources.national_local_goverment_or_bodies == 1),
+    other = sum(q15_key_sources.98 == 1),
+    Multirateral = round(multirateral / Total*100, 1),
+    Bilateral = round(bilateral / Total*100, 1),
+    Philanthropic = round(philanthropic / Total*100, 1),
+    Feminist = round(womens / Total*100, 1),
+    Private = round(private / Total*100, 1),
+    INGOS = round(ingos / Total*100, 1),
+    Individual = round(individual / Total*100, 1),
+    Government = round(gov / Total*100, 1),
+    Other = round(other / Total*100, 1)) %>% 
+  select("Description"="q1_description",2,12:20) %>% 
+  mutate(Description=recode(Description, "98"="Other", "primary_focus"="Primary focus", "specific_projects"="Specific projects"))
+
+
+knitr::kable(q15_q1) %>% 
+  kable_minimal()
+
+```
+
+*Cruce entre respuesta múltiple y simple con  q15 y q5*
+
+
+```{r q15c, echo=F, message=F, warning=F}
+
+
+base <- base %>%
+  mutate(q5_registered = na_if(q5_registered, ""))
+ 
+
+q15_q5 <- base %>%
+  filter(!is.na(q5_registered) & !is.na(q15_key_sources)) %>%
+  group_by(q5_registered) %>%
+  summarise(Total = n(),
+    multirateral = sum(q15_key_sources.multilateral_funders == 1),
+    bilateral = sum(q15_key_sources.bilateral_funders == 1),
+    philanthropic = sum(q15_key_sources.philanthropic_foundations == 1),
+    womens = sum(q15_key_sources.womens_feminist_funds == 1),
+    private = sum(q15_key_sources.private_sector == 1),
+    ingos = sum(q15_key_sources.ingos == 1),
+    individual = sum(q15_key_sources.individual_donors == 1),
+    gov = sum(q15_key_sources.national_local_goverment_or_bodies == 1),
+    other = sum(q15_key_sources.98 == 1),
+    Multirateral = round(multirateral / Total*100, 1),
+    Bilateral = round(bilateral / Total*100, 1),
+    Philanthropic = round(philanthropic / Total*100, 1),
+    Feminist = round(womens / Total*100, 1),
+    Private = round(private / Total*100, 1),
+    INGOS = round(ingos / Total*100, 1),
+    Individual = round(individual / Total*100, 1),
+    Government = round(gov / Total*100, 1),
+    Other = round(other / Total*100, 1)) %>% 
+  select("Registered"="q5_registered",2,12:20) %>% 
+  mutate(Registered=recode(Registered, "98"="Other", "n_registered"="No registered", "y_registered"="Registered"))
+
+
+
+knitr::kable(q15_q5) %>% 
+  kable_minimal()
+```
+
 **Principales fuentes de financiamiento externo por tipo y año**
-```{r}
+```{r q16, echo=F, message=F, warning=F}
 
 
 #Convertir campos vacíos de la variable q13 en NA
@@ -829,7 +897,7 @@ q16_other_2021<- datos %>%
 ```
 
 
-```{r}
+```{r q16b, echo=F, message=F, warning=F}
 #2023
 # Unir los dataframes
 ext_2023 <- bind_rows(q16_bilateral_2023,q16_feminist_2023, q16_goverment_2023, q16_individual_2023, q16_ingos_2023, q16_multirateral_2023, q16_other_2023, q16_philanthropic_2023, q16_private_2023)
@@ -872,84 +940,3 @@ knitr::kable(q16_2021) %>%
 
 
 ```
-
-Cruce entre respuesta múltiple y simple con  q15 y q1
-
-```{r}
-base<-datos %>% 
-  filter(q0_consent=="yes")
-
-```
-
-```{r}
-
-#Convertir campos vacíos de la variable country en NA
- base <- base %>%
-  mutate(q15_key_sources = na_if(q15_key_sources, ""))
-
-q15_q1 <- base %>%
-  filter(!is.na(q1_description) & !is.na(q15_key_sources)) %>%
-  group_by(q1_description) %>%
-  summarise(Total = n(),
-    multirateral = sum(q15_key_sources.multilateral_funders == 1),
-    bilateral = sum(q15_key_sources.bilateral_funders == 1),
-    philanthropic = sum(q15_key_sources.philanthropic_foundations == 1),
-    womens = sum(q15_key_sources.womens_feminist_funds == 1),
-    private = sum(q15_key_sources.private_sector == 1),
-    ingos = sum(q15_key_sources.ingos == 1),
-    individual = sum(q15_key_sources.individual_donors == 1),
-    gov = sum(q15_key_sources.national_local_goverment_or_bodies == 1),
-    other = sum(q15_key_sources.98 == 1),
-    Multirateral = round(multirateral / Total*100, 1),
-    Bilateral = round(bilateral / Total*100, 1),
-    Philanthropic = round(philanthropic / Total*100, 1),
-    Feminist = round(womens / Total*100, 1),
-    Private = round(private / Total*100, 1),
-    INGOS = round(ingos / Total*100, 1),
-    Individual = round(individual / Total*100, 1),
-    Government = round(gov / Total*100, 1),
-    Other = round(other / Total*100, 1)) %>% 
-  select("Description"="q1_description",2,12:20) %>% 
-  mutate(Description=recode(Description, "98"="Other", "primary_focus"="Primary focus", "specific_projects"="Specific projects"))
-
-```
-
-Cruce entre respuesta múltiple y simple con  q15 y q5
-
-```{r}
-
-#Convertir campos vacíos de la variable country en NA
- base <- base %>%
-  mutate(q15_key_sources = na_if(q15_key_sources, ""))
-
- base <- base %>%
-  mutate(q5_registered = na_if(q5_registered, ""))
- 
-
-q15_q5 <- base %>%
-  filter(!is.na(q5_registered) & !is.na(q15_key_sources)) %>%
-  group_by(q5_registered) %>%
-  summarise(Total = n(),
-    multirateral = sum(q15_key_sources.multilateral_funders == 1),
-    bilateral = sum(q15_key_sources.bilateral_funders == 1),
-    philanthropic = sum(q15_key_sources.philanthropic_foundations == 1),
-    womens = sum(q15_key_sources.womens_feminist_funds == 1),
-    private = sum(q15_key_sources.private_sector == 1),
-    ingos = sum(q15_key_sources.ingos == 1),
-    individual = sum(q15_key_sources.individual_donors == 1),
-    gov = sum(q15_key_sources.national_local_goverment_or_bodies == 1),
-    other = sum(q15_key_sources.98 == 1),
-    Multirateral = round(multirateral / Total*100, 1),
-    Bilateral = round(bilateral / Total*100, 1),
-    Philanthropic = round(philanthropic / Total*100, 1),
-    Feminist = round(womens / Total*100, 1),
-    Private = round(private / Total*100, 1),
-    INGOS = round(ingos / Total*100, 1),
-    Individual = round(individual / Total*100, 1),
-    Government = round(gov / Total*100, 1),
-    Other = round(other / Total*100, 1)) %>% 
-  select("Registered"="q5_registered",2,12:20) %>% 
-  mutate(Registered=recode(Registered, "98"="Other", "n_registered"="No registered", "y_registered"="Registered"))
-
-```
-
