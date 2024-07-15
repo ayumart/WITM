@@ -524,23 +524,65 @@ q15_select<-datos %>%
   select(starts_with("q15_key_sources."))
 
 #q15 calculation
-q15<-q15_select%>% 
-  summarize_all(sum) %>% 
-  gather(q15, n) %>%
-  mutate(q15=forcats::fct_recode(as_factor(q15),
-                                "Multirateral funders"="q15_key_sources.multilateral_funders",
-                                "Bilateral funders"="q15_key_sources.bilateral_funders",
-                                "Philanthropic foundations"="q15_key_sources.philanthropic_foundations",
-                                "Womens and feminist founds"="q15_key_sources.womens_feminist_funds",
-                                "Private sector"="q15_key_sources.private_sector",
-                                "INGOs"="q15_key_sources.ingos",
-                                "Individual donors"="q15_key_sources.individual_donors",
-                                "National and local goverments or bodies"="q15_key_sources.national_local_goverment_or_bodies",
-                                "Other"="q15_key_sources.98")) %>%
-  mutate(Percentage=round(n/total*100,1)) %>% 
-  arrange(desc(Percentage)) %>% 
-  rename("Funding source"=q15)
+#q15<-q15_select%>% 
+#  summarize_all(sum) %>% 
+#  gather(q15, n) %>%
+#  mutate(q15=forcats::fct_recode(as_factor(q15),
+#                                "Multirateral #funders"="q15_key_sources.multilateral_funders",
+#                                "Bilateral #funders"="q15_key_sources.bilateral_funders",
+#                                "Philanthropic #foundations"="q15_key_sources.philanthropic_foundations",
+#                                "Womens and feminist #founds"="q15_key_sources.womens_feminist_funds",
+#                                "Private sector"="q15_key_sources.private_sector",
+#                                "INGOs"="q15_key_sources.ingos",
+#                                "Individual #donors"="q15_key_sources.individual_donors",
+#                                "National and local goverments or #bodies"="q15_key_sources.national_local_goverment_or_bodies",
+#                                "Other"="q15_key_sources.98")) %>%
+#  mutate(Percentage=round(n/total*100,1)) %>% 
+#  arrange(desc(Percentage)) %>% 
+#  rename("Funding source"=q15)
 
+
+
+q15 <- base %>%
+  filter( !is.na(q15_key_sources)) %>%
+  summarise(Total = n(),
+    multirateral = sum(q15_key_sources.multilateral_funders == 1),
+    bilateral = sum(q15_key_sources.bilateral_funders == 1),
+    philanthropic = sum(q15_key_sources.philanthropic_foundations == 1),
+    womens = sum(q15_key_sources.womens_feminist_funds == 1),
+    private = sum(q15_key_sources.private_sector == 1),
+    ingos = sum(q15_key_sources.ingos == 1),
+    individual = sum(q15_key_sources.individual_donors == 1),
+    gov = sum(q15_key_sources.national_local_goverment_or_bodies == 1),
+    other = sum(q15_key_sources.98 == 1),
+    Multirateral = round(multirateral / Total*100, 1),
+    Bilateral = round(bilateral / Total*100, 1),
+    Philanthropic = round(philanthropic / Total*100, 1),
+    Feminist = round(womens / Total*100, 1),
+    Private = round(private / Total*100, 1),
+    INGOS = round(ingos / Total*100, 1),
+    Individual = round(individual / Total*100, 1),
+    Government = round(gov / Total*100, 1),
+    Other = round(other / Total*100, 1)) %>% 
+  select(11:19) %>% 
+  pivot_longer(cols = 1:9,
+               names_to = "Source",
+               values_to = "Percentage")
+
+# Seleccionar las columnas deseadas
+q15 <- q15 %>% 
+  select(1, 3:2) 
+
+
+#Cambia filas por columnas para presentar la información
+
+q15 <- q15 %>%
+  pivot_longer(cols = -genero_agrup, names_to = "Motivo", values_to = "Porcentaje") %>%
+  pivot_wider(names_from = genero_agrup, values_from = Porcentaje)
+
+
+  select("Registered"="q5_registered",2,12:20) %>% 
+  mutate(Registered=recode(Registered, "98"="Other", "n_registered"="No registered", "y_registered"="Registered"))
 
 knitr::kable(q15) %>% 
   kable_minimal()
@@ -828,6 +870,86 @@ q16_2021 <- ext_2021 %>%
 knitr::kable(q16_2021) %>% 
   kable_minimal()
 
+
+```
+
+Cruce entre respuesta múltiple y simple con  q15 y q1
+
+```{r}
+base<-datos %>% 
+  filter(q0_consent=="yes")
+
+```
+
+```{r}
+
+#Convertir campos vacíos de la variable country en NA
+ base <- base %>%
+  mutate(q15_key_sources = na_if(q15_key_sources, ""))
+
+q15_q1 <- base %>%
+  filter(!is.na(q1_description) & !is.na(q15_key_sources)) %>%
+  group_by(q1_description) %>%
+  summarise(Total = n(),
+    multirateral = sum(q15_key_sources.multilateral_funders == 1),
+    bilateral = sum(q15_key_sources.bilateral_funders == 1),
+    philanthropic = sum(q15_key_sources.philanthropic_foundations == 1),
+    womens = sum(q15_key_sources.womens_feminist_funds == 1),
+    private = sum(q15_key_sources.private_sector == 1),
+    ingos = sum(q15_key_sources.ingos == 1),
+    individual = sum(q15_key_sources.individual_donors == 1),
+    gov = sum(q15_key_sources.national_local_goverment_or_bodies == 1),
+    other = sum(q15_key_sources.98 == 1),
+    Multirateral = round(multirateral / Total*100, 1),
+    Bilateral = round(bilateral / Total*100, 1),
+    Philanthropic = round(philanthropic / Total*100, 1),
+    Feminist = round(womens / Total*100, 1),
+    Private = round(private / Total*100, 1),
+    INGOS = round(ingos / Total*100, 1),
+    Individual = round(individual / Total*100, 1),
+    Government = round(gov / Total*100, 1),
+    Other = round(other / Total*100, 1)) %>% 
+  select("Description"="q1_description",2,12:20) %>% 
+  mutate(Description=recode(Description, "98"="Other", "primary_focus"="Primary focus", "specific_projects"="Specific projects"))
+
+```
+
+Cruce entre respuesta múltiple y simple con  q15 y q5
+
+```{r}
+
+#Convertir campos vacíos de la variable country en NA
+ base <- base %>%
+  mutate(q15_key_sources = na_if(q15_key_sources, ""))
+
+ base <- base %>%
+  mutate(q5_registered = na_if(q5_registered, ""))
+ 
+
+q15_q5 <- base %>%
+  filter(!is.na(q5_registered) & !is.na(q15_key_sources)) %>%
+  group_by(q5_registered) %>%
+  summarise(Total = n(),
+    multirateral = sum(q15_key_sources.multilateral_funders == 1),
+    bilateral = sum(q15_key_sources.bilateral_funders == 1),
+    philanthropic = sum(q15_key_sources.philanthropic_foundations == 1),
+    womens = sum(q15_key_sources.womens_feminist_funds == 1),
+    private = sum(q15_key_sources.private_sector == 1),
+    ingos = sum(q15_key_sources.ingos == 1),
+    individual = sum(q15_key_sources.individual_donors == 1),
+    gov = sum(q15_key_sources.national_local_goverment_or_bodies == 1),
+    other = sum(q15_key_sources.98 == 1),
+    Multirateral = round(multirateral / Total*100, 1),
+    Bilateral = round(bilateral / Total*100, 1),
+    Philanthropic = round(philanthropic / Total*100, 1),
+    Feminist = round(womens / Total*100, 1),
+    Private = round(private / Total*100, 1),
+    INGOS = round(ingos / Total*100, 1),
+    Individual = round(individual / Total*100, 1),
+    Government = round(gov / Total*100, 1),
+    Other = round(other / Total*100, 1)) %>% 
+  select("Registered"="q5_registered",2,12:20) %>% 
+  mutate(Registered=recode(Registered, "98"="Other", "n_registered"="No registered", "y_registered"="Registered"))
 
 ```
 

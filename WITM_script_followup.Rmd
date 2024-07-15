@@ -218,7 +218,9 @@ knitr::kable(q4) %>%
   kable_minimal()
 
 ```
+
 ___
+
 
 **Register**
 
