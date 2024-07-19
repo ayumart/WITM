@@ -38,28 +38,11 @@ rm(list = ls())
 
 ```{r upload, echo=T, message=F, warning=F}
 
+# OPEN CSV file
+witm <- read.csv2("Data/WITM_csv_0719.csv")
 
-# To upload CSV file
-witm <- read.csv2("Data/WITM_csv_0716.csv")
-
-#2024-05-23 08:37:41.178000-04:00
-witm$date <-  as.Date(witm$end,'%Y-%m-%d')
-
-
-#names(witm)
-# To upload xlsx file
-#datos<- read_xlsx("WITM_xls_value2.xlsx", sheet = 1)
+source(file="WITM_variables.R") 
 ```
-
-```{r}
-#witm$date
-
-witm$date_s <-  paste(format(as.Date(witm$date,format="%Y-%m-%d"), format = "%m"), format(as.Date(witm$date,format="%Y-%m-%d"), format = "%d"), sep ="-", collapse=NULL)
-
-#tmp = cbind("GAD", "AB")
-```
-
-
 ___
 
 **-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-**
@@ -114,10 +97,7 @@ knitr::kable(q0) %>%
 
 #From now on, only those who have given their consent to respond to the survey will be considered for analysis
 
-base<-witm %>% 
-  filter(q0_consent=="yes")
 
-rm(witm)
 ```
 ___
 
@@ -1471,15 +1451,7 @@ Q9. What year was your group, organization and/ or movement formed?
 
 ```{r year, echo=F, message=F, warning=F}
 
-base<-base %>% 
- mutate(q9_year_formation_agrup=case_when(
-    q9_year_formation>=2021 & q9_year_formation<=2023 ~  "(1) 2021-2023",
-    q9_year_formation<2021 & q9_year_formation>2014 ~  "(2) From 2015 to 2020",
-    q9_year_formation<2015 & q9_year_formation>2009 ~  "(3) From 2010 to 2014",
-    q9_year_formation<2010 & q9_year_formation>1999 ~  "(4) From 2000 to 2009",
-    q9_year_formation<=2000 & q9_year_formation>1945 ~  "(5) Before 2000",
-    is.na(q9_year_formation) ~ NA,
-    TRUE ~  NA)) 
+
     
 
 q9<-base %>% 

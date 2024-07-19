@@ -32,7 +32,9 @@ library(kableExtra)
 
 
 # To upload CSV file
-datos <- read.csv2("Data/WITM_csv_last.csv")
+
+datos <- read.csv2("Data/WITM_csv_0716.csv")
+#datos <- read.csv2("Data/WITM_csv_last.csv")
 
 # To upload xlsx file
 #datos<- read_xlsx("WITM_xls_value2.xlsx", sheet = 1)
@@ -660,7 +662,7 @@ knitr::kable(q15_q5) %>%
 
 **Principales fuentes de financiamiento externo por tipo y año**
 ```{r q16, echo=F, message=F, warning=F}
-
+datos<-base
 
 #Convertir campos vacíos de la variable q13 en NA
  datos <- datos %>%
@@ -674,6 +676,8 @@ q16_multirateral_2023<- datos %>%
   mutate(Percentage = round((n / sum(n)) * 100, 1)) %>% 
   rename_with(~ "2023", 1) %>% 
   mutate(Type="Multirateral")
+
+
 
 q16_multirateral_2022<- datos %>% 
   filter(q13_ext_funding == "yes" & q15_key_sources.multilateral_funders==1) %>% 
@@ -902,12 +906,15 @@ q16_other_2021<- datos %>%
 # Unir los dataframes
 ext_2023 <- bind_rows(q16_bilateral_2023,q16_feminist_2023, q16_goverment_2023, q16_individual_2023, q16_ingos_2023, q16_multirateral_2023, q16_other_2023, q16_philanthropic_2023, q16_private_2023)
 
+
+ext_2023
 # Crear un nuevo data frame con los resultados
 q16_2023 <- ext_2023 %>%
   pivot_wider(names_from = Type, values_from = c(n, Percentage)) %>% 
   select(1,11:19) %>% 
   rename_with(~ "Range", 1)
 
+q16_2023
 knitr::kable(q16_2023) %>% 
   kable_minimal()
 

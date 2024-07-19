@@ -1,0 +1,457 @@
+---
+title: "Where is the Money for Feminist Organizing? Survey for feminist, women’s rights and gender justice movements, groups and organizations"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+#WITM follow up
+
+```{r setup, include=FALSE, echo=F}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+
+```{r library, echo=F, message=F, warning=F}
+
+#Library upload
+
+library(tidyverse)
+library(readxl)
+library(janitor)
+library(dplyr)
+library(writexl)
+library(eph)
+library(openxlsx)
+library(rmarkdown)
+library(knitr)
+library(kableExtra)
+
+library(readr)
+library(xlsx)
+
+rm(list = ls())
+
+```
+
+
+**Database upload**
+
+```{r upload, echo=T, message=F, warning=F}
+
+# OPEN CSV file
+witm <- read.csv2("Data/WITM_csv_0719.csv")
+
+source(file="WITM_variables.R") 
+```
+___
+
+
+**-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-**
+Section 2: Financial Status
+**-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-**
+
+Q10. What was the annual budget for your group, organization and/or movement in each of the following years in $USD?
+
+
+```{r q10, echo=F, message=F, warning=F}
+#Convertir campos vacíos de la variable q10 en NA
+base <- base %>%
+  mutate(q10_budget_year_2021 = na_if(q10_budget_year_2021, ""))
+
+base <- base %>%
+  mutate(q10_budget_year_2022 = na_if(q10_budget_year_2022, ""))
+ 
+  base <- base %>%
+  mutate(q10_budget_year_2023 = na_if(q10_budget_year_2023, ""))
+ 
+#Organizaciones fondos anuales
+
+q10_2021<-base %>% 
+  filter(q9_year_formation<2022) %>% 
+  group_by(q10_budget_year_2021) %>% 
+  summarise(n=n()) %>% 
+  mutate(Percentage=round((n/sum(n))*100,1)) %>% 
+  rename("Annual_budget"=q10_budget_year_2021) %>% 
+  mutate(Year=2021)
+
+q10_2022<-base %>% 
+  filter(q9_year_formation<2023) %>% 
+  group_by(q10_budget_year_2022) %>% 
+  summarise(n=n()) %>% 
+  mutate(Percentage=round((n/sum(n))*100,1)) %>% 
+  rename("Annual_budget"=q10_budget_year_2022) %>% 
+  mutate(Year=2022)
+
+q10_2023<-base %>% 
+  filter(!is.na(q10_budget_year_2023)) %>% 
+  group_by(q10_budget_year_2023) %>% 
+  summarise(n=n()) %>% 
+  mutate(Percentage=round((n/sum(n))*100,1)) %>% 
+  rename("Annual_budget"=q10_budget_year_2023) %>% 
+  mutate(Year=2023)
+
+
+# Unir los dataframes
+q10_total <- bind_rows(q10_2021, q10_2022, q10_2023)
+
+#q10_total
+q10_total<-q10_total %>% arrange(Annual_budget)
+# Crear un nuevo data frame con los resultados
+q10_total <- q10_total %>%
+  pivot_wider(names_from = Year, values_from = c(n, Percentage)) %>% 
+  select(1,5:7)
+
+
+knitr::kable(q10_total) %>% 
+  kable_minimal() #imprime cuadro
+```
+
+
+**--Analysis notes-----------------------------------------------------------------------**
+
+For a better analysis, income should be better grouped.
+
+**------------------------------------------------------------------------------------------------**
+
+
+**-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-**
+SECTION : EXTERNAL FOUNDING
+**-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-**
+
+**External founding:**
+
+Q13. Between 2021 and 2023, has your group, organization and/or movement received any external funding?
+
+
+```{r ef, echo=F, message=F, warning=F}
+q13<-base %>%
+  group_by(q13_ext_funding) %>% 
+  summarise(n=n()) %>% 
+  mutate(porcentaje=round((n/sum(n))*100,1)) %>% 
+  rename("External funding"=q13_ext_funding)
+ 
+
+knitr::kable(q13) %>% 
+  kable_minimal()
+```
+
+**--Analysis notes-----------------------------------------------------------------------**
+
+The majority report having external funding but the value of those who do not is very high.
+
+
+**------------------------------------------------------------------------------------------------**
+
+**-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-**
+
+**External funding by type of organisation**
+
+
+```{r ef_q1, echo=F, message=F, warning=F}
+
+##borrar las variables para evitar problemas
+rm(list=setdiff(ls(), "base"))
+
+efq1<-base %>%
+  filter(!is.na(q13_ext_funding) & !is.na(q1_description)) %>%
+  group_by(q1_description,q13_ext_funding)%>%
+  summarise(n=n()) %>%
+  mutate(percentage=round((n/sum(n))*100,1))%>%
+  mutate(q1_description=recode(q1_description,"98"="Other","primary_focus"="Primary focus","specific_projects"="Specific Projects")) %>%
+  arrange(desc(n)) %>% 
+  select(q13_ext_funding,q1_description,percentage)
+
+#efq2
+
+qry_w<-efq1 %>% pivot_wider(names_from = q1_description, values_from = percentage) 
+
+
+knitr::kable(qry_w) %>% 
+  kable_minimal()
+
+
+```
+___
+
+
+```{r}
+#efq1
+qry_graph<-efq1 %>% filter(q1_description=="Primary focus" | q1_description=="Specific Projects" )
+#qry_graph
+
+ggplot(qry_graph, aes(x =q1_description , y=percentage, fill=q13_ext_funding)) +                      
+   geom_bar(position="dodge", stat="identity") +
+  scale_fill_brewer(palette = "Set3") +
+  labs(x="Type of organisation",y= "%") +                 
+  ggtitle("Type of organization of external funding (%)") +                
+  theme_bw(base_size = 12)+
+  geom_text(aes(label = sprintf("%0.1f", round(percentage, digits = 1))),position=position_dodge(width=0.9),
+            vjust=-0.2, size=3) 
+
+```
+
+**--Analysis notes-----------------------------------------------------------------------**
+
+Organizations that work on gender and feminist projects receive less external funding.
+
+
+**------------------------------------------------------------------------------------------------**
+
+
+**-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-**
+
+**External funding by registration**
+
+
+```{r ef_q5, echo=F, message=F, warning=F}
+
+##borrar las variables para evitar problemas
+rm(list=setdiff(ls(), "base"))
+
+efq5<-base %>%
+  filter(!is.na(q13_ext_funding) & !is.na(q5_registered) & q5_registered!="") %>%
+  group_by(q5_registered,q13_ext_funding)%>%
+  summarise(n=n()) %>%
+  mutate(percentage=round((n/sum(n))*100,1))%>%
+  mutate(q5_registered=recode(q5_registered, "98"="Other", "n_registered"="No registered", "y_registered"="Registered")) %>%
+  arrange(desc(n)) %>% 
+  select(q13_ext_funding,q5_registered,percentage)
+
+#efq5
+
+qry_w<-efq5 %>% pivot_wider(names_from = q5_registered, values_from = percentage) 
+
+
+knitr::kable(qry_w) %>% 
+  kable_minimal()
+
+
+```
+___
+
+
+```{r}
+efq5
+qry_graph<-efq5 %>% filter((q5_registered=="Registered" | q5_registered=="No registered"))
+qry_graph
+
+ggplot(qry_graph, aes(x =q5_registered , y=percentage, fill=q13_ext_funding)) +                      
+   geom_bar(position="dodge", stat="identity") +
+  scale_fill_brewer(palette = "Set3") +
+  labs(x="Registration",y= "%") +                 
+  ggtitle("Registration by external funding (%)") +                
+  theme_bw(base_size = 12)+
+  geom_text(aes(label = sprintf("%0.1f", round(percentage, digits = 1))),position=position_dodge(width=0.9),
+            vjust=-0.2, size=3) 
+
+```
+
+**--Analysis notes-----------------------------------------------------------------------**
+
+Organizations that are not registered receive less frequent external financing
+
+**------------------------------------------------------------------------------------------------**
+
+**-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-**
+
+**External funding by Geographic Scope**
+
+
+```{r ef_q6, echo=F, message=F, warning=F}
+
+##borrar las variables para evitar problemas
+rm(list=setdiff(ls(), "base"))
+
+efq6<-base %>%
+  filter(!is.na(q13_ext_funding) & !is.na(q6_geo_scope) & q6_geo_scope!="") %>%
+  group_by(q6_geo_scope,q13_ext_funding)%>%
+  summarise(n=n()) %>%
+  mutate(percentage=round((n/sum(n))*100,1))%>%
+  mutate(q6_geo_scope=recode(q6_geo_scope,
+          "locally_focused"="Locally",
+         "nationally_focused"="Nationally" ,
+         "diaspora_and_or_exile"="Work from diaspora, refuge and/or exile",
+         "regionally_focused"= "Regionally",
+          "transnationally_focused"="Transnationally",
+         "globally_focused"="Global"
+         ) ) %>%  
+  arrange(desc(n)) %>% 
+  select(q13_ext_funding,q6_geo_scope,percentage)
+
+efq6
+
+qry_w<-efq6 %>% pivot_wider(names_from = q6_geo_scope, values_from = percentage) 
+
+
+knitr::kable(qry_w) %>% 
+  kable_minimal()
+
+
+```
+___
+
+
+```{r}
+#efq6
+qry_graph<-efq6 %>% filter(q6_geo_scope=="Nationally"  | q6_geo_scope=="Locally" | q6_geo_scope=="Regionally")
+#qry_graph
+
+ggplot(qry_graph, aes(x =q6_geo_scope , y=percentage, fill=q13_ext_funding)) +                      
+   geom_bar(position="dodge", stat="identity") +
+  scale_fill_brewer(palette = "Set3") +
+  labs(x="Geographical Scope",y= "%") +                 
+  ggtitle("Geographical Scope by external funding (%)") +                
+  theme_bw(base_size = 12)+
+  geom_text(aes(label = sprintf("%0.1f", round(percentage, digits = 1))),position=position_dodge(width=0.9),
+            vjust=-0.2, size=3) 
+
+```
+
+
+**--Analysis notes-----------------------------------------------------------------------**
+
+This graph is very important and shows how local and national organizations have less access to external funding than regional ones. These groups are taken only because they are numerous, the rest will have to wait for more answers or be analyzed more carefully.
+
+**------------------------------------------------------------------------------------------------**
+
+
+**-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-**
+
+**External funding by start of activities (year)**
+
+
+```{r ef_q9, echo=F, message=F, warning=F}
+
+##borrar las variables para evitar problemas
+rm(list=setdiff(ls(), "base"))
+
+efq9<-base %>%
+  filter(!is.na(q13_ext_funding) & !is.na(q9_year_formation_agrup) & q9_year_formation_agrup!="") %>%
+  group_by(q9_year_formation_agrup,q13_ext_funding)%>%
+  summarise(n=n()) %>%
+  mutate(percentage=round((n/sum(n))*100,1))%>%
+  arrange(desc(n)) %>% 
+  select(q13_ext_funding,q9_year_formation_agrup,percentage)
+
+efq9
+
+qry_w<-efq9 %>% pivot_wider(names_from = q9_year_formation_agrup, values_from = percentage) 
+
+
+knitr::kable(qry_w) %>% 
+  kable_minimal()
+
+
+```
+___
+
+
+```{r}
+#efq9
+qry_graph<-efq9 
+#qry_graph
+
+ggplot(qry_graph, aes(x =q9_year_formation_agrup , y=percentage, fill=q13_ext_funding)) +                      
+   geom_bar(position="dodge", stat="identity") +
+  scale_fill_brewer(palette = "Set3") +
+  labs(x="Year",y= "%") +                 
+  ggtitle("Star of activities (year) by external funding (%)") +                
+  theme_bw(base_size = 12)+
+  geom_text(aes(label = sprintf("%0.1f", round(percentage, digits = 1))),position=position_dodge(width=0.9),
+            vjust=-0.2, size=3) 
+
+```
+
+
+**--Analysis notes-----------------------------------------------------------------------**
+
+As with the registration variable, a progression can be observed. The longer the organization has been in operation, the greater the proportion of organizations with external financing.
+
+**------------------------------------------------------------------------------------------------**
+
+
+**-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-**
+
+*Q14. Please indicate the percentage of external funding in your total annual budget for each year:
+
+CONDITIONS: [Q14 filtered by Q13= YES]
+
+
+```{r q13, echo=F, message=F, warning=F}
+
+#Convertir campos vacíos de la variable q5_descendencia en NA
+ base <- base %>%
+  mutate(q13_ext_funding = na_if(q13_ext_funding, ""))
+ 
+#Organizaciones según recepción de fondos externos
+q13<-base %>% 
+  filter(!is.na(q13_ext_funding)) %>% 
+  group_by(q13_ext_funding) %>% 
+  summarise(n=n()) %>% 
+  mutate(Percentage=round((n/sum(n))*100,1))
+
+
+#Distribución por año de recepción de fondos externos
+funding <- base %>%
+  filter(q13_ext_funding == "yes") %>%
+  summarise(Total = n(),
+            year_2023 = sum(q14_funding_annual_budget_2023 > 0, na.rm = TRUE),
+            year_2022 = sum(q14_funding_annual_budget_2022 > 0, na.rm = TRUE),
+            year_2021 = sum(q14_funding_annual_budget_2021 > 0, na.rm = TRUE),
+            'Year 2023' = round(year_2023 / Total * 100, 1),
+            'Year 2022' = round(year_2022 / Total * 100, 1),
+            'Year 2021' = round(year_2021 / Total * 100, 1)) %>% 
+  select(1,5:7)
+
+
+#Cambia filas por columnas para presentar la información
+
+funding <- funding %>%
+  pivot_longer(cols = -Total, names_to = "Years", values_to = "Percentage")
+
+#Elimina primera columna del cuadro
+funding<-funding %>% 
+  select(-1)
+
+
+# Calcular porcentaje de fondos para el año 2023
+q14_2023 <- base %>% 
+  filter(q13_ext_funding == "yes") %>% 
+  group_by(q14_funding_annual_budget_2023) %>% 
+  summarise(n = n()) %>% 
+  mutate(Percentage_2023 = round((n / sum(n)) * 100, 1)) %>% 
+  rename("Range"=q14_funding_annual_budget_2023)
+
+# Calcular porcentaje de fondos para el año 2022
+q14_2022 <- base %>% 
+  filter(q13_ext_funding == "yes" & q9_year_formation < 2023) %>% 
+  group_by(q14_funding_annual_budget_2022) %>% 
+  summarise(n = n()) %>% 
+  mutate(Percentage_2022 = round((n / sum(n)) * 100, 1)) %>% 
+  rename("Range"=q14_funding_annual_budget_2022)
+
+# Calcular porcentaje de fondos para el año 2021
+q14_2021 <- base %>% 
+  filter(q13_ext_funding == "yes" & q9_year_formation < 2022) %>% 
+  group_by(q14_funding_annual_budget_2021) %>% 
+  summarise(n = n()) %>% 
+  mutate(Percentage_2021 = round((n / sum(n)) * 100, 1)) %>% 
+  rename("Range"=q14_funding_annual_budget_2021)
+
+# Unir los resultados en un solo data frame
+funding_summary <- q14_2023 %>%
+  full_join(q14_2022, by = "Range") %>%
+  full_join(q14_2021, by = "Range") %>%
+  select(
+    Range = Range,
+    Percentage_2023,
+    Percentage_2022,
+    Percentage_2021
+  )
+
+knitr::kable(funding_summary) %>% 
+  kable_minimal() #imprime cuadro
+
+```
+
+
