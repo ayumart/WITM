@@ -14,7 +14,7 @@ rm(list = ls())
 
 
 # To upload CSV file
-witm <- read.csv2("Data/WITM_csv_0710.csv")
+witm <- read.csv2("Data/WITM_csv_0804.csv")
 
 #2024-05-23 08:37:41.178000-04:00
 witm$date <-  as.Date(witm$end,'%Y-%m-%d')
@@ -26,14 +26,14 @@ unique(witm$q10_budget_year_2021)
 #creación de variables
 witm<-witm %>% 
   mutate(q9_agrup=case_when( #agrupo año de formación
-    q9_year_formation==2023 ~  "Año 2023",
-    q9_year_formation==2022 ~  "Año 2022",
-    q9_year_formation==2021 ~  "Año 2021",
-    q9_year_formation<2021 & q9_year_formation>2014 ~  "Entre 2015 y 2020",
-    q9_year_formation<2015 & q9_year_formation>2009 ~  "Entre 2010 y 2014",
-    q9_year_formation<2010 & q9_year_formation>1999 ~  "Entre 2000 y 2009",
+    q9_year_formation==2023 ~  "Year 2023",
+    q9_year_formation==2022 ~  "Year 2022",
+    q9_year_formation==2021 ~  "Year 2021",
+    q9_year_formation<2021 & q9_year_formation>2014 ~  "Between 2015 and 2020",
+    q9_year_formation<2015 & q9_year_formation>2009 ~  "Between 2010 and 2014",
+    q9_year_formation<2010 & q9_year_formation>1999 ~  "Between 2000 and 2009",
     is.na(q9_year_formation) ~ NA,
-    TRUE ~  "Antes del 2000")) %>% 
+    TRUE ~  "Before 2000")) %>% 
   #Convertir campos vacíos de la variable q10 en NA
   mutate(q10_budget_year_2021 = na_if(q10_budget_year_2021, ""),
          q10_budget_year_2022 = na_if(q10_budget_year_2022, ""),
@@ -125,40 +125,97 @@ witm<-witm %>%
                                q8_country=="country_other6"~"Other Southeast Asia", q8_country=="country_other7"~"Other East Asia", q8_country=="country_other8"~"Other The Pacific",
                                q8_country=="country_other9"~"Other South West Asia/Middle East", q8_country=="country_other10"~"Other Central Asia & Caucasus", q8_country=="country_other11"~"Other Eastern Europe, Southeast Europe and Central Europe",
                                q8_country=="country_other13"~"Other Western Europe", q8_country=="country_other14"~"Other West Africa", q8_country=="country_other15"~"Other East Africa",
-                               q8_country=="country_other16"~"Other Southern Africa", q8_country=="country_other17"~"Other Central Africa", q8_country=="country_other18"~"Other North Africa")) %>% 
+                               q8_country=="country_other16"~"Other Southern Africa", q8_country=="country_other17"~"Other Central Africa", q8_country=="country_other18"~"Other North Africa"))
+
+
+########
+witm<-witm %>% 
   #Convertir campos vacíos de la variable q7 en NA
   mutate(q7_region_one = na_if(q7_region_one, ""),
                   q7_region_multiple = na_if(q7_region_multiple, "")) %>%
   #Unifico REGIÓN en variables únicas
   mutate(samerica= ifelse(q7_region_one=="samerica"| q7_region_multiple.samerica==1, 1, 0),
-                  camerica= ifelse(q7_region_one=="camerica"| q7_region_multiple.camerica==1, 1, 0),
-                  namerica=ifelse(q7_region_one=="namerica"| q7_region_multiple.namerica==1, 1, 0),
-                  caribbean=ifelse(q7_region_one=="caribbean"| q7_region_multiple.caribbean==1, 1, 0),
-                  sasia=ifelse(q7_region_one=="sasia"| q7_region_multiple.sasia==1, 1, 0),
-                  seasia=ifelse(q7_region_one=="seasia"| q7_region_multiple.seasia==1, 1, 0),
-                  pacific=ifelse(q7_region_one=="pacific"| q7_region_multiple.pacific==1, 1, 0),
-                  easia=ifelse(q7_region_one=="easia"| q7_region_multiple.easia==1, 1, 0),
-                  casia=ifelse(q7_region_one=="casia"| q7_region_multiple.casia==1, 1, 0),
-                  swasiamiddleeast=ifelse(q7_region_one=="swasiamiddleeast"| q7_region_multiple.swasiamiddleeast==1, 1, 0),
-                  caucasuseurope=ifelse(q7_region_one=="caucasuseurope"| q7_region_multiple.caucasuseurope==1, 1, 0),
-                  weurope=ifelse(q7_region_one=="weurope"| q7_region_multiple.weurope==1, 1, 0),
-                  eafrica=ifelse(q7_region_one=="eafrica"| q7_region_multiple.eafrica==1, 1, 0),
-                  wafrica=ifelse(q7_region_one=="wafrica"| q7_region_multiple.wafrica==1, 1, 0),
-                  safrica=ifelse(q7_region_one=="safrica"| q7_region_multiple.safrica==1, 1, 0),
-                  cafrica=ifelse(q7_region_one=="cafrica"| q7_region_multiple.cafrica==1, 1, 0),
-                  nafrica=ifelse(q7_region_one=="nafrica"| q7_region_multiple.nafrica==1, 1, 0))
+        camerica= ifelse(q7_region_one=="camerica"| q7_region_multiple.camerica==1, 1, 0),
+        namerica=ifelse(q7_region_one=="namerica"| q7_region_multiple.namerica==1, 1, 0),
+        caribbean=ifelse(q7_region_one=="caribbean"| q7_region_multiple.caribbean==1, 1, 0),
+        sasia=ifelse(q7_region_one=="sasia"| q7_region_multiple.sasia==1, 1, 0),
+        seasia=ifelse(q7_region_one=="seasia"| q7_region_multiple.seasia==1, 1, 0),
+        pacific=ifelse(q7_region_one=="pacific"| q7_region_multiple.pacific==1, 1, 0),
+        easia=ifelse(q7_region_one=="easia"| q7_region_multiple.easia==1, 1, 0),
+        casia=ifelse(q7_region_one=="casia"| q7_region_multiple.casia==1, 1, 0),
+        swasiamiddleeast=ifelse(q7_region_one=="swasiamiddleeast"| q7_region_multiple.swasiamiddleeast==1, 1, 0),
+        caucasuseurope=ifelse(q7_region_one=="caucasuseurope"| q7_region_multiple.caucasuseurope==1, 1, 0),
+        weurope=ifelse(q7_region_one=="weurope"| q7_region_multiple.weurope==1, 1, 0),
+        eafrica=ifelse(q7_region_one=="eafrica"| q7_region_multiple.eafrica==1, 1, 0),
+        wafrica=ifelse(q7_region_one=="wafrica"| q7_region_multiple.wafrica==1, 1, 0),
+        safrica=ifelse(q7_region_one=="safrica"| q7_region_multiple.safrica==1, 1, 0),
+        cafrica=ifelse(q7_region_one=="cafrica"| q7_region_multiple.cafrica==1, 1, 0),
+        nafrica=ifelse(q7_region_one=="nafrica"| q7_region_multiple.nafrica==1, 1, 0)) %>% 
+  #agrupo en continentes
+  mutate(AFRICA=ifelse(eafrica==1 | wafrica==1 | safrica==1 | cafrica==1 | nafrica==1,1,0),
+         LATINAMERICA=ifelse(samerica==1 | camerica==1 | caribbean==1,1,0),
+         NORTHAMERICA=ifelse(namerica==1,1,0),
+         ASIA=ifelse(sasia==1 | seasia==1 | easia==1 | casia==1 | swasiamiddleeast==1,1,0),
+         OCEANIA=ifelse(pacific==1,1,0),
+         EUROPE=ifelse(caucasuseurope==1 | weurope==1,1,0))
 
-#REPENSAR AGRUPACIÓN REGIÓN
-  #Genero variable de región agrupada
-  #mutate(region_var = case_when(
-  #           (samerica == 1 | camerica == 1 | namerica == 1 | caribbean== 1) ~ "America",
-  #           (sasia == 1 | seasia == 1 | easia == 1 | casia == 1 | swasiamiddleeast == 1) ~ "Asia",
-  #           (pacific == 1) ~ "Pacific",
-  #           (caucasuseurope == 1 | weurope == 1) ~ "Europe",
-  #           (eafrica == 1 | wafrica == 1 | safrica == 1 | cafrica == 1 | nafrica == 1) ~ "Africa",
-  #           TRUE ~ NA))
+witm<-witm %>% 
+  mutate(regiones_cant=rowSums(select(., c(
+    "samerica",
+    "camerica",
+    "namerica",
+    "caribbean",
+    "sasia",
+    "seasia",
+    "pacific",
+    "easia",
+    "casia",
+    "swasiamiddleeast",
+    "caucasuseurope",
+    "weurope",
+    "eafrica",
+    "wafrica",
+    "safrica",
+    "cafrica",
+    "nafrica")), na.rm = TRUE))
+
+
+
+cant<-witm %>% 
+  group_by(regiones_cant) %>% 
+  summarise(n())
+
+
+
+witm <- witm %>% 
+  mutate(region_final = case_when(
+    regiones_cant == 0 ~ "0",
+    regiones_cant == 1 & AFRICA == 1 ~ "1-África",
+    regiones_cant == 1 & LATINAMERICA == 1 ~ "1-Latam",
+    regiones_cant == 1 & NORTHAMERICA == 1 ~ "1-NorthAm",
+    regiones_cant == 1 & ASIA == 1 ~ "1-Asia",
+    regiones_cant == 1 & OCEANIA == 1 ~ "1-Oceania",
+    regiones_cant == 1 & EUROPE == 1 ~ "1-Europe",
+    regiones_cant == 2 & AFRICA == 1 ~ "2-África",
+    regiones_cant == 2 & LATINAMERICA == 1 ~ "2-Latam",
+    regiones_cant == 2 & ASIA == 1 ~ "2-Asia",
+    regiones_cant == 2 & NORTHAMERICA == 1 ~ "2-NorthAm",
+    regiones_cant == 2 & EUROPE == 1 ~ "2-Europe",
+    regiones_cant > 2 & AFRICA == 1 ~ "3-África",
+    regiones_cant > 2 & LATINAMERICA == 1 ~ "3-Latam",
+    regiones_cant > 2 & ASIA == 1 ~ "3-Asia",
+    regiones_cant > 2 & NORTHAMERICA == 1 ~ "3-NorthAm",
+    regiones_cant > 2 & EUROPE == 1 ~ "3-Europe",
+    TRUE ~ NA_character_
+  ))
+
+region<-witm %>% 
+  group_by(region_final) %>% 
+  summarise(n())
+
 
 
 
 #guardo base con nuevas variables
 write.csv2(witm, file = "Data/WITM_variables.csv", row.names = FALSE)
+
