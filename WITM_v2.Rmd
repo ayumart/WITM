@@ -33,7 +33,7 @@ library(kableExtra)
 
 # To upload CSV file
 
-datos <- read.csv2("Data/WITM_csv_0716.csv")
+datos <- read.csv2("Data/WITM_csv_last.csv")
 #datos <- read.csv2("Data/WITM_csv_last.csv")
 
 # To upload xlsx file
@@ -48,6 +48,9 @@ base<-datos %>%
 ```
 
 ```{r q6, recho=F, message=F, warning=F}
+
+##borrar las variables para evitar problemas
+#rm(list=setdiff(ls(), "base"))
 
 #Convertir campos vacíos de la variable country en NA
  base <- base %>%

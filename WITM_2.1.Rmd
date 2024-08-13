@@ -32,6 +32,8 @@ library(kableExtra)
 
 ```{r upload, echo=T, message=F, warning=F}
 
+# To upload CSV file
+#witm <- read.csv2("Data/WITM_csv_0716.csv")
 
 # To upload CSV file
 witm<- read.csv2("Data/WITM_variables.csv")

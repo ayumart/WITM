@@ -80,4 +80,97 @@ witm<-witm %>%
 base<-witm %>% 
   filter(q0_consent=="yes")
 
+base<- base %>%
+  mutate(q4_awid_focus=case_when
+         (
+           (q4_forms_organizing.lesbian_bisexual_queer_rights==1 |
+              q4_forms_organizing.sex_workers_rights==1  |
+              q4_forms_organizing.trans_non_binary_rights==1 |
+              q4_forms_organizing.anti_caste==1 |
+              q4_forms_organizing.climate_justice==1 |
+              q4_forms_organizing.countering_anti_gender==1 |
+              q4_forms_organizing.anti_militarization==1 |
+              q4_forms_organizing.holistic_safety_protection_collective_care==1) ~1, TRUE ~0))  
+
+base<- base %>%
+  mutate(q4_awid_focus_no=case_when
+         (q4_awid_focus!=1 ~ 1, TRUE ~0))  
+
+
+
+base<- base %>%
+  mutate(q4_grouped_feminist=case_when
+         (
+           (q4_forms_organizing.womens_rights==1 |
+              q4_forms_organizing.human_rights==1  |
+              q4_forms_organizing.end_gender_violence ==1  |
+              q4_forms_organizing.srhr_bodily_autonomy==1) ~1, TRUE ~0)) %>%  
+  
+  mutate(q4_grouped_minorities=case_when
+         (
+           (
+             q4_forms_organizing.young_feminists==1 |
+               q4_forms_organizing.girls_movements ==1 |
+               q4_forms_organizing.disability_rights==1 |
+               q4_forms_organizing.lesbian_bisexual_queer_rights==1 |
+               q4_forms_organizing.sex_workers_rights==1 |
+               q4_forms_organizing.rights_for_people_living_with_hiv==1 |
+               q4_forms_organizing.displaced_migrant_refugee_rights==1 |
+               q4_forms_organizing.trans_non_binary_rights==1 |
+               q4_forms_organizing.intersex_rights==1 |
+               q4_forms_organizing.labour_rights==1 |
+               q4_forms_organizing.indigenous_rights==1 |
+               q4_forms_organizing.black_rights==1 |
+               q4_forms_organizing.anti_caste==1 |
+               q4_forms_organizing.hr_defenders_at_risk==1 |
+               q4_forms_organizing.religious_ethnic_minority_rights==1 ) ~1, TRUE ~0)) %>% 
+  
+  
+  mutate(q4_grouped_focus=case_when
+         (
+           (
+             q4_forms_organizing.climate_justice==1 |
+               q4_forms_organizing.countering_anti_gender==1 |
+               q4_forms_organizing.anti_militarization==1 |
+               q4_forms_organizing.holistic_safety_protection_collective_care==1 |
+               q4_forms_organizing.resisting_war_on_drugs==1 |
+               q4_forms_organizing.economic_justice==1 |
+               q4_forms_organizing.crisis_response==1 |
+               q4_forms_organizing.digital_rights==1 |
+               q4_forms_organizing.racial_justice==1 |
+               q4_forms_organizing.information_media_freedom==1 |
+               q4_forms_organizing.harm_reduction==1 |
+               q4_forms_organizing.pleasure_bodily_care==1) ~1, TRUE ~0)) 
+
+
+
+base<- base %>%
+  mutate(q10_budget_grp_2021=case_when
+         (
+           (q10_budget_year_2021=="(h) 250001 - 500000"  |
+              q10_budget_year_2021=="(i) 500001 - 1000000" | 
+              q10_budget_year_2021=="(j) 1000001 - 2000000" |
+              q10_budget_year_2021=="(k) 2000001 - 4000000" |
+              q10_budget_year_2021=="(l) > 4000001") ~ "(h) > 250001",
+           TRUE ~ q10_budget_year_2021))  
+
+base<- base %>%
+  mutate(q10_budget_grp_2022=case_when
+         (
+           (q10_budget_year_2022=="(h) 250001 - 500000"  |
+              q10_budget_year_2022=="(i) 500001 - 1000000" | 
+              q10_budget_year_2022=="(j) 1000001 - 2000000" |
+              q10_budget_year_2022=="(k) 2000001 - 4000000" |
+              q10_budget_year_2022=="(l) > 4000001") ~ "(h) > 250001",
+           TRUE ~ q10_budget_year_2022))  
+
+base<- base %>%
+  mutate(q10_budget_grp_2023=case_when
+         (
+           (q10_budget_year_2023=="(h) 250001 - 500000"  |
+              q10_budget_year_2023=="(i) 500001 - 1000000" | 
+              q10_budget_year_2023=="(j) 1000001 - 2000000" |
+              q10_budget_year_2023=="(k) 2000001 - 4000000" |
+              q10_budget_year_2023=="(l) > 4000001") ~ "(h) > 250001",
+           TRUE ~ q10_budget_year_2023))  
 

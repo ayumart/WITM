@@ -12,7 +12,7 @@
 
 <meta name="date" content="2024-08-13" />
 
-<title>Where is the Money for Feminist Organizing? Survey for feminist, women’s rights and gender justice movements, groups and organizations</title>
+<title>WITM</title>
 
 <script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
 // be compatible with the behavior of Pandoc < 2.8).
@@ -573,1089 +573,284 @@ display: none;
 
 
 
-<h1 class="title toc-ignore">Where is the Money for Feminist Organizing?
-Survey for feminist, women’s rights and gender justice movements, groups
-and organizations</h1>
+<h1 class="title toc-ignore">WITM</h1>
 <h4 class="date">2024-08-13</h4>
 
 </div>
 
 
-<p><strong>Section 2.1: External founding</strong></p>
-<p><strong>Database upload</strong></p>
-<pre class="r"><code># To upload CSV file
-#witm &lt;- read.csv2(&quot;Data/WITM_csv_0716.csv&quot;)
+<p>#ANALYSIS - SECTION 2</p>
+<pre class="r"><code># OPEN CSV file
+witm &lt;- read.csv2(&quot;Data/WITM_csv_last.csv&quot;)
 
-# To upload CSV file
-witm&lt;- read.csv2(&quot;Data/WITM_variables.csv&quot;)
+source(file=&quot;WITM_variables.R&quot;) 
 
-#2024-05-23 08:37:41.178000-04:00
-witm$date &lt;-  as.Date(witm$end,&#39;%Y-%m-%d&#39;)
-
-#Variable names
-#names(witm)</code></pre>
-<p><strong>Organizations based on external funding received</strong></p>
+print(date())</code></pre>
+<pre><code>## [1] &quot;Tue Aug 13 17:31:03 2024&quot;</code></pre>
+<hr />
+<p><strong>-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-</strong>
+Section 2: Financial Status</p>
+<p>Q10. What was the annual budget for your group, organization and/or
+movement in each of the following years in $USD?</p>
 <table class=" lightable-minimal" style="font-family: &quot;Trebuchet MS&quot;, verdana, sans-serif; margin-left: auto; margin-right: auto;">
 <thead>
 <tr>
 <th style="text-align:left;">
-External funding
+Annual_budget
 </th>
 <th style="text-align:right;">
-n
+Percentage_2021
 </th>
 <th style="text-align:right;">
-Percentage
+Percentage_2022
+</th>
+<th style="text-align:right;">
+Percentage_2023
 </th>
 </tr>
 </thead>
 <tbody>
 <tr>
 <td style="text-align:left;">
-no
+<ol style="list-style-type: lower-alpha">
+<li>Zero budget
 </td>
 <td style="text-align:right;">
-267
+15.0
 </td>
 <td style="text-align:right;">
-28.6
+12.8
 </td>
-</tr>
-<tr>
-<td style="text-align:left;">
-yes
-</td>
-<td style="text-align:right;">
-667
-</td>
-<td style="text-align:right;">
-71.4
-</td>
-</tr>
-</tbody>
-</table>
-<p>It is noted that 71.4% of organizations participating on the survey
-have received external funding.</p>
-<table class=" lightable-minimal" style="font-family: &quot;Trebuchet MS&quot;, verdana, sans-serif; margin-left: auto; margin-right: auto;">
-<thead>
-<tr>
-<th style="text-align:left;">
-Registration
-</th>
-<th style="text-align:right;">
-no
-</th>
-<th style="text-align:right;">
-yes
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:left;">
-No
-</td>
-<td style="text-align:right;">
-47.22
-</td>
-<td style="text-align:right;">
-52.78
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Other
-</td>
-<td style="text-align:right;">
-40.00
-</td>
-<td style="text-align:right;">
-60.00
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Yes
-</td>
-<td style="text-align:right;">
-24.50
-</td>
-<td style="text-align:right;">
-75.50
-</td>
-</tr>
-</tbody>
-</table>
-<p>The Percentage of organizations receiving external funding increases
-to 73.6% among those that promote the rights of women, girls, or trans
-and gender-diverse individuals with intersecting identities, where this
-is the ‘primary focus of all our work.’ The Percentage rises to 75.5%
-among registered organizations, but drops to 52.8% among those that are
-not registered.</p>
-<table class=" lightable-minimal" style="font-family: &quot;Trebuchet MS&quot;, verdana, sans-serif; margin-left: auto; margin-right: auto;">
-<thead>
-<tr>
-<th style="text-align:left;">
-Organization description
-</th>
-<th style="text-align:right;">
-no
-</th>
-<th style="text-align:right;">
-yes
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:left;">
-Other
-</td>
-<td style="text-align:right;">
-29.41
-</td>
-<td style="text-align:right;">
-70.59
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Primary focus
-</td>
-<td style="text-align:right;">
-26.45
-</td>
-<td style="text-align:right;">
-73.55
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Specific project(s)
-</td>
-<td style="text-align:right;">
-36.78
-</td>
-<td style="text-align:right;">
-63.22
-</td>
-</tr>
-</tbody>
-</table>
-<table class=" lightable-minimal" style="font-family: &quot;Trebuchet MS&quot;, verdana, sans-serif; margin-left: auto; margin-right: auto;">
-<thead>
-<tr>
-<th style="text-align:left;">
-Registration
-</th>
-<th style="text-align:right;">
-no
-</th>
-<th style="text-align:right;">
-yes
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:left;">
-No
-</td>
-<td style="text-align:right;">
-47.22
-</td>
-<td style="text-align:right;">
-52.78
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Other
-</td>
-<td style="text-align:right;">
-40.00
-</td>
-<td style="text-align:right;">
-60.00
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Yes
-</td>
-<td style="text-align:right;">
-24.50
-</td>
-<td style="text-align:right;">
-75.50
-</td>
-</tr>
-</tbody>
-</table>
-<em>Responses from organizations that selected ‘Other’ for their
-registration status</em>
-<table class=" lightable-minimal" style="font-family: &quot;Trebuchet MS&quot;, verdana, sans-serif; margin-left: auto; margin-right: auto;">
-<thead>
-<tr>
-<th style="text-align:left;">
-Responses
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:left;">
-Archived as a sub group of another organisation - Salamander Trust
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Déjà enregistré mais pas encore légal
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Em processo de registro.
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-En Nicaragua no se puede. En Costa Rica estamos en proceso.
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-En proceso de obtención de la personaduria Juridica
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-In registration process
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-In the process of everything
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-It belongs to a private company, but we are planing to create a
-Foundation out of it.
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Le processus d’enregistrement est en cours.
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Masih dalam Proses pendaftaran Legalitas
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Nos encontramos en proceso de constitución legal.
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Not sure
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Our registration application process is underway.
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Registered in 2011 but not officially active with respect to governemnt
-authorities (work under the radar mostly)
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Under a global registered entity
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Wapichan Wiizi Women’s Movement is the arm of the South Rupununi
-District Council. The SRDC is officially gazette under Guyanese laws.
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-We are unincorporated under Australian law.
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-We used to register but due to current Myanmar political situation has
-not extended.
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-en cours
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-encours d’enregistrement final
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-n/a
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-no contamos con personeria juridica pero realizamos activismo constantes
-con el colectivo rebeldia/ clacai
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-part of the Universities of Sussex and the West of England
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-registered but no more extension period
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-registered, but no more extension (expired)
-</td>
-</tr>
-</tbody>
-</table>
-<p>Regarding organizational scope, those with a regional focus receive
-external funding more frequently. In contrast, less than 66.6% of
-organizations with a local focus report receiving external funding</p>
-<table class=" lightable-minimal" style="font-family: &quot;Trebuchet MS&quot;, verdana, sans-serif; margin-left: auto; margin-right: auto;">
-<thead>
-<tr>
-<th style="text-align:left;">
-Scope
-</th>
-<th style="text-align:right;">
-no
-</th>
-<th style="text-align:right;">
-yes
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:left;">
-Diaspora
-</td>
-<td style="text-align:right;">
-18.18
-</td>
-<td style="text-align:right;">
-81.82
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Global
-</td>
-<td style="text-align:right;">
-29.31
-</td>
-<td style="text-align:right;">
-70.69
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Local
-</td>
-<td style="text-align:right;">
-33.44
-</td>
-<td style="text-align:right;">
-66.56
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-National
-</td>
-<td style="text-align:right;">
-28.57
-</td>
-<td style="text-align:right;">
-71.43
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Regional
-</td>
-<td style="text-align:right;">
-13.79
-</td>
-<td style="text-align:right;">
-86.21
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Transnational
-</td>
-<td style="text-align:right;">
-23.53
-</td>
-<td style="text-align:right;">
-76.47
-</td>
-</tr>
-</tbody>
-</table>
-<p>Finally, it is observed that as the organization ages, the Percentage
-of those receiving external funding increases, while this Percentage
-decreases significantly for more recently established organizations.
-Only 16.7% of organizations formed in 2023 report receiving external
-funding, in contrast to 88.3% of those established before the year
-2000.</p>
-<table class=" lightable-minimal" style="font-family: &quot;Trebuchet MS&quot;, verdana, sans-serif; margin-left: auto; margin-right: auto;">
-<thead>
-<tr>
-<th style="text-align:left;">
-Formation period
-</th>
-<th style="text-align:right;">
-no
-</th>
-<th style="text-align:right;">
-yes
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:left;">
-Before 2000
-</td>
-<td style="text-align:right;">
-11.68
-</td>
-<td style="text-align:right;">
-88.32
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Between 2000 and 2009
-</td>
-<td style="text-align:right;">
-17.65
-</td>
-<td style="text-align:right;">
-82.35
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Between 2010 and 2014
-</td>
-<td style="text-align:right;">
-24.26
-</td>
-<td style="text-align:right;">
-75.74
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Between 2015 and 2020
-</td>
-<td style="text-align:right;">
-32.33
-</td>
-<td style="text-align:right;">
-67.67
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Year 2021
-</td>
-<td style="text-align:right;">
-35.71
-</td>
-<td style="text-align:right;">
-64.29
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Year 2022
-</td>
-<td style="text-align:right;">
-49.02
-</td>
-<td style="text-align:right;">
-50.98
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Year 2023
-</td>
-<td style="text-align:right;">
-83.33
-</td>
-<td style="text-align:right;">
-16.67
-</td>
-</tr>
-</tbody>
-</table>
-<p>Among the organizations that received external funding between 2021
-and 2023, 83.7% reported receiving funding in 2021, 92.5% in 2022, and
-97.5% in 2023.</p>
-<table class=" lightable-minimal" style="font-family: &quot;Trebuchet MS&quot;, verdana, sans-serif; margin-left: auto; margin-right: auto;">
-<thead>
-<tr>
-<th style="text-align:left;">
-Year
-</th>
-<th style="text-align:right;">
-n
-</th>
-<th style="text-align:right;">
-Percentage
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:left;">
-2023
-</td>
-<td style="text-align:right;">
-650
-</td>
-<td style="text-align:right;">
-97.5
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-2022
-</td>
-<td style="text-align:right;">
-617
-</td>
-<td style="text-align:right;">
-92.5
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-2021
-</td>
-<td style="text-align:right;">
-558
-</td>
-<td style="text-align:right;">
-83.7
-</td>
-</tr>
-</tbody>
-</table>
-<p><strong>Organizations that received external funding during
-2023</strong></p>
-<p>Of the total organizations that received external funding in 2023,
-73.6% promote the rights of women or girls or trans or gender diverse
-people with intersecting identities, and this is the “primary focus of
-all our work”.</p>
-<table class=" lightable-minimal" style="font-family: &quot;Trebuchet MS&quot;, verdana, sans-serif; margin-left: auto; margin-right: auto;">
-<thead>
-<tr>
-<th style="text-align:left;">
-Organization description
-</th>
-<th style="text-align:right;">
-count
-</th>
-<th style="text-align:right;">
-Percentage
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:left;">
-Other
-</td>
-<td style="text-align:right;">
-46
-</td>
-<td style="text-align:right;">
-7.08
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Primary focus
-</td>
-<td style="text-align:right;">
-496
-</td>
-<td style="text-align:right;">
-76.31
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Specific project(s)
-</td>
-<td style="text-align:right;">
-108
-</td>
-<td style="text-align:right;">
-16.62
-</td>
-</tr>
-</tbody>
-</table>
-<p>Of the total organizations that received external funding in 2023,
-86.7% were registered organizations”.</p>
-<table class=" lightable-minimal" style="font-family: &quot;Trebuchet MS&quot;, verdana, sans-serif; margin-left: auto; margin-right: auto;">
-<thead>
-<tr>
-<th style="text-align:left;">
-Registration
-</th>
-<th style="text-align:right;">
-count
-</th>
-<th style="text-align:right;">
-Percentage
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:left;">
-No
-</td>
-<td style="text-align:right;">
-72
-</td>
-<td style="text-align:right;">
-11.16
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Other
-</td>
-<td style="text-align:right;">
-14
-</td>
-<td style="text-align:right;">
-2.17
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Yes
-</td>
-<td style="text-align:right;">
-559
-</td>
-<td style="text-align:right;">
-86.67
-</td>
-</tr>
-</tbody>
-</table>
-<p>On the other hand, most organizations that received external funding
-in the past year were characterized by having a national scope:
-49.5%.</p>
-<table class=" lightable-minimal" style="font-family: &quot;Trebuchet MS&quot;, verdana, sans-serif; margin-left: auto; margin-right: auto;">
-<thead>
-<tr>
-<th style="text-align:left;">
-Scope
-</th>
-<th style="text-align:right;">
-n
-</th>
-<th style="text-align:right;">
-Percentage
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:left;">
-Diaspora
-</td>
-<td style="text-align:right;">
-9
-</td>
-<td style="text-align:right;">
-1.38
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Global
-</td>
-<td style="text-align:right;">
-39
-</td>
-<td style="text-align:right;">
-6.00
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Local
-</td>
-<td style="text-align:right;">
-193
-</td>
-<td style="text-align:right;">
-29.69
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-National
-</td>
-<td style="text-align:right;">
-322
-</td>
-<td style="text-align:right;">
-49.54
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Regional
-</td>
-<td style="text-align:right;">
-74
-</td>
-<td style="text-align:right;">
-11.38
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Transnational
-</td>
-<td style="text-align:right;">
-13
-</td>
 <td style="text-align:right;">
-2.00
+11.2
 </td>
-</tr>
-</tbody>
-</table>
-<p>Lastly, it is observed that the Percentage of organizations receiving
-external funding in 2023 increases with the length of their
-establishment</p>
-<table class=" lightable-minimal" style="font-family: &quot;Trebuchet MS&quot;, verdana, sans-serif; margin-left: auto; margin-right: auto;">
-<thead>
-<tr>
-<th style="text-align:left;">
-Formation period
-</th>
-<th style="text-align:right;">
-no
-</th>
-<th style="text-align:right;">
-yes
-</th>
 </tr>
-</thead>
-<tbody>
 <tr>
 <td style="text-align:left;">
-Before 2000
-</td>
-<td style="text-align:right;">
-11.68
+<ol start="2" style="list-style-type: lower-alpha">
+<li>&lt;5000
 </td>
 <td style="text-align:right;">
-88.32
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Between 2000 and 2009
+17.9
 </td>
 <td style="text-align:right;">
-17.65
+15.5
 </td>
 <td style="text-align:right;">
-82.35
+14.7
 </td>
 </tr>
 <tr>
 <td style="text-align:left;">
-Between 2010 and 2014
-</td>
-<td style="text-align:right;">
-24.26
+<ol start="3" style="list-style-type: lower-alpha">
+<li>5001-10000
 </td>
 <td style="text-align:right;">
-75.74
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Between 2015 and 2020
+12.4
 </td>
 <td style="text-align:right;">
-32.33
+12.9
 </td>
 <td style="text-align:right;">
-67.67
+11.4
 </td>
 </tr>
 <tr>
 <td style="text-align:left;">
-Year 2021
-</td>
-<td style="text-align:right;">
-35.71
+<ol start="4" style="list-style-type: lower-alpha">
+<li>10001-30000
 </td>
 <td style="text-align:right;">
-64.29
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Year 2022
+13.2
 </td>
 <td style="text-align:right;">
-49.02
+14.6
 </td>
 <td style="text-align:right;">
-50.98
+15.4
 </td>
 </tr>
 <tr>
 <td style="text-align:left;">
-Year 2023
-</td>
-<td style="text-align:right;">
-83.33
-</td>
-<td style="text-align:right;">
-16.67
-</td>
-</tr>
-</tbody>
-</table>
-<p><strong>Percentage of external funding received in total budget by
-year</strong></p>
-<table class=" lightable-minimal" style="font-family: &quot;Trebuchet MS&quot;, verdana, sans-serif; margin-left: auto; margin-right: auto;">
-<thead>
-<tr>
-<th style="text-align:right;">
-Range
-</th>
-<th style="text-align:right;">
-Percentage 2023
-</th>
-<th style="text-align:right;">
-Percentage 2022
-</th>
-<th style="text-align:right;">
-Percentage 2021
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:right;">
-0
-</td>
-<td style="text-align:right;">
-2.5
-</td>
-<td style="text-align:right;">
-6.4
-</td>
-<td style="text-align:right;">
-11.8
-</td>
-</tr>
-<tr>
-<td style="text-align:right;">
-10
-</td>
-<td style="text-align:right;">
-6.9
-</td>
-<td style="text-align:right;">
-6.5
-</td>
-<td style="text-align:right;">
-8.5
-</td>
-</tr>
-<tr>
-<td style="text-align:right;">
-20
-</td>
-<td style="text-align:right;">
-4.3
-</td>
-<td style="text-align:right;">
-7.1
-</td>
-<td style="text-align:right;">
-6.2
-</td>
-</tr>
-<tr>
-<td style="text-align:right;">
-30
-</td>
-<td style="text-align:right;">
-6.3
-</td>
-<td style="text-align:right;">
-5.6
-</td>
-<td style="text-align:right;">
-5.2
-</td>
-</tr>
-<tr>
-<td style="text-align:right;">
-40
-</td>
-<td style="text-align:right;">
-5.1
-</td>
-<td style="text-align:right;">
-5.0
-</td>
-<td style="text-align:right;">
-4.3
-</td>
-</tr>
-<tr>
-<td style="text-align:right;">
-50
-</td>
-<td style="text-align:right;">
-4.9
-</td>
-<td style="text-align:right;">
-5.3
-</td>
-<td style="text-align:right;">
-5.4
-</td>
-</tr>
-<tr>
-<td style="text-align:right;">
-60
-</td>
-<td style="text-align:right;">
-5.1
-</td>
-<td style="text-align:right;">
-4.7
-</td>
-<td style="text-align:right;">
-5.2
+<ol start="5" style="list-style-type: lower-alpha">
+<li>30001 -50000
 </td>
-</tr>
-<tr>
 <td style="text-align:right;">
-70
+8.8
 </td>
 <td style="text-align:right;">
 7.8
 </td>
 <td style="text-align:right;">
-8.3
-</td>
-<td style="text-align:right;">
-6.8
+8.8
 </td>
 </tr>
 <tr>
-<td style="text-align:right;">
-80
+<td style="text-align:left;">
+<ol start="6" style="list-style-type: lower-alpha">
+<li>50001 - 100000
 </td>
 <td style="text-align:right;">
-12.1
+9.0
 </td>
 <td style="text-align:right;">
-9.4
+11.3
 </td>
 <td style="text-align:right;">
-7.3
-</td>
-</tr>
-<tr>
-<td style="text-align:right;">
-90
-</td>
-<td style="text-align:right;">
-16.3
-</td>
-<td style="text-align:right;">
-16.2
-</td>
-<td style="text-align:right;">
-15.2
+12.5
 </td>
 </tr>
 <tr>
-<td style="text-align:right;">
-100
+<td style="text-align:left;">
+<ol start="7" style="list-style-type: lower-alpha">
+<li>100001 - 250000
 </td>
 <td style="text-align:right;">
-28.5
+10.8
 </td>
 <td style="text-align:right;">
-25.3
+10.7
 </td>
 <td style="text-align:right;">
-24.2
+11.2
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+<ol start="8" style="list-style-type: lower-alpha">
+<li>250001 - 500000
+</td>
+<td style="text-align:right;">
+5.2
+</td>
+<td style="text-align:right;">
+5.8
+</td>
+<td style="text-align:right;">
+6.0
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+<ol style="list-style-type: lower-roman">
+<li>500001 - 1000000
+</td>
+<td style="text-align:right;">
+3.0
+</td>
+<td style="text-align:right;">
+3.3
+</td>
+<td style="text-align:right;">
+3.5
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+<ol start="10" style="list-style-type: lower-alpha">
+<li>1000001 - 2000000
+</td>
+<td style="text-align:right;">
+1.7
+</td>
+<td style="text-align:right;">
+1.9
+</td>
+<td style="text-align:right;">
+2.0
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+<ol start="11" style="list-style-type: lower-alpha">
+<li>2000001 - 4000000
+</td>
+<td style="text-align:right;">
+0.9
+</td>
+<td style="text-align:right;">
+1.2
+</td>
+<td style="text-align:right;">
+1.2
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+<ol start="12" style="list-style-type: lower-alpha">
+<li>&gt; 4000001
+</td>
+<td style="text-align:right;">
+2.2
+</td>
+<td style="text-align:right;">
+2.1
+</td>
+<td style="text-align:right;">
+2.0
 </td>
 </tr>
 </tbody>
-</table>
-<p>Examining the Percentage of external funding received each year in
-2021, 2022, and 2023, we can see that in the last two years, the median
-distribution was around 80, whereas in 2021 it was approximately r 70.
-Additionally, the average has increased each year: it was 59.5576619 in
-2021 and rose to 69.3853073 by 2023.</p>
-<p><strong>Main Sources of External Funding</strong></p>
-<p>As it is showns below, the main source of external funding among
-organizations participating in the survey is from Women’s and Feminist
-Funds, followed by International Non-Governmental Organizations
-(INGOs).</p>
+</table></li>
+</ol></li>
+</ol></li>
+</ol></li>
+</ol></li>
+</ol></li>
+</ol></li>
+</ol></li>
+</ol></li>
+</ol></li>
+</ol></li>
+</ol></li>
+</ol>
+<p><strong>-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-</strong></p>
+<p><strong>BUDGET GROUPED PROPOSAL</strong></p>
+<pre><code>## # A tibble: 13 × 2
+##    q10_budget_year_2021      n
+##    &lt;chr&gt;                 &lt;int&gt;
+##  1 (a) Zero budget         132
+##  2 (b) &lt;5000               157
+##  3 (c) 5001-10000          109
+##  4 (d) 10001-30000         116
+##  5 (e) 30001 -50000         77
+##  6 (f) 50001 - 100000       79
+##  7 (g) 100001 - 250000      95
+##  8 (h) 250001 - 500000      46
+##  9 (i) 500001 - 1000000     26
+## 10 (j) 1000001 - 2000000    15
+## 11 (k) 2000001 - 4000000     8
+## 12 (l) &gt; 4000001            19
+## 13 &lt;NA&gt;                    102</code></pre>
+<pre><code>## # A tibble: 8 × 4
+##   Annual_budget       Percentage_2021 Percentage_2022 Percentage_2023
+##   &lt;chr&gt;                         &lt;dbl&gt;           &lt;dbl&gt;           &lt;dbl&gt;
+## 1 (a) Zero budget                15              12.8            11.2
+## 2 (b) &lt;5000                      17.9            15.5            14.7
+## 3 (c) 5001-10000                 12.4            12.9            11.4
+## 4 (d) 10001-30000                13.2            14.6            15.4
+## 5 (e) 30001 -50000                8.8             7.8             8.8
+## 6 (f) 50001 - 100000              9              11.3            12.5
+## 7 (g) 100001 - 250000            10.8            10.7            11.2
+## 8 (h) &gt; 250001                   13              14.4            14.8</code></pre>
+<p><strong>–Analysis notes———————————————————————–</strong></p>
+<p>This grouping maintains interesting proportions respecting the way
+the question was asked. Only the highest amounts are grouped
+together.</p>
+<p>We suggest using the year 2023 as a crossover variable for other
+questions as it accounts for size.</p>
+<p><strong>————————————————————————————————</strong></p>
+<p><strong>-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-</strong></p>
+<p>Q11. In 2020 (during COVID-19 pandemic), how was your budget
+affected?</p>
 <table class=" lightable-minimal" style="font-family: &quot;Trebuchet MS&quot;, verdana, sans-serif; margin-left: auto; margin-right: auto;">
 <thead>
 <tr>
 <th style="text-align:left;">
-Source
+q11_covid_incidence
+</th>
+<th style="text-align:right;">
+n
 </th>
 <th style="text-align:right;">
 Percentage
@@ -1665,365 +860,480 @@ Percentage
 <tbody>
 <tr>
 <td style="text-align:left;">
-Multirateral
+1 Grow substantively
 </td>
 <td style="text-align:right;">
-17.4
+47
+</td>
+<td style="text-align:right;">
+6.2
 </td>
 </tr>
 <tr>
 <td style="text-align:left;">
-Bilateral
+2 Grow slightly
 </td>
 <td style="text-align:right;">
-19.6
+155
+</td>
+<td style="text-align:right;">
+20.6
 </td>
 </tr>
 <tr>
 <td style="text-align:left;">
-Philanthropic
+3 Stay the same
 </td>
 <td style="text-align:right;">
-31.3
+153
+</td>
+<td style="text-align:right;">
+20.3
 </td>
 </tr>
 <tr>
 <td style="text-align:left;">
-Feminist
+4 Decrease slightly
 </td>
 <td style="text-align:right;">
-56.4
+179
+</td>
+<td style="text-align:right;">
+23.8
 </td>
 </tr>
 <tr>
 <td style="text-align:left;">
-Private
+5 Decrease substantially
 </td>
 <td style="text-align:right;">
-10.0
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-INGOS
+219
 </td>
 <td style="text-align:right;">
-36.3
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Individual
-</td>
-<td style="text-align:right;">
-22.6
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Government
-</td>
-<td style="text-align:right;">
-15.0
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Other
-</td>
-<td style="text-align:right;">
-5.7
+29.1
 </td>
 </tr>
 </tbody>
 </table>
-<p>When examining this data by organizational focus, we observe that
-organizations primarily dedicated to the rights of women, girls, trans,
-and gender-diverse individuals see an even greater increase in feminist
-funding.</p>
+<p><img src="data:image/png;base64,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SABbdelIDIlXwgEdH6SrLh0JYKsuHQk0XHXpSABbdelIDIlXwgEdH6SrLh0JYKsuHQk0XHXpSABbdelIDIlXwgEdH6SrLh0JYKsuHQk0XHXpSABbdelIDIlXwgEdH6SrLh0JYKsuHQk0XHXpSABbdelIDIlXwgEdH6SrLh0JYKsuHQk0XHXpSABbdelIDIlXwgEdH6SrLh0JYKsuHQk0XHXpSABbdelIDIlXwgEdH6SrLh0JYKsuHQk0XHXpSABbdelIDIlXwgEdH6SrLh0JYKsuHQk0XHXpSABbdelIDIlXwgEdH6SrLh0JYKsuHQk0XHXpSABbdelIDIlXwgEdH6SrLh0JYKsuHQk0XHXpSABbdelIDIlXwgEdH6SrLh0JYKsuHQk0XHXpSABbdelIDIlXwgEdH6SrLh0JYKsuHQk0XHXpSABbdelIDIlXwgEdH6SrLh0JYKsuHQk0XHXpSABbdelIDIlXwgEdH6SrLh0JYKsuHQk0XHXpSABbdelIDIlXwgEdH6SrLh0JYKsuHQk0XHXpSABbdelIDIlXwgEdH6SrLh0JYKsuHQk0XHXpSABbdelIDIlXwgEdH6SrLh0JYKsuHQk0XHXpSABbdelIDIlXwgEdH6SrLh0JYKsuHQk0XHXpSABbdelIDIlXwgEdH6SrLh0JYKsuHQk0XHXpSABbdelIDIlXwgEdH6SrLh0JYKsuHQk0XHXpSABbdelIDIlXwgEdH6SrLh0JYKsuHQk0XHXpSABbdelIDIlXwgEdH6SrLh0JYKsuHQk0XHXpSABbdelIDIlXwgEdH6SrLh0JYKsuHQk0XHXpSABbdelIDIlXwgEdH6SrLh0JYKsuHQk0XHXpSABbdelIDIlXwgEdH6SrLh0JYKsuHQk0XHXpSABbdelIDIlXwgEdH6SrLh0JYKsuHQk0XHXpSABbdelIDIlXwgEdH6SrLh0JYKsuHQk0XHXpSABbdelIDIlXwgEdH6SrLh0JYKsuHQk0XHXpSABbdelIDIlXwgEdH6SrLh0JYKsuHQk0XHXpSABbdelIDIlXwgEdH6SrLh0JYKsuHQk0XHXpSABbdelIDIlXwgEdH6SrLh0JYKsuHQk0XHXpSABbdelIDIlXwgEdH6SrLh0JYKsuHQk0XHXpSABbdelIDIlXwgEdH6SrLh0JYKsuHQk0XHXpSABbdelIDIlXwgEdH6SrLh0JYKsuHQk0XHXpSABbdelIDIlXwgEdH6SrLh0JYKsuHQk0XHXpSABbdelIDIlXwgEdH6SrLh0JYKsuHQk0XHXpSABbdelIDIlXwgEdH6SrLh0JYKsuHQk0XHXpSABbdelIDIlXwgEdH6SrLh0JYKsuHQk0XHXpSABbdelIDIlXwgEdH6SrLh0JYKsuHQk0XHXpSABbdelIDIlXwgEdH6SrLh0JYKsuHQk0XHXpSABbdelIDIlXwgEdH6SrLh0JYKsuHQk0XHXpSABbdelIDIlXwgEdH6SrLh0JYKsuHQk0XHXpSABbdelIDIlXwgEdH6SrLh0JYKsuHQk0XHXpSABbdelIDIlXwgEdH6SrLh0JYKsuHQk0XHXpSABbdelIDIlXwgEdH6SrLh0JYKsuHQk0XHXpSABbdelIDIlXwgEdH6SrLh0JYKsuHQk0XHXpSABbdelIDIlXwgEdH6SrLh0JYKsuHQk0XHXpSABbdelIDIlXwgEdH6SrLh0JYKsuHQk0XHXpSABbdelIDIlXwgEdH6SrLh0JYKsuHQk0XHXpSABbdelIDIlXwgEdH6SrLh0JYKsuHQk0XHXpSABbdelIDIlXwgEdH6SrLh0JYKsuHQk0XHXpSABbdelIDIlXwgEdH6SrLh0JYKsuHQk0XHXpSABbdelIDIlXwgEdH6SrLh0JYKsuHQk0XHXpSABbdelIDIlXwgEdH6SrLh0JYKsuHQk0XHXpSABbdelIDIlXwgEdH6SrLh0JYKsuHQk0XHXpSABbdelIDIlXwgEdH6SrLh0JYKsuHQk0XHXpSABbdelIDIlXwgEdH6SrLh0JYKsuHQk0XHXpSABbdelIDIlXwgEdH6SrLh0JYKsuHQk0XHXpSABbdelIDIlXwgEdH6SrLh0JYKsuHQk0XHXpSABbdelIDIlXwgEdH6SrLh0JYKsuHQk0XHXpSABbdelIDIlXwgEdH6SrLh0JYKsuHQk0XHXpSABbdelIDIlXwgEdH6SrLh0JYKsuHQk0XHXpSABbdelIDIlXwgEdH6SrLh0JYKsuHQk0XHXpSABbdelIDIlXwgEdH6SrLh0JYKsuHQk0XHXpSABbdelIDIlXwgEdH6SrLh0JYKsuHQk0XHXpSABbdelIDIlXwgEdH6SrLh0JYKsuHQk0XHXpSABbdelIDIlXwgEdH6SrLh0J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" width="672" />
+<strong>-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-</strong></p>
+<p>##CROSSTABS Q10 - only 2023</p>
+<p><strong>-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-</strong></p>
+<p><strong>2023 budget BY AWID FOCUS SUBJECTS</strong></p>
+<p>(first option)</p>
+<pre><code>## `summarise()` has grouped output by &#39;q10_budget_grp_2023&#39;. You can override
+## using the `.groups` argument.
+## `summarise()` has grouped output by &#39;q10_budget_grp_2023&#39;. You can override
+## using the `.groups` argument.
+## `summarise()` has grouped output by &#39;q10_budget_grp_2023&#39;. You can override
+## using the `.groups` argument.
+## `summarise()` has grouped output by &#39;q10_budget_grp_2023&#39;. You can override
+## using the `.groups` argument.
+## `summarise()` has grouped output by &#39;q10_budget_grp_2023&#39;. You can override
+## using the `.groups` argument.
+## `summarise()` has grouped output by &#39;q10_budget_grp_2023&#39;. You can override
+## using the `.groups` argument.
+## `summarise()` has grouped output by &#39;q10_budget_grp_2023&#39;. You can override
+## using the `.groups` argument.
+## `summarise()` has grouped output by &#39;q10_budget_grp_2023&#39;. You can override
+## using the `.groups` argument.
+## `summarise()` has grouped output by &#39;q10_budget_grp_2023&#39;. You can override
+## using the `.groups` argument.</code></pre>
 <table class=" lightable-minimal" style="font-family: &quot;Trebuchet MS&quot;, verdana, sans-serif; margin-left: auto; margin-right: auto;">
 <thead>
 <tr>
 <th style="text-align:left;">
-Description
+q4_grouped
 </th>
 <th style="text-align:right;">
-Total
+<ol style="list-style-type: lower-alpha">
+<li>Zero budget
 </th>
 <th style="text-align:right;">
-Multirateral
+<ol start="2" style="list-style-type: lower-alpha">
+<li>&lt;5000
 </th>
 <th style="text-align:right;">
-Bilateral
+<ol start="3" style="list-style-type: lower-alpha">
+<li>5001-10000
 </th>
 <th style="text-align:right;">
-Philanthropic
+<ol start="4" style="list-style-type: lower-alpha">
+<li>10001-30000
 </th>
 <th style="text-align:right;">
-Feminist
+<ol start="5" style="list-style-type: lower-alpha">
+<li>30001 -50000
 </th>
 <th style="text-align:right;">
-Private
+<ol start="6" style="list-style-type: lower-alpha">
+<li>50001 - 100000
 </th>
 <th style="text-align:right;">
-INGOS
+<ol start="7" style="list-style-type: lower-alpha">
+<li>100001 - 250000
 </th>
 <th style="text-align:right;">
-Individual
-</th>
-<th style="text-align:right;">
-Government
-</th>
-<th style="text-align:right;">
-Other
+<ol start="8" style="list-style-type: lower-alpha">
+<li>&gt; 250001
 </th>
 </tr>
 </thead>
 <tbody>
 <tr>
 <td style="text-align:left;">
-Other
+Anti Caste
 </td>
 <td style="text-align:right;">
-48
+5.5
 </td>
 <td style="text-align:right;">
-10.4
-</td>
-<td style="text-align:right;">
-22.9
-</td>
-<td style="text-align:right;">
-20.8
-</td>
-<td style="text-align:right;">
-41.7
+4.2
 </td>
 <td style="text-align:right;">
 6.2
 </td>
 <td style="text-align:right;">
-54.2
+3.3
 </td>
 <td style="text-align:right;">
-10.4
+1.2
 </td>
 <td style="text-align:right;">
-8.3
+0.8
 </td>
 <td style="text-align:right;">
-10.4
+NA
+</td>
+<td style="text-align:right;">
+2.8
 </td>
 </tr>
 <tr>
 <td style="text-align:left;">
-Primary focus
+Anti-militarization and peace
 </td>
 <td style="text-align:right;">
-509
+13.6
 </td>
 <td style="text-align:right;">
-18.1
+11.1
 </td>
 <td style="text-align:right;">
-19.1
+11.6
 </td>
 <td style="text-align:right;">
-31.0
+10.6
 </td>
 <td style="text-align:right;">
-59.1
+9.3
 </td>
 <td style="text-align:right;">
-9.8
+4.1
 </td>
 <td style="text-align:right;">
-34.4
+4.5
 </td>
 <td style="text-align:right;">
-23.2
-</td>
-<td style="text-align:right;">
-14.9
-</td>
-<td style="text-align:right;">
-4.9
+11.7
 </td>
 </tr>
 <tr>
 <td style="text-align:left;">
-Specific projects
+Climate and environmental justice
 </td>
 <td style="text-align:right;">
-110
+33.6
 </td>
 <td style="text-align:right;">
-17.3
+31.9
+</td>
+<td style="text-align:right;">
+35.7
+</td>
+<td style="text-align:right;">
+33.8
+</td>
+<td style="text-align:right;">
+33.7
+</td>
+<td style="text-align:right;">
+35.0
+</td>
+<td style="text-align:right;">
+26.4
+</td>
+<td style="text-align:right;">
+29.0
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Countering anti-gender and anti-rights
 </td>
 <td style="text-align:right;">
 20.9
 </td>
 <td style="text-align:right;">
-37.3
+25.7
 </td>
 <td style="text-align:right;">
-50.0
+24.1
 </td>
 <td style="text-align:right;">
-12.7
+19.2
 </td>
 <td style="text-align:right;">
-37.3
+18.6
+</td>
+<td style="text-align:right;">
+18.7
+</td>
+<td style="text-align:right;">
+20.0
+</td>
+<td style="text-align:right;">
+37.9
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Holistic safety, protection and collective care
+</td>
+<td style="text-align:right;">
+20.9
+</td>
+<td style="text-align:right;">
+19.4
+</td>
+<td style="text-align:right;">
+23.2
+</td>
+<td style="text-align:right;">
+17.9
+</td>
+<td style="text-align:right;">
+15.1
+</td>
+<td style="text-align:right;">
+28.5
+</td>
+<td style="text-align:right;">
+19.1
 </td>
 <td style="text-align:right;">
 25.5
 </td>
-<td style="text-align:right;">
-18.2
+</tr>
+<tr>
+<td style="text-align:left;">
+Lesbian, Bisexual and queer rights
 </td>
 <td style="text-align:right;">
-7.3
+24.5
+</td>
+<td style="text-align:right;">
+23.6
+</td>
+<td style="text-align:right;">
+23.2
+</td>
+<td style="text-align:right;">
+25.8
+</td>
+<td style="text-align:right;">
+26.7
+</td>
+<td style="text-align:right;">
+24.4
+</td>
+<td style="text-align:right;">
+22.7
+</td>
+<td style="text-align:right;">
+27.6
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Sex workers rights
+</td>
+<td style="text-align:right;">
+29.1
+</td>
+<td style="text-align:right;">
+25.7
+</td>
+<td style="text-align:right;">
+15.2
+</td>
+<td style="text-align:right;">
+23.8
+</td>
+<td style="text-align:right;">
+23.3
+</td>
+<td style="text-align:right;">
+22.8
+</td>
+<td style="text-align:right;">
+17.3
+</td>
+<td style="text-align:right;">
+16.6
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Trans and non-binary rights
+</td>
+<td style="text-align:right;">
+16.4
+</td>
+<td style="text-align:right;">
+20.8
+</td>
+<td style="text-align:right;">
+19.6
+</td>
+<td style="text-align:right;">
+17.9
+</td>
+<td style="text-align:right;">
+17.4
+</td>
+<td style="text-align:right;">
+18.7
+</td>
+<td style="text-align:right;">
+17.3
+</td>
+<td style="text-align:right;">
+22.1
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Other feminists subjects (not AWID focus)
+</td>
+<td style="text-align:right;">
+30.9
+</td>
+<td style="text-align:right;">
+28.5
+</td>
+<td style="text-align:right;">
+28.6
+</td>
+<td style="text-align:right;">
+28.5
+</td>
+<td style="text-align:right;">
+23.3
+</td>
+<td style="text-align:right;">
+26.0
+</td>
+<td style="text-align:right;">
+36.4
+</td>
+<td style="text-align:right;">
+32.4
 </td>
 </tr>
 </tbody>
-</table>
-<p>Regarding organizational registration, it is noted that registered
-organizations received more funding from multilateral, bilateral,
-private, and government sources compared to those that are not
-registered.</p>
+</table></li>
+</ol></li>
+</ol></li>
+</ol></li>
+</ol></li>
+</ol></li>
+</ol></li>
+</ol></li>
+</ol>
+<p><strong>–Lecture———————————————————————–</strong></p>
+<p>Here we can analyze for the organizations according to their budget,
+in which issues they work or are more represented.</p>
+<p>For example, among the organizations with Zero budget there is a
+higher proportion of those working on Sex workers rights issues than
+among the organizations with more funding.</p>
+<p><strong>————————————————————————————————</strong></p>
+<p><strong>AWID FOCUS SUBJECTS BY 2023 budget</strong></p>
+<p>This is the reverse crossover: we see how the amount of the budget is
+distributed within each of the groups. Remember that the topics
+overlap.</p>
+<pre><code>## `summarise()` has grouped output by &#39;q4_forms_organizing.anti_caste&#39;. You can
+## override using the `.groups` argument.
+## `summarise()` has grouped output by &#39;q4_forms_organizing.anti_militarization&#39;.
+## You can override using the `.groups` argument.
+## `summarise()` has grouped output by &#39;q4_forms_organizing.climate_justice&#39;. You
+## can override using the `.groups` argument.
+## `summarise()` has grouped output by
+## &#39;q4_forms_organizing.countering_anti_gender&#39;. You can override using the
+## `.groups` argument.
+## `summarise()` has grouped output by
+## &#39;q4_forms_organizing.holistic_safety_protection_collective_care&#39;. You can
+## override using the `.groups` argument.
+## `summarise()` has grouped output by
+## &#39;q4_forms_organizing.lesbian_bisexual_queer_rights&#39;. You can override using the
+## `.groups` argument.
+## `summarise()` has grouped output by &#39;q4_forms_organizing.sex_workers_rights&#39;.
+## You can override using the `.groups` argument.
+## `summarise()` has grouped output by
+## &#39;q4_forms_organizing.trans_non_binary_rights&#39;. You can override using the
+## `.groups` argument.
+## `summarise()` has grouped output by &#39;q4_awid_focus_no&#39;. You can override using
+## the `.groups` argument.</code></pre>
 <table class=" lightable-minimal" style="font-family: &quot;Trebuchet MS&quot;, verdana, sans-serif; margin-left: auto; margin-right: auto;">
 <thead>
 <tr>
 <th style="text-align:left;">
-Registered
+q4_grouped
 </th>
 <th style="text-align:right;">
-Total
+<ol style="list-style-type: lower-alpha">
+<li>Zero budget
 </th>
 <th style="text-align:right;">
-Multirateral
+<ol start="2" style="list-style-type: lower-alpha">
+<li>&lt;5000
 </th>
 <th style="text-align:right;">
-Bilateral
+<ol start="3" style="list-style-type: lower-alpha">
+<li>5001-10000
 </th>
 <th style="text-align:right;">
-Philanthropic
+<ol start="4" style="list-style-type: lower-alpha">
+<li>10001-30000
 </th>
 <th style="text-align:right;">
-Feminist
+<ol start="5" style="list-style-type: lower-alpha">
+<li>30001 -50000
 </th>
 <th style="text-align:right;">
-Private
+<ol start="6" style="list-style-type: lower-alpha">
+<li>50001 - 100000
 </th>
 <th style="text-align:right;">
-INGOS
+<ol start="7" style="list-style-type: lower-alpha">
+<li>100001 - 250000
 </th>
 <th style="text-align:right;">
-Individual
-</th>
-<th style="text-align:right;">
-Government
-</th>
-<th style="text-align:right;">
-Other
+<ol start="8" style="list-style-type: lower-alpha">
+<li>&gt; 250001
 </th>
 </tr>
 </thead>
 <tbody>
 <tr>
 <td style="text-align:left;">
-Other
+Anti Caste
 </td>
 <td style="text-align:right;">
-15
+20.0
 </td>
 <td style="text-align:right;">
-6.7
-</td>
-<td style="text-align:right;">
-13.3
-</td>
-<td style="text-align:right;">
-26.7
-</td>
-<td style="text-align:right;">
-53.3
-</td>
-<td style="text-align:right;">
-6.7
-</td>
-<td style="text-align:right;">
-33.3
-</td>
-<td style="text-align:right;">
-13.3
-</td>
-<td style="text-align:right;">
-13.3
-</td>
-<td style="text-align:right;">
-26.7
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-No registered
-</td>
-<td style="text-align:right;">
-76
-</td>
-<td style="text-align:right;">
-3.9
-</td>
-<td style="text-align:right;">
-6.6
-</td>
-<td style="text-align:right;">
-28.9
-</td>
-<td style="text-align:right;">
-61.8
-</td>
-<td style="text-align:right;">
-3.9
-</td>
-<td style="text-align:right;">
-27.6
-</td>
-<td style="text-align:right;">
-19.7
-</td>
-<td style="text-align:right;">
-3.9
-</td>
-<td style="text-align:right;">
-3.9
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Registered
-</td>
-<td style="text-align:right;">
-570
-</td>
-<td style="text-align:right;">
-19.6
-</td>
-<td style="text-align:right;">
-21.6
-</td>
-<td style="text-align:right;">
-31.6
-</td>
-<td style="text-align:right;">
-55.6
-</td>
-<td style="text-align:right;">
-11.1
-</td>
-<td style="text-align:right;">
-37.7
+20.0
 </td>
 <td style="text-align:right;">
 23.3
@@ -2032,3869 +1342,262 @@ Registered
 16.7
 </td>
 <td style="text-align:right;">
-5.4
-</td>
-</tr>
-</tbody>
-</table>
-<table class=" lightable-minimal" style="font-family: &quot;Trebuchet MS&quot;, verdana, sans-serif; margin-left: auto; margin-right: auto;">
-<thead>
-<tr>
-<th style="text-align:left;">
-Scope
-</th>
-<th style="text-align:right;">
-Total
-</th>
-<th style="text-align:right;">
-Multirateral
-</th>
-<th style="text-align:right;">
-Bilateral
-</th>
-<th style="text-align:right;">
-Philanthropic
-</th>
-<th style="text-align:right;">
-Feminist
-</th>
-<th style="text-align:right;">
-Private
-</th>
-<th style="text-align:right;">
-INGOS
-</th>
-<th style="text-align:right;">
-Individual
-</th>
-<th style="text-align:right;">
-Government
-</th>
-<th style="text-align:right;">
-Other
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:left;">
-Diaspora
+3.3
 </td>
 <td style="text-align:right;">
-9
+3.3
 </td>
 <td style="text-align:right;">
-0.0
+NA
 </td>
 <td style="text-align:right;">
-11.1
-</td>
-<td style="text-align:right;">
-44.4
-</td>
-<td style="text-align:right;">
-77.8
-</td>
-<td style="text-align:right;">
-0.0
-</td>
-<td style="text-align:right;">
-44.4
-</td>
-<td style="text-align:right;">
-0.0
-</td>
-<td style="text-align:right;">
-11.1
-</td>
-<td style="text-align:right;">
-0.0
+13.3
 </td>
 </tr>
 <tr>
 <td style="text-align:left;">
-Global
-</td>
-<td style="text-align:right;">
-41
-</td>
-<td style="text-align:right;">
-26.8
-</td>
-<td style="text-align:right;">
-34.1
-</td>
-<td style="text-align:right;">
-46.3
-</td>
-<td style="text-align:right;">
-26.8
-</td>
-<td style="text-align:right;">
-22.0
-</td>
-<td style="text-align:right;">
-14.6
-</td>
-<td style="text-align:right;">
-48.8
-</td>
-<td style="text-align:right;">
-22.0
-</td>
-<td style="text-align:right;">
-12.2
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Local
-</td>
-<td style="text-align:right;">
-199
-</td>
-<td style="text-align:right;">
-7.5
-</td>
-<td style="text-align:right;">
-10.1
-</td>
-<td style="text-align:right;">
-26.6
-</td>
-<td style="text-align:right;">
-56.8
-</td>
-<td style="text-align:right;">
-10.6
-</td>
-<td style="text-align:right;">
-33.2
-</td>
-<td style="text-align:right;">
-27.6
-</td>
-<td style="text-align:right;">
-20.1
-</td>
-<td style="text-align:right;">
-5.0
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-National
-</td>
-<td style="text-align:right;">
-330
-</td>
-<td style="text-align:right;">
-21.2
-</td>
-<td style="text-align:right;">
-23.0
-</td>
-<td style="text-align:right;">
-27.9
-</td>
-<td style="text-align:right;">
-59.1
-</td>
-<td style="text-align:right;">
-9.1
-</td>
-<td style="text-align:right;">
-40.6
-</td>
-<td style="text-align:right;">
-17.9
-</td>
-<td style="text-align:right;">
-12.7
-</td>
-<td style="text-align:right;">
-5.8
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Regional
-</td>
-<td style="text-align:right;">
-75
-</td>
-<td style="text-align:right;">
-26.7
-</td>
-<td style="text-align:right;">
-25.3
-</td>
-<td style="text-align:right;">
-49.3
-</td>
-<td style="text-align:right;">
-58.7
-</td>
-<td style="text-align:right;">
-9.3
-</td>
-<td style="text-align:right;">
-37.3
-</td>
-<td style="text-align:right;">
-21.3
-</td>
-<td style="text-align:right;">
-6.7
-</td>
-<td style="text-align:right;">
-4.0
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Transnational
-</td>
-<td style="text-align:right;">
-13
-</td>
-<td style="text-align:right;">
-0.0
-</td>
-<td style="text-align:right;">
-7.7
-</td>
-<td style="text-align:right;">
-30.8
-</td>
-<td style="text-align:right;">
-46.2
-</td>
-<td style="text-align:right;">
-0.0
-</td>
-<td style="text-align:right;">
-30.8
-</td>
-<td style="text-align:right;">
-7.7
-</td>
-<td style="text-align:right;">
-23.1
-</td>
-<td style="text-align:right;">
-7.7
-</td>
-</tr>
-</tbody>
-</table>
-<table class=" lightable-minimal" style="font-family: &quot;Trebuchet MS&quot;, verdana, sans-serif; margin-left: auto; margin-right: auto;">
-<thead>
-<tr>
-<th style="text-align:left;">
-Formation period
-</th>
-<th style="text-align:right;">
-Total
-</th>
-<th style="text-align:right;">
-Multirateral
-</th>
-<th style="text-align:right;">
-Bilateral
-</th>
-<th style="text-align:right;">
-Philanthropic
-</th>
-<th style="text-align:right;">
-Feminist
-</th>
-<th style="text-align:right;">
-Private
-</th>
-<th style="text-align:right;">
-INGOS
-</th>
-<th style="text-align:right;">
-Individual
-</th>
-<th style="text-align:right;">
-Government
-</th>
-<th style="text-align:right;">
-Other
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:left;">
-Before 2000
-</td>
-<td style="text-align:right;">
-121
-</td>
-<td style="text-align:right;">
-19.8
-</td>
-<td style="text-align:right;">
-28.9
-</td>
-<td style="text-align:right;">
-34.7
-</td>
-<td style="text-align:right;">
-44.6
-</td>
-<td style="text-align:right;">
-16.5
-</td>
-<td style="text-align:right;">
-39.7
-</td>
-<td style="text-align:right;">
-24.0
-</td>
-<td style="text-align:right;">
-19.8
-</td>
-<td style="text-align:right;">
-5.0
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Between 2000 and 2009
-</td>
-<td style="text-align:right;">
-154
-</td>
-<td style="text-align:right;">
-29.2
-</td>
-<td style="text-align:right;">
-26.0
-</td>
-<td style="text-align:right;">
-35.7
-</td>
-<td style="text-align:right;">
-59.7
-</td>
-<td style="text-align:right;">
-6.5
-</td>
-<td style="text-align:right;">
-36.4
-</td>
-<td style="text-align:right;">
-16.9
-</td>
-<td style="text-align:right;">
-18.2
-</td>
-<td style="text-align:right;">
-5.2
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Between 2010 and 2014
-</td>
-<td style="text-align:right;">
-128
-</td>
-<td style="text-align:right;">
-14.8
-</td>
-<td style="text-align:right;">
-16.4
-</td>
-<td style="text-align:right;">
-34.4
-</td>
-<td style="text-align:right;">
-60.9
-</td>
-<td style="text-align:right;">
-11.7
-</td>
-<td style="text-align:right;">
-32.8
-</td>
-<td style="text-align:right;">
-22.7
-</td>
-<td style="text-align:right;">
-9.4
-</td>
-<td style="text-align:right;">
-6.2
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Between 2015 and 2020
-</td>
-<td style="text-align:right;">
-203
-</td>
-<td style="text-align:right;">
-12.8
-</td>
-<td style="text-align:right;">
-13.8
-</td>
-<td style="text-align:right;">
-24.6
-</td>
-<td style="text-align:right;">
-60.1
-</td>
-<td style="text-align:right;">
-9.4
-</td>
-<td style="text-align:right;">
-38.4
-</td>
-<td style="text-align:right;">
-24.6
-</td>
-<td style="text-align:right;">
-14.3
-</td>
-<td style="text-align:right;">
-4.9
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Year 2021
-</td>
-<td style="text-align:right;">
-27
-</td>
-<td style="text-align:right;">
-0.0
-</td>
-<td style="text-align:right;">
-14.8
-</td>
-<td style="text-align:right;">
-40.7
-</td>
-<td style="text-align:right;">
-55.6
-</td>
-<td style="text-align:right;">
-7.4
-</td>
-<td style="text-align:right;">
-29.6
-</td>
-<td style="text-align:right;">
-29.6
-</td>
-<td style="text-align:right;">
-11.1
-</td>
-<td style="text-align:right;">
-7.4
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Year 2022
-</td>
-<td style="text-align:right;">
-26
-</td>
-<td style="text-align:right;">
-7.7
-</td>
-<td style="text-align:right;">
-7.7
-</td>
-<td style="text-align:right;">
-19.2
-</td>
-<td style="text-align:right;">
-42.3
-</td>
-<td style="text-align:right;">
-3.8
-</td>
-<td style="text-align:right;">
-38.5
-</td>
-<td style="text-align:right;">
-23.1
-</td>
-<td style="text-align:right;">
-7.7
-</td>
-<td style="text-align:right;">
-11.5
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Year 2023
-</td>
-<td style="text-align:right;">
-8
-</td>
-<td style="text-align:right;">
-0.0
-</td>
-<td style="text-align:right;">
-12.5
-</td>
-<td style="text-align:right;">
-25.0
-</td>
-<td style="text-align:right;">
-50.0
-</td>
-<td style="text-align:right;">
-0.0
-</td>
-<td style="text-align:right;">
-0.0
-</td>
-<td style="text-align:right;">
-37.5
-</td>
-<td style="text-align:right;">
-25.0
-</td>
-<td style="text-align:right;">
-12.5
-</td>
-</tr>
-</tbody>
-</table>
-<p><strong>Main Sources of External Funding by Type and
-Year</strong></p>
-<em>Funding from 2023</em>
-<table class=" lightable-minimal" style="font-family: &quot;Trebuchet MS&quot;, verdana, sans-serif; margin-left: auto; margin-right: auto;">
-<thead>
-<tr>
-<th style="text-align:right;">
-Range
-</th>
-<th style="text-align:right;">
-% Bilateral
-</th>
-<th style="text-align:right;">
-% Feminist
-</th>
-<th style="text-align:right;">
-% Goverment
-</th>
-<th style="text-align:right;">
-% Individual
-</th>
-<th style="text-align:right;">
-% INGOS
-</th>
-<th style="text-align:right;">
-% Multirateral
-</th>
-<th style="text-align:right;">
-% Philanthropic
-</th>
-<th style="text-align:right;">
-% Private
-</th>
-<th style="text-align:right;">
-% Other
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:right;">
-0
-</td>
-<td style="text-align:right;">
-17.6
-</td>
-<td style="text-align:right;">
-12.8
-</td>
-<td style="text-align:right;">
-16
-</td>
-<td style="text-align:right;">
-16.6
-</td>
-<td style="text-align:right;">
-21.5
-</td>
-<td style="text-align:right;">
-15.5
-</td>
-<td style="text-align:right;">
-12.9
-</td>
-<td style="text-align:right;">
-19.4
-</td>
-<td style="text-align:right;">
-31.6
-</td>
-</tr>
-<tr>
-<td style="text-align:right;">
-10
-</td>
-<td style="text-align:right;">
-11.5
-</td>
-<td style="text-align:right;">
-16.0
-</td>
-<td style="text-align:right;">
-29
-</td>
-<td style="text-align:right;">
-39.1
-</td>
-<td style="text-align:right;">
-15.3
-</td>
-<td style="text-align:right;">
-16.4
-</td>
-<td style="text-align:right;">
-14.4
-</td>
-<td style="text-align:right;">
-28.4
-</td>
-<td style="text-align:right;">
-21.1
-</td>
-</tr>
-<tr>
-<td style="text-align:right;">
-20
-</td>
-<td style="text-align:right;">
-11.5
-</td>
-<td style="text-align:right;">
-10.1
-</td>
-<td style="text-align:right;">
-17
-</td>
-<td style="text-align:right;">
-19.9
-</td>
-<td style="text-align:right;">
-14.9
-</td>
-<td style="text-align:right;">
-16.4
-</td>
-<td style="text-align:right;">
-14.8
-</td>
-<td style="text-align:right;">
-23.9
+Anti-militarization and peace
 </td>
 <td style="text-align:right;">
 15.8
 </td>
-</tr>
-<tr>
 <td style="text-align:right;">
-30
+16.8
 </td>
 <td style="text-align:right;">
-14.5
+13.7
 </td>
 <td style="text-align:right;">
-12.8
-</td>
-<td style="text-align:right;">
-6
-</td>
-<td style="text-align:right;">
-9.3
-</td>
-<td style="text-align:right;">
-9.9
-</td>
-<td style="text-align:right;">
-15.5
-</td>
-<td style="text-align:right;">
-11.5
-</td>
-<td style="text-align:right;">
-13.4
-</td>
-<td style="text-align:right;">
-7.9
-</td>
-</tr>
-<tr>
-<td style="text-align:right;">
-40
-</td>
-<td style="text-align:right;">
-7.6
-</td>
-<td style="text-align:right;">
-7.7
-</td>
-<td style="text-align:right;">
-7
-</td>
-<td style="text-align:right;">
-4.6
-</td>
-<td style="text-align:right;">
-9.5
-</td>
-<td style="text-align:right;">
-8.6
-</td>
-<td style="text-align:right;">
-12.0
-</td>
-<td style="text-align:right;">
-7.5
-</td>
-<td style="text-align:right;">
-NA
-</td>
-</tr>
-<tr>
-<td style="text-align:right;">
-50
-</td>
-<td style="text-align:right;">
-3.8
-</td>
-<td style="text-align:right;">
-7.2
-</td>
-<td style="text-align:right;">
-5
-</td>
-<td style="text-align:right;">
-4.0
-</td>
-<td style="text-align:right;">
-7.9
-</td>
-<td style="text-align:right;">
-2.6
-</td>
-<td style="text-align:right;">
-8.1
-</td>
-<td style="text-align:right;">
-3.0
-</td>
-<td style="text-align:right;">
-2.6
-</td>
-</tr>
-<tr>
-<td style="text-align:right;">
-60
-</td>
-<td style="text-align:right;">
-13.0
-</td>
-<td style="text-align:right;">
-5.3
-</td>
-<td style="text-align:right;">
-3
-</td>
-<td style="text-align:right;">
-1.3
-</td>
-<td style="text-align:right;">
-5.0
-</td>
-<td style="text-align:right;">
-9.5
-</td>
-<td style="text-align:right;">
-5.7
-</td>
-<td style="text-align:right;">
-NA
-</td>
-<td style="text-align:right;">
-2.6
-</td>
-</tr>
-<tr>
-<td style="text-align:right;">
-70
-</td>
-<td style="text-align:right;">
-6.9
-</td>
-<td style="text-align:right;">
-5.6
-</td>
-<td style="text-align:right;">
-4
-</td>
-<td style="text-align:right;">
-0.7
-</td>
-<td style="text-align:right;">
-3.3
-</td>
-<td style="text-align:right;">
-5.2
-</td>
-<td style="text-align:right;">
-6.2
-</td>
-<td style="text-align:right;">
-NA
-</td>
-<td style="text-align:right;">
-NA
-</td>
-</tr>
-<tr>
-<td style="text-align:right;">
-80
-</td>
-<td style="text-align:right;">
-6.1
-</td>
-<td style="text-align:right;">
-6.1
-</td>
-<td style="text-align:right;">
-5
-</td>
-<td style="text-align:right;">
-1.3
-</td>
-<td style="text-align:right;">
-5.0
-</td>
-<td style="text-align:right;">
-5.2
-</td>
-<td style="text-align:right;">
-5.7
-</td>
-<td style="text-align:right;">
-4.5
-</td>
-<td style="text-align:right;">
-7.9
-</td>
-</tr>
-<tr>
-<td style="text-align:right;">
-90
-</td>
-<td style="text-align:right;">
-4.6
-</td>
-<td style="text-align:right;">
-6.9
-</td>
-<td style="text-align:right;">
-4
-</td>
-<td style="text-align:right;">
-2.0
-</td>
-<td style="text-align:right;">
-4.5
-</td>
-<td style="text-align:right;">
-1.7
-</td>
-<td style="text-align:right;">
-2.9
-</td>
-<td style="text-align:right;">
-NA
-</td>
-<td style="text-align:right;">
-7.9
-</td>
-</tr>
-<tr>
-<td style="text-align:right;">
-100
-</td>
-<td style="text-align:right;">
-3.1
-</td>
-<td style="text-align:right;">
-9.6
-</td>
-<td style="text-align:right;">
-4
-</td>
-<td style="text-align:right;">
-1.3
-</td>
-<td style="text-align:right;">
-3.3
-</td>
-<td style="text-align:right;">
-3.4
-</td>
-<td style="text-align:right;">
-5.7
-</td>
-<td style="text-align:right;">
-NA
-</td>
-<td style="text-align:right;">
-2.6
-</td>
-</tr>
-</tbody>
-</table>
-<em>Funding from 2022</em>
-<table class=" lightable-minimal" style="font-family: &quot;Trebuchet MS&quot;, verdana, sans-serif; margin-left: auto; margin-right: auto;">
-<thead>
-<tr>
-<th style="text-align:right;">
-Range
-</th>
-<th style="text-align:right;">
-% Bilateral
-</th>
-<th style="text-align:right;">
-% Feminist
-</th>
-<th style="text-align:right;">
-% Goverment
-</th>
-<th style="text-align:right;">
-% Individual
-</th>
-<th style="text-align:right;">
-% INGOS
-</th>
-<th style="text-align:right;">
-% Multirateral
-</th>
-<th style="text-align:right;">
-% Philanthropic
-</th>
-<th style="text-align:right;">
-% Private
-</th>
-<th style="text-align:right;">
-% Other
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:right;">
-0
-</td>
-<td style="text-align:right;">
-20.6
-</td>
-<td style="text-align:right;">
-23.1
-</td>
-<td style="text-align:right;">
-20
-</td>
-<td style="text-align:right;">
-27.2
-</td>
-<td style="text-align:right;">
-25.6
-</td>
-<td style="text-align:right;">
-22.4
-</td>
-<td style="text-align:right;">
-21.5
-</td>
-<td style="text-align:right;">
-23.9
-</td>
-<td style="text-align:right;">
-36.8
-</td>
-</tr>
-<tr>
-<td style="text-align:right;">
-10
-</td>
-<td style="text-align:right;">
-10.7
-</td>
-<td style="text-align:right;">
-14.9
-</td>
-<td style="text-align:right;">
-24
-</td>
-<td style="text-align:right;">
-37.1
-</td>
-<td style="text-align:right;">
-11.2
-</td>
-<td style="text-align:right;">
-18.1
-</td>
-<td style="text-align:right;">
-12.4
-</td>
-<td style="text-align:right;">
-38.8
-</td>
-<td style="text-align:right;">
-21.1
-</td>
-</tr>
-<tr>
-<td style="text-align:right;">
-20
-</td>
-<td style="text-align:right;">
-14.5
-</td>
-<td style="text-align:right;">
-11.4
-</td>
-<td style="text-align:right;">
-15
-</td>
-<td style="text-align:right;">
-15.2
-</td>
-<td style="text-align:right;">
-16.9
-</td>
-<td style="text-align:right;">
-16.4
-</td>
-<td style="text-align:right;">
-11.5
-</td>
-<td style="text-align:right;">
-10.4
-</td>
-<td style="text-align:right;">
-10.5
-</td>
-</tr>
-<tr>
-<td style="text-align:right;">
-30
-</td>
-<td style="text-align:right;">
-12.2
-</td>
-<td style="text-align:right;">
-9.0
-</td>
-<td style="text-align:right;">
-8
-</td>
-<td style="text-align:right;">
-5.3
-</td>
-<td style="text-align:right;">
-12.0
-</td>
-<td style="text-align:right;">
-12.1
-</td>
-<td style="text-align:right;">
-12.0
-</td>
-<td style="text-align:right;">
-10.4
-</td>
-<td style="text-align:right;">
-5.3
-</td>
-</tr>
-<tr>
-<td style="text-align:right;">
-40
-</td>
-<td style="text-align:right;">
-3.8
-</td>
-<td style="text-align:right;">
-5.3
-</td>
-<td style="text-align:right;">
-5
-</td>
-<td style="text-align:right;">
-2.6
-</td>
-<td style="text-align:right;">
-5.8
-</td>
-<td style="text-align:right;">
-7.8
-</td>
-<td style="text-align:right;">
-9.6
-</td>
-<td style="text-align:right;">
-6.0
-</td>
-<td style="text-align:right;">
-NA
-</td>
-</tr>
-<tr>
-<td style="text-align:right;">
-50
-</td>
-<td style="text-align:right;">
-6.1
-</td>
-<td style="text-align:right;">
-8.8
-</td>
-<td style="text-align:right;">
-4
-</td>
-<td style="text-align:right;">
-2.0
-</td>
-<td style="text-align:right;">
-9.1
-</td>
-<td style="text-align:right;">
-8.6
-</td>
-<td style="text-align:right;">
-7.7
-</td>
-<td style="text-align:right;">
-NA
-</td>
-<td style="text-align:right;">
-2.6
-</td>
-</tr>
-<tr>
-<td style="text-align:right;">
-60
-</td>
-<td style="text-align:right;">
-5.3
-</td>
-<td style="text-align:right;">
-4.8
-</td>
-<td style="text-align:right;">
-2
-</td>
-<td style="text-align:right;">
-2.0
-</td>
-<td style="text-align:right;">
-4.1
-</td>
-<td style="text-align:right;">
-3.4
-</td>
-<td style="text-align:right;">
-2.9
-</td>
-<td style="text-align:right;">
-3.0
-</td>
-<td style="text-align:right;">
-NA
-</td>
-</tr>
-<tr>
-<td style="text-align:right;">
-70
-</td>
-<td style="text-align:right;">
-7.6
-</td>
-<td style="text-align:right;">
-4.5
-</td>
-<td style="text-align:right;">
-8
-</td>
-<td style="text-align:right;">
-2.0
-</td>
-<td style="text-align:right;">
-3.3
-</td>
-<td style="text-align:right;">
-3.4
-</td>
-<td style="text-align:right;">
-9.6
-</td>
-<td style="text-align:right;">
-1.5
-</td>
-<td style="text-align:right;">
-NA
-</td>
-</tr>
-<tr>
-<td style="text-align:right;">
-80
+16.8
 </td>
 <td style="text-align:right;">
 8.4
 </td>
 <td style="text-align:right;">
-2.9
-</td>
-<td style="text-align:right;">
-4
-</td>
-<td style="text-align:right;">
-2.0
-</td>
-<td style="text-align:right;">
-5.4
-</td>
-<td style="text-align:right;">
-3.4
-</td>
-<td style="text-align:right;">
-4.8
-</td>
-<td style="text-align:right;">
-4.5
-</td>
-<td style="text-align:right;">
-10.5
-</td>
-</tr>
-<tr>
-<td style="text-align:right;">
-90
-</td>
-<td style="text-align:right;">
-6.1
-</td>
-<td style="text-align:right;">
-6.1
-</td>
-<td style="text-align:right;">
-3
-</td>
-<td style="text-align:right;">
-1.3
-</td>
-<td style="text-align:right;">
-2.9
-</td>
-<td style="text-align:right;">
-2.6
-</td>
-<td style="text-align:right;">
-3.3
-</td>
-<td style="text-align:right;">
-1.5
-</td>
-<td style="text-align:right;">
-2.6
-</td>
-</tr>
-<tr>
-<td style="text-align:right;">
-100
-</td>
-<td style="text-align:right;">
-3.8
-</td>
-<td style="text-align:right;">
-8.0
-</td>
-<td style="text-align:right;">
-5
-</td>
-<td style="text-align:right;">
-1.3
-</td>
-<td style="text-align:right;">
-3.7
-</td>
-<td style="text-align:right;">
-1.7
-</td>
-<td style="text-align:right;">
-3.8
-</td>
-<td style="text-align:right;">
-NA
-</td>
-<td style="text-align:right;">
-7.9
-</td>
-</tr>
-<tr>
-<td style="text-align:right;">
-NA
-</td>
-<td style="text-align:right;">
-0.8
-</td>
-<td style="text-align:right;">
-1.1
-</td>
-<td style="text-align:right;">
-2
-</td>
-<td style="text-align:right;">
-2.0
-</td>
-<td style="text-align:right;">
-NA
-</td>
-<td style="text-align:right;">
-NA
-</td>
-<td style="text-align:right;">
-1.0
-</td>
-<td style="text-align:right;">
-NA
-</td>
-<td style="text-align:right;">
-2.6
-</td>
-</tr>
-</tbody>
-</table>
-<em>Funding from 2021</em>
-<table class=" lightable-minimal" style="font-family: &quot;Trebuchet MS&quot;, verdana, sans-serif; margin-left: auto; margin-right: auto;">
-<thead>
-<tr>
-<th style="text-align:right;">
-Range
-</th>
-<th style="text-align:right;">
-% Bilateral
-</th>
-<th style="text-align:right;">
-% Feminist
-</th>
-<th style="text-align:right;">
-% Goverment
-</th>
-<th style="text-align:right;">
-% Individual
-</th>
-<th style="text-align:right;">
-% INGOS
-</th>
-<th style="text-align:right;">
-% Multirateral
-</th>
-<th style="text-align:right;">
-% Philanthropic
-</th>
-<th style="text-align:right;">
-% Private
-</th>
-<th style="text-align:right;">
-% Other
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:right;">
-0
-</td>
-<td style="text-align:right;">
-32.8
-</td>
-<td style="text-align:right;">
-30.1
-</td>
-<td style="text-align:right;">
-31
-</td>
-<td style="text-align:right;">
-27.8
-</td>
-<td style="text-align:right;">
-30.6
-</td>
-<td style="text-align:right;">
-27.6
-</td>
-<td style="text-align:right;">
-23.9
-</td>
-<td style="text-align:right;">
-22.4
-</td>
-<td style="text-align:right;">
-39.5
-</td>
-</tr>
-<tr>
-<td style="text-align:right;">
-10
-</td>
-<td style="text-align:right;">
-6.9
-</td>
-<td style="text-align:right;">
-10.4
-</td>
-<td style="text-align:right;">
-25
-</td>
-<td style="text-align:right;">
-33.8
-</td>
-<td style="text-align:right;">
-13.2
-</td>
-<td style="text-align:right;">
-16.4
-</td>
-<td style="text-align:right;">
-12.4
-</td>
-<td style="text-align:right;">
-38.8
-</td>
-<td style="text-align:right;">
-7.9
-</td>
-</tr>
-<tr>
-<td style="text-align:right;">
-20
-</td>
-<td style="text-align:right;">
-11.5
-</td>
-<td style="text-align:right;">
-10.9
-</td>
-<td style="text-align:right;">
-12
-</td>
-<td style="text-align:right;">
-13.2
-</td>
-<td style="text-align:right;">
-12.0
-</td>
-<td style="text-align:right;">
-12.9
-</td>
-<td style="text-align:right;">
-12.4
-</td>
-<td style="text-align:right;">
-14.9
-</td>
-<td style="text-align:right;">
-13.2
-</td>
-</tr>
-<tr>
-<td style="text-align:right;">
-30
-</td>
-<td style="text-align:right;">
-6.1
-</td>
-<td style="text-align:right;">
-9.0
-</td>
-<td style="text-align:right;">
-7
-</td>
-<td style="text-align:right;">
-3.3
-</td>
-<td style="text-align:right;">
-8.7
-</td>
-<td style="text-align:right;">
-8.6
-</td>
-<td style="text-align:right;">
-6.2
-</td>
-<td style="text-align:right;">
-10.4
-</td>
-<td style="text-align:right;">
 5.3
-</td>
-</tr>
-<tr>
-<td style="text-align:right;">
-40
-</td>
-<td style="text-align:right;">
-6.9
-</td>
-<td style="text-align:right;">
-6.1
-</td>
-<td style="text-align:right;">
-2
-</td>
-<td style="text-align:right;">
-2.0
-</td>
-<td style="text-align:right;">
-6.2
-</td>
-<td style="text-align:right;">
-6.9
-</td>
-<td style="text-align:right;">
-9.6
-</td>
-<td style="text-align:right;">
-6.0
-</td>
-<td style="text-align:right;">
-2.6
-</td>
-</tr>
-<tr>
-<td style="text-align:right;">
-50
 </td>
 <td style="text-align:right;">
 5.3
 </td>
 <td style="text-align:right;">
-5.6
-</td>
-<td style="text-align:right;">
-3
-</td>
-<td style="text-align:right;">
-2.0
-</td>
-<td style="text-align:right;">
-7.0
-</td>
-<td style="text-align:right;">
-7.8
-</td>
-<td style="text-align:right;">
-8.1
-</td>
-<td style="text-align:right;">
-NA
-</td>
-<td style="text-align:right;">
-2.6
-</td>
-</tr>
-<tr>
-<td style="text-align:right;">
-60
-</td>
-<td style="text-align:right;">
-4.6
-</td>
-<td style="text-align:right;">
-3.2
-</td>
-<td style="text-align:right;">
-2
-</td>
-<td style="text-align:right;">
-3.3
-</td>
-<td style="text-align:right;">
-2.5
-</td>
-<td style="text-align:right;">
-3.4
-</td>
-<td style="text-align:right;">
-4.3
-</td>
-<td style="text-align:right;">
-1.5
-</td>
-<td style="text-align:right;">
-NA
-</td>
-</tr>
-<tr>
-<td style="text-align:right;">
-70
-</td>
-<td style="text-align:right;">
-9.9
-</td>
-<td style="text-align:right;">
-2.7
-</td>
-<td style="text-align:right;">
-5
-</td>
-<td style="text-align:right;">
-1.3
-</td>
-<td style="text-align:right;">
-4.1
-</td>
-<td style="text-align:right;">
-4.3
-</td>
-<td style="text-align:right;">
-4.3
-</td>
-<td style="text-align:right;">
-NA
-</td>
-<td style="text-align:right;">
-NA
-</td>
-</tr>
-<tr>
-<td style="text-align:right;">
-80
-</td>
-<td style="text-align:right;">
-6.1
-</td>
-<td style="text-align:right;">
-4.3
-</td>
-<td style="text-align:right;">
-3
-</td>
-<td style="text-align:right;">
-3.3
-</td>
-<td style="text-align:right;">
-2.9
-</td>
-<td style="text-align:right;">
-5.2
-</td>
-<td style="text-align:right;">
-7.2
-</td>
-<td style="text-align:right;">
-1.5
-</td>
-<td style="text-align:right;">
-5.3
-</td>
-</tr>
-<tr>
-<td style="text-align:right;">
-90
-</td>
-<td style="text-align:right;">
-3.8
-</td>
-<td style="text-align:right;">
-7.2
-</td>
-<td style="text-align:right;">
-3
-</td>
-<td style="text-align:right;">
-1.3
-</td>
-<td style="text-align:right;">
-3.3
-</td>
-<td style="text-align:right;">
-3.4
-</td>
-<td style="text-align:right;">
-2.9
-</td>
-<td style="text-align:right;">
-1.5
-</td>
-<td style="text-align:right;">
-2.6
-</td>
-</tr>
-<tr>
-<td style="text-align:right;">
-100
-</td>
-<td style="text-align:right;">
-3.8
-</td>
-<td style="text-align:right;">
-6.6
-</td>
-<td style="text-align:right;">
-3
-</td>
-<td style="text-align:right;">
-2.6
-</td>
-<td style="text-align:right;">
-5.4
-</td>
-<td style="text-align:right;">
-1.7
-</td>
-<td style="text-align:right;">
-5.3
-</td>
-<td style="text-align:right;">
-1.5
-</td>
-<td style="text-align:right;">
-10.5
-</td>
-</tr>
-<tr>
-<td style="text-align:right;">
-NA
-</td>
-<td style="text-align:right;">
-2.3
-</td>
-<td style="text-align:right;">
-4.0
-</td>
-<td style="text-align:right;">
-4
-</td>
-<td style="text-align:right;">
-6.0
-</td>
-<td style="text-align:right;">
-4.1
-</td>
-<td style="text-align:right;">
-1.7
-</td>
-<td style="text-align:right;">
-3.3
-</td>
-<td style="text-align:right;">
-1.5
-</td>
-<td style="text-align:right;">
-10.5
-</td>
-</tr>
-</tbody>
-</table>
-<p><strong>Organizations that received funding from new donors between
-2021 and 2023</strong></p>
-<p>It is noted that 60.4% of organizations reported receiving funding
-from new donors between 2021 and 2023. Among these organizations,
-feminist funds are the primary source of new funding</p>
-<strong>Reception of new funding between 2021 and 2023</strong>
-<table class=" lightable-minimal" style="font-family: &quot;Trebuchet MS&quot;, verdana, sans-serif; margin-left: auto; margin-right: auto;">
-<thead>
-<tr>
-<th style="text-align:left;">
-Source
-</th>
-<th style="text-align:right;">
-Percentage
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:left;">
-No new founder
-</td>
-<td style="text-align:right;">
-7.5
+17.9
 </td>
 </tr>
 <tr>
 <td style="text-align:left;">
-New founder
-</td>
-<td style="text-align:right;">
-60.4
-</td>
-</tr>
-</tbody>
-</table>
-<em>Source of new funding</em>
-<table class=" lightable-minimal" style="font-family: &quot;Trebuchet MS&quot;, verdana, sans-serif; margin-left: auto; margin-right: auto;">
-<thead>
-<tr>
-<th style="text-align:left;">
-Source
-</th>
-<th style="text-align:right;">
-Percentage
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:left;">
-Multilateral
-</td>
-<td style="text-align:right;">
-14.0
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Bilateral
-</td>
-<td style="text-align:right;">
-13.5
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Philanthropic
-</td>
-<td style="text-align:right;">
-25.2
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Feminist
-</td>
-<td style="text-align:right;">
-48.0
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Private
-</td>
-<td style="text-align:right;">
-9.4
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-INGOS
-</td>
-<td style="text-align:right;">
-31.2
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Individual
-</td>
-<td style="text-align:right;">
-17.4
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Government
-</td>
-<td style="text-align:right;">
-12.2
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Other
-</td>
-<td style="text-align:right;">
-4.4
-</td>
-</tr>
-</tbody>
-</table>
-<p>As shown below, new feminist funds are even more significant among
-organizations that focus on prioritizing women’s rights.</p>
-<table class=" lightable-minimal" style="font-family: &quot;Trebuchet MS&quot;, verdana, sans-serif; margin-left: auto; margin-right: auto;">
-<thead>
-<tr>
-<th style="text-align:left;">
-Description
-</th>
-<th style="text-align:right;">
-Total
-</th>
-<th style="text-align:right;">
-Multilateral
-</th>
-<th style="text-align:right;">
-Bilateral
-</th>
-<th style="text-align:right;">
-Philanthropic
-</th>
-<th style="text-align:right;">
-Feminist
-</th>
-<th style="text-align:right;">
-Private
-</th>
-<th style="text-align:right;">
-INGOS
-</th>
-<th style="text-align:right;">
-Individual
-</th>
-<th style="text-align:right;">
-Government
-</th>
-<th style="text-align:right;">
-Other
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:left;">
-Other
-</td>
-<td style="text-align:right;">
-43
-</td>
-<td style="text-align:right;">
-2.3
-</td>
-<td style="text-align:right;">
-25.6
-</td>
-<td style="text-align:right;">
-14.0
-</td>
-<td style="text-align:right;">
-34.9
-</td>
-<td style="text-align:right;">
-7.0
-</td>
-<td style="text-align:right;">
-55.8
-</td>
-<td style="text-align:right;">
-11.6
-</td>
-<td style="text-align:right;">
-9.3
-</td>
-<td style="text-align:right;">
-2.3
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Primary focus
-</td>
-<td style="text-align:right;">
-427
-</td>
-<td style="text-align:right;">
-16.6
+Climate and environmental justice
 </td>
 <td style="text-align:right;">
 11.7
 </td>
 <td style="text-align:right;">
-26.9
+14.5
 </td>
 <td style="text-align:right;">
-50.8
+12.6
+</td>
+<td style="text-align:right;">
+16.1
+</td>
+<td style="text-align:right;">
+9.1
+</td>
+<td style="text-align:right;">
+13.6
+</td>
+<td style="text-align:right;">
+9.1
+</td>
+<td style="text-align:right;">
+13.2
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Countering anti-gender and anti-rights
+</td>
+<td style="text-align:right;">
+9.9
+</td>
+<td style="text-align:right;">
+15.9
+</td>
+<td style="text-align:right;">
+11.6
+</td>
+<td style="text-align:right;">
+12.5
+</td>
+<td style="text-align:right;">
+6.9
+</td>
+<td style="text-align:right;">
+9.9
+</td>
+<td style="text-align:right;">
+9.5
+</td>
+<td style="text-align:right;">
+23.7
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Holistic safety, protection and collective care
+</td>
+<td style="text-align:right;">
+11.0
+</td>
+<td style="text-align:right;">
+13.3
+</td>
+<td style="text-align:right;">
+12.4
+</td>
+<td style="text-align:right;">
+12.9
+</td>
+<td style="text-align:right;">
+6.2
+</td>
+<td style="text-align:right;">
+16.7
+</td>
+<td style="text-align:right;">
+10.0
+</td>
+<td style="text-align:right;">
+17.6
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Lesbian, Bisexual and queer rights
+</td>
+<td style="text-align:right;">
+11.1
+</td>
+<td style="text-align:right;">
+13.9
+</td>
+<td style="text-align:right;">
+10.7
+</td>
+<td style="text-align:right;">
+16.0
+</td>
+<td style="text-align:right;">
+9.4
+</td>
+<td style="text-align:right;">
+12.3
+</td>
+<td style="text-align:right;">
+10.2
+</td>
+<td style="text-align:right;">
+16.4
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Sex workers rights
+</td>
+<td style="text-align:right;">
+15.0
+</td>
+<td style="text-align:right;">
+17.4
+</td>
+<td style="text-align:right;">
+8.0
+</td>
+<td style="text-align:right;">
+16.9
+</td>
+<td style="text-align:right;">
+9.4
+</td>
+<td style="text-align:right;">
+13.1
 </td>
 <td style="text-align:right;">
 8.9
 </td>
 <td style="text-align:right;">
-27.4
-</td>
-<td style="text-align:right;">
-18.3
-</td>
-<td style="text-align:right;">
-11.5
-</td>
-<td style="text-align:right;">
-4.0
+11.3
 </td>
 </tr>
 <tr>
 <td style="text-align:left;">
-Specific projects
+Trans and non-binary rights
 </td>
 <td style="text-align:right;">
-94
+9.7
 </td>
 <td style="text-align:right;">
-7.4
+16.1
 </td>
 <td style="text-align:right;">
-16.0
+11.8
 </td>
 <td style="text-align:right;">
-22.3
-</td>
-<td style="text-align:right;">
-41.5
-</td>
-<td style="text-align:right;">
-12.8
-</td>
-<td style="text-align:right;">
-37.2
-</td>
-<td style="text-align:right;">
-16.0
-</td>
-<td style="text-align:right;">
-17.0
-</td>
-<td style="text-align:right;">
-7.4
-</td>
-</tr>
-</tbody>
-</table>
-<table class=" lightable-minimal" style="font-family: &quot;Trebuchet MS&quot;, verdana, sans-serif; margin-left: auto; margin-right: auto;">
-<thead>
-<tr>
-<th style="text-align:left;">
-Registration
-</th>
-<th style="text-align:right;">
-Total
-</th>
-<th style="text-align:right;">
-Multilateral
-</th>
-<th style="text-align:right;">
-Bilateral
-</th>
-<th style="text-align:right;">
-Philanthropic
-</th>
-<th style="text-align:right;">
-Feminist
-</th>
-<th style="text-align:right;">
-Private
-</th>
-<th style="text-align:right;">
-INGOS
-</th>
-<th style="text-align:right;">
-Individual
-</th>
-<th style="text-align:right;">
-Government
-</th>
-<th style="text-align:right;">
-Other
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:left;">
-diaspora_and_or_exile
-</td>
-<td style="text-align:right;">
-6
-</td>
-<td style="text-align:right;">
-0.0
-</td>
-<td style="text-align:right;">
-16.7
-</td>
-<td style="text-align:right;">
-33.3
-</td>
-<td style="text-align:right;">
-66.7
-</td>
-<td style="text-align:right;">
-0.0
-</td>
-<td style="text-align:right;">
-50.0
-</td>
-<td style="text-align:right;">
-0.0
-</td>
-<td style="text-align:right;">
-16.7
-</td>
-<td style="text-align:right;">
-0.0
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-globally_focused
-</td>
-<td style="text-align:right;">
-31
-</td>
-<td style="text-align:right;">
-22.6
-</td>
-<td style="text-align:right;">
-25.8
-</td>
-<td style="text-align:right;">
-45.2
-</td>
-<td style="text-align:right;">
-22.6
-</td>
-<td style="text-align:right;">
-22.6
-</td>
-<td style="text-align:right;">
-22.6
-</td>
-<td style="text-align:right;">
-35.5
-</td>
-<td style="text-align:right;">
-19.4
-</td>
-<td style="text-align:right;">
-3.2
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-locally_focused
-</td>
-<td style="text-align:right;">
-172
+14.5
 </td>
 <td style="text-align:right;">
 8.1
 </td>
 <td style="text-align:right;">
-6.4
+12.4
 </td>
 <td style="text-align:right;">
-23.8
+10.2
 </td>
 <td style="text-align:right;">
-48.8
-</td>
-<td style="text-align:right;">
-11.0
-</td>
-<td style="text-align:right;">
-26.2
-</td>
-<td style="text-align:right;">
-20.9
-</td>
-<td style="text-align:right;">
-17.4
-</td>
-<td style="text-align:right;">
-4.7
+17.2
 </td>
 </tr>
 <tr>
 <td style="text-align:left;">
-nationally_focused
+Other feminists subjects (not AWID focus)
 </td>
 <td style="text-align:right;">
-284
+11.8
 </td>
 <td style="text-align:right;">
-14.8
-</td>
-<td style="text-align:right;">
-15.1
-</td>
-<td style="text-align:right;">
-20.8
-</td>
-<td style="text-align:right;">
-48.9
-</td>
-<td style="text-align:right;">
-7.7
-</td>
-<td style="text-align:right;">
-35.2
-</td>
-<td style="text-align:right;">
-13.4
-</td>
-<td style="text-align:right;">
-9.9
-</td>
-<td style="text-align:right;">
-4.2
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-regionally_focused
-</td>
-<td style="text-align:right;">
-62
-</td>
-<td style="text-align:right;">
-25.8
-</td>
-<td style="text-align:right;">
-17.7
-</td>
-<td style="text-align:right;">
-40.3
-</td>
-<td style="text-align:right;">
-51.6
-</td>
-<td style="text-align:right;">
-6.5
-</td>
-<td style="text-align:right;">
-27.4
-</td>
-<td style="text-align:right;">
-19.4
-</td>
-<td style="text-align:right;">
-1.6
-</td>
-<td style="text-align:right;">
-6.5
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-transnationally_focused
-</td>
-<td style="text-align:right;">
-9
-</td>
-<td style="text-align:right;">
-0.0
-</td>
-<td style="text-align:right;">
-22.2
+14.2
 </td>
 <td style="text-align:right;">
 11.1
 </td>
 <td style="text-align:right;">
-55.6
+14.9
+</td>
+<td style="text-align:right;">
+6.9
 </td>
 <td style="text-align:right;">
 11.1
 </td>
 <td style="text-align:right;">
-44.4
-</td>
-<td style="text-align:right;">
-11.1
-</td>
-<td style="text-align:right;">
-33.3
-</td>
-<td style="text-align:right;">
-0.0
-</td>
-</tr>
-</tbody>
-</table>
-<table class=" lightable-minimal" style="font-family: &quot;Trebuchet MS&quot;, verdana, sans-serif; margin-left: auto; margin-right: auto;">
-<thead>
-<tr>
-<th style="text-align:left;">
-Scope
-</th>
-<th style="text-align:right;">
-Total
-</th>
-<th style="text-align:right;">
-Multilateral
-</th>
-<th style="text-align:right;">
-Bilateral
-</th>
-<th style="text-align:right;">
-Philanthropic
-</th>
-<th style="text-align:right;">
-Feminist
-</th>
-<th style="text-align:right;">
-Private
-</th>
-<th style="text-align:right;">
-INGOS
-</th>
-<th style="text-align:right;">
-Individual
-</th>
-<th style="text-align:right;">
-Government
-</th>
-<th style="text-align:right;">
-Other
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:left;">
-Global
-</td>
-<td style="text-align:right;">
-31
-</td>
-<td style="text-align:right;">
-22.6
-</td>
-<td style="text-align:right;">
-25.8
-</td>
-<td style="text-align:right;">
-45.2
-</td>
-<td style="text-align:right;">
-22.6
-</td>
-<td style="text-align:right;">
-22.6
-</td>
-<td style="text-align:right;">
-22.6
-</td>
-<td style="text-align:right;">
-35.5
-</td>
-<td style="text-align:right;">
-19.4
-</td>
-<td style="text-align:right;">
-3.2
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Local
-</td>
-<td style="text-align:right;">
-172
-</td>
-<td style="text-align:right;">
-8.1
-</td>
-<td style="text-align:right;">
-6.4
-</td>
-<td style="text-align:right;">
-23.8
-</td>
-<td style="text-align:right;">
-48.8
-</td>
-<td style="text-align:right;">
-11.0
-</td>
-<td style="text-align:right;">
-26.2
-</td>
-<td style="text-align:right;">
-20.9
-</td>
-<td style="text-align:right;">
-17.4
-</td>
-<td style="text-align:right;">
-4.7
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-National
-</td>
-<td style="text-align:right;">
-284
-</td>
-<td style="text-align:right;">
-14.8
-</td>
-<td style="text-align:right;">
-15.1
-</td>
-<td style="text-align:right;">
-20.8
-</td>
-<td style="text-align:right;">
-48.9
-</td>
-<td style="text-align:right;">
-7.7
-</td>
-<td style="text-align:right;">
-35.2
-</td>
-<td style="text-align:right;">
-13.4
-</td>
-<td style="text-align:right;">
-9.9
-</td>
-<td style="text-align:right;">
-4.2
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Regional
-</td>
-<td style="text-align:right;">
-62
-</td>
-<td style="text-align:right;">
-25.8
-</td>
-<td style="text-align:right;">
-17.7
-</td>
-<td style="text-align:right;">
-40.3
-</td>
-<td style="text-align:right;">
-51.6
-</td>
-<td style="text-align:right;">
-6.5
-</td>
-<td style="text-align:right;">
-27.4
-</td>
-<td style="text-align:right;">
-19.4
-</td>
-<td style="text-align:right;">
-1.6
-</td>
-<td style="text-align:right;">
-6.5
-</td>
-</tr>
-</tbody>
-</table>
-<table class=" lightable-minimal" style="font-family: &quot;Trebuchet MS&quot;, verdana, sans-serif; margin-left: auto; margin-right: auto;">
-<thead>
-<tr>
-<th style="text-align:left;">
-Formation period
-</th>
-<th style="text-align:right;">
-Total
-</th>
-<th style="text-align:right;">
-Multilateral
-</th>
-<th style="text-align:right;">
-Bilateral
-</th>
-<th style="text-align:right;">
-Philanthropic
-</th>
-<th style="text-align:right;">
-Feminist
-</th>
-<th style="text-align:right;">
-Private
-</th>
-<th style="text-align:right;">
-INGOS
-</th>
-<th style="text-align:right;">
-Individual
-</th>
-<th style="text-align:right;">
-Government
-</th>
-<th style="text-align:right;">
-Other
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:left;">
-Before 2000
-</td>
-<td style="text-align:right;">
-109
-</td>
-<td style="text-align:right;">
-15.6
-</td>
-<td style="text-align:right;">
-16.5
-</td>
-<td style="text-align:right;">
-31.2
-</td>
-<td style="text-align:right;">
-39.4
-</td>
-<td style="text-align:right;">
-15.6
-</td>
-<td style="text-align:right;">
-33.9
-</td>
-<td style="text-align:right;">
-20.2
-</td>
-<td style="text-align:right;">
-17.4
-</td>
-<td style="text-align:right;">
-1.8
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Between 2000 and 2009
-</td>
-<td style="text-align:right;">
-135
-</td>
-<td style="text-align:right;">
-21.5
+13.8
 </td>
 <td style="text-align:right;">
 16.3
 </td>
-<td style="text-align:right;">
-24.4
-</td>
-<td style="text-align:right;">
-48.1
-</td>
-<td style="text-align:right;">
-7.4
-</td>
-<td style="text-align:right;">
-31.1
-</td>
-<td style="text-align:right;">
-14.1
-</td>
-<td style="text-align:right;">
-8.9
-</td>
-<td style="text-align:right;">
-6.7
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Between 2010 and 2014
-</td>
-<td style="text-align:right;">
-100
-</td>
-<td style="text-align:right;">
-11.0
-</td>
-<td style="text-align:right;">
-16.0
-</td>
-<td style="text-align:right;">
-31.0
-</td>
-<td style="text-align:right;">
-47.0
-</td>
-<td style="text-align:right;">
-11.0
-</td>
-<td style="text-align:right;">
-31.0
-</td>
-<td style="text-align:right;">
-14.0
-</td>
-<td style="text-align:right;">
-14.0
-</td>
-<td style="text-align:right;">
-7.0
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Between 2015 and 2020
-</td>
-<td style="text-align:right;">
-174
-</td>
-<td style="text-align:right;">
-10.9
-</td>
-<td style="text-align:right;">
-8.6
-</td>
-<td style="text-align:right;">
-18.4
-</td>
-<td style="text-align:right;">
-52.9
-</td>
-<td style="text-align:right;">
-7.5
-</td>
-<td style="text-align:right;">
-30.5
-</td>
-<td style="text-align:right;">
-17.8
-</td>
-<td style="text-align:right;">
-11.5
-</td>
-<td style="text-align:right;">
-1.7
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Year 2021
-</td>
-<td style="text-align:right;">
-19
-</td>
-<td style="text-align:right;">
-0.0
-</td>
-<td style="text-align:right;">
-10.5
-</td>
-<td style="text-align:right;">
-42.1
-</td>
-<td style="text-align:right;">
-52.6
-</td>
-<td style="text-align:right;">
-5.3
-</td>
-<td style="text-align:right;">
-31.6
-</td>
-<td style="text-align:right;">
-15.8
-</td>
-<td style="text-align:right;">
-5.3
-</td>
-<td style="text-align:right;">
-15.8
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Year 2022
-</td>
-<td style="text-align:right;">
-21
-</td>
-<td style="text-align:right;">
-14.3
-</td>
-<td style="text-align:right;">
-9.5
-</td>
-<td style="text-align:right;">
-9.5
-</td>
-<td style="text-align:right;">
-42.9
-</td>
-<td style="text-align:right;">
-4.8
-</td>
-<td style="text-align:right;">
-33.3
-</td>
-<td style="text-align:right;">
-28.6
-</td>
-<td style="text-align:right;">
-9.5
-</td>
-<td style="text-align:right;">
-4.8
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Year 2023
-</td>
-<td style="text-align:right;">
-6
-</td>
-<td style="text-align:right;">
-0.0
-</td>
-<td style="text-align:right;">
-16.7
-</td>
-<td style="text-align:right;">
-33.3
-</td>
-<td style="text-align:right;">
-83.3
-</td>
-<td style="text-align:right;">
-0.0
-</td>
-<td style="text-align:right;">
-0.0
-</td>
-<td style="text-align:right;">
-50.0
-</td>
-<td style="text-align:right;">
-16.7
-</td>
-<td style="text-align:right;">
-0.0
-</td>
 </tr>
 </tbody>
-</table>
-<p><strong>Loss of funding</strong></p>
-<p>It is noted that 46.8% of organizations reported losing funding from
-new donors between 2021 and 2023. Among these organizations, the
-greatest loss came from INGOs, followed by philanthropic donors.</p>
-<table class=" lightable-minimal" style="font-family: &quot;Trebuchet MS&quot;, verdana, sans-serif; margin-left: auto; margin-right: auto;">
-<thead>
-<tr>
-<th style="text-align:left;">
-Source
-</th>
-<th style="text-align:right;">
-Percentage
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:left;">
-No funding lost
-</td>
-<td style="text-align:right;">
-53.2
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Yes, lost funding
-</td>
-<td style="text-align:right;">
-46.8
-</td>
-</tr>
-</tbody>
-</table>
-<table class=" lightable-minimal" style="font-family: &quot;Trebuchet MS&quot;, verdana, sans-serif; margin-left: auto; margin-right: auto;">
-<thead>
-<tr>
-<th style="text-align:left;">
-Source
-</th>
-<th style="text-align:right;">
-Percentage
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:left;">
-Multilateral
-</td>
-<td style="text-align:right;">
-8.3
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Bilateral
-</td>
-<td style="text-align:right;">
-6.4
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Philanthropic
-</td>
-<td style="text-align:right;">
-12.1
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Feminist
-</td>
-<td style="text-align:right;">
-3.6
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Private
-</td>
-<td style="text-align:right;">
-11.6
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-INGOS
-</td>
-<td style="text-align:right;">
-15.2
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Individual
-</td>
-<td style="text-align:right;">
-8.1
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Government
-</td>
-<td style="text-align:right;">
-5.9
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Other
-</td>
-<td style="text-align:right;">
-2.1
-</td>
-</tr>
-</tbody>
-</table>
-<table class=" lightable-minimal" style="font-family: &quot;Trebuchet MS&quot;, verdana, sans-serif; margin-left: auto; margin-right: auto;">
-<thead>
-<tr>
-<th style="text-align:left;">
-Description
-</th>
-<th style="text-align:right;">
-Total
-</th>
-<th style="text-align:right;">
-No funding lost
-</th>
-<th style="text-align:right;">
-Yes, lost funding
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:left;">
-Other
-</td>
-<td style="text-align:right;">
-48
-</td>
-<td style="text-align:right;">
-64.6
-</td>
-<td style="text-align:right;">
-35.4
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Primary focus
-</td>
-<td style="text-align:right;">
-509
-</td>
-<td style="text-align:right;">
-51.3
-</td>
-<td style="text-align:right;">
-48.7
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Specific projects
-</td>
-<td style="text-align:right;">
-110
-</td>
-<td style="text-align:right;">
-57.3
-</td>
-<td style="text-align:right;">
-42.7
-</td>
-</tr>
-</tbody>
-</table>
-<table class=" lightable-minimal" style="font-family: &quot;Trebuchet MS&quot;, verdana, sans-serif; margin-left: auto; margin-right: auto;">
-<thead>
-<tr>
-<th style="text-align:left;">
-Registration
-</th>
-<th style="text-align:right;">
-Total
-</th>
-<th style="text-align:right;">
-No funding lost
-</th>
-<th style="text-align:right;">
-Yes, lost funding
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:left;">
-diaspora_and_or_exile
-</td>
-<td style="text-align:right;">
-9
-</td>
-<td style="text-align:right;">
-55.6
-</td>
-<td style="text-align:right;">
-44.4
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-globally_focused
-</td>
-<td style="text-align:right;">
-41
-</td>
-<td style="text-align:right;">
-46.3
-</td>
-<td style="text-align:right;">
-53.7
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-locally_focused
-</td>
-<td style="text-align:right;">
-199
-</td>
-<td style="text-align:right;">
-53.8
-</td>
-<td style="text-align:right;">
-46.2
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-nationally_focused
-</td>
-<td style="text-align:right;">
-330
-</td>
-<td style="text-align:right;">
-53.6
-</td>
-<td style="text-align:right;">
-46.4
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-regionally_focused
-</td>
-<td style="text-align:right;">
-75
-</td>
-<td style="text-align:right;">
-53.3
-</td>
-<td style="text-align:right;">
-46.7
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-transnationally_focused
-</td>
-<td style="text-align:right;">
-13
-</td>
-<td style="text-align:right;">
-53.8
-</td>
-<td style="text-align:right;">
-46.2
-</td>
-</tr>
-</tbody>
-</table>
-<table class=" lightable-minimal" style="font-family: &quot;Trebuchet MS&quot;, verdana, sans-serif; margin-left: auto; margin-right: auto;">
-<thead>
-<tr>
-<th style="text-align:left;">
-Scope
-</th>
-<th style="text-align:right;">
-Total
-</th>
-<th style="text-align:right;">
-No funding lost
-</th>
-<th style="text-align:right;">
-Yes, lost funding
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:left;">
-Global
-</td>
-<td style="text-align:right;">
-41
-</td>
-<td style="text-align:right;">
-46.3
-</td>
-<td style="text-align:right;">
-53.7
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Local
-</td>
-<td style="text-align:right;">
-199
-</td>
-<td style="text-align:right;">
-53.8
-</td>
-<td style="text-align:right;">
-46.2
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-National
-</td>
-<td style="text-align:right;">
-330
-</td>
-<td style="text-align:right;">
-53.6
-</td>
-<td style="text-align:right;">
-46.4
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Regional
-</td>
-<td style="text-align:right;">
-75
-</td>
-<td style="text-align:right;">
-53.3
-</td>
-<td style="text-align:right;">
-46.7
-</td>
-</tr>
-</tbody>
-</table>
-<p>Lastly, it is noted that more recently established organizations
-experienced the greatest losses.</p>
-<table class=" lightable-minimal" style="font-family: &quot;Trebuchet MS&quot;, verdana, sans-serif; margin-left: auto; margin-right: auto;">
-<thead>
-<tr>
-<th style="text-align:left;">
-Formation period
-</th>
-<th style="text-align:right;">
-Total
-</th>
-<th style="text-align:right;">
-No funding lost
-</th>
-<th style="text-align:right;">
-Yes, lost funding
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:left;">
-Before 2000
-</td>
-<td style="text-align:right;">
-121
-</td>
-<td style="text-align:right;">
-47.9
-</td>
-<td style="text-align:right;">
-52.1
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Between 2000 and 2009
-</td>
-<td style="text-align:right;">
-154
-</td>
-<td style="text-align:right;">
-46.1
-</td>
-<td style="text-align:right;">
-53.9
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Between 2010 and 2014
-</td>
-<td style="text-align:right;">
-128
-</td>
-<td style="text-align:right;">
-53.9
-</td>
-<td style="text-align:right;">
-46.1
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Between 2015 and 2020
-</td>
-<td style="text-align:right;">
-203
-</td>
-<td style="text-align:right;">
-56.7
-</td>
-<td style="text-align:right;">
-43.3
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Between 2021 and 2023
-</td>
-<td style="text-align:right;">
-61
-</td>
-<td style="text-align:right;">
-68.9
-</td>
-<td style="text-align:right;">
-31.1
-</td>
-</tr>
-</tbody>
-</table>
-<p><strong>Loss of funding impact</strong></p>
-<p>The greatest impact of the reduction in funding between 2021 and
-2023, as observed among the organizations that responded to the survey,
-is seen in the decrease in their activities, with a Percentage of 60.4%,
-followed by a reduction in staff. It is noteworthy that the loss of
-funding has not had a significant impact on the discontinuation of
-programs or projects.</p>
-<table class=" lightable-minimal" style="font-family: &quot;Trebuchet MS&quot;, verdana, sans-serif; margin-left: auto; margin-right: auto;">
-<thead>
-<tr>
-<th style="text-align:left;">
-Source
-</th>
-<th style="text-align:right;">
-Percentage
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:left;">
-No big impact
-</td>
-<td style="text-align:right;">
-12.5
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Staff reduction
-</td>
-<td style="text-align:right;">
-33.3
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Activity reduction
-</td>
-<td style="text-align:right;">
-60.4
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Discontinuation of programs or projects
-</td>
-<td style="text-align:right;">
-12.5
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Staff faced a salary gap
-</td>
-<td style="text-align:right;">
-34.0
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Other
-</td>
-<td style="text-align:right;">
-11.9
-</td>
-</tr>
-</tbody>
-</table>
-<table class=" lightable-minimal" style="font-family: &quot;Trebuchet MS&quot;, verdana, sans-serif; margin-left: auto; margin-right: auto;">
-<thead>
-<tr>
-<th style="text-align:left;">
-Description
-</th>
-<th style="text-align:right;">
-Total
-</th>
-<th style="text-align:right;">
-No big impact
-</th>
-<th style="text-align:right;">
-Staff reduction
-</th>
-<th style="text-align:right;">
-Activity reduction
-</th>
-<th style="text-align:right;">
-Discontinuation of programs or projects
-</th>
-<th style="text-align:right;">
-Staff faced a salary gap
-</th>
-<th style="text-align:right;">
-Other
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:left;">
-Other
-</td>
-<td style="text-align:right;">
-17
-</td>
-<td style="text-align:right;">
-17.6
-</td>
-<td style="text-align:right;">
-29.4
-</td>
-<td style="text-align:right;">
-58.8
-</td>
-<td style="text-align:right;">
-17.6
-</td>
-<td style="text-align:right;">
-29.4
-</td>
-<td style="text-align:right;">
-5.9
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Primary focus
-</td>
-<td style="text-align:right;">
-241
-</td>
-<td style="text-align:right;">
-13.3
-</td>
-<td style="text-align:right;">
-33.2
-</td>
-<td style="text-align:right;">
-58.9
-</td>
-<td style="text-align:right;">
-13.3
-</td>
-<td style="text-align:right;">
-33.6
-</td>
-<td style="text-align:right;">
-12.0
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Specific projects
-</td>
-<td style="text-align:right;">
-45
-</td>
-<td style="text-align:right;">
-6.7
-</td>
-<td style="text-align:right;">
-35.6
-</td>
-<td style="text-align:right;">
-68.9
-</td>
-<td style="text-align:right;">
-6.7
-</td>
-<td style="text-align:right;">
-37.8
-</td>
-<td style="text-align:right;">
-13.3
-</td>
-</tr>
-</tbody>
-</table>
-<table class=" lightable-minimal" style="font-family: &quot;Trebuchet MS&quot;, verdana, sans-serif; margin-left: auto; margin-right: auto;">
-<thead>
-<tr>
-<th style="text-align:left;">
-Registration
-</th>
-<th style="text-align:right;">
-Total
-</th>
-<th style="text-align:right;">
-No big impact
-</th>
-<th style="text-align:right;">
-Staff reduction
-</th>
-<th style="text-align:right;">
-Activity reduction
-</th>
-<th style="text-align:right;">
-Discontinuation of programs or projects
-</th>
-<th style="text-align:right;">
-Staff faced a salary gap
-</th>
-<th style="text-align:right;">
-Other
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:left;">
-globally_focused
-</td>
-<td style="text-align:right;">
-21
-</td>
-<td style="text-align:right;">
-33.3
-</td>
-<td style="text-align:right;">
-14.3
-</td>
-<td style="text-align:right;">
-42.9
-</td>
-<td style="text-align:right;">
-33.3
-</td>
-<td style="text-align:right;">
-23.8
-</td>
-<td style="text-align:right;">
-14.3
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-locally_focused
-</td>
-<td style="text-align:right;">
-91
-</td>
-<td style="text-align:right;">
-13.2
-</td>
-<td style="text-align:right;">
-35.2
-</td>
-<td style="text-align:right;">
-64.8
-</td>
-<td style="text-align:right;">
-13.2
-</td>
-<td style="text-align:right;">
-34.1
-</td>
-<td style="text-align:right;">
-6.6
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-nationally_focused
-</td>
-<td style="text-align:right;">
-147
-</td>
-<td style="text-align:right;">
-11.6
-</td>
-<td style="text-align:right;">
-36.7
-</td>
-<td style="text-align:right;">
-58.5
-</td>
-<td style="text-align:right;">
-11.6
-</td>
-<td style="text-align:right;">
-36.1
-</td>
-<td style="text-align:right;">
-12.9
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-regionally_focused
-</td>
-<td style="text-align:right;">
-34
-</td>
-<td style="text-align:right;">
-5.9
-</td>
-<td style="text-align:right;">
-29.4
-</td>
-<td style="text-align:right;">
-70.6
-</td>
-<td style="text-align:right;">
-5.9
-</td>
-<td style="text-align:right;">
-26.5
-</td>
-<td style="text-align:right;">
-20.6
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-transnationally_focused
-</td>
-<td style="text-align:right;">
-6
-</td>
-<td style="text-align:right;">
-0.0
-</td>
-<td style="text-align:right;">
-16.7
-</td>
-<td style="text-align:right;">
-33.3
-</td>
-<td style="text-align:right;">
-0.0
-</td>
-<td style="text-align:right;">
-33.3
-</td>
-<td style="text-align:right;">
-16.7
-</td>
-</tr>
-</tbody>
-</table>
-<table class=" lightable-minimal" style="font-family: &quot;Trebuchet MS&quot;, verdana, sans-serif; margin-left: auto; margin-right: auto;">
-<thead>
-<tr>
-<th style="text-align:left;">
-Scope
-</th>
-<th style="text-align:right;">
-Total
-</th>
-<th style="text-align:right;">
-No big impact
-</th>
-<th style="text-align:right;">
-Staff reduction
-</th>
-<th style="text-align:right;">
-Activity reduction
-</th>
-<th style="text-align:right;">
-Discontinuation of programs or projects
-</th>
-<th style="text-align:right;">
-Staff faced a salary gap
-</th>
-<th style="text-align:right;">
-Other
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:left;">
-Global
-</td>
-<td style="text-align:right;">
-21
-</td>
-<td style="text-align:right;">
-33.3
-</td>
-<td style="text-align:right;">
-14.3
-</td>
-<td style="text-align:right;">
-42.9
-</td>
-<td style="text-align:right;">
-33.3
-</td>
-<td style="text-align:right;">
-23.8
-</td>
-<td style="text-align:right;">
-14.3
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Local
-</td>
-<td style="text-align:right;">
-91
-</td>
-<td style="text-align:right;">
-13.2
-</td>
-<td style="text-align:right;">
-35.2
-</td>
-<td style="text-align:right;">
-64.8
-</td>
-<td style="text-align:right;">
-13.2
-</td>
-<td style="text-align:right;">
-34.1
-</td>
-<td style="text-align:right;">
-6.6
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-National
-</td>
-<td style="text-align:right;">
-147
-</td>
-<td style="text-align:right;">
-11.6
-</td>
-<td style="text-align:right;">
-36.7
-</td>
-<td style="text-align:right;">
-58.5
-</td>
-<td style="text-align:right;">
-11.6
-</td>
-<td style="text-align:right;">
-36.1
-</td>
-<td style="text-align:right;">
-12.9
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Regional
-</td>
-<td style="text-align:right;">
-34
-</td>
-<td style="text-align:right;">
-5.9
-</td>
-<td style="text-align:right;">
-29.4
-</td>
-<td style="text-align:right;">
-70.6
-</td>
-<td style="text-align:right;">
-5.9
-</td>
-<td style="text-align:right;">
-26.5
-</td>
-<td style="text-align:right;">
-20.6
-</td>
-</tr>
-</tbody>
-</table>
-<table class=" lightable-minimal" style="font-family: &quot;Trebuchet MS&quot;, verdana, sans-serif; margin-left: auto; margin-right: auto;">
-<thead>
-<tr>
-<th style="text-align:left;">
-Formation period
-</th>
-<th style="text-align:right;">
-Total
-</th>
-<th style="text-align:right;">
-No big impact
-</th>
-<th style="text-align:right;">
-Staff reduction
-</th>
-<th style="text-align:right;">
-Activity reduction
-</th>
-<th style="text-align:right;">
-Discontinuation of programs or projects
-</th>
-<th style="text-align:right;">
-Staff faced a salary gap
-</th>
-<th style="text-align:right;">
-Other
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:left;">
-Before 2000
-</td>
-<td style="text-align:right;">
-63
-</td>
-<td style="text-align:right;">
-15.9
-</td>
-<td style="text-align:right;">
-36.5
-</td>
-<td style="text-align:right;">
-52.4
-</td>
-<td style="text-align:right;">
-15.9
-</td>
-<td style="text-align:right;">
-22.2
-</td>
-<td style="text-align:right;">
-12.7
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Between 2000 and 2009
-</td>
-<td style="text-align:right;">
-81
-</td>
-<td style="text-align:right;">
-13.6
-</td>
-<td style="text-align:right;">
-38.3
-</td>
-<td style="text-align:right;">
-55.6
-</td>
-<td style="text-align:right;">
-13.6
-</td>
-<td style="text-align:right;">
-35.8
-</td>
-<td style="text-align:right;">
-13.6
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Between 2010 and 2014
-</td>
-<td style="text-align:right;">
-57
-</td>
-<td style="text-align:right;">
-12.3
-</td>
-<td style="text-align:right;">
-33.3
-</td>
-<td style="text-align:right;">
-71.9
-</td>
-<td style="text-align:right;">
-12.3
-</td>
-<td style="text-align:right;">
-42.1
-</td>
-<td style="text-align:right;">
-3.5
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Between 2015 and 2020
-</td>
-<td style="text-align:right;">
-84
-</td>
-<td style="text-align:right;">
-11.9
-</td>
-<td style="text-align:right;">
-28.6
-</td>
-<td style="text-align:right;">
-61.9
-</td>
-<td style="text-align:right;">
-11.9
-</td>
-<td style="text-align:right;">
-33.3
-</td>
-<td style="text-align:right;">
-9.5
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Between 2021 and 2023
-</td>
-<td style="text-align:right;">
-18
-</td>
-<td style="text-align:right;">
-0.0
-</td>
-<td style="text-align:right;">
-22.2
-</td>
-<td style="text-align:right;">
-66.7
-</td>
-<td style="text-align:right;">
-0.0
-</td>
-<td style="text-align:right;">
-44.4
-</td>
-<td style="text-align:right;">
-38.9
-</td>
-</tr>
-</tbody>
-</table>
+</table></li>
+</ol></li>
+</ol></li>
+</ol></li>
+</ol></li>
+</ol></li>
+</ol></li>
+</ol></li>
+</ol>
+<p><strong>–Lecture———————————————————————–</strong></p>
+<p><strong>————————————————————————————————</strong></p>
 
 
 

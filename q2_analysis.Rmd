@@ -47,62 +47,6 @@ ___
 
 **-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-**
 
-**Number of answers by date** 
-
-
-
-```{r}
-answers_by_date<-witm  %>% 
-  group_by(date) %>%  
-  summarise(qt=n())
-
-
-ggplot(answers_by_date, aes(x =  as.POSIXct(date), y=qt)) +                      
-  geom_bar(stat="identity",width=0.5, colour="red", fill="skyblue") +
-  labs(x="date",y= "Number") +                 
-  ggtitle("Number of answers by date") +                
-  theme_bw(base_size = 12)+  
-  scale_x_datetime(breaks=scales::breaks_pretty(8))+
-  geom_text(aes(label = signif(qt)), nudge_y = 3)
-```
-
-**--Analysis notes-----------------------------------------------------------------------**
-
-In general the polls always have a high peak on the firsts days, WITM also shows this. Then there is another spike on 27-28 June, probably a strengthening of communication. On the 4th of July it increases again.
-During the days of the sessions, the number of responses also increased significantly.
-
-
-**------------------------------------------------------------------------------------------------**
-
-**-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-**
-
-**Consent:**
-
-
-Q1. I consent to take the WITM survey on behalf of my group, organization or movement.
-
-```{r consent, echo=F, message=F, warning=F}
-
-q0<-witm %>%
-  group_by(q0_consent) %>% 
-  summarise(n=n()) %>% 
-  mutate(porcentaje=round((n/sum(n))*100,1)) %>% 
-  rename("Consent"=q0_consent)
-
-knitr::kable(q0) %>% 
-  kable_minimal()
-
-#write.xlsx2(as.data.frame(q0), "Output/section1.xlsx", row.names = FALSE, sheetName ="q1",append = TRUE)
-
-
-#From now on, only those who have given their consent to respond to the survey will be considered for analysis
-
-
-```
-___
-
-**-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-**
-
 **Group information:**
 
 Q2. Which of the following statements best describes your group, organization and/or movement?
@@ -120,6 +64,7 @@ q1<-base %>%
   rename("Description"=q1_description)
 
 
+
 knitr::kable(q1) %>% 
   kable_minimal()
 ```
@@ -134,14 +79,12 @@ q1_otro<-base %>%
   summarise(n=n()) %>% 
   select("Other"=q1_description_group)
 
-#knitr::kable(q1_otro) %>% 
-#  kable_minimal()
+knitr::kable(q1_otro) %>% 
+  kable_minimal()
 
 ```
 **--Analysis notes-----------------------------------------------------------------------**
 
-
-The majority of the organizations indicate that they are feminist organizations. This means that it is not a variable that allows us to characterize or discriminate the organizations very much.
 
 
 **------------------------------------------------------------------------------------------------**
@@ -152,284 +95,166 @@ ___
 
 **Organization names:**
 
-Q3. The name of your group, organization and/or movement
+Q3. The name organizations that answered Q2-B (specific project)
 
 
-```{r name1, echo=F, message=F, warning=F}
+```{r name, echo=F, message=F, warning=F}
+q2<-base %>%
+  filter(!is.na(q2_name) & !q1_description=='specific_projects') %>% 
+  group_by(q2_name) %>% 
+  select("Organization names"=q2_name) 
+  
+knitr::kable(q2) %>% 
+  kable_minimal()
 
-n_temp<-sum(base$q2_name=="")
-print(paste("The number of organisations that did not answer their name is:",n_temp))
+```
+
+___
+
+
+**q2 croostab with q4 grouped on AWID focus subjects**
+
+
+
+```{r, echo=F, message=F, warning=F}
+
+
+ # "Anti-caste"="q4_forms_organizing.anti_caste",
+ #                                "Anti-militarization and peace"="q4_forms_organizing.anti_militarization",
+ #                                "Climate and environmental justice"="q4_forms_organizing.climate_justice",
+ #                                "Countering anti-gender and anti-rights"="q4_forms_organizing.countering_anti_gender",
+ #                                 "Holistic safety, protection and collective care"="q4_forms_organizing.holistic_safety_protection_collective_care",
+ #                                "Lesbian, Bisexual and queer rights"="q4_forms_organizing.lesbian_bisexual_queer_rights",
+ #                                "Sex workers rights"="q4_forms_organizing.sex_workers_rights",
+ #                                "Trans and non-binary rights"="q4_forms_organizing.trans_non_binary_rights",
+ #                                "Other feminists subjects (not AWID focus)"="q4_awid_focus_no"
+
+
+## Anti-caste 
+q1q2_anti_caste<-base %>%
+  filter(!is.na(q1_description) & q1_description!="98") %>%
+  group_by(q4_forms_organizing.anti_caste,q1_description)%>%
+  summarise(n=n()) %>%
+  mutate(percentage=round((n/sum(n))*100,1))%>%
+  arrange(desc(n)) %>% 
+  select(q1_description,q4_grouped=q4_forms_organizing.anti_caste,percentage) %>%
+  mutate(q4_grouped=recode(q4_grouped,"1"="Anti Caste","0"="Other subjects")
+         )
+
+## Anti-militarization and peace
+q1q2_peace<-base %>%
+  filter(!is.na(q1_description) & q1_description!="98") %>%
+  group_by(q4_forms_organizing.anti_militarization,q1_description)%>%
+  summarise(n=n()) %>%
+  mutate(percentage=round((n/sum(n))*100,1))%>%
+  arrange(desc(n)) %>% 
+  select(q1_description,q4_grouped=q4_forms_organizing.anti_militarization,percentage) %>%
+  mutate(q4_grouped=recode(q4_grouped,"1"="Anti-militarization and peace","0"="Other subjects")
+         )
+
+## Climate and environmental justice 
+q1q2_climate<-base %>%
+  filter(!is.na(q1_description) & q1_description!="98") %>%
+  group_by(q4_forms_organizing.climate_justice,q1_description)%>%
+  summarise(n=n()) %>%
+  mutate(percentage=round((n/sum(n))*100,1))%>%
+  arrange(desc(n)) %>% 
+  select(q1_description,q4_grouped=q4_forms_organizing.climate_justice,percentage) %>%
+  mutate(q4_grouped=recode(q4_grouped,"1"="Climate and environmental justice","0"="Other subjects")
+         )
+
+## Countering anti-gender and anti-rights
+q1q2_anti_rights<-base %>%
+  filter(!is.na(q1_description) & q1_description!="98") %>%
+  group_by(q4_forms_organizing.countering_anti_gender,q1_description)%>%
+  summarise(n=n()) %>%
+  mutate(percentage=round((n/sum(n))*100,1))%>%
+  arrange(desc(n)) %>% 
+  select(q1_description,q4_grouped=q4_forms_organizing.countering_anti_gender,percentage) %>%
+  mutate(q4_grouped=recode(q4_grouped,"1"="Countering anti-gender and anti-rights","0"="Other subjects")
+         )
+
+
+## Holistic safety, protection and collective care
+q1q2_care<-base %>%
+  filter(!is.na(q1_description) & q1_description!="98") %>%
+  group_by(q4_forms_organizing.holistic_safety_protection_collective_care,q1_description)%>%
+  summarise(n=n()) %>%
+  mutate(percentage=round((n/sum(n))*100,1))%>%
+  arrange(desc(n)) %>% 
+  select(q1_description,q4_grouped=q4_forms_organizing.holistic_safety_protection_collective_care,percentage) %>%
+  mutate(q4_grouped=recode(q4_grouped,"1"="Holistic safety, protection and collective care","0"="Other subjects")
+         )
+
+## Lesbian, Bisexual and queer rights
+q1q2_lesbian<-base %>%
+  filter(!is.na(q1_description) & q1_description!="98") %>%
+  group_by(q4_forms_organizing.lesbian_bisexual_queer_rights,q1_description)%>%
+  summarise(n=n()) %>%
+  mutate(percentage=round((n/sum(n))*100,1))%>%
+  arrange(desc(n)) %>% 
+  select(q1_description,q4_grouped=q4_forms_organizing.lesbian_bisexual_queer_rights,percentage) %>%
+  mutate(q4_grouped=recode(q4_grouped,"1"="Lesbian, Bisexual and queer rights","0"="Other subjects")
+         )
+
+## Sex workers rights
+q1q2_sex_workers<-base %>%
+  filter(!is.na(q1_description) & q1_description!="98") %>%
+  group_by(q4_forms_organizing.sex_workers_rights,q1_description)%>%
+  summarise(n=n()) %>%
+  mutate(percentage=round((n/sum(n))*100,1))%>%
+  arrange(desc(n)) %>% 
+  select(q1_description,q4_grouped=q4_forms_organizing.sex_workers_rights,percentage) %>%
+  mutate(q4_grouped=recode(q4_grouped,"1"="Sex workers rights","0"="Other subjects")
+         )
+
+
+##Trans and non-binary rights
+q1q2_trans<-base %>%
+  filter(!is.na(q1_description) & q1_description!="98") %>%
+  group_by(q4_forms_organizing.trans_non_binary_rights,q1_description)%>%
+  summarise(n=n()) %>%
+  mutate(percentage=round((n/sum(n))*100,1))%>%
+  arrange(desc(n)) %>% 
+  select(q1_description,q4_grouped=q4_forms_organizing.trans_non_binary_rights,percentage) %>%
+  mutate(q4_grouped=recode(q4_grouped,"1"="Trans and non-binary rights","0"="Other subjects")
+         )
+
+##Other feminists subjects (not AWID focus)
+q1q2_others<-base %>%
+  filter(!is.na(q1_description) & q1_description!="98") %>%
+  group_by(q4_awid_focus_no,q1_description)%>%
+  summarise(n=n()) %>%
+  mutate(percentage=round((n/sum(n))*100,1))%>%
+  arrange(desc(n)) %>% 
+  select(q1_description,q4_grouped=q4_awid_focus_no,percentage) %>%
+  mutate(q4_grouped=recode(q4_grouped,"1"="Other feminists subjects (not AWID focus)","0"="Other subjects")
+         )
+
+q1q2_all<-bind_rows(q1q2_anti_caste,q1q2_peace,q1q2_climate,q1q2_anti_rights,q1q2_care,q1q2_lesbian,q1q2_sex_workers,q1q2_trans,q1q2_others)
+
+q1q2_all <-q1q2_all %>% filter(q4_grouped!="Other subjects") %>% select(q4_grouped,q1_description,percentage)
+
+
+qry_w<-q1q2_all %>% pivot_wider(names_from = q1_description, values_from = percentage) 
+
+knitr::kable(qry_w) %>% 
+  kable_minimal()
+
 
 
 ```
+
+
+
+
 **--Analysis notes-----------------------------------------------------------------------**
 
-Very interesting that almost all organisations responded with their name despite the fact that the possibility of not responding is informed and underlined.
+This crosstabulation shows the information upside down. It indicates that: among the organizations that indicated that they work on some of the main issues of the feminist agenda, 78.3% indicated that they work with a focus on that agenda and 15% through projects. The distribution is very stable among all the issues.
 
 
 **------------------------------------------------------------------------------------------------**
 
-```{r name, echo=F, message=F, warning=F}
-q2<-base %>%
-  filter(!is.na(q2_name)) %>% 
-  group_by(q2_name) %>% 
-  summarise(n=n()) %>% 
-  select("Organization names"=q2_name) %>% 
-  slice(-1)
-
-#knitr::kable(q2) %>% 
-#  kable_minimal()
-
-```
-___
-
-**-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-**
-
-**Type of organization**
-
-Q4. Which of the following forms of organizing best describes your group, organization and/or movement?
-
-*This is a multiple-choice question so the sum of the % does NOT add up to 100.*
-
-```{r type, echo=F, message=F, warning=F}
-
-#Total valid responses for calculating percentage
-
-total<-base %>%
-  count(q4_forms_organizing) %>% 
-  summarise(n=sum(n))
-
-total<-total$n
-
-#Choose only multiple-choice answers -Q4-
-q4_select<-base %>% 
-  select(starts_with("q4_forms_organizing."))
-#q4_select
-
-#q4 calculation
-q4<-q4_select%>% 
-  summarize_all(sum) %>% 
-  gather(q4, n) %>%
-  mutate(q4=forcats::fct_recode(as_factor(q4),
-                                "Anti-caste"="q4_forms_organizing.anti_caste",
-                                "Anti-militarization and peace"="q4_forms_organizing.anti_militarization",
-                                "Black rights/ Black feminist rights"="q4_forms_organizing.black_rights",
-                                "Climate and environmental justice"="q4_forms_organizing.climate_justice",
-                                "Crisis response"="q4_forms_organizing.crisis_response",
-                                "Countering anti-gender and anti-rights"="q4_forms_organizing.countering_anti_gender",
-                                "Digital rights"="q4_forms_organizing.digital_rights",
-                                "Disability rights and justice"="q4_forms_organizing.disability_rights",
-                                "Displaced, migrant and refugee rights"="q4_forms_organizing.displaced_migrant_refugee_rights",
-                                "Economic justice, rights and alternatives"="q4_forms_organizing.economic_justice",
-                                "Freedom of information and media"="q4_forms_organizing.information_media_freedom",
-                                "Harm reduction"="q4_forms_organizing.harm_reduction",
-                                "Ending gender based violence"="q4_forms_organizing.end_gender_violence",
-                                "Pleasure and bodily care"="q4_forms_organizing.pleasure_bodily_care",
-                                "Resisting the war on drugs"="q4_forms_organizing.resisting_war_on_drugs",
-                                "Rights for people living with HIV+"="q4_forms_organizing.rights_for_people_living_with_hiv",
-                                "Holistic safety, protection and collective care"="q4_forms_organizing.holistic_safety_protection_collective_care",
-                                "Human rights"="q4_forms_organizing.human_rights",
-                                "Indigenous rights"="q4_forms_organizing.indigenous_rights",
-                                "Intersex rights"="q4_forms_organizing.intersex_rights",
-                                "Labour rights"="q4_forms_organizing.labour_rights",
-                                "Lesbian, Bisexual and queer rights"="q4_forms_organizing.lesbian_bisexual_queer_rights",
-                                "Racial justice"="q4_forms_organizing.racial_justice",
-                                "Religious and ethnic minority rights"="q4_forms_organizing.religious_ethnic_minority_rights",
-                                "Sex workers rights"="q4_forms_organizing.sex_workers_rights",
-                                "Sexual and reproductive health & rights (SRHR) and bodily autonomy"="q4_forms_organizing.srhr_bodily_autonomy",
-                                "Trans and non-binary rights"="q4_forms_organizing.trans_non_binary_rights",
-                                "Women's rights"="q4_forms_organizing.womens_rights",
-                                "Young feminists"="q4_forms_organizing.young_feminists",
-                                "Girls’ movements"="q4_forms_organizing.girls_movements",
-                                "Human rights defenders at risk"="q4_forms_organizing.hr_defenders_at_risk",
-                                "Other"="q4_forms_organizing.98"))%>% 
-  mutate(porcentaje=round(n/total*100,1)) %>% 
-  arrange(desc(porcentaje)) %>% 
-  rename("Organization type"=q4)
-
-#write.xlsx2(as.data.frame(q4), "Output/section1.xlsx", row.names = FALSE, sheetName ="q4",append = TRUE)
-
-
-
-
-knitr::kable(q4) %>% 
-  kable_minimal()
-
-```
-___
-
-**--Analysis notes-----------------------------------------------------------------------**
-
-Most of the organisations selected many options. Almost all of them defined one of the first four options. Only 10% did not select any of them and in general selected others that can be integrated.
-
-A recategorization into groups of options is proposed in the following item. Excluding the first 4 options:
-Women's rights
-Ending gender based violence
-Human rights
-Sexual and reproductive health & rights (SRHR) and bodily autonoms
-
-
-
-**-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-**
-
-**Type of organization - grouping**
-
-
-In order to make it easier to analyse, groups can be made, but they are not mutually exclusive, so **they are still multiple options**.
-
-THIS CAN BE DEFINED DIFFERENTLY. POSSIBLE GROUPINGS SHOULD BE INDICATED
-
-
-Sexual and reproductive health & rights (SRHR) and bodily autonomy
-
-**Feminist specifit subjects**
-Girls’ movements. 
-Young feminists .
-Countering anti-gender and anti-rights 
-Lesbian, Bisexual and queer rights 
-Sex workers rights 
-Trans and non-binary rights
-Intersex rights
-
-**General HR subjects**
-Human rights defenders at risk
-Economic justice, rights and alternatives
-Climate and environmental justice
-Anti-militarization and peace
-Crisis response
-Resisting the war on drugs
-Anti-caste
-Digital rights
-Freedom of information and media
-
-**Intersectionality (minority groups)**
-Disability rights and justice
-Displaced, migrant and refugee rights
-Indigenous rights
-Racial justice
-Black rights/ Black feminist rights
-Religious and ethnic minority rights
-
-**Sexual and reproductive health & rights (and others health rights)**
-Rights for people living with HIV+
-Holistic safety, protection and collective care
-Pleasure and bodily care
-
-
-```{r type_grouped, echo=F, message=F, warning=F}
-
-base<- base %>%
-  mutate(q4_grouped_feminist=case_when
-         (
-          (q4_forms_organizing.young_feminists==1 |
-          q4_forms_organizing.girls_movements==1  |
-          q4_forms_organizing.countering_anti_gender ==1  |
-          q4_forms_organizing.lesbian_bisexual_queer_rights==1  |
-          q4_forms_organizing.sex_workers_rights==1  |
-          q4_forms_organizing.trans_non_binary_rights==1  |
-          q4_forms_organizing.intersex_rights==1) ~1, TRUE ~0)) %>%  
-   mutate(q4_grouped_hr=case_when
-         (
-          (
-            q4_forms_organizing.hr_defenders_at_risk==1 |
-            q4_forms_organizing.economic_justice==1 |
-            q4_forms_organizing.climate_justice==1 |
-            q4_forms_organizing.anti_militarization==1 |
-            q4_forms_organizing.crisis_response==1 |
-            q4_forms_organizing.resisting_war_on_drugs==1 |
-            q4_forms_organizing.anti_caste==1 |
-            q4_forms_organizing.digital_rights==1 |
-            q4_forms_organizing.information_media_freedom==1) ~1, TRUE ~0)) %>%  
-  
-   mutate(q4_grouped_minorities=case_when
-         (
-          (
-            q4_forms_organizing.disability_rights==1 |
-            q4_forms_organizing.displaced_migrant_refugee_rights==1 |
-            q4_forms_organizing.indigenous_rights==1 |
-            q4_forms_organizing.racial_justice==1 |
-            q4_forms_organizing.black_rights==1 |
-            q4_forms_organizing.religious_ethnic_minority_rights==1 ) ~1, TRUE ~0)) %>% 
-
-   mutate(q4_grouped_srhr=case_when
-         (
-          (
-            q4_forms_organizing.rights_for_people_living_with_hiv==1 |
-            q4_forms_organizing.holistic_safety_protection_collective_care==1 |
-            q4_forms_organizing.pleasure_bodily_care==1) ~1, TRUE ~0)) 
-
-#Choose only multiple-choice answers -Q4-
-q4_select<-base %>% 
-  select(starts_with("q4_grouped"))
-#q4_select
-
-
-#q4 calculation
-q4<-q4_select%>% 
-  summarize_all(sum) %>% 
-  gather(q4, n) %>%
-  mutate(q4=forcats::fct_recode(as_factor(q4),
-                                "Feminist specifit subjects"="q4_grouped_feminist",
-                                "General HR subjects"="q4_grouped_hr",
-                                "Intersectionality (minority groups)"="q4_grouped_minorities",
-                                "Sexual and reproductive health & rights (and othershealth rights) "="q4_grouped_srhr"
-                                ))%>% 
-  mutate(porcentaje=round(n/total*100,1)) %>% 
-  arrange(desc(porcentaje)) %>% 
-  rename("Organization grouped type"=q4)
-
-#write.xlsx2(as.data.frame(q4), "Output/section1.xlsx", row.names = FALSE, sheetName ="q4",append = TRUE)
-
-
-
-
-knitr::kable(q4) %>% 
-  kable_minimal()
-
-```
-___
-
-
-**--Analysis notes-----------------------------------------------------------------------**
-
-The problem with this question is that it does not allow us to discriminate much in relation to organizations.
-
-How can we group these organizations in order to better analyze the data?
-
-
-**-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-**
-
-**Organisation type & subjetcs - grouped**
-
-Option 1
-
-```{r}
-
-
-
-q2q4<-base %>%
-  filter(!is.na(q1_description) & !is.na(q4_grouped_feminist)) %>%
-  group_by(q1_description) %>%
-  summarise(total=n(),
-        fem=sum(q4_grouped_feminist==1),
-        hr=sum(q4_grouped_hr==1),
-        min=sum(q4_grouped_minorities==1),
-        srhr=sum(q4_grouped_srhr==1),
-        'Specific feminist subjects'=round(fem/total*100,2),
-        'General HR Subjects'=round(hr/total*100,2),
-        'Intersectionality (minority groups)'=round(min/total*100,2),
-        'Sexual and reproductive health & rights'=round(srhr/total*100,2)) %>%
-  select("Description"="q1_description",7:10) %>% 
-  mutate(Description=recode(Description, "98"="Other", "primary_focus"="Primary focus", "specific_projects"="Specific projects"))
-
-q2q4<-arrange(q2q4, desc(Description))
-
-qry_w<-t(q2q4)
-        
-
-knitr::kable(qry_w) %>% 
-  kable_minimal()
-```
 
 ```{r}
 q2q4

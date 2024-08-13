@@ -12,7 +12,7 @@
 
 <meta name="date" content="2024-08-13" />
 
-<title>Where is the Money for Feminist Organizing? Survey for feminist, women’s rights and gender justice movements, groups and organizations</title>
+<title>WITM 2024</title>
 
 <script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
 // be compatible with the behavior of Pandoc < 2.8).
@@ -573,4743 +573,103 @@ display: none;
 
 
 
-<h1 class="title toc-ignore">Where is the Money for Feminist Organizing?
-Survey for feminist, women’s rights and gender justice movements, groups
-and organizations</h1>
+<h1 class="title toc-ignore">WITM 2024</h1>
 <h4 class="date">2024-08-13</h4>
 
 </div>
 
 
-<p><strong>Section 2.1: External founding</strong></p>
-<p><strong>Database upload</strong></p>
-<pre class="r"><code># To upload CSV file
-#witm &lt;- read.csv2(&quot;Data/WITM_csv_0716.csv&quot;)
+<p>#WITM Q4 ANALYSIS</p>
+<div id="this-reports-aims-to-define-a-gruped-q4-question-for-analysis" class="section level2">
+<h2>This reports aims to define a gruped q4 question for analysis</h2>
+<pre class="r"><code># OPEN CSV file
+witm &lt;- read.csv2(&quot;Data/WITM_csv_last.csv&quot;)
 
-# To upload CSV file
-witm&lt;- read.csv2(&quot;Data/WITM_variables.csv&quot;)
-
-#2024-05-23 08:37:41.178000-04:00
-witm$date &lt;-  as.Date(witm$end,&#39;%Y-%m-%d&#39;)
-
-#Variable names
-#names(witm)</code></pre>
-<p><strong>Organizations based on external funding received</strong></p>
+source(file=&quot;WITM_variables.R&quot;) </code></pre>
+<hr />
+<p><strong>-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-</strong></p>
+<p><strong>Type of organization</strong></p>
+<p>Q4. Which of the following forms of organizing best describes your
+group, organization and/or movement?</p>
+<p><em>This is a multiple-choice question so the sum of the % does NOT
+add up to 100.</em></p>
+<p>Original distribution</p>
 <table class=" lightable-minimal" style="font-family: &quot;Trebuchet MS&quot;, verdana, sans-serif; margin-left: auto; margin-right: auto;">
 <thead>
 <tr>
 <th style="text-align:left;">
-External funding
+Organization type
 </th>
 <th style="text-align:right;">
 n
 </th>
 <th style="text-align:right;">
-Percentage
+porcentaje
 </th>
 </tr>
 </thead>
 <tbody>
 <tr>
 <td style="text-align:left;">
-no
+Women’s rights
 </td>
 <td style="text-align:right;">
-267
+740
 </td>
 <td style="text-align:right;">
-28.6
+75.4
 </td>
 </tr>
 <tr>
 <td style="text-align:left;">
-yes
+Ending gender based violence
 </td>
 <td style="text-align:right;">
-667
+680
 </td>
 <td style="text-align:right;">
-71.4
+69.3
 </td>
 </tr>
-</tbody>
-</table>
-<p>It is noted that 71.4% of organizations participating on the survey
-have received external funding.</p>
-<table class=" lightable-minimal" style="font-family: &quot;Trebuchet MS&quot;, verdana, sans-serif; margin-left: auto; margin-right: auto;">
-<thead>
 <tr>
-<th style="text-align:left;">
-Registration
-</th>
-<th style="text-align:right;">
-no
-</th>
-<th style="text-align:right;">
-yes
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:left;">
-No
-</td>
-<td style="text-align:right;">
-47.22
-</td>
-<td style="text-align:right;">
-52.78
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Other
-</td>
-<td style="text-align:right;">
-40.00
-</td>
-<td style="text-align:right;">
-60.00
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Yes
-</td>
-<td style="text-align:right;">
-24.50
-</td>
-<td style="text-align:right;">
-75.50
-</td>
-</tr>
-</tbody>
-</table>
-<p>The Percentage of organizations receiving external funding increases
-to 73.6% among those that promote the rights of women, girls, or trans
-and gender-diverse individuals with intersecting identities, where this
-is the ‘primary focus of all our work.’ The Percentage rises to 75.5%
-among registered organizations, but drops to 52.8% among those that are
-not registered.</p>
-<table class=" lightable-minimal" style="font-family: &quot;Trebuchet MS&quot;, verdana, sans-serif; margin-left: auto; margin-right: auto;">
-<thead>
-<tr>
-<th style="text-align:left;">
-Organization description
-</th>
-<th style="text-align:right;">
-no
-</th>
-<th style="text-align:right;">
-yes
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:left;">
-Other
-</td>
-<td style="text-align:right;">
-29.41
-</td>
-<td style="text-align:right;">
-70.59
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Primary focus
-</td>
-<td style="text-align:right;">
-26.45
-</td>
-<td style="text-align:right;">
-73.55
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Specific project(s)
-</td>
-<td style="text-align:right;">
-36.78
-</td>
-<td style="text-align:right;">
-63.22
-</td>
-</tr>
-</tbody>
-</table>
-<table class=" lightable-minimal" style="font-family: &quot;Trebuchet MS&quot;, verdana, sans-serif; margin-left: auto; margin-right: auto;">
-<thead>
-<tr>
-<th style="text-align:left;">
-Registration
-</th>
-<th style="text-align:right;">
-no
-</th>
-<th style="text-align:right;">
-yes
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:left;">
-No
-</td>
-<td style="text-align:right;">
-47.22
-</td>
-<td style="text-align:right;">
-52.78
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Other
-</td>
-<td style="text-align:right;">
-40.00
-</td>
-<td style="text-align:right;">
-60.00
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Yes
-</td>
-<td style="text-align:right;">
-24.50
-</td>
-<td style="text-align:right;">
-75.50
-</td>
-</tr>
-</tbody>
-</table>
-<em>Responses from organizations that selected ‘Other’ for their
-registration status</em>
-<table class=" lightable-minimal" style="font-family: &quot;Trebuchet MS&quot;, verdana, sans-serif; margin-left: auto; margin-right: auto;">
-<thead>
-<tr>
-<th style="text-align:left;">
-Responses
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:left;">
-Archived as a sub group of another organisation - Salamander Trust
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Déjà enregistré mais pas encore légal
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Em processo de registro.
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-En Nicaragua no se puede. En Costa Rica estamos en proceso.
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-En proceso de obtención de la personaduria Juridica
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-In registration process
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-In the process of everything
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-It belongs to a private company, but we are planing to create a
-Foundation out of it.
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Le processus d’enregistrement est en cours.
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Masih dalam Proses pendaftaran Legalitas
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Nos encontramos en proceso de constitución legal.
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Not sure
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Our registration application process is underway.
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Registered in 2011 but not officially active with respect to governemnt
-authorities (work under the radar mostly)
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Under a global registered entity
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Wapichan Wiizi Women’s Movement is the arm of the South Rupununi
-District Council. The SRDC is officially gazette under Guyanese laws.
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-We are unincorporated under Australian law.
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-We used to register but due to current Myanmar political situation has
-not extended.
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-en cours
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-encours d’enregistrement final
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-n/a
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-no contamos con personeria juridica pero realizamos activismo constantes
-con el colectivo rebeldia/ clacai
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-part of the Universities of Sussex and the West of England
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-registered but no more extension period
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-registered, but no more extension (expired)
-</td>
-</tr>
-</tbody>
-</table>
-<p>Regarding organizational scope, those with a regional focus receive
-external funding more frequently. In contrast, less than 66.6% of
-organizations with a local focus report receiving external funding</p>
-<table class=" lightable-minimal" style="font-family: &quot;Trebuchet MS&quot;, verdana, sans-serif; margin-left: auto; margin-right: auto;">
-<thead>
-<tr>
-<th style="text-align:left;">
-Scope
-</th>
-<th style="text-align:right;">
-no
-</th>
-<th style="text-align:right;">
-yes
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:left;">
-Diaspora
-</td>
-<td style="text-align:right;">
-18.18
-</td>
-<td style="text-align:right;">
-81.82
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Global
-</td>
-<td style="text-align:right;">
-29.31
-</td>
-<td style="text-align:right;">
-70.69
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Local
-</td>
-<td style="text-align:right;">
-33.44
-</td>
-<td style="text-align:right;">
-66.56
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-National
-</td>
-<td style="text-align:right;">
-28.57
-</td>
-<td style="text-align:right;">
-71.43
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Regional
-</td>
-<td style="text-align:right;">
-13.79
-</td>
-<td style="text-align:right;">
-86.21
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Transnational
-</td>
-<td style="text-align:right;">
-23.53
-</td>
-<td style="text-align:right;">
-76.47
-</td>
-</tr>
-</tbody>
-</table>
-<p>Finally, it is observed that as the organization ages, the Percentage
-of those receiving external funding increases, while this Percentage
-decreases significantly for more recently established organizations.
-Only 16.7% of organizations formed in 2023 report receiving external
-funding, in contrast to 88.3% of those established before the year
-2000.</p>
-<table class=" lightable-minimal" style="font-family: &quot;Trebuchet MS&quot;, verdana, sans-serif; margin-left: auto; margin-right: auto;">
-<thead>
-<tr>
-<th style="text-align:left;">
-Formation period
-</th>
-<th style="text-align:right;">
-no
-</th>
-<th style="text-align:right;">
-yes
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:left;">
-Before 2000
-</td>
-<td style="text-align:right;">
-11.68
-</td>
-<td style="text-align:right;">
-88.32
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Between 2000 and 2009
-</td>
-<td style="text-align:right;">
-17.65
-</td>
-<td style="text-align:right;">
-82.35
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Between 2010 and 2014
-</td>
-<td style="text-align:right;">
-24.26
-</td>
-<td style="text-align:right;">
-75.74
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Between 2015 and 2020
-</td>
-<td style="text-align:right;">
-32.33
-</td>
-<td style="text-align:right;">
-67.67
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Year 2021
-</td>
-<td style="text-align:right;">
-35.71
-</td>
-<td style="text-align:right;">
-64.29
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Year 2022
-</td>
-<td style="text-align:right;">
-49.02
-</td>
-<td style="text-align:right;">
-50.98
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Year 2023
-</td>
-<td style="text-align:right;">
-83.33
-</td>
-<td style="text-align:right;">
-16.67
-</td>
-</tr>
-</tbody>
-</table>
-<p>Among the organizations that received external funding between 2021
-and 2023, 83.7% reported receiving funding in 2021, 92.5% in 2022, and
-97.5% in 2023.</p>
-<table class=" lightable-minimal" style="font-family: &quot;Trebuchet MS&quot;, verdana, sans-serif; margin-left: auto; margin-right: auto;">
-<thead>
-<tr>
-<th style="text-align:left;">
-Year
-</th>
-<th style="text-align:right;">
-n
-</th>
-<th style="text-align:right;">
-Percentage
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:left;">
-2023
-</td>
-<td style="text-align:right;">
-650
-</td>
-<td style="text-align:right;">
-97.5
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-2022
-</td>
-<td style="text-align:right;">
-617
-</td>
-<td style="text-align:right;">
-92.5
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-2021
-</td>
-<td style="text-align:right;">
-558
-</td>
-<td style="text-align:right;">
-83.7
-</td>
-</tr>
-</tbody>
-</table>
-<p><strong>Organizations that received external funding during
-2023</strong></p>
-<p>Of the total organizations that received external funding in 2023,
-73.6% promote the rights of women or girls or trans or gender diverse
-people with intersecting identities, and this is the “primary focus of
-all our work”.</p>
-<table class=" lightable-minimal" style="font-family: &quot;Trebuchet MS&quot;, verdana, sans-serif; margin-left: auto; margin-right: auto;">
-<thead>
-<tr>
-<th style="text-align:left;">
-Organization description
-</th>
-<th style="text-align:right;">
-count
-</th>
-<th style="text-align:right;">
-Percentage
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:left;">
-Other
-</td>
-<td style="text-align:right;">
-46
-</td>
-<td style="text-align:right;">
-7.08
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Primary focus
-</td>
-<td style="text-align:right;">
-496
-</td>
-<td style="text-align:right;">
-76.31
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Specific project(s)
-</td>
-<td style="text-align:right;">
-108
-</td>
-<td style="text-align:right;">
-16.62
-</td>
-</tr>
-</tbody>
-</table>
-<p>Of the total organizations that received external funding in 2023,
-86.7% were registered organizations”.</p>
-<table class=" lightable-minimal" style="font-family: &quot;Trebuchet MS&quot;, verdana, sans-serif; margin-left: auto; margin-right: auto;">
-<thead>
-<tr>
-<th style="text-align:left;">
-Registration
-</th>
-<th style="text-align:right;">
-count
-</th>
-<th style="text-align:right;">
-Percentage
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:left;">
-No
-</td>
-<td style="text-align:right;">
-72
-</td>
-<td style="text-align:right;">
-11.16
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Other
-</td>
-<td style="text-align:right;">
-14
-</td>
-<td style="text-align:right;">
-2.17
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Yes
-</td>
-<td style="text-align:right;">
-559
-</td>
-<td style="text-align:right;">
-86.67
-</td>
-</tr>
-</tbody>
-</table>
-<p>On the other hand, most organizations that received external funding
-in the past year were characterized by having a national scope:
-49.5%.</p>
-<table class=" lightable-minimal" style="font-family: &quot;Trebuchet MS&quot;, verdana, sans-serif; margin-left: auto; margin-right: auto;">
-<thead>
-<tr>
-<th style="text-align:left;">
-Scope
-</th>
-<th style="text-align:right;">
-n
-</th>
-<th style="text-align:right;">
-Percentage
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:left;">
-Diaspora
-</td>
-<td style="text-align:right;">
-9
-</td>
-<td style="text-align:right;">
-1.38
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Global
-</td>
-<td style="text-align:right;">
-39
-</td>
-<td style="text-align:right;">
-6.00
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Local
-</td>
-<td style="text-align:right;">
-193
-</td>
-<td style="text-align:right;">
-29.69
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-National
-</td>
-<td style="text-align:right;">
-322
-</td>
-<td style="text-align:right;">
-49.54
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Regional
-</td>
-<td style="text-align:right;">
-74
-</td>
-<td style="text-align:right;">
-11.38
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Transnational
-</td>
-<td style="text-align:right;">
-13
-</td>
-<td style="text-align:right;">
-2.00
-</td>
-</tr>
-</tbody>
-</table>
-<p>Lastly, it is observed that the Percentage of organizations receiving
-external funding in 2023 increases with the length of their
-establishment</p>
-<table class=" lightable-minimal" style="font-family: &quot;Trebuchet MS&quot;, verdana, sans-serif; margin-left: auto; margin-right: auto;">
-<thead>
-<tr>
-<th style="text-align:left;">
-Formation period
-</th>
-<th style="text-align:right;">
-no
-</th>
-<th style="text-align:right;">
-yes
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:left;">
-Before 2000
-</td>
-<td style="text-align:right;">
-11.68
-</td>
-<td style="text-align:right;">
-88.32
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Between 2000 and 2009
-</td>
-<td style="text-align:right;">
-17.65
-</td>
-<td style="text-align:right;">
-82.35
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Between 2010 and 2014
-</td>
-<td style="text-align:right;">
-24.26
-</td>
-<td style="text-align:right;">
-75.74
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Between 2015 and 2020
-</td>
-<td style="text-align:right;">
-32.33
-</td>
-<td style="text-align:right;">
-67.67
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Year 2021
-</td>
-<td style="text-align:right;">
-35.71
-</td>
-<td style="text-align:right;">
-64.29
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Year 2022
-</td>
-<td style="text-align:right;">
-49.02
-</td>
-<td style="text-align:right;">
-50.98
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Year 2023
-</td>
-<td style="text-align:right;">
-83.33
-</td>
-<td style="text-align:right;">
-16.67
-</td>
-</tr>
-</tbody>
-</table>
-<p><strong>Percentage of external funding received in total budget by
-year</strong></p>
-<table class=" lightable-minimal" style="font-family: &quot;Trebuchet MS&quot;, verdana, sans-serif; margin-left: auto; margin-right: auto;">
-<thead>
-<tr>
-<th style="text-align:right;">
-Range
-</th>
-<th style="text-align:right;">
-Percentage 2023
-</th>
-<th style="text-align:right;">
-Percentage 2022
-</th>
-<th style="text-align:right;">
-Percentage 2021
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:right;">
-0
-</td>
-<td style="text-align:right;">
-2.5
-</td>
-<td style="text-align:right;">
-6.4
-</td>
-<td style="text-align:right;">
-11.8
-</td>
-</tr>
-<tr>
-<td style="text-align:right;">
-10
-</td>
-<td style="text-align:right;">
-6.9
-</td>
-<td style="text-align:right;">
-6.5
-</td>
-<td style="text-align:right;">
-8.5
-</td>
-</tr>
-<tr>
-<td style="text-align:right;">
-20
-</td>
-<td style="text-align:right;">
-4.3
-</td>
-<td style="text-align:right;">
-7.1
-</td>
-<td style="text-align:right;">
-6.2
-</td>
-</tr>
-<tr>
-<td style="text-align:right;">
-30
-</td>
-<td style="text-align:right;">
-6.3
-</td>
-<td style="text-align:right;">
-5.6
-</td>
-<td style="text-align:right;">
-5.2
-</td>
-</tr>
-<tr>
-<td style="text-align:right;">
-40
-</td>
-<td style="text-align:right;">
-5.1
-</td>
-<td style="text-align:right;">
-5.0
-</td>
-<td style="text-align:right;">
-4.3
-</td>
-</tr>
-<tr>
-<td style="text-align:right;">
-50
-</td>
-<td style="text-align:right;">
-4.9
-</td>
-<td style="text-align:right;">
-5.3
-</td>
-<td style="text-align:right;">
-5.4
-</td>
-</tr>
-<tr>
-<td style="text-align:right;">
-60
-</td>
-<td style="text-align:right;">
-5.1
-</td>
-<td style="text-align:right;">
-4.7
-</td>
-<td style="text-align:right;">
-5.2
-</td>
-</tr>
-<tr>
-<td style="text-align:right;">
-70
-</td>
-<td style="text-align:right;">
-7.8
-</td>
-<td style="text-align:right;">
-8.3
-</td>
-<td style="text-align:right;">
-6.8
-</td>
-</tr>
-<tr>
-<td style="text-align:right;">
-80
-</td>
-<td style="text-align:right;">
-12.1
-</td>
-<td style="text-align:right;">
-9.4
-</td>
-<td style="text-align:right;">
-7.3
-</td>
-</tr>
-<tr>
-<td style="text-align:right;">
-90
-</td>
-<td style="text-align:right;">
-16.3
-</td>
-<td style="text-align:right;">
-16.2
-</td>
-<td style="text-align:right;">
-15.2
-</td>
-</tr>
-<tr>
-<td style="text-align:right;">
-100
-</td>
-<td style="text-align:right;">
-28.5
-</td>
-<td style="text-align:right;">
-25.3
-</td>
-<td style="text-align:right;">
-24.2
-</td>
-</tr>
-</tbody>
-</table>
-<p>Examining the Percentage of external funding received each year in
-2021, 2022, and 2023, we can see that in the last two years, the median
-distribution was around 80, whereas in 2021 it was approximately r 70.
-Additionally, the average has increased each year: it was 59.5576619 in
-2021 and rose to 69.3853073 by 2023.</p>
-<p><strong>Main Sources of External Funding</strong></p>
-<p>As it is showns below, the main source of external funding among
-organizations participating in the survey is from Women’s and Feminist
-Funds, followed by International Non-Governmental Organizations
-(INGOs).</p>
-<table class=" lightable-minimal" style="font-family: &quot;Trebuchet MS&quot;, verdana, sans-serif; margin-left: auto; margin-right: auto;">
-<thead>
-<tr>
-<th style="text-align:left;">
-Source
-</th>
-<th style="text-align:right;">
-Percentage
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:left;">
-Multirateral
-</td>
-<td style="text-align:right;">
-17.4
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Bilateral
-</td>
-<td style="text-align:right;">
-19.6
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Philanthropic
-</td>
-<td style="text-align:right;">
-31.3
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Feminist
-</td>
-<td style="text-align:right;">
-56.4
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Private
-</td>
-<td style="text-align:right;">
-10.0
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-INGOS
-</td>
-<td style="text-align:right;">
-36.3
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Individual
-</td>
-<td style="text-align:right;">
-22.6
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Government
-</td>
-<td style="text-align:right;">
-15.0
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Other
-</td>
-<td style="text-align:right;">
-5.7
-</td>
-</tr>
-</tbody>
-</table>
-<p>When examining this data by organizational focus, we observe that
-organizations primarily dedicated to the rights of women, girls, trans,
-and gender-diverse individuals see an even greater increase in feminist
-funding.</p>
-<table class=" lightable-minimal" style="font-family: &quot;Trebuchet MS&quot;, verdana, sans-serif; margin-left: auto; margin-right: auto;">
-<thead>
-<tr>
-<th style="text-align:left;">
-Description
-</th>
-<th style="text-align:right;">
-Total
-</th>
-<th style="text-align:right;">
-Multirateral
-</th>
-<th style="text-align:right;">
-Bilateral
-</th>
-<th style="text-align:right;">
-Philanthropic
-</th>
-<th style="text-align:right;">
-Feminist
-</th>
-<th style="text-align:right;">
-Private
-</th>
-<th style="text-align:right;">
-INGOS
-</th>
-<th style="text-align:right;">
-Individual
-</th>
-<th style="text-align:right;">
-Government
-</th>
-<th style="text-align:right;">
-Other
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:left;">
-Other
-</td>
-<td style="text-align:right;">
-48
-</td>
-<td style="text-align:right;">
-10.4
-</td>
-<td style="text-align:right;">
-22.9
-</td>
-<td style="text-align:right;">
-20.8
-</td>
-<td style="text-align:right;">
-41.7
-</td>
-<td style="text-align:right;">
-6.2
-</td>
-<td style="text-align:right;">
-54.2
-</td>
-<td style="text-align:right;">
-10.4
-</td>
-<td style="text-align:right;">
-8.3
-</td>
-<td style="text-align:right;">
-10.4
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Primary focus
-</td>
-<td style="text-align:right;">
-509
-</td>
-<td style="text-align:right;">
-18.1
-</td>
-<td style="text-align:right;">
-19.1
-</td>
-<td style="text-align:right;">
-31.0
-</td>
-<td style="text-align:right;">
-59.1
-</td>
-<td style="text-align:right;">
-9.8
-</td>
-<td style="text-align:right;">
-34.4
-</td>
-<td style="text-align:right;">
-23.2
-</td>
-<td style="text-align:right;">
-14.9
-</td>
-<td style="text-align:right;">
-4.9
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Specific projects
-</td>
-<td style="text-align:right;">
-110
-</td>
-<td style="text-align:right;">
-17.3
-</td>
-<td style="text-align:right;">
-20.9
-</td>
-<td style="text-align:right;">
-37.3
-</td>
-<td style="text-align:right;">
-50.0
-</td>
-<td style="text-align:right;">
-12.7
-</td>
-<td style="text-align:right;">
-37.3
-</td>
-<td style="text-align:right;">
-25.5
-</td>
-<td style="text-align:right;">
-18.2
-</td>
-<td style="text-align:right;">
-7.3
-</td>
-</tr>
-</tbody>
-</table>
-<p>Regarding organizational registration, it is noted that registered
-organizations received more funding from multilateral, bilateral,
-private, and government sources compared to those that are not
-registered.</p>
-<table class=" lightable-minimal" style="font-family: &quot;Trebuchet MS&quot;, verdana, sans-serif; margin-left: auto; margin-right: auto;">
-<thead>
-<tr>
-<th style="text-align:left;">
-Registered
-</th>
-<th style="text-align:right;">
-Total
-</th>
-<th style="text-align:right;">
-Multirateral
-</th>
-<th style="text-align:right;">
-Bilateral
-</th>
-<th style="text-align:right;">
-Philanthropic
-</th>
-<th style="text-align:right;">
-Feminist
-</th>
-<th style="text-align:right;">
-Private
-</th>
-<th style="text-align:right;">
-INGOS
-</th>
-<th style="text-align:right;">
-Individual
-</th>
-<th style="text-align:right;">
-Government
-</th>
-<th style="text-align:right;">
-Other
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
 <td style="text-align:left;">
-Other
-</td>
-<td style="text-align:right;">
-15
-</td>
-<td style="text-align:right;">
-6.7
-</td>
-<td style="text-align:right;">
-13.3
-</td>
-<td style="text-align:right;">
-26.7
-</td>
-<td style="text-align:right;">
-53.3
-</td>
-<td style="text-align:right;">
-6.7
-</td>
-<td style="text-align:right;">
-33.3
-</td>
-<td style="text-align:right;">
-13.3
+Human rights
 </td>
 <td style="text-align:right;">
-13.3
+563
 </td>
 <td style="text-align:right;">
-26.7
+57.4
 </td>
 </tr>
 <tr>
 <td style="text-align:left;">
-No registered
-</td>
-<td style="text-align:right;">
-76
-</td>
-<td style="text-align:right;">
-3.9
-</td>
-<td style="text-align:right;">
-6.6
-</td>
-<td style="text-align:right;">
-28.9
-</td>
-<td style="text-align:right;">
-61.8
-</td>
-<td style="text-align:right;">
-3.9
-</td>
-<td style="text-align:right;">
-27.6
-</td>
-<td style="text-align:right;">
-19.7
+Sexual and reproductive health &amp; rights (SRHR) and bodily autonomy
 </td>
 <td style="text-align:right;">
-3.9
+544
 </td>
 <td style="text-align:right;">
-3.9
+55.5
 </td>
 </tr>
 <tr>
 <td style="text-align:left;">
-Registered
-</td>
-<td style="text-align:right;">
-570
-</td>
-<td style="text-align:right;">
-19.6
-</td>
-<td style="text-align:right;">
-21.6
-</td>
-<td style="text-align:right;">
-31.6
-</td>
-<td style="text-align:right;">
-55.6
+Young feminists
 </td>
 <td style="text-align:right;">
-11.1
+370
 </td>
 <td style="text-align:right;">
 37.7
 </td>
-<td style="text-align:right;">
-23.3
-</td>
-<td style="text-align:right;">
-16.7
-</td>
-<td style="text-align:right;">
-5.4
-</td>
-</tr>
-</tbody>
-</table>
-<table class=" lightable-minimal" style="font-family: &quot;Trebuchet MS&quot;, verdana, sans-serif; margin-left: auto; margin-right: auto;">
-<thead>
-<tr>
-<th style="text-align:left;">
-Scope
-</th>
-<th style="text-align:right;">
-Total
-</th>
-<th style="text-align:right;">
-Multirateral
-</th>
-<th style="text-align:right;">
-Bilateral
-</th>
-<th style="text-align:right;">
-Philanthropic
-</th>
-<th style="text-align:right;">
-Feminist
-</th>
-<th style="text-align:right;">
-Private
-</th>
-<th style="text-align:right;">
-INGOS
-</th>
-<th style="text-align:right;">
-Individual
-</th>
-<th style="text-align:right;">
-Government
-</th>
-<th style="text-align:right;">
-Other
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:left;">
-Diaspora
-</td>
-<td style="text-align:right;">
-9
-</td>
-<td style="text-align:right;">
-0.0
-</td>
-<td style="text-align:right;">
-11.1
-</td>
-<td style="text-align:right;">
-44.4
-</td>
-<td style="text-align:right;">
-77.8
-</td>
-<td style="text-align:right;">
-0.0
-</td>
-<td style="text-align:right;">
-44.4
-</td>
-<td style="text-align:right;">
-0.0
-</td>
-<td style="text-align:right;">
-11.1
-</td>
-<td style="text-align:right;">
-0.0
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Global
-</td>
-<td style="text-align:right;">
-41
-</td>
-<td style="text-align:right;">
-26.8
-</td>
-<td style="text-align:right;">
-34.1
-</td>
-<td style="text-align:right;">
-46.3
-</td>
-<td style="text-align:right;">
-26.8
-</td>
-<td style="text-align:right;">
-22.0
-</td>
-<td style="text-align:right;">
-14.6
-</td>
-<td style="text-align:right;">
-48.8
-</td>
-<td style="text-align:right;">
-22.0
-</td>
-<td style="text-align:right;">
-12.2
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Local
-</td>
-<td style="text-align:right;">
-199
-</td>
-<td style="text-align:right;">
-7.5
-</td>
-<td style="text-align:right;">
-10.1
-</td>
-<td style="text-align:right;">
-26.6
-</td>
-<td style="text-align:right;">
-56.8
-</td>
-<td style="text-align:right;">
-10.6
-</td>
-<td style="text-align:right;">
-33.2
-</td>
-<td style="text-align:right;">
-27.6
-</td>
-<td style="text-align:right;">
-20.1
-</td>
-<td style="text-align:right;">
-5.0
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-National
-</td>
-<td style="text-align:right;">
-330
-</td>
-<td style="text-align:right;">
-21.2
-</td>
-<td style="text-align:right;">
-23.0
-</td>
-<td style="text-align:right;">
-27.9
-</td>
-<td style="text-align:right;">
-59.1
-</td>
-<td style="text-align:right;">
-9.1
-</td>
-<td style="text-align:right;">
-40.6
-</td>
-<td style="text-align:right;">
-17.9
-</td>
-<td style="text-align:right;">
-12.7
-</td>
-<td style="text-align:right;">
-5.8
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Regional
-</td>
-<td style="text-align:right;">
-75
-</td>
-<td style="text-align:right;">
-26.7
-</td>
-<td style="text-align:right;">
-25.3
-</td>
-<td style="text-align:right;">
-49.3
-</td>
-<td style="text-align:right;">
-58.7
-</td>
-<td style="text-align:right;">
-9.3
-</td>
-<td style="text-align:right;">
-37.3
-</td>
-<td style="text-align:right;">
-21.3
-</td>
-<td style="text-align:right;">
-6.7
-</td>
-<td style="text-align:right;">
-4.0
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Transnational
-</td>
-<td style="text-align:right;">
-13
-</td>
-<td style="text-align:right;">
-0.0
-</td>
-<td style="text-align:right;">
-7.7
-</td>
-<td style="text-align:right;">
-30.8
-</td>
-<td style="text-align:right;">
-46.2
-</td>
-<td style="text-align:right;">
-0.0
-</td>
-<td style="text-align:right;">
-30.8
-</td>
-<td style="text-align:right;">
-7.7
-</td>
-<td style="text-align:right;">
-23.1
-</td>
-<td style="text-align:right;">
-7.7
-</td>
-</tr>
-</tbody>
-</table>
-<table class=" lightable-minimal" style="font-family: &quot;Trebuchet MS&quot;, verdana, sans-serif; margin-left: auto; margin-right: auto;">
-<thead>
-<tr>
-<th style="text-align:left;">
-Formation period
-</th>
-<th style="text-align:right;">
-Total
-</th>
-<th style="text-align:right;">
-Multirateral
-</th>
-<th style="text-align:right;">
-Bilateral
-</th>
-<th style="text-align:right;">
-Philanthropic
-</th>
-<th style="text-align:right;">
-Feminist
-</th>
-<th style="text-align:right;">
-Private
-</th>
-<th style="text-align:right;">
-INGOS
-</th>
-<th style="text-align:right;">
-Individual
-</th>
-<th style="text-align:right;">
-Government
-</th>
-<th style="text-align:right;">
-Other
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:left;">
-Before 2000
-</td>
-<td style="text-align:right;">
-121
-</td>
-<td style="text-align:right;">
-19.8
-</td>
-<td style="text-align:right;">
-28.9
-</td>
-<td style="text-align:right;">
-34.7
-</td>
-<td style="text-align:right;">
-44.6
-</td>
-<td style="text-align:right;">
-16.5
-</td>
-<td style="text-align:right;">
-39.7
-</td>
-<td style="text-align:right;">
-24.0
-</td>
-<td style="text-align:right;">
-19.8
-</td>
-<td style="text-align:right;">
-5.0
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Between 2000 and 2009
-</td>
-<td style="text-align:right;">
-154
-</td>
-<td style="text-align:right;">
-29.2
-</td>
-<td style="text-align:right;">
-26.0
-</td>
-<td style="text-align:right;">
-35.7
-</td>
-<td style="text-align:right;">
-59.7
-</td>
-<td style="text-align:right;">
-6.5
-</td>
-<td style="text-align:right;">
-36.4
-</td>
-<td style="text-align:right;">
-16.9
-</td>
-<td style="text-align:right;">
-18.2
-</td>
-<td style="text-align:right;">
-5.2
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Between 2010 and 2014
-</td>
-<td style="text-align:right;">
-128
-</td>
-<td style="text-align:right;">
-14.8
-</td>
-<td style="text-align:right;">
-16.4
-</td>
-<td style="text-align:right;">
-34.4
-</td>
-<td style="text-align:right;">
-60.9
-</td>
-<td style="text-align:right;">
-11.7
-</td>
-<td style="text-align:right;">
-32.8
-</td>
-<td style="text-align:right;">
-22.7
-</td>
-<td style="text-align:right;">
-9.4
-</td>
-<td style="text-align:right;">
-6.2
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Between 2015 and 2020
-</td>
-<td style="text-align:right;">
-203
-</td>
-<td style="text-align:right;">
-12.8
-</td>
-<td style="text-align:right;">
-13.8
-</td>
-<td style="text-align:right;">
-24.6
-</td>
-<td style="text-align:right;">
-60.1
-</td>
-<td style="text-align:right;">
-9.4
-</td>
-<td style="text-align:right;">
-38.4
-</td>
-<td style="text-align:right;">
-24.6
-</td>
-<td style="text-align:right;">
-14.3
-</td>
-<td style="text-align:right;">
-4.9
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Year 2021
-</td>
-<td style="text-align:right;">
-27
-</td>
-<td style="text-align:right;">
-0.0
-</td>
-<td style="text-align:right;">
-14.8
-</td>
-<td style="text-align:right;">
-40.7
-</td>
-<td style="text-align:right;">
-55.6
-</td>
-<td style="text-align:right;">
-7.4
-</td>
-<td style="text-align:right;">
-29.6
-</td>
-<td style="text-align:right;">
-29.6
-</td>
-<td style="text-align:right;">
-11.1
-</td>
-<td style="text-align:right;">
-7.4
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Year 2022
-</td>
-<td style="text-align:right;">
-26
-</td>
-<td style="text-align:right;">
-7.7
-</td>
-<td style="text-align:right;">
-7.7
-</td>
-<td style="text-align:right;">
-19.2
-</td>
-<td style="text-align:right;">
-42.3
-</td>
-<td style="text-align:right;">
-3.8
-</td>
-<td style="text-align:right;">
-38.5
-</td>
-<td style="text-align:right;">
-23.1
-</td>
-<td style="text-align:right;">
-7.7
-</td>
-<td style="text-align:right;">
-11.5
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Year 2023
-</td>
-<td style="text-align:right;">
-8
-</td>
-<td style="text-align:right;">
-0.0
-</td>
-<td style="text-align:right;">
-12.5
-</td>
-<td style="text-align:right;">
-25.0
-</td>
-<td style="text-align:right;">
-50.0
-</td>
-<td style="text-align:right;">
-0.0
-</td>
-<td style="text-align:right;">
-0.0
-</td>
-<td style="text-align:right;">
-37.5
-</td>
-<td style="text-align:right;">
-25.0
-</td>
-<td style="text-align:right;">
-12.5
-</td>
-</tr>
-</tbody>
-</table>
-<p><strong>Main Sources of External Funding by Type and
-Year</strong></p>
-<em>Funding from 2023</em>
-<table class=" lightable-minimal" style="font-family: &quot;Trebuchet MS&quot;, verdana, sans-serif; margin-left: auto; margin-right: auto;">
-<thead>
-<tr>
-<th style="text-align:right;">
-Range
-</th>
-<th style="text-align:right;">
-% Bilateral
-</th>
-<th style="text-align:right;">
-% Feminist
-</th>
-<th style="text-align:right;">
-% Goverment
-</th>
-<th style="text-align:right;">
-% Individual
-</th>
-<th style="text-align:right;">
-% INGOS
-</th>
-<th style="text-align:right;">
-% Multirateral
-</th>
-<th style="text-align:right;">
-% Philanthropic
-</th>
-<th style="text-align:right;">
-% Private
-</th>
-<th style="text-align:right;">
-% Other
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:right;">
-0
-</td>
-<td style="text-align:right;">
-17.6
-</td>
-<td style="text-align:right;">
-12.8
-</td>
-<td style="text-align:right;">
-16
-</td>
-<td style="text-align:right;">
-16.6
-</td>
-<td style="text-align:right;">
-21.5
-</td>
-<td style="text-align:right;">
-15.5
-</td>
-<td style="text-align:right;">
-12.9
-</td>
-<td style="text-align:right;">
-19.4
-</td>
-<td style="text-align:right;">
-31.6
-</td>
-</tr>
-<tr>
-<td style="text-align:right;">
-10
-</td>
-<td style="text-align:right;">
-11.5
-</td>
-<td style="text-align:right;">
-16.0
-</td>
-<td style="text-align:right;">
-29
-</td>
-<td style="text-align:right;">
-39.1
-</td>
-<td style="text-align:right;">
-15.3
-</td>
-<td style="text-align:right;">
-16.4
-</td>
-<td style="text-align:right;">
-14.4
-</td>
-<td style="text-align:right;">
-28.4
-</td>
-<td style="text-align:right;">
-21.1
-</td>
-</tr>
-<tr>
-<td style="text-align:right;">
-20
-</td>
-<td style="text-align:right;">
-11.5
-</td>
-<td style="text-align:right;">
-10.1
-</td>
-<td style="text-align:right;">
-17
-</td>
-<td style="text-align:right;">
-19.9
-</td>
-<td style="text-align:right;">
-14.9
-</td>
-<td style="text-align:right;">
-16.4
-</td>
-<td style="text-align:right;">
-14.8
-</td>
-<td style="text-align:right;">
-23.9
-</td>
-<td style="text-align:right;">
-15.8
-</td>
-</tr>
-<tr>
-<td style="text-align:right;">
-30
-</td>
-<td style="text-align:right;">
-14.5
-</td>
-<td style="text-align:right;">
-12.8
-</td>
-<td style="text-align:right;">
-6
-</td>
-<td style="text-align:right;">
-9.3
-</td>
-<td style="text-align:right;">
-9.9
-</td>
-<td style="text-align:right;">
-15.5
-</td>
-<td style="text-align:right;">
-11.5
-</td>
-<td style="text-align:right;">
-13.4
-</td>
-<td style="text-align:right;">
-7.9
-</td>
-</tr>
-<tr>
-<td style="text-align:right;">
-40
-</td>
-<td style="text-align:right;">
-7.6
-</td>
-<td style="text-align:right;">
-7.7
-</td>
-<td style="text-align:right;">
-7
-</td>
-<td style="text-align:right;">
-4.6
-</td>
-<td style="text-align:right;">
-9.5
-</td>
-<td style="text-align:right;">
-8.6
-</td>
-<td style="text-align:right;">
-12.0
-</td>
-<td style="text-align:right;">
-7.5
-</td>
-<td style="text-align:right;">
-NA
-</td>
-</tr>
-<tr>
-<td style="text-align:right;">
-50
-</td>
-<td style="text-align:right;">
-3.8
-</td>
-<td style="text-align:right;">
-7.2
-</td>
-<td style="text-align:right;">
-5
-</td>
-<td style="text-align:right;">
-4.0
-</td>
-<td style="text-align:right;">
-7.9
-</td>
-<td style="text-align:right;">
-2.6
-</td>
-<td style="text-align:right;">
-8.1
-</td>
-<td style="text-align:right;">
-3.0
-</td>
-<td style="text-align:right;">
-2.6
-</td>
-</tr>
-<tr>
-<td style="text-align:right;">
-60
-</td>
-<td style="text-align:right;">
-13.0
-</td>
-<td style="text-align:right;">
-5.3
-</td>
-<td style="text-align:right;">
-3
-</td>
-<td style="text-align:right;">
-1.3
-</td>
-<td style="text-align:right;">
-5.0
-</td>
-<td style="text-align:right;">
-9.5
-</td>
-<td style="text-align:right;">
-5.7
-</td>
-<td style="text-align:right;">
-NA
-</td>
-<td style="text-align:right;">
-2.6
-</td>
-</tr>
-<tr>
-<td style="text-align:right;">
-70
-</td>
-<td style="text-align:right;">
-6.9
-</td>
-<td style="text-align:right;">
-5.6
-</td>
-<td style="text-align:right;">
-4
-</td>
-<td style="text-align:right;">
-0.7
-</td>
-<td style="text-align:right;">
-3.3
-</td>
-<td style="text-align:right;">
-5.2
-</td>
-<td style="text-align:right;">
-6.2
-</td>
-<td style="text-align:right;">
-NA
-</td>
-<td style="text-align:right;">
-NA
-</td>
-</tr>
-<tr>
-<td style="text-align:right;">
-80
-</td>
-<td style="text-align:right;">
-6.1
-</td>
-<td style="text-align:right;">
-6.1
-</td>
-<td style="text-align:right;">
-5
-</td>
-<td style="text-align:right;">
-1.3
-</td>
-<td style="text-align:right;">
-5.0
-</td>
-<td style="text-align:right;">
-5.2
-</td>
-<td style="text-align:right;">
-5.7
-</td>
-<td style="text-align:right;">
-4.5
-</td>
-<td style="text-align:right;">
-7.9
-</td>
-</tr>
-<tr>
-<td style="text-align:right;">
-90
-</td>
-<td style="text-align:right;">
-4.6
-</td>
-<td style="text-align:right;">
-6.9
-</td>
-<td style="text-align:right;">
-4
-</td>
-<td style="text-align:right;">
-2.0
-</td>
-<td style="text-align:right;">
-4.5
-</td>
-<td style="text-align:right;">
-1.7
-</td>
-<td style="text-align:right;">
-2.9
-</td>
-<td style="text-align:right;">
-NA
-</td>
-<td style="text-align:right;">
-7.9
-</td>
-</tr>
-<tr>
-<td style="text-align:right;">
-100
-</td>
-<td style="text-align:right;">
-3.1
-</td>
-<td style="text-align:right;">
-9.6
-</td>
-<td style="text-align:right;">
-4
-</td>
-<td style="text-align:right;">
-1.3
-</td>
-<td style="text-align:right;">
-3.3
-</td>
-<td style="text-align:right;">
-3.4
-</td>
-<td style="text-align:right;">
-5.7
-</td>
-<td style="text-align:right;">
-NA
-</td>
-<td style="text-align:right;">
-2.6
-</td>
-</tr>
-</tbody>
-</table>
-<em>Funding from 2022</em>
-<table class=" lightable-minimal" style="font-family: &quot;Trebuchet MS&quot;, verdana, sans-serif; margin-left: auto; margin-right: auto;">
-<thead>
-<tr>
-<th style="text-align:right;">
-Range
-</th>
-<th style="text-align:right;">
-% Bilateral
-</th>
-<th style="text-align:right;">
-% Feminist
-</th>
-<th style="text-align:right;">
-% Goverment
-</th>
-<th style="text-align:right;">
-% Individual
-</th>
-<th style="text-align:right;">
-% INGOS
-</th>
-<th style="text-align:right;">
-% Multirateral
-</th>
-<th style="text-align:right;">
-% Philanthropic
-</th>
-<th style="text-align:right;">
-% Private
-</th>
-<th style="text-align:right;">
-% Other
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:right;">
-0
-</td>
-<td style="text-align:right;">
-20.6
-</td>
-<td style="text-align:right;">
-23.1
-</td>
-<td style="text-align:right;">
-20
-</td>
-<td style="text-align:right;">
-27.2
-</td>
-<td style="text-align:right;">
-25.6
-</td>
-<td style="text-align:right;">
-22.4
-</td>
-<td style="text-align:right;">
-21.5
-</td>
-<td style="text-align:right;">
-23.9
-</td>
-<td style="text-align:right;">
-36.8
-</td>
-</tr>
-<tr>
-<td style="text-align:right;">
-10
-</td>
-<td style="text-align:right;">
-10.7
-</td>
-<td style="text-align:right;">
-14.9
-</td>
-<td style="text-align:right;">
-24
-</td>
-<td style="text-align:right;">
-37.1
-</td>
-<td style="text-align:right;">
-11.2
-</td>
-<td style="text-align:right;">
-18.1
-</td>
-<td style="text-align:right;">
-12.4
-</td>
-<td style="text-align:right;">
-38.8
-</td>
-<td style="text-align:right;">
-21.1
-</td>
-</tr>
-<tr>
-<td style="text-align:right;">
-20
-</td>
-<td style="text-align:right;">
-14.5
-</td>
-<td style="text-align:right;">
-11.4
-</td>
-<td style="text-align:right;">
-15
-</td>
-<td style="text-align:right;">
-15.2
-</td>
-<td style="text-align:right;">
-16.9
-</td>
-<td style="text-align:right;">
-16.4
-</td>
-<td style="text-align:right;">
-11.5
-</td>
-<td style="text-align:right;">
-10.4
-</td>
-<td style="text-align:right;">
-10.5
-</td>
-</tr>
-<tr>
-<td style="text-align:right;">
-30
-</td>
-<td style="text-align:right;">
-12.2
-</td>
-<td style="text-align:right;">
-9.0
-</td>
-<td style="text-align:right;">
-8
-</td>
-<td style="text-align:right;">
-5.3
-</td>
-<td style="text-align:right;">
-12.0
-</td>
-<td style="text-align:right;">
-12.1
-</td>
-<td style="text-align:right;">
-12.0
-</td>
-<td style="text-align:right;">
-10.4
-</td>
-<td style="text-align:right;">
-5.3
-</td>
-</tr>
-<tr>
-<td style="text-align:right;">
-40
-</td>
-<td style="text-align:right;">
-3.8
-</td>
-<td style="text-align:right;">
-5.3
-</td>
-<td style="text-align:right;">
-5
-</td>
-<td style="text-align:right;">
-2.6
-</td>
-<td style="text-align:right;">
-5.8
-</td>
-<td style="text-align:right;">
-7.8
-</td>
-<td style="text-align:right;">
-9.6
-</td>
-<td style="text-align:right;">
-6.0
-</td>
-<td style="text-align:right;">
-NA
-</td>
-</tr>
-<tr>
-<td style="text-align:right;">
-50
-</td>
-<td style="text-align:right;">
-6.1
-</td>
-<td style="text-align:right;">
-8.8
-</td>
-<td style="text-align:right;">
-4
-</td>
-<td style="text-align:right;">
-2.0
-</td>
-<td style="text-align:right;">
-9.1
-</td>
-<td style="text-align:right;">
-8.6
-</td>
-<td style="text-align:right;">
-7.7
-</td>
-<td style="text-align:right;">
-NA
-</td>
-<td style="text-align:right;">
-2.6
-</td>
-</tr>
-<tr>
-<td style="text-align:right;">
-60
-</td>
-<td style="text-align:right;">
-5.3
-</td>
-<td style="text-align:right;">
-4.8
-</td>
-<td style="text-align:right;">
-2
-</td>
-<td style="text-align:right;">
-2.0
-</td>
-<td style="text-align:right;">
-4.1
-</td>
-<td style="text-align:right;">
-3.4
-</td>
-<td style="text-align:right;">
-2.9
-</td>
-<td style="text-align:right;">
-3.0
-</td>
-<td style="text-align:right;">
-NA
-</td>
-</tr>
-<tr>
-<td style="text-align:right;">
-70
-</td>
-<td style="text-align:right;">
-7.6
-</td>
-<td style="text-align:right;">
-4.5
-</td>
-<td style="text-align:right;">
-8
-</td>
-<td style="text-align:right;">
-2.0
-</td>
-<td style="text-align:right;">
-3.3
-</td>
-<td style="text-align:right;">
-3.4
-</td>
-<td style="text-align:right;">
-9.6
-</td>
-<td style="text-align:right;">
-1.5
-</td>
-<td style="text-align:right;">
-NA
-</td>
-</tr>
-<tr>
-<td style="text-align:right;">
-80
-</td>
-<td style="text-align:right;">
-8.4
-</td>
-<td style="text-align:right;">
-2.9
-</td>
-<td style="text-align:right;">
-4
-</td>
-<td style="text-align:right;">
-2.0
-</td>
-<td style="text-align:right;">
-5.4
-</td>
-<td style="text-align:right;">
-3.4
-</td>
-<td style="text-align:right;">
-4.8
-</td>
-<td style="text-align:right;">
-4.5
-</td>
-<td style="text-align:right;">
-10.5
-</td>
-</tr>
-<tr>
-<td style="text-align:right;">
-90
-</td>
-<td style="text-align:right;">
-6.1
-</td>
-<td style="text-align:right;">
-6.1
-</td>
-<td style="text-align:right;">
-3
-</td>
-<td style="text-align:right;">
-1.3
-</td>
-<td style="text-align:right;">
-2.9
-</td>
-<td style="text-align:right;">
-2.6
-</td>
-<td style="text-align:right;">
-3.3
-</td>
-<td style="text-align:right;">
-1.5
-</td>
-<td style="text-align:right;">
-2.6
-</td>
-</tr>
-<tr>
-<td style="text-align:right;">
-100
-</td>
-<td style="text-align:right;">
-3.8
-</td>
-<td style="text-align:right;">
-8.0
-</td>
-<td style="text-align:right;">
-5
-</td>
-<td style="text-align:right;">
-1.3
-</td>
-<td style="text-align:right;">
-3.7
-</td>
-<td style="text-align:right;">
-1.7
-</td>
-<td style="text-align:right;">
-3.8
-</td>
-<td style="text-align:right;">
-NA
-</td>
-<td style="text-align:right;">
-7.9
-</td>
-</tr>
-<tr>
-<td style="text-align:right;">
-NA
-</td>
-<td style="text-align:right;">
-0.8
-</td>
-<td style="text-align:right;">
-1.1
-</td>
-<td style="text-align:right;">
-2
-</td>
-<td style="text-align:right;">
-2.0
-</td>
-<td style="text-align:right;">
-NA
-</td>
-<td style="text-align:right;">
-NA
-</td>
-<td style="text-align:right;">
-1.0
-</td>
-<td style="text-align:right;">
-NA
-</td>
-<td style="text-align:right;">
-2.6
-</td>
-</tr>
-</tbody>
-</table>
-<em>Funding from 2021</em>
-<table class=" lightable-minimal" style="font-family: &quot;Trebuchet MS&quot;, verdana, sans-serif; margin-left: auto; margin-right: auto;">
-<thead>
-<tr>
-<th style="text-align:right;">
-Range
-</th>
-<th style="text-align:right;">
-% Bilateral
-</th>
-<th style="text-align:right;">
-% Feminist
-</th>
-<th style="text-align:right;">
-% Goverment
-</th>
-<th style="text-align:right;">
-% Individual
-</th>
-<th style="text-align:right;">
-% INGOS
-</th>
-<th style="text-align:right;">
-% Multirateral
-</th>
-<th style="text-align:right;">
-% Philanthropic
-</th>
-<th style="text-align:right;">
-% Private
-</th>
-<th style="text-align:right;">
-% Other
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:right;">
-0
-</td>
-<td style="text-align:right;">
-32.8
-</td>
-<td style="text-align:right;">
-30.1
-</td>
-<td style="text-align:right;">
-31
-</td>
-<td style="text-align:right;">
-27.8
-</td>
-<td style="text-align:right;">
-30.6
-</td>
-<td style="text-align:right;">
-27.6
-</td>
-<td style="text-align:right;">
-23.9
-</td>
-<td style="text-align:right;">
-22.4
-</td>
-<td style="text-align:right;">
-39.5
-</td>
-</tr>
-<tr>
-<td style="text-align:right;">
-10
-</td>
-<td style="text-align:right;">
-6.9
-</td>
-<td style="text-align:right;">
-10.4
-</td>
-<td style="text-align:right;">
-25
-</td>
-<td style="text-align:right;">
-33.8
-</td>
-<td style="text-align:right;">
-13.2
-</td>
-<td style="text-align:right;">
-16.4
-</td>
-<td style="text-align:right;">
-12.4
-</td>
-<td style="text-align:right;">
-38.8
-</td>
-<td style="text-align:right;">
-7.9
-</td>
-</tr>
-<tr>
-<td style="text-align:right;">
-20
-</td>
-<td style="text-align:right;">
-11.5
-</td>
-<td style="text-align:right;">
-10.9
-</td>
-<td style="text-align:right;">
-12
-</td>
-<td style="text-align:right;">
-13.2
-</td>
-<td style="text-align:right;">
-12.0
-</td>
-<td style="text-align:right;">
-12.9
-</td>
-<td style="text-align:right;">
-12.4
-</td>
-<td style="text-align:right;">
-14.9
-</td>
-<td style="text-align:right;">
-13.2
-</td>
-</tr>
-<tr>
-<td style="text-align:right;">
-30
-</td>
-<td style="text-align:right;">
-6.1
-</td>
-<td style="text-align:right;">
-9.0
-</td>
-<td style="text-align:right;">
-7
-</td>
-<td style="text-align:right;">
-3.3
-</td>
-<td style="text-align:right;">
-8.7
-</td>
-<td style="text-align:right;">
-8.6
-</td>
-<td style="text-align:right;">
-6.2
-</td>
-<td style="text-align:right;">
-10.4
-</td>
-<td style="text-align:right;">
-5.3
-</td>
-</tr>
-<tr>
-<td style="text-align:right;">
-40
-</td>
-<td style="text-align:right;">
-6.9
-</td>
-<td style="text-align:right;">
-6.1
-</td>
-<td style="text-align:right;">
-2
-</td>
-<td style="text-align:right;">
-2.0
-</td>
-<td style="text-align:right;">
-6.2
-</td>
-<td style="text-align:right;">
-6.9
-</td>
-<td style="text-align:right;">
-9.6
-</td>
-<td style="text-align:right;">
-6.0
-</td>
-<td style="text-align:right;">
-2.6
-</td>
-</tr>
-<tr>
-<td style="text-align:right;">
-50
-</td>
-<td style="text-align:right;">
-5.3
-</td>
-<td style="text-align:right;">
-5.6
-</td>
-<td style="text-align:right;">
-3
-</td>
-<td style="text-align:right;">
-2.0
-</td>
-<td style="text-align:right;">
-7.0
-</td>
-<td style="text-align:right;">
-7.8
-</td>
-<td style="text-align:right;">
-8.1
-</td>
-<td style="text-align:right;">
-NA
-</td>
-<td style="text-align:right;">
-2.6
-</td>
-</tr>
-<tr>
-<td style="text-align:right;">
-60
-</td>
-<td style="text-align:right;">
-4.6
-</td>
-<td style="text-align:right;">
-3.2
-</td>
-<td style="text-align:right;">
-2
-</td>
-<td style="text-align:right;">
-3.3
-</td>
-<td style="text-align:right;">
-2.5
-</td>
-<td style="text-align:right;">
-3.4
-</td>
-<td style="text-align:right;">
-4.3
-</td>
-<td style="text-align:right;">
-1.5
-</td>
-<td style="text-align:right;">
-NA
-</td>
-</tr>
-<tr>
-<td style="text-align:right;">
-70
-</td>
-<td style="text-align:right;">
-9.9
-</td>
-<td style="text-align:right;">
-2.7
-</td>
-<td style="text-align:right;">
-5
-</td>
-<td style="text-align:right;">
-1.3
-</td>
-<td style="text-align:right;">
-4.1
-</td>
-<td style="text-align:right;">
-4.3
-</td>
-<td style="text-align:right;">
-4.3
-</td>
-<td style="text-align:right;">
-NA
-</td>
-<td style="text-align:right;">
-NA
-</td>
-</tr>
-<tr>
-<td style="text-align:right;">
-80
-</td>
-<td style="text-align:right;">
-6.1
-</td>
-<td style="text-align:right;">
-4.3
-</td>
-<td style="text-align:right;">
-3
-</td>
-<td style="text-align:right;">
-3.3
-</td>
-<td style="text-align:right;">
-2.9
-</td>
-<td style="text-align:right;">
-5.2
-</td>
-<td style="text-align:right;">
-7.2
-</td>
-<td style="text-align:right;">
-1.5
-</td>
-<td style="text-align:right;">
-5.3
-</td>
-</tr>
-<tr>
-<td style="text-align:right;">
-90
-</td>
-<td style="text-align:right;">
-3.8
-</td>
-<td style="text-align:right;">
-7.2
-</td>
-<td style="text-align:right;">
-3
-</td>
-<td style="text-align:right;">
-1.3
-</td>
-<td style="text-align:right;">
-3.3
-</td>
-<td style="text-align:right;">
-3.4
-</td>
-<td style="text-align:right;">
-2.9
-</td>
-<td style="text-align:right;">
-1.5
-</td>
-<td style="text-align:right;">
-2.6
-</td>
-</tr>
-<tr>
-<td style="text-align:right;">
-100
-</td>
-<td style="text-align:right;">
-3.8
-</td>
-<td style="text-align:right;">
-6.6
-</td>
-<td style="text-align:right;">
-3
-</td>
-<td style="text-align:right;">
-2.6
-</td>
-<td style="text-align:right;">
-5.4
-</td>
-<td style="text-align:right;">
-1.7
-</td>
-<td style="text-align:right;">
-5.3
-</td>
-<td style="text-align:right;">
-1.5
-</td>
-<td style="text-align:right;">
-10.5
-</td>
-</tr>
-<tr>
-<td style="text-align:right;">
-NA
-</td>
-<td style="text-align:right;">
-2.3
-</td>
-<td style="text-align:right;">
-4.0
-</td>
-<td style="text-align:right;">
-4
-</td>
-<td style="text-align:right;">
-6.0
-</td>
-<td style="text-align:right;">
-4.1
-</td>
-<td style="text-align:right;">
-1.7
-</td>
-<td style="text-align:right;">
-3.3
-</td>
-<td style="text-align:right;">
-1.5
-</td>
-<td style="text-align:right;">
-10.5
-</td>
-</tr>
-</tbody>
-</table>
-<p><strong>Organizations that received funding from new donors between
-2021 and 2023</strong></p>
-<p>It is noted that 60.4% of organizations reported receiving funding
-from new donors between 2021 and 2023. Among these organizations,
-feminist funds are the primary source of new funding</p>
-<strong>Reception of new funding between 2021 and 2023</strong>
-<table class=" lightable-minimal" style="font-family: &quot;Trebuchet MS&quot;, verdana, sans-serif; margin-left: auto; margin-right: auto;">
-<thead>
-<tr>
-<th style="text-align:left;">
-Source
-</th>
-<th style="text-align:right;">
-Percentage
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:left;">
-No new founder
-</td>
-<td style="text-align:right;">
-7.5
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-New founder
-</td>
-<td style="text-align:right;">
-60.4
-</td>
-</tr>
-</tbody>
-</table>
-<em>Source of new funding</em>
-<table class=" lightable-minimal" style="font-family: &quot;Trebuchet MS&quot;, verdana, sans-serif; margin-left: auto; margin-right: auto;">
-<thead>
-<tr>
-<th style="text-align:left;">
-Source
-</th>
-<th style="text-align:right;">
-Percentage
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:left;">
-Multilateral
-</td>
-<td style="text-align:right;">
-14.0
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Bilateral
-</td>
-<td style="text-align:right;">
-13.5
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Philanthropic
-</td>
-<td style="text-align:right;">
-25.2
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Feminist
-</td>
-<td style="text-align:right;">
-48.0
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Private
-</td>
-<td style="text-align:right;">
-9.4
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-INGOS
-</td>
-<td style="text-align:right;">
-31.2
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Individual
-</td>
-<td style="text-align:right;">
-17.4
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Government
-</td>
-<td style="text-align:right;">
-12.2
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Other
-</td>
-<td style="text-align:right;">
-4.4
-</td>
-</tr>
-</tbody>
-</table>
-<p>As shown below, new feminist funds are even more significant among
-organizations that focus on prioritizing women’s rights.</p>
-<table class=" lightable-minimal" style="font-family: &quot;Trebuchet MS&quot;, verdana, sans-serif; margin-left: auto; margin-right: auto;">
-<thead>
-<tr>
-<th style="text-align:left;">
-Description
-</th>
-<th style="text-align:right;">
-Total
-</th>
-<th style="text-align:right;">
-Multilateral
-</th>
-<th style="text-align:right;">
-Bilateral
-</th>
-<th style="text-align:right;">
-Philanthropic
-</th>
-<th style="text-align:right;">
-Feminist
-</th>
-<th style="text-align:right;">
-Private
-</th>
-<th style="text-align:right;">
-INGOS
-</th>
-<th style="text-align:right;">
-Individual
-</th>
-<th style="text-align:right;">
-Government
-</th>
-<th style="text-align:right;">
-Other
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:left;">
-Other
-</td>
-<td style="text-align:right;">
-43
-</td>
-<td style="text-align:right;">
-2.3
-</td>
-<td style="text-align:right;">
-25.6
-</td>
-<td style="text-align:right;">
-14.0
-</td>
-<td style="text-align:right;">
-34.9
-</td>
-<td style="text-align:right;">
-7.0
-</td>
-<td style="text-align:right;">
-55.8
-</td>
-<td style="text-align:right;">
-11.6
-</td>
-<td style="text-align:right;">
-9.3
-</td>
-<td style="text-align:right;">
-2.3
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Primary focus
-</td>
-<td style="text-align:right;">
-427
-</td>
-<td style="text-align:right;">
-16.6
-</td>
-<td style="text-align:right;">
-11.7
-</td>
-<td style="text-align:right;">
-26.9
-</td>
-<td style="text-align:right;">
-50.8
-</td>
-<td style="text-align:right;">
-8.9
-</td>
-<td style="text-align:right;">
-27.4
-</td>
-<td style="text-align:right;">
-18.3
-</td>
-<td style="text-align:right;">
-11.5
-</td>
-<td style="text-align:right;">
-4.0
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Specific projects
-</td>
-<td style="text-align:right;">
-94
-</td>
-<td style="text-align:right;">
-7.4
-</td>
-<td style="text-align:right;">
-16.0
-</td>
-<td style="text-align:right;">
-22.3
-</td>
-<td style="text-align:right;">
-41.5
-</td>
-<td style="text-align:right;">
-12.8
-</td>
-<td style="text-align:right;">
-37.2
-</td>
-<td style="text-align:right;">
-16.0
-</td>
-<td style="text-align:right;">
-17.0
-</td>
-<td style="text-align:right;">
-7.4
-</td>
-</tr>
-</tbody>
-</table>
-<table class=" lightable-minimal" style="font-family: &quot;Trebuchet MS&quot;, verdana, sans-serif; margin-left: auto; margin-right: auto;">
-<thead>
-<tr>
-<th style="text-align:left;">
-Registration
-</th>
-<th style="text-align:right;">
-Total
-</th>
-<th style="text-align:right;">
-Multilateral
-</th>
-<th style="text-align:right;">
-Bilateral
-</th>
-<th style="text-align:right;">
-Philanthropic
-</th>
-<th style="text-align:right;">
-Feminist
-</th>
-<th style="text-align:right;">
-Private
-</th>
-<th style="text-align:right;">
-INGOS
-</th>
-<th style="text-align:right;">
-Individual
-</th>
-<th style="text-align:right;">
-Government
-</th>
-<th style="text-align:right;">
-Other
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:left;">
-diaspora_and_or_exile
-</td>
-<td style="text-align:right;">
-6
-</td>
-<td style="text-align:right;">
-0.0
-</td>
-<td style="text-align:right;">
-16.7
-</td>
-<td style="text-align:right;">
-33.3
-</td>
-<td style="text-align:right;">
-66.7
-</td>
-<td style="text-align:right;">
-0.0
-</td>
-<td style="text-align:right;">
-50.0
-</td>
-<td style="text-align:right;">
-0.0
-</td>
-<td style="text-align:right;">
-16.7
-</td>
-<td style="text-align:right;">
-0.0
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-globally_focused
-</td>
-<td style="text-align:right;">
-31
-</td>
-<td style="text-align:right;">
-22.6
-</td>
-<td style="text-align:right;">
-25.8
-</td>
-<td style="text-align:right;">
-45.2
-</td>
-<td style="text-align:right;">
-22.6
-</td>
-<td style="text-align:right;">
-22.6
-</td>
-<td style="text-align:right;">
-22.6
-</td>
-<td style="text-align:right;">
-35.5
-</td>
-<td style="text-align:right;">
-19.4
-</td>
-<td style="text-align:right;">
-3.2
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-locally_focused
-</td>
-<td style="text-align:right;">
-172
-</td>
-<td style="text-align:right;">
-8.1
-</td>
-<td style="text-align:right;">
-6.4
-</td>
-<td style="text-align:right;">
-23.8
-</td>
-<td style="text-align:right;">
-48.8
-</td>
-<td style="text-align:right;">
-11.0
-</td>
-<td style="text-align:right;">
-26.2
-</td>
-<td style="text-align:right;">
-20.9
-</td>
-<td style="text-align:right;">
-17.4
-</td>
-<td style="text-align:right;">
-4.7
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-nationally_focused
-</td>
-<td style="text-align:right;">
-284
-</td>
-<td style="text-align:right;">
-14.8
-</td>
-<td style="text-align:right;">
-15.1
-</td>
-<td style="text-align:right;">
-20.8
-</td>
-<td style="text-align:right;">
-48.9
-</td>
-<td style="text-align:right;">
-7.7
-</td>
-<td style="text-align:right;">
-35.2
-</td>
-<td style="text-align:right;">
-13.4
-</td>
-<td style="text-align:right;">
-9.9
-</td>
-<td style="text-align:right;">
-4.2
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-regionally_focused
-</td>
-<td style="text-align:right;">
-62
-</td>
-<td style="text-align:right;">
-25.8
-</td>
-<td style="text-align:right;">
-17.7
-</td>
-<td style="text-align:right;">
-40.3
-</td>
-<td style="text-align:right;">
-51.6
-</td>
-<td style="text-align:right;">
-6.5
-</td>
-<td style="text-align:right;">
-27.4
-</td>
-<td style="text-align:right;">
-19.4
-</td>
-<td style="text-align:right;">
-1.6
-</td>
-<td style="text-align:right;">
-6.5
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-transnationally_focused
-</td>
-<td style="text-align:right;">
-9
-</td>
-<td style="text-align:right;">
-0.0
-</td>
-<td style="text-align:right;">
-22.2
-</td>
-<td style="text-align:right;">
-11.1
-</td>
-<td style="text-align:right;">
-55.6
-</td>
-<td style="text-align:right;">
-11.1
-</td>
-<td style="text-align:right;">
-44.4
-</td>
-<td style="text-align:right;">
-11.1
-</td>
-<td style="text-align:right;">
-33.3
-</td>
-<td style="text-align:right;">
-0.0
-</td>
-</tr>
-</tbody>
-</table>
-<table class=" lightable-minimal" style="font-family: &quot;Trebuchet MS&quot;, verdana, sans-serif; margin-left: auto; margin-right: auto;">
-<thead>
-<tr>
-<th style="text-align:left;">
-Scope
-</th>
-<th style="text-align:right;">
-Total
-</th>
-<th style="text-align:right;">
-Multilateral
-</th>
-<th style="text-align:right;">
-Bilateral
-</th>
-<th style="text-align:right;">
-Philanthropic
-</th>
-<th style="text-align:right;">
-Feminist
-</th>
-<th style="text-align:right;">
-Private
-</th>
-<th style="text-align:right;">
-INGOS
-</th>
-<th style="text-align:right;">
-Individual
-</th>
-<th style="text-align:right;">
-Government
-</th>
-<th style="text-align:right;">
-Other
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:left;">
-Global
-</td>
-<td style="text-align:right;">
-31
-</td>
-<td style="text-align:right;">
-22.6
-</td>
-<td style="text-align:right;">
-25.8
-</td>
-<td style="text-align:right;">
-45.2
-</td>
-<td style="text-align:right;">
-22.6
-</td>
-<td style="text-align:right;">
-22.6
-</td>
-<td style="text-align:right;">
-22.6
-</td>
-<td style="text-align:right;">
-35.5
-</td>
-<td style="text-align:right;">
-19.4
-</td>
-<td style="text-align:right;">
-3.2
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Local
-</td>
-<td style="text-align:right;">
-172
-</td>
-<td style="text-align:right;">
-8.1
-</td>
-<td style="text-align:right;">
-6.4
-</td>
-<td style="text-align:right;">
-23.8
-</td>
-<td style="text-align:right;">
-48.8
-</td>
-<td style="text-align:right;">
-11.0
-</td>
-<td style="text-align:right;">
-26.2
-</td>
-<td style="text-align:right;">
-20.9
-</td>
-<td style="text-align:right;">
-17.4
-</td>
-<td style="text-align:right;">
-4.7
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-National
-</td>
-<td style="text-align:right;">
-284
-</td>
-<td style="text-align:right;">
-14.8
-</td>
-<td style="text-align:right;">
-15.1
-</td>
-<td style="text-align:right;">
-20.8
-</td>
-<td style="text-align:right;">
-48.9
-</td>
-<td style="text-align:right;">
-7.7
-</td>
-<td style="text-align:right;">
-35.2
-</td>
-<td style="text-align:right;">
-13.4
-</td>
-<td style="text-align:right;">
-9.9
-</td>
-<td style="text-align:right;">
-4.2
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Regional
-</td>
-<td style="text-align:right;">
-62
-</td>
-<td style="text-align:right;">
-25.8
-</td>
-<td style="text-align:right;">
-17.7
-</td>
-<td style="text-align:right;">
-40.3
-</td>
-<td style="text-align:right;">
-51.6
-</td>
-<td style="text-align:right;">
-6.5
-</td>
-<td style="text-align:right;">
-27.4
-</td>
-<td style="text-align:right;">
-19.4
-</td>
-<td style="text-align:right;">
-1.6
-</td>
-<td style="text-align:right;">
-6.5
-</td>
-</tr>
-</tbody>
-</table>
-<table class=" lightable-minimal" style="font-family: &quot;Trebuchet MS&quot;, verdana, sans-serif; margin-left: auto; margin-right: auto;">
-<thead>
-<tr>
-<th style="text-align:left;">
-Formation period
-</th>
-<th style="text-align:right;">
-Total
-</th>
-<th style="text-align:right;">
-Multilateral
-</th>
-<th style="text-align:right;">
-Bilateral
-</th>
-<th style="text-align:right;">
-Philanthropic
-</th>
-<th style="text-align:right;">
-Feminist
-</th>
-<th style="text-align:right;">
-Private
-</th>
-<th style="text-align:right;">
-INGOS
-</th>
-<th style="text-align:right;">
-Individual
-</th>
-<th style="text-align:right;">
-Government
-</th>
-<th style="text-align:right;">
-Other
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:left;">
-Before 2000
-</td>
-<td style="text-align:right;">
-109
-</td>
-<td style="text-align:right;">
-15.6
-</td>
-<td style="text-align:right;">
-16.5
-</td>
-<td style="text-align:right;">
-31.2
-</td>
-<td style="text-align:right;">
-39.4
-</td>
-<td style="text-align:right;">
-15.6
-</td>
-<td style="text-align:right;">
-33.9
-</td>
-<td style="text-align:right;">
-20.2
-</td>
-<td style="text-align:right;">
-17.4
-</td>
-<td style="text-align:right;">
-1.8
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Between 2000 and 2009
-</td>
-<td style="text-align:right;">
-135
-</td>
-<td style="text-align:right;">
-21.5
-</td>
-<td style="text-align:right;">
-16.3
-</td>
-<td style="text-align:right;">
-24.4
-</td>
-<td style="text-align:right;">
-48.1
-</td>
-<td style="text-align:right;">
-7.4
-</td>
-<td style="text-align:right;">
-31.1
-</td>
-<td style="text-align:right;">
-14.1
-</td>
-<td style="text-align:right;">
-8.9
-</td>
-<td style="text-align:right;">
-6.7
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Between 2010 and 2014
-</td>
-<td style="text-align:right;">
-100
-</td>
-<td style="text-align:right;">
-11.0
-</td>
-<td style="text-align:right;">
-16.0
-</td>
-<td style="text-align:right;">
-31.0
-</td>
-<td style="text-align:right;">
-47.0
-</td>
-<td style="text-align:right;">
-11.0
-</td>
-<td style="text-align:right;">
-31.0
-</td>
-<td style="text-align:right;">
-14.0
-</td>
-<td style="text-align:right;">
-14.0
-</td>
-<td style="text-align:right;">
-7.0
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Between 2015 and 2020
-</td>
-<td style="text-align:right;">
-174
-</td>
-<td style="text-align:right;">
-10.9
-</td>
-<td style="text-align:right;">
-8.6
-</td>
-<td style="text-align:right;">
-18.4
-</td>
-<td style="text-align:right;">
-52.9
-</td>
-<td style="text-align:right;">
-7.5
-</td>
-<td style="text-align:right;">
-30.5
-</td>
-<td style="text-align:right;">
-17.8
-</td>
-<td style="text-align:right;">
-11.5
-</td>
-<td style="text-align:right;">
-1.7
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Year 2021
-</td>
-<td style="text-align:right;">
-19
-</td>
-<td style="text-align:right;">
-0.0
-</td>
-<td style="text-align:right;">
-10.5
-</td>
-<td style="text-align:right;">
-42.1
-</td>
-<td style="text-align:right;">
-52.6
-</td>
-<td style="text-align:right;">
-5.3
-</td>
-<td style="text-align:right;">
-31.6
-</td>
-<td style="text-align:right;">
-15.8
-</td>
-<td style="text-align:right;">
-5.3
-</td>
-<td style="text-align:right;">
-15.8
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Year 2022
-</td>
-<td style="text-align:right;">
-21
-</td>
-<td style="text-align:right;">
-14.3
-</td>
-<td style="text-align:right;">
-9.5
-</td>
-<td style="text-align:right;">
-9.5
-</td>
-<td style="text-align:right;">
-42.9
-</td>
-<td style="text-align:right;">
-4.8
-</td>
-<td style="text-align:right;">
-33.3
-</td>
-<td style="text-align:right;">
-28.6
-</td>
-<td style="text-align:right;">
-9.5
-</td>
-<td style="text-align:right;">
-4.8
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Year 2023
-</td>
-<td style="text-align:right;">
-6
-</td>
-<td style="text-align:right;">
-0.0
-</td>
-<td style="text-align:right;">
-16.7
-</td>
-<td style="text-align:right;">
-33.3
-</td>
-<td style="text-align:right;">
-83.3
-</td>
-<td style="text-align:right;">
-0.0
-</td>
-<td style="text-align:right;">
-0.0
-</td>
-<td style="text-align:right;">
-50.0
-</td>
-<td style="text-align:right;">
-16.7
-</td>
-<td style="text-align:right;">
-0.0
-</td>
-</tr>
-</tbody>
-</table>
-<p><strong>Loss of funding</strong></p>
-<p>It is noted that 46.8% of organizations reported losing funding from
-new donors between 2021 and 2023. Among these organizations, the
-greatest loss came from INGOs, followed by philanthropic donors.</p>
-<table class=" lightable-minimal" style="font-family: &quot;Trebuchet MS&quot;, verdana, sans-serif; margin-left: auto; margin-right: auto;">
-<thead>
-<tr>
-<th style="text-align:left;">
-Source
-</th>
-<th style="text-align:right;">
-Percentage
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:left;">
-No funding lost
-</td>
-<td style="text-align:right;">
-53.2
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Yes, lost funding
-</td>
-<td style="text-align:right;">
-46.8
-</td>
-</tr>
-</tbody>
-</table>
-<table class=" lightable-minimal" style="font-family: &quot;Trebuchet MS&quot;, verdana, sans-serif; margin-left: auto; margin-right: auto;">
-<thead>
-<tr>
-<th style="text-align:left;">
-Source
-</th>
-<th style="text-align:right;">
-Percentage
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:left;">
-Multilateral
-</td>
-<td style="text-align:right;">
-8.3
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Bilateral
-</td>
-<td style="text-align:right;">
-6.4
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Philanthropic
-</td>
-<td style="text-align:right;">
-12.1
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Feminist
-</td>
-<td style="text-align:right;">
-3.6
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Private
-</td>
-<td style="text-align:right;">
-11.6
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-INGOS
-</td>
-<td style="text-align:right;">
-15.2
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Individual
-</td>
-<td style="text-align:right;">
-8.1
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Government
-</td>
-<td style="text-align:right;">
-5.9
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Other
-</td>
-<td style="text-align:right;">
-2.1
-</td>
-</tr>
-</tbody>
-</table>
-<table class=" lightable-minimal" style="font-family: &quot;Trebuchet MS&quot;, verdana, sans-serif; margin-left: auto; margin-right: auto;">
-<thead>
-<tr>
-<th style="text-align:left;">
-Description
-</th>
-<th style="text-align:right;">
-Total
-</th>
-<th style="text-align:right;">
-No funding lost
-</th>
-<th style="text-align:right;">
-Yes, lost funding
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:left;">
-Other
-</td>
-<td style="text-align:right;">
-48
-</td>
-<td style="text-align:right;">
-64.6
-</td>
-<td style="text-align:right;">
-35.4
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Primary focus
-</td>
-<td style="text-align:right;">
-509
-</td>
-<td style="text-align:right;">
-51.3
-</td>
-<td style="text-align:right;">
-48.7
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Specific projects
-</td>
-<td style="text-align:right;">
-110
-</td>
-<td style="text-align:right;">
-57.3
-</td>
-<td style="text-align:right;">
-42.7
-</td>
-</tr>
-</tbody>
-</table>
-<table class=" lightable-minimal" style="font-family: &quot;Trebuchet MS&quot;, verdana, sans-serif; margin-left: auto; margin-right: auto;">
-<thead>
-<tr>
-<th style="text-align:left;">
-Registration
-</th>
-<th style="text-align:right;">
-Total
-</th>
-<th style="text-align:right;">
-No funding lost
-</th>
-<th style="text-align:right;">
-Yes, lost funding
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:left;">
-diaspora_and_or_exile
-</td>
-<td style="text-align:right;">
-9
-</td>
-<td style="text-align:right;">
-55.6
-</td>
-<td style="text-align:right;">
-44.4
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-globally_focused
-</td>
-<td style="text-align:right;">
-41
-</td>
-<td style="text-align:right;">
-46.3
-</td>
-<td style="text-align:right;">
-53.7
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-locally_focused
-</td>
-<td style="text-align:right;">
-199
-</td>
-<td style="text-align:right;">
-53.8
-</td>
-<td style="text-align:right;">
-46.2
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-nationally_focused
-</td>
-<td style="text-align:right;">
-330
-</td>
-<td style="text-align:right;">
-53.6
-</td>
-<td style="text-align:right;">
-46.4
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-regionally_focused
-</td>
-<td style="text-align:right;">
-75
-</td>
-<td style="text-align:right;">
-53.3
-</td>
-<td style="text-align:right;">
-46.7
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-transnationally_focused
-</td>
-<td style="text-align:right;">
-13
-</td>
-<td style="text-align:right;">
-53.8
-</td>
-<td style="text-align:right;">
-46.2
-</td>
-</tr>
-</tbody>
-</table>
-<table class=" lightable-minimal" style="font-family: &quot;Trebuchet MS&quot;, verdana, sans-serif; margin-left: auto; margin-right: auto;">
-<thead>
-<tr>
-<th style="text-align:left;">
-Scope
-</th>
-<th style="text-align:right;">
-Total
-</th>
-<th style="text-align:right;">
-No funding lost
-</th>
-<th style="text-align:right;">
-Yes, lost funding
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:left;">
-Global
-</td>
-<td style="text-align:right;">
-41
-</td>
-<td style="text-align:right;">
-46.3
-</td>
-<td style="text-align:right;">
-53.7
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Local
-</td>
-<td style="text-align:right;">
-199
-</td>
-<td style="text-align:right;">
-53.8
-</td>
-<td style="text-align:right;">
-46.2
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-National
-</td>
-<td style="text-align:right;">
-330
-</td>
-<td style="text-align:right;">
-53.6
-</td>
-<td style="text-align:right;">
-46.4
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Regional
-</td>
-<td style="text-align:right;">
-75
-</td>
-<td style="text-align:right;">
-53.3
-</td>
-<td style="text-align:right;">
-46.7
-</td>
-</tr>
-</tbody>
-</table>
-<p>Lastly, it is noted that more recently established organizations
-experienced the greatest losses.</p>
-<table class=" lightable-minimal" style="font-family: &quot;Trebuchet MS&quot;, verdana, sans-serif; margin-left: auto; margin-right: auto;">
-<thead>
-<tr>
-<th style="text-align:left;">
-Formation period
-</th>
-<th style="text-align:right;">
-Total
-</th>
-<th style="text-align:right;">
-No funding lost
-</th>
-<th style="text-align:right;">
-Yes, lost funding
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:left;">
-Before 2000
-</td>
-<td style="text-align:right;">
-121
-</td>
-<td style="text-align:right;">
-47.9
-</td>
-<td style="text-align:right;">
-52.1
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Between 2000 and 2009
-</td>
-<td style="text-align:right;">
-154
-</td>
-<td style="text-align:right;">
-46.1
-</td>
-<td style="text-align:right;">
-53.9
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Between 2010 and 2014
-</td>
-<td style="text-align:right;">
-128
-</td>
-<td style="text-align:right;">
-53.9
-</td>
-<td style="text-align:right;">
-46.1
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Between 2015 and 2020
-</td>
-<td style="text-align:right;">
-203
-</td>
-<td style="text-align:right;">
-56.7
-</td>
-<td style="text-align:right;">
-43.3
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Between 2021 and 2023
-</td>
-<td style="text-align:right;">
-61
-</td>
-<td style="text-align:right;">
-68.9
-</td>
-<td style="text-align:right;">
-31.1
-</td>
-</tr>
-</tbody>
-</table>
-<p><strong>Loss of funding impact</strong></p>
-<p>The greatest impact of the reduction in funding between 2021 and
-2023, as observed among the organizations that responded to the survey,
-is seen in the decrease in their activities, with a Percentage of 60.4%,
-followed by a reduction in staff. It is noteworthy that the loss of
-funding has not had a significant impact on the discontinuation of
-programs or projects.</p>
-<table class=" lightable-minimal" style="font-family: &quot;Trebuchet MS&quot;, verdana, sans-serif; margin-left: auto; margin-right: auto;">
-<thead>
-<tr>
-<th style="text-align:left;">
-Source
-</th>
-<th style="text-align:right;">
-Percentage
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:left;">
-No big impact
-</td>
-<td style="text-align:right;">
-12.5
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Staff reduction
-</td>
-<td style="text-align:right;">
-33.3
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Activity reduction
-</td>
-<td style="text-align:right;">
-60.4
-</td>
 </tr>
 <tr>
 <td style="text-align:left;">
-Discontinuation of programs or projects
+Economic justice, rights and alternatives
 </td>
 <td style="text-align:right;">
-12.5
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Staff faced a salary gap
+334
 </td>
 <td style="text-align:right;">
 34.0
@@ -5317,91 +677,934 @@ Staff faced a salary gap
 </tr>
 <tr>
 <td style="text-align:left;">
+Climate and environmental justice
+</td>
+<td style="text-align:right;">
+317
+</td>
+<td style="text-align:right;">
+32.3
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Human rights defenders at risk
+</td>
+<td style="text-align:right;">
+305
+</td>
+<td style="text-align:right;">
+31.1
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Girls’ movements
+</td>
+<td style="text-align:right;">
+275
+</td>
+<td style="text-align:right;">
+28.0
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Lesbian, Bisexual and queer rights
+</td>
+<td style="text-align:right;">
+244
+</td>
+<td style="text-align:right;">
+24.9
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Disability rights and justice
+</td>
+<td style="text-align:right;">
+238
+</td>
+<td style="text-align:right;">
+24.3
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Countering anti-gender and anti-rights
+</td>
+<td style="text-align:right;">
+232
+</td>
+<td style="text-align:right;">
+23.6
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Rights for people living with HIV+
+</td>
+<td style="text-align:right;">
+218
+</td>
+<td style="text-align:right;">
+22.2
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Sex workers rights
+</td>
+<td style="text-align:right;">
+213
+</td>
+<td style="text-align:right;">
+21.7
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Holistic safety, protection and collective care
+</td>
+<td style="text-align:right;">
+210
+</td>
+<td style="text-align:right;">
+21.4
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Indigenous rights
+</td>
+<td style="text-align:right;">
+210
+</td>
+<td style="text-align:right;">
+21.4
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Displaced, migrant and refugee rights
+</td>
+<td style="text-align:right;">
+201
+</td>
+<td style="text-align:right;">
+20.5
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Trans and non-binary rights
+</td>
+<td style="text-align:right;">
+186
+</td>
+<td style="text-align:right;">
+19.0
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Crisis response
+</td>
+<td style="text-align:right;">
+183
+</td>
+<td style="text-align:right;">
+18.7
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Labour rights
+</td>
+<td style="text-align:right;">
+172
+</td>
+<td style="text-align:right;">
+17.5
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Black rights/ Black feminist rights
+</td>
+<td style="text-align:right;">
+152
+</td>
+<td style="text-align:right;">
+15.5
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Digital rights
+</td>
+<td style="text-align:right;">
+152
+</td>
+<td style="text-align:right;">
+15.5
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Freedom of information and media
+</td>
+<td style="text-align:right;">
+127
+</td>
+<td style="text-align:right;">
+12.9
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Pleasure and bodily care
+</td>
+<td style="text-align:right;">
+122
+</td>
+<td style="text-align:right;">
+12.4
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Racial justice
+</td>
+<td style="text-align:right;">
+121
+</td>
+<td style="text-align:right;">
+12.3
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Harm reduction
+</td>
+<td style="text-align:right;">
+116
+</td>
+<td style="text-align:right;">
+11.8
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Intersex rights
+</td>
+<td style="text-align:right;">
+100
+</td>
+<td style="text-align:right;">
+10.2
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Anti-militarization and peace
+</td>
+<td style="text-align:right;">
+95
+</td>
+<td style="text-align:right;">
+9.7
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Religious and ethnic minority rights
+</td>
+<td style="text-align:right;">
+91
+</td>
+<td style="text-align:right;">
+9.3
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
 Other
 </td>
 <td style="text-align:right;">
-11.9
+53
+</td>
+<td style="text-align:right;">
+5.4
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Resisting the war on drugs
+</td>
+<td style="text-align:right;">
+46
+</td>
+<td style="text-align:right;">
+4.7
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Anti-caste
+</td>
+<td style="text-align:right;">
+30
+</td>
+<td style="text-align:right;">
+3.1
 </td>
 </tr>
 </tbody>
 </table>
+<pre><code>## [1] &quot;The % of organizations that answer HR or Women rights is : 84.4&quot;</code></pre>
+<p><strong>GROUPED VARIABLE</strong></p>
+<ol style="list-style-type: upper-alpha">
+<li>Organizing traditionally associated with feminism and women’s
+rights</li>
+</ol>
+<ol style="list-style-type: lower-alpha">
+<li>Women’s rights</li>
+<li>Ending gender-based violence</li>
+<li>Sexual and reproductive health &amp; rights (SRHR) and bodily
+autonomy</li>
+<li>Human rights</li>
+</ol>
+<ol start="2" style="list-style-type: upper-alpha">
+<li>Groups historically marginalized and invisibilized (in the funding
+ecosystem)</li>
+</ol>
+<ol style="list-style-type: lower-alpha">
+<li>Young feminists</li>
+<li>Girls’ movements</li>
+<li>Disability rights and justice</li>
+<li>Lesbian, bisexual and queer rights</li>
+<li>Sex workers rights</li>
+<li>Rights for people living with HIV</li>
+<li>Displaced, migrants &amp; refugee rights</li>
+<li>Indigenous rights</li>
+<li>Trans and non-binary-rights</li>
+<li>Labor rights (workers as a group)</li>
+<li>Intersex rights</li>
+<li>Black rights/feminist rights</li>
+<li>Anti-caste (small number of responses but relevant to AWID)</li>
+<li>Religious and ethnic minority rights</li>
+<li>Human rights defenders at risk</li>
+</ol>
+<ol start="3" style="list-style-type: upper-alpha">
+<li>By organizing focus – (others)</li>
+</ol>
+<ul>
+<li>Climate and environmental justice – AWID FOCUS</li>
+<li>Countering anti-gender and anti-rights – AWID FOCUS</li>
+<li>Anti-militarization and peace – AWID FOCUS</li>
+<li>Holistic safety, protection and collective care – AWID FOCUS</li>
+<li>Resisting the war on drugs<br />
+</li>
+<li>Economic justice, rights and alternatives</li>
+<li>Crisis response</li>
+<li>Digital rights</li>
+<li>Racial justice</li>
+<li>Freedom of information and media</li>
+<li>Harm reduction</li>
+<li>Pleasure and bodily care</li>
+</ul>
 <table class=" lightable-minimal" style="font-family: &quot;Trebuchet MS&quot;, verdana, sans-serif; margin-left: auto; margin-right: auto;">
 <thead>
 <tr>
 <th style="text-align:left;">
-Description
+Organization grouped type
 </th>
 <th style="text-align:right;">
-Total
+n
 </th>
 <th style="text-align:right;">
-No big impact
-</th>
-<th style="text-align:right;">
-Staff reduction
-</th>
-<th style="text-align:right;">
-Activity reduction
-</th>
-<th style="text-align:right;">
-Discontinuation of programs or projects
-</th>
-<th style="text-align:right;">
-Staff faced a salary gap
-</th>
-<th style="text-align:right;">
-Other
+porcentaje
 </th>
 </tr>
 </thead>
 <tbody>
 <tr>
 <td style="text-align:left;">
-Other
+A. Organizing traditionally associated with feminism and women’s rights
 </td>
 <td style="text-align:right;">
-17
+919
 </td>
 <td style="text-align:right;">
-17.6
-</td>
-<td style="text-align:right;">
-29.4
-</td>
-<td style="text-align:right;">
-58.8
-</td>
-<td style="text-align:right;">
-17.6
-</td>
-<td style="text-align:right;">
-29.4
-</td>
-<td style="text-align:right;">
-5.9
+93.7
 </td>
 </tr>
 <tr>
 <td style="text-align:left;">
-Primary focus
+B. Groups historically marginalized and invisibilized
 </td>
 <td style="text-align:right;">
-241
+826
 </td>
 <td style="text-align:right;">
-13.3
+84.2
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+C. By organizing focus – (others)
 </td>
 <td style="text-align:right;">
-33.2
+711
 </td>
 <td style="text-align:right;">
-58.9
+72.5
+</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<p><strong>–Analysis notes———————————————————————–</strong></p>
+<p>This classification does not really discriminate at all, i.e. all
+organizations chose between these groups.</p>
+<p>For now it is recommended NOT to use this variable for any
+crossover.</p>
+<p><strong>-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-</strong></p>
+<p><strong>Organisation type - FOCUS AWID</strong></p>
+<p>VARIABLE THAT INDICATES IF THE ORGANIZATION WORKS OR NOT IN ONE OF
+THIS SUBJECTS</p>
+<ul>
+<li>Lesbian, bisexual and queer rights</li>
+<li>Sex workers rights</li>
+<li>Trans and non-binary-rights</li>
+<li>Anti-caste</li>
+<li>Climate and environmental justice – AWID FOCUS</li>
+<li>Countering anti-gender and anti-rights – AWID FOCUS</li>
+<li>Anti-militarization and peace – AWID FOCUS</li>
+<li>Holistic safety, protection and collective care – AWID FOCUS</li>
+</ul>
+<table class=" lightable-minimal" style="font-family: &quot;Trebuchet MS&quot;, verdana, sans-serif; margin-left: auto; margin-right: auto;">
+<thead>
+<tr>
+<th style="text-align:left;">
+q4_awid_focus
+</th>
+<th style="text-align:right;">
+n
+</th>
+<th style="text-align:right;">
+percentage
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+Other subjects
 </td>
 <td style="text-align:right;">
-13.3
+289
 </td>
 <td style="text-align:right;">
-33.6
+29.5
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Specific AWID subjects
+</td>
+<td style="text-align:right;">
+692
+</td>
+<td style="text-align:right;">
+70.5
+</td>
+</tr>
+</tbody>
+</table>
+<p><strong>–Analysis notes———————————————————————–</strong></p>
+<p>This classification is more interesting, it is impressive how many
+organizations are working on these issues.</p>
+<p><strong>————————————————————————————–</strong></p>
+<p><strong>-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-</strong></p>
+<p><strong>Organisation type - FOCUS AWID - DETAIL</strong></p>
+<p>Detail of q4 focus and the proportion of each of the topics in the
+total number of organizations working on one of AWID’s priority
+topics.</p>
+<table class=" lightable-minimal" style="font-family: &quot;Trebuchet MS&quot;, verdana, sans-serif; margin-left: auto; margin-right: auto;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Organization type
+</th>
+<th style="text-align:right;">
+n
+</th>
+<th style="text-align:right;">
+porcentaje
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+Total focus organizations
+</td>
+<td style="text-align:right;">
+692
+</td>
+<td style="text-align:right;">
+100.0
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Climate and environmental justice
+</td>
+<td style="text-align:right;">
+317
+</td>
+<td style="text-align:right;">
+45.8
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Lesbian, Bisexual and queer rights
+</td>
+<td style="text-align:right;">
+244
+</td>
+<td style="text-align:right;">
+35.3
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Countering anti-gender and anti-rights
+</td>
+<td style="text-align:right;">
+232
+</td>
+<td style="text-align:right;">
+33.5
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Sex workers rights
+</td>
+<td style="text-align:right;">
+213
+</td>
+<td style="text-align:right;">
+30.8
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Holistic safety, protection and collective care
+</td>
+<td style="text-align:right;">
+210
+</td>
+<td style="text-align:right;">
+30.3
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Trans and non-binary rights
+</td>
+<td style="text-align:right;">
+186
+</td>
+<td style="text-align:right;">
+26.9
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Anti-militarization and peace
+</td>
+<td style="text-align:right;">
+95
+</td>
+<td style="text-align:right;">
+13.7
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Anti-caste
+</td>
+<td style="text-align:right;">
+30
+</td>
+<td style="text-align:right;">
+4.3
+</td>
+</tr>
+</tbody>
+</table>
+<p><strong>-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-</strong></p>
+</div>
+<div id="organisation-type---grouped---proposal" class="section level2">
+<h2>Organisation type - grouped - PROPOSAL</h2>
+<p><strong>To have the complete set, you can analyze the organizations
+according to which ones are in the Awid topics with this final
+distribution</strong></p>
+<table class=" lightable-minimal" style="font-family: &quot;Trebuchet MS&quot;, verdana, sans-serif; margin-left: auto; margin-right: auto;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Organization type
+</th>
+<th style="text-align:right;">
+n
+</th>
+<th style="text-align:right;">
+porcentaje
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+Climate and environmental justice
+</td>
+<td style="text-align:right;">
+317
+</td>
+<td style="text-align:right;">
+32.3
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Other feminists subjects (not AWID focus)
+</td>
+<td style="text-align:right;">
+289
+</td>
+<td style="text-align:right;">
+29.5
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Lesbian, Bisexual and queer rights
+</td>
+<td style="text-align:right;">
+244
+</td>
+<td style="text-align:right;">
+24.9
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Countering anti-gender and anti-rights
+</td>
+<td style="text-align:right;">
+232
+</td>
+<td style="text-align:right;">
+23.6
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Sex workers rights
+</td>
+<td style="text-align:right;">
+213
+</td>
+<td style="text-align:right;">
+21.7
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Holistic safety, protection and collective care
+</td>
+<td style="text-align:right;">
+210
+</td>
+<td style="text-align:right;">
+21.4
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Trans and non-binary rights
+</td>
+<td style="text-align:right;">
+186
+</td>
+<td style="text-align:right;">
+19.0
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Anti-militarization and peace
+</td>
+<td style="text-align:right;">
+95
+</td>
+<td style="text-align:right;">
+9.7
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Anti-caste
+</td>
+<td style="text-align:right;">
+30
+</td>
+<td style="text-align:right;">
+3.1
+</td>
+</tr>
+</tbody>
+</table>
+<p><strong>AWID FOCUS SUBJECTS BY TYPE OF ORGANISATION</strong></p>
+<pre><code>## `summarise()` has grouped output by &#39;q4_forms_organizing.anti_caste&#39;. You can
+## override using the `.groups` argument.
+## `summarise()` has grouped output by &#39;q4_forms_organizing.anti_militarization&#39;.
+## You can override using the `.groups` argument.
+## `summarise()` has grouped output by &#39;q4_forms_organizing.climate_justice&#39;. You
+## can override using the `.groups` argument.
+## `summarise()` has grouped output by
+## &#39;q4_forms_organizing.countering_anti_gender&#39;. You can override using the
+## `.groups` argument.
+## `summarise()` has grouped output by
+## &#39;q4_forms_organizing.holistic_safety_protection_collective_care&#39;. You can
+## override using the `.groups` argument.
+## `summarise()` has grouped output by
+## &#39;q4_forms_organizing.lesbian_bisexual_queer_rights&#39;. You can override using the
+## `.groups` argument.
+## `summarise()` has grouped output by &#39;q4_forms_organizing.sex_workers_rights&#39;.
+## You can override using the `.groups` argument.
+## `summarise()` has grouped output by
+## &#39;q4_forms_organizing.trans_non_binary_rights&#39;. You can override using the
+## `.groups` argument.
+## `summarise()` has grouped output by &#39;q4_awid_focus_no&#39;. You can override using
+## the `.groups` argument.</code></pre>
+<table class=" lightable-minimal" style="font-family: &quot;Trebuchet MS&quot;, verdana, sans-serif; margin-left: auto; margin-right: auto;">
+<thead>
+<tr>
+<th style="text-align:left;">
+q4_grouped
+</th>
+<th style="text-align:right;">
+primary_focus
+</th>
+<th style="text-align:right;">
+specific_projects
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+Anti Caste
+</td>
+<td style="text-align:right;">
+84.0
+</td>
+<td style="text-align:right;">
+16.0
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Anti-militarization and peace
+</td>
+<td style="text-align:right;">
+78.6
+</td>
+<td style="text-align:right;">
+21.4
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Climate and environmental justice
+</td>
+<td style="text-align:right;">
+80.5
+</td>
+<td style="text-align:right;">
+19.5
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Countering anti-gender and anti-rights
+</td>
+<td style="text-align:right;">
+81.7
+</td>
+<td style="text-align:right;">
+18.3
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Holistic safety, protection and collective care
+</td>
+<td style="text-align:right;">
+82.8
+</td>
+<td style="text-align:right;">
+17.2
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Lesbian, Bisexual and queer rights
+</td>
+<td style="text-align:right;">
+87.1
+</td>
+<td style="text-align:right;">
+12.9
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Sex workers rights
+</td>
+<td style="text-align:right;">
+86.2
+</td>
+<td style="text-align:right;">
+13.8
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Trans and non-binary rights
+</td>
+<td style="text-align:right;">
+86.4
+</td>
+<td style="text-align:right;">
+13.6
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Other feminists subjects (not AWID focus)
+</td>
+<td style="text-align:right;">
+75.3
+</td>
+<td style="text-align:right;">
+24.7
+</td>
+</tr>
+</tbody>
+</table>
+<p><strong>–Analysis notes———————————————————————–</strong></p>
+<p>This is more relevant to the analysis of question q2 (see that
+report).</p>
+<p><strong>————————————————————————————————</strong></p>
+<p><strong>AWID FOCUS SUBJECTS BY REGISTRATION</strong></p>
+<p>A crosstabulation (bivariate) of the combination of registration and
+subject of the organisation</p>
+<pre><code>## `summarise()` has grouped output by &#39;q4_forms_organizing.anti_caste&#39;. You can
+## override using the `.groups` argument.
+## `summarise()` has grouped output by &#39;q4_forms_organizing.anti_militarization&#39;.
+## You can override using the `.groups` argument.
+## `summarise()` has grouped output by &#39;q4_forms_organizing.climate_justice&#39;. You
+## can override using the `.groups` argument.
+## `summarise()` has grouped output by
+## &#39;q4_forms_organizing.countering_anti_gender&#39;. You can override using the
+## `.groups` argument.
+## `summarise()` has grouped output by
+## &#39;q4_forms_organizing.holistic_safety_protection_collective_care&#39;. You can
+## override using the `.groups` argument.
+## `summarise()` has grouped output by
+## &#39;q4_forms_organizing.lesbian_bisexual_queer_rights&#39;. You can override using the
+## `.groups` argument.
+## `summarise()` has grouped output by &#39;q4_forms_organizing.sex_workers_rights&#39;.
+## You can override using the `.groups` argument.
+## `summarise()` has grouped output by
+## &#39;q4_forms_organizing.trans_non_binary_rights&#39;. You can override using the
+## `.groups` argument.
+## `summarise()` has grouped output by &#39;q4_awid_focus_no&#39;. You can override using
+## the `.groups` argument.</code></pre>
+<pre><code>## # A tibble: 18 × 3
+## # Groups:   q4_grouped [9]
+##    q4_grouped                                      q5_registered percentage
+##    &lt;chr&gt;                                           &lt;chr&gt;              &lt;dbl&gt;
+##  1 Anti Caste                                      y_registered        66.7
+##  2 Anti Caste                                      n_registered        33.3
+##  3 Anti-militarization and peace                   y_registered        75.6
+##  4 Anti-militarization and peace                   n_registered        24.4
+##  5 Climate and environmental justice               y_registered        88  
+##  6 Climate and environmental justice               n_registered        12  
+##  7 Countering anti-gender and anti-rights          y_registered        79.8
+##  8 Countering anti-gender and anti-rights          n_registered        20.2
+##  9 Holistic safety, protection and collective care y_registered        78.5
+## 10 Holistic safety, protection and collective care n_registered        21.5
+## 11 Lesbian, Bisexual and queer rights              y_registered        79.6
+## 12 Lesbian, Bisexual and queer rights              n_registered        20.4
+## 13 Sex workers rights                              y_registered        84.3
+## 14 Sex workers rights                              n_registered        15.7
+## 15 Trans and non-binary rights                     y_registered        76.6
+## 16 Trans and non-binary rights                     n_registered        23.4
+## 17 Other feminists subjects (not AWID focus)       y_registered        84.9
+## 18 Other feminists subjects (not AWID focus)       n_registered        15.1</code></pre>
+<table class=" lightable-minimal" style="font-family: &quot;Trebuchet MS&quot;, verdana, sans-serif; margin-left: auto; margin-right: auto;">
+<thead>
+<tr>
+<th style="text-align:left;">
+q4_grouped
+</th>
+<th style="text-align:right;">
+y_registered
+</th>
+<th style="text-align:right;">
+n_registered
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+Anti Caste
+</td>
+<td style="text-align:right;">
+66.7
+</td>
+<td style="text-align:right;">
+33.3
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Anti-militarization and peace
+</td>
+<td style="text-align:right;">
+75.6
+</td>
+<td style="text-align:right;">
+24.4
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Climate and environmental justice
+</td>
+<td style="text-align:right;">
+88.0
 </td>
 <td style="text-align:right;">
 12.0
@@ -5409,492 +1612,81 @@ Primary focus
 </tr>
 <tr>
 <td style="text-align:left;">
-Specific projects
+Countering anti-gender and anti-rights
 </td>
 <td style="text-align:right;">
-45
+79.8
 </td>
 <td style="text-align:right;">
-6.7
+20.2
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Holistic safety, protection and collective care
 </td>
 <td style="text-align:right;">
-35.6
+78.5
 </td>
 <td style="text-align:right;">
-68.9
+21.5
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Lesbian, Bisexual and queer rights
 </td>
 <td style="text-align:right;">
-6.7
+79.6
 </td>
 <td style="text-align:right;">
-37.8
+20.4
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Sex workers rights
 </td>
 <td style="text-align:right;">
-13.3
+84.3
+</td>
+<td style="text-align:right;">
+15.7
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Trans and non-binary rights
+</td>
+<td style="text-align:right;">
+76.6
+</td>
+<td style="text-align:right;">
+23.4
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Other feminists subjects (not AWID focus)
+</td>
+<td style="text-align:right;">
+84.9
+</td>
+<td style="text-align:right;">
+15.1
 </td>
 </tr>
 </tbody>
 </table>
-<table class=" lightable-minimal" style="font-family: &quot;Trebuchet MS&quot;, verdana, sans-serif; margin-left: auto; margin-right: auto;">
-<thead>
-<tr>
-<th style="text-align:left;">
-Registration
-</th>
-<th style="text-align:right;">
-Total
-</th>
-<th style="text-align:right;">
-No big impact
-</th>
-<th style="text-align:right;">
-Staff reduction
-</th>
-<th style="text-align:right;">
-Activity reduction
-</th>
-<th style="text-align:right;">
-Discontinuation of programs or projects
-</th>
-<th style="text-align:right;">
-Staff faced a salary gap
-</th>
-<th style="text-align:right;">
-Other
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:left;">
-globally_focused
-</td>
-<td style="text-align:right;">
-21
-</td>
-<td style="text-align:right;">
-33.3
-</td>
-<td style="text-align:right;">
-14.3
-</td>
-<td style="text-align:right;">
-42.9
-</td>
-<td style="text-align:right;">
-33.3
-</td>
-<td style="text-align:right;">
-23.8
-</td>
-<td style="text-align:right;">
-14.3
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-locally_focused
-</td>
-<td style="text-align:right;">
-91
-</td>
-<td style="text-align:right;">
-13.2
-</td>
-<td style="text-align:right;">
-35.2
-</td>
-<td style="text-align:right;">
-64.8
-</td>
-<td style="text-align:right;">
-13.2
-</td>
-<td style="text-align:right;">
-34.1
-</td>
-<td style="text-align:right;">
-6.6
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-nationally_focused
-</td>
-<td style="text-align:right;">
-147
-</td>
-<td style="text-align:right;">
-11.6
-</td>
-<td style="text-align:right;">
-36.7
-</td>
-<td style="text-align:right;">
-58.5
-</td>
-<td style="text-align:right;">
-11.6
-</td>
-<td style="text-align:right;">
-36.1
-</td>
-<td style="text-align:right;">
-12.9
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-regionally_focused
-</td>
-<td style="text-align:right;">
-34
-</td>
-<td style="text-align:right;">
-5.9
-</td>
-<td style="text-align:right;">
-29.4
-</td>
-<td style="text-align:right;">
-70.6
-</td>
-<td style="text-align:right;">
-5.9
-</td>
-<td style="text-align:right;">
-26.5
-</td>
-<td style="text-align:right;">
-20.6
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-transnationally_focused
-</td>
-<td style="text-align:right;">
-6
-</td>
-<td style="text-align:right;">
-0.0
-</td>
-<td style="text-align:right;">
-16.7
-</td>
-<td style="text-align:right;">
-33.3
-</td>
-<td style="text-align:right;">
-0.0
-</td>
-<td style="text-align:right;">
-33.3
-</td>
-<td style="text-align:right;">
-16.7
-</td>
-</tr>
-</tbody>
-</table>
-<table class=" lightable-minimal" style="font-family: &quot;Trebuchet MS&quot;, verdana, sans-serif; margin-left: auto; margin-right: auto;">
-<thead>
-<tr>
-<th style="text-align:left;">
-Scope
-</th>
-<th style="text-align:right;">
-Total
-</th>
-<th style="text-align:right;">
-No big impact
-</th>
-<th style="text-align:right;">
-Staff reduction
-</th>
-<th style="text-align:right;">
-Activity reduction
-</th>
-<th style="text-align:right;">
-Discontinuation of programs or projects
-</th>
-<th style="text-align:right;">
-Staff faced a salary gap
-</th>
-<th style="text-align:right;">
-Other
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:left;">
-Global
-</td>
-<td style="text-align:right;">
-21
-</td>
-<td style="text-align:right;">
-33.3
-</td>
-<td style="text-align:right;">
-14.3
-</td>
-<td style="text-align:right;">
-42.9
-</td>
-<td style="text-align:right;">
-33.3
-</td>
-<td style="text-align:right;">
-23.8
-</td>
-<td style="text-align:right;">
-14.3
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Local
-</td>
-<td style="text-align:right;">
-91
-</td>
-<td style="text-align:right;">
-13.2
-</td>
-<td style="text-align:right;">
-35.2
-</td>
-<td style="text-align:right;">
-64.8
-</td>
-<td style="text-align:right;">
-13.2
-</td>
-<td style="text-align:right;">
-34.1
-</td>
-<td style="text-align:right;">
-6.6
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-National
-</td>
-<td style="text-align:right;">
-147
-</td>
-<td style="text-align:right;">
-11.6
-</td>
-<td style="text-align:right;">
-36.7
-</td>
-<td style="text-align:right;">
-58.5
-</td>
-<td style="text-align:right;">
-11.6
-</td>
-<td style="text-align:right;">
-36.1
-</td>
-<td style="text-align:right;">
-12.9
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Regional
-</td>
-<td style="text-align:right;">
-34
-</td>
-<td style="text-align:right;">
-5.9
-</td>
-<td style="text-align:right;">
-29.4
-</td>
-<td style="text-align:right;">
-70.6
-</td>
-<td style="text-align:right;">
-5.9
-</td>
-<td style="text-align:right;">
-26.5
-</td>
-<td style="text-align:right;">
-20.6
-</td>
-</tr>
-</tbody>
-</table>
-<table class=" lightable-minimal" style="font-family: &quot;Trebuchet MS&quot;, verdana, sans-serif; margin-left: auto; margin-right: auto;">
-<thead>
-<tr>
-<th style="text-align:left;">
-Formation period
-</th>
-<th style="text-align:right;">
-Total
-</th>
-<th style="text-align:right;">
-No big impact
-</th>
-<th style="text-align:right;">
-Staff reduction
-</th>
-<th style="text-align:right;">
-Activity reduction
-</th>
-<th style="text-align:right;">
-Discontinuation of programs or projects
-</th>
-<th style="text-align:right;">
-Staff faced a salary gap
-</th>
-<th style="text-align:right;">
-Other
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:left;">
-Before 2000
-</td>
-<td style="text-align:right;">
-63
-</td>
-<td style="text-align:right;">
-15.9
-</td>
-<td style="text-align:right;">
-36.5
-</td>
-<td style="text-align:right;">
-52.4
-</td>
-<td style="text-align:right;">
-15.9
-</td>
-<td style="text-align:right;">
-22.2
-</td>
-<td style="text-align:right;">
-12.7
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Between 2000 and 2009
-</td>
-<td style="text-align:right;">
-81
-</td>
-<td style="text-align:right;">
-13.6
-</td>
-<td style="text-align:right;">
-38.3
-</td>
-<td style="text-align:right;">
-55.6
-</td>
-<td style="text-align:right;">
-13.6
-</td>
-<td style="text-align:right;">
-35.8
-</td>
-<td style="text-align:right;">
-13.6
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Between 2010 and 2014
-</td>
-<td style="text-align:right;">
-57
-</td>
-<td style="text-align:right;">
-12.3
-</td>
-<td style="text-align:right;">
-33.3
-</td>
-<td style="text-align:right;">
-71.9
-</td>
-<td style="text-align:right;">
-12.3
-</td>
-<td style="text-align:right;">
-42.1
-</td>
-<td style="text-align:right;">
-3.5
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Between 2015 and 2020
-</td>
-<td style="text-align:right;">
-84
-</td>
-<td style="text-align:right;">
-11.9
-</td>
-<td style="text-align:right;">
-28.6
-</td>
-<td style="text-align:right;">
-61.9
-</td>
-<td style="text-align:right;">
-11.9
-</td>
-<td style="text-align:right;">
-33.3
-</td>
-<td style="text-align:right;">
-9.5
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Between 2021 and 2023
-</td>
-<td style="text-align:right;">
-18
-</td>
-<td style="text-align:right;">
-0.0
-</td>
-<td style="text-align:right;">
-22.2
-</td>
-<td style="text-align:right;">
-66.7
-</td>
-<td style="text-align:right;">
-0.0
-</td>
-<td style="text-align:right;">
-44.4
-</td>
-<td style="text-align:right;">
-38.9
-</td>
-</tr>
-</tbody>
-</table>
+<p><strong>–Analysis notes———————————————————————–</strong></p>
+<p>Anti-caste organizations are the most frequently unregistered. These
+data should be taken with caution, as this is the group with the fewest
+cases.</p>
+<p>Those working on trans and non-binary rights also have a higher
+proportion of non-registrations than the others.</p>
+<p><strong>————————————————————————————————</strong></p>
+<hr />
+</div>
 
 
 
