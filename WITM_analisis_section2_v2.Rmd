@@ -537,24 +537,16 @@ In this case, the distribution is reversed. For each of the work topics, we can 
 
 #q6_geo_scope
 
-q6q5<-base %>%
-  filter(!is.na(q10_budget_grp_2023) & q10_budget_grp_2023!="" & !is.na(q5_registered) & q5_registered!="") %>%
+q10q5<-base %>%
+  filter(!is.na(q10_budget_grp_2023) & q10_budget_grp_2023!="" & (q5_registered=="y_registered" | q5_registered=="n_registered")) %>%
   group_by(q10_budget_grp_2023,q5_registered)%>%
   summarise(n=n()) %>%
   mutate(percentage=round((n/sum(n))*100,1))%>%
-  arrange(desc(n)) %>% 
-  mutate(=recode(q6_geo_scope,
-          "locally_focused"="Locally",
-         "nationally_focused"="Nationally" ,
-         "diaspora_and_or_exile"="Diaspora",
-         "regionally_focused"= "Regionally",
-          "transnationally_focused"="Transnationally",
-         "globally_focused"="Global"
-         ) ) %>%
-  select(q5_registered,Scope=q6_geo_scope,percentage)
+  arrange(q10_budget_grp_2023) %>% 
+  select(q5_registered,q10_budget_grp_2023,percentage)
 
 #q6q5
-qry_w<-q6q5 %>% pivot_wider(names_from = Scope, values_from = percentage) %>%
+qry_w<-q10q5 %>% pivot_wider(names_from = q10_budget_grp_2023, values_from = percentage) %>%
  mutate(q5_registered=recode(q5_registered, "98"="Other", "n_registered"="No registered", "y_registered"="Registered"))
 
 knitr::kable(qry_w) %>% 
@@ -564,17 +556,12 @@ knitr::kable(qry_w) %>%
 ```
 
 ```{r}
-#q5q2
 
-qry_graph<-q6q5 %>% filter((q5_registered=="y_registered" | q5_registered=="n_registered") )
-                      #& (Scope=="Nationally"  | Scope=="Locally" | Scope=="Regionally"))
-#qry_graph
-
-ggplot(qry_graph, aes(x = Scope, y=percentage, fill=q5_registered)) +                      
+ggplot(q10q5, aes(x = q10_budget_grp_2023, y=percentage, fill=q5_registered)) +                      
    geom_bar(position="dodge", stat="identity") +
   scale_colour_distiller() +
-  labs(x="Subjects",y= "%") +                 
-  ggtitle("Registration by Geographic scope (%)") +                
+  labs(x="Budget",y= "%") +                 
+  ggtitle("Budget by Registration (%)") +                
   theme_light()+
  geom_text(aes(label = sprintf("%0.1f", round(percentage, digits = 1))),position=position_dodge(width=0.9),
             vjust=0.5, hjust=1,size=3) +
@@ -586,10 +573,200 @@ ggplot(qry_graph, aes(x = Scope, y=percentage, fill=q5_registered)) +
 
 
 
+**-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-**
+
+**Budget by Scope**
+
+
+```{r}
+
+##borrar las variables para evitar problemas
+#rm(list=setdiff(ls(), "base"))
+
+q10q6<-base %>%
+  filter(!is.na(q6_geo_scope) & q6_geo_scope!="" & !is.na(q10_budget_grp_2023) & q10_budget_grp_2023!="") %>%
+  group_by(q6_geo_scope,q10_budget_grp_2023)%>%
+  summarise(n=n()) %>%
+  mutate(percentage=round((n/sum(n))*100,1))%>%
+  arrange(q10_budget_grp_2023) %>% 
+  mutate(q6_geo_scope=recode(q6_geo_scope,
+          "locally_focused"="Locally",
+         "nationally_focused"="Nationally" ,
+         "diaspora_and_or_exile"="Diaspora",
+         "regionally_focused"= "Regionally",
+          "transnationally_focused"="Transnationally",
+         "globally_focused"="Global"
+         ) ) %>%
+  select(q10_budget_grp_2023,Scope=q6_geo_scope,percentage)
+
+#q6q5
+qry_w<-q10q6 %>% pivot_wider(names_from = Scope, values_from = percentage) 
+
+knitr::kable(qry_w) %>% 
+  kable_minimal()
+
+
+```
+
+```{r}
+#q5q2
+
+qry_graph<-q10q6 %>% filter((Scope=="Nationally"  | Scope=="Locally" | Scope=="Regionally"))
+#qry_graph
+
+ggplot(qry_graph, aes(x = Scope, y=percentage, fill=q10_budget_grp_2023)) +                      
+   geom_bar(position="dodge", stat="identity") +
+  scale_colour_distiller() +
+  labs(x="Budget",y= "%") +                 
+  ggtitle("Budget by Geographic scope (%)") +                
+  theme_light()+
+ geom_text(aes(label = sprintf("%0.1f", round(percentage, digits = 1))),position=position_dodge(width=0.9),
+            vjust=0.5, hjust=1,size=3) +
+   coord_flip()
+
+```
+
+
+
+**-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-**
+
+**Budget by Region**
+
+This is only available for Nationally and Locally organisation because in the other cases they are multiple choice.
+
+```{r}
+
+rm(list=setdiff(ls(), "base"))
+
+q10q7<-base %>% 
+  filter(q6_geo_scope=="locally_focused" | q6_geo_scope=="nationally_focused") %>% 
+  group_by(q7_region_one,q10_budget_grp_2023) %>%
+  summarise(n=n()) %>%
+  mutate(percentage=round((n/sum(n))*100,1))%>%
+  arrange(q10_budget_grp_2023) %>% 
+  mutate(q7_region_one=forcats::fct_recode(as_factor(q7_region_one),
+                                    "South America" = "samerica",
+                                    "Central America & Mexico" = "camerica",
+                                    "North America" = "namerica",
+                                    "Caribbean" = "caribbean",
+                                    "South Asia" = "sasia",
+                                    "Southeast Asia" = "seasia",
+                                    "East Asia" = "easia",
+                                    "The Pacific" = "pacific",
+                                    "South West Asia/Middle East" = "swasiamiddleeast",
+                                    "Central Asia & Caucasus" = "casia",
+                                    "Eastern Europe, Southeast Europe and Central Europe" = "caucasuseurope",
+                                    "Western Europe" = "weurope",
+                                    "West Africa"="wafrica",
+                                    "East Africa"="eafrica",
+                                    "Southern Africa"="safrica",
+                                    "Central Africa"="cafrica",
+                                    "North Africa"="nafrica")) %>%
+  select(q10_budget_grp_2023,Region=q7_region_one,percentage)
+
+qry_w<-q10q7 %>% pivot_wider(names_from = q10_budget_grp_2023, values_from = percentage)
+
+
+knitr::kable(t(qry_w)) %>% 
+  kable_minimal()
+
+```
+
+
+**-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-**
+
+**Zero Budget by Region**
+
+
+
+```{r}
+
+q10q7_plot<-q10q7 %>% filter(q10_budget_grp_2023=="(a) Zero budget")
+
+ggplot(q10q7_plot, aes(x = Region, y = percentage, fill = Region)) +
+  geom_bar(stat = "identity") +
+  labs(title = "Zero budget by region",
+       x = " ",
+       y = "Percentage") +
+  theme_minimal() +
+  theme(legend.position = "none")+
+ geom_text(aes(label = sprintf("%0.1f", round(percentage, digits = 1))),position=position_dodge(width=0.9),
+            vjust=0.5, hjust=1,size=3) +
+   coord_flip()
+
+```
+
+
+
+**-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-**
+
+**Budget by year**
+
+
+
+```{r}
+
+q8<-base %>% 
+  filter(!is.na(q9_year_formation_agrup) & !is.na(q10_budget_grp_2023) & q10_budget_grp_2023!="") %>% 
+  group_by(q9_year_formation_agrup,q10_budget_grp_2023) %>% 
+  summarise(n=n()) %>% 
+  mutate(percentage=round((n/sum(n))*100,1)) %>%
+  select(q9_year_formation_agrup,q10_budget_grp_2023,percentage)
+
+
+qry_w<-q8 %>% pivot_wider(names_from = q9_year_formation_agrup, values_from = percentage) 
+
+
+knitr::kable(qry_w) %>% 
+  kable_minimal()
+
+```
 
 
 
 
+**-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-**
+
+**2023 budget by COVID (Q11)**
 
 
+
+```{r}
+
+##borrar las variables para evitar problemas
+#rm(list=setdiff(ls(), "base"))
+
+#q6_geo_scope
+
+q10q5<-base %>%
+  filter(!is.na(q10_budget_grp_2023) & q10_budget_grp_2023!="" & (q5_registered=="y_registered" | q5_registered=="n_registered")) %>%
+  group_by(q10_budget_grp_2023,q5_registered)%>%
+  summarise(n=n()) %>%
+  mutate(percentage=round((n/sum(n))*100,1))%>%
+  arrange(q10_budget_grp_2023) %>% 
+  select(q5_registered,q10_budget_grp_2023,percentage)
+
+#q6q5
+qry_w<-q10q5 %>% pivot_wider(names_from = q10_budget_grp_2023, values_from = percentage) %>%
+ mutate(q5_registered=recode(q5_registered, "98"="Other", "n_registered"="No registered", "y_registered"="Registered"))
+
+knitr::kable(qry_w) %>% 
+  kable_minimal()
+
+
+```
+
+```{r}
+
+ggplot(q10q5, aes(x = q10_budget_grp_2023, y=percentage, fill=q5_registered)) +                      
+   geom_bar(position="dodge", stat="identity") +
+  scale_colour_distiller() +
+  labs(x="Budget",y= "%") +                 
+  ggtitle("Budget by Registration (%)") +                
+  theme_light()+
+ geom_text(aes(label = sprintf("%0.1f", round(percentage, digits = 1))),position=position_dodge(width=0.9),
+            vjust=0.5, hjust=1,size=3) +
+   coord_flip()
+
+```
 
