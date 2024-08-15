@@ -588,7 +588,7 @@ funding_q5 <- base %>%
     q5_registered == "98" ~ "Other",
     TRUE ~ NA_character_ # Para manejar casos no previstos
   )) %>%
-  filter(q13_ext_funding == "yes" & q14_funding_annual_budget_2023 > 0 & !is.na(q5_var)) %>%
+  filter(q13_ext_funding == "yes" & q14_funding_annual_budget_2023 > 0 & !is.na(q5_var) & q5_var!="Other") %>%
   group_by(q5_var) %>%
   summarise(count = n(), .groups = 'drop') %>%
   mutate(total_count = sum(count),  # Calcula el total de conteos
@@ -760,6 +760,47 @@ funding_q9 <- base %>%
   theme_minimal()+
   theme(legend.position = "none")+
   coord_flip()
+
+```
+
+```{r ffundinge, echo=F, message=F, warning=F}
+
+
+funding_q10 <- base %>%
+  filter(q13_ext_funding == "yes" & q14_funding_annual_budget_2023 > 0 & !is.na(q10_budget_grp_2023) & q10_budget_grp_2023!="") %>%
+  group_by(q10_budget_grp_2023) %>%
+  summarise(n = n(), .groups = 'drop') %>%
+  mutate(total_count = sum(n),  # Calcula el total de conteos
+         Percentage = round((n / total_count) * 100, 2)) %>%   # Calcula el porcentaje
+  select(-total_count) %>%   # Elimina la columna total_count si no es necesaria
+  rename("Budget 2023" = q10_budget_grp_2023) %>% 
+  arrange(desc(Percentage))
+
+
+  knitr::kable(funding_q10) %>% 
+  kable_minimal()
+
+  funding_q10 <- base %>%
+  filter(q13_ext_funding == "yes" & q14_funding_annual_budget_2023 > 0 & !is.na(q10_budget_grp_2023) & q10_budget_grp_2023!="") %>%
+  group_by(q10_budget_grp_2023) %>%
+  summarise(n = n(), .groups = 'drop') %>%
+  mutate(total_count = sum(n),  # Calcula el total de conteos
+         Percentage = round((n / total_count) * 100, 2)) %>%   # Calcula el porcentaje
+  select(-total_count)
+  
+  ggplot(funding_q10, aes(x = reorder(q10_budget_grp_2023, Percentage), y = Percentage, fill = q10_budget_grp_2023)) +
+  geom_bar(stat = "identity", fill="steelblue") +
+  geom_text(aes(label = paste0(Percentage, "%")), 
+            vjust = -0.5,  # Ajustar verticalmente para que las etiquetas aparezcan encima de las barras
+            color = "black") +  # Color del texto de las etiquetas
+  labs(title = "Distribution by Organization budget in 2023 by Receiving External Funding",
+       x = "Registration Status",
+       y = "Percentage (%)") +
+  theme_minimal()+
+  theme(legend.position = "none")+
+  coord_flip()
+    
+
 
 ```
 
@@ -1094,6 +1135,41 @@ q15_q9 <- base %>%
 
 knitr::kable(q15_q9) %>% 
   kable_minimal()
+```
+
+
+
+```{r q15f, echo=F, message=F, warning=F}
+q15_q10 <- base %>%
+  filter(!is.na(q10_budget_grp_2023) & !is.na(q15_key_sources)) %>% 
+  group_by(q10_budget_grp_2023) %>%
+  summarise(Total = n(),
+    multirateral = sum(q15_key_sources.multilateral_funders == 1),
+    bilateral = sum(q15_key_sources.bilateral_funders == 1),
+    philanthropic = sum(q15_key_sources.philanthropic_foundations == 1),
+    womens = sum(q15_key_sources.womens_feminist_funds == 1),
+    private = sum(q15_key_sources.private_sector == 1),
+    ingos = sum(q15_key_sources.ingos == 1),
+    individual = sum(q15_key_sources.individual_donors == 1),
+    gov = sum(q15_key_sources.national_local_goverment_or_bodies == 1),
+    other = sum(q15_key_sources.98 == 1),
+    Multirateral = round(multirateral / Total*100, 1),
+    Bilateral = round(bilateral / Total*100, 1),
+    Philanthropic = round(philanthropic / Total*100, 1),
+    Feminist = round(womens / Total*100, 1),
+    Private = round(private / Total*100, 1),
+    INGOS = round(ingos / Total*100, 1),
+    Individual = round(individual / Total*100, 1),
+    Government = round(gov / Total*100, 1),
+    Other = round(other / Total*100, 1)) %>% 
+    select("Budget 2023"=q10_budget_grp_2023,2,12:20)
+
+
+knitr::kable(q15_q10) %>% 
+  kable_minimal()
+```
+
+
 ```
 
 **Main Sources of External Funding by Type and Year**
@@ -1535,7 +1611,7 @@ knitr::kable(q18_1) %>%
 
 ```
 
-```{r q18a, echo=F, message=F, warning=F}
+```{r q18a, eval=F, echo=F, message=F, warning=F}
 
 q18_5 <- base %>%
   filter(!is.na(q5_registered) & (q18_new_funders.not_new_funders!=1) & q5_registered!="98") %>%
@@ -1638,6 +1714,40 @@ q18_9 <- base %>%
 
 knitr::kable(q18_9) %>% 
   kable_minimal()
+
+```
+
+
+```{r q18d, echo=F, message=F, warning=F}
+
+q18_10 <- base %>%
+    filter(!is.na(q10_budget_grp_2023) & (q18_new_funders.not_new_funders!=1)) %>%
+  group_by(q10_budget_grp_2023) %>% 
+  summarise(
+    Total = (round(n(),0)),
+    multilateral = sum(q18_new_funders.multilateral_funders == 1, na.rm = TRUE),
+    bilateral = sum(q18_new_funders.bilateral_funders == 1, na.rm = TRUE),
+    philanthropic = sum(q18_new_funders.philanthropic_foundations == 1, na.rm = TRUE),
+    womens = sum(q18_new_funders.womens_feminist_funds == 1, na.rm = TRUE),
+    private = sum(q18_new_funders.private_sector == 1, na.rm = TRUE),
+    ingos = sum(q18_new_funders.ingos == 1, na.rm = TRUE),
+    individual = sum(q18_new_funders.individual_donors == 1, na.rm = TRUE),
+    gov = sum(q18_new_funders.national_goverment == 1, na.rm = TRUE),
+    other = sum(q18_new_funders.98 == 1, na.rm = TRUE),
+    Multilateral = round(multilateral / Total * 100, 1),
+    Bilateral = round(bilateral / Total * 100, 1),
+    Philanthropic = round(philanthropic / Total * 100, 1),
+    Feminist = round(womens / Total * 100, 1),
+    Private = round(private / Total * 100, 1),
+    INGOS = round(ingos / Total * 100, 1),
+    Individual = round(individual / Total * 100, 1),
+    Government = round(gov / Total * 100, 1),
+    Other = round(other / Total * 100, 1)) %>% 
+  select("Budget 2023"="q10_budget_grp_2023",2,12:20)
+
+knitr::kable(q18_10) %>% 
+  kable_minimal()
+
 
 ```
 
@@ -1803,7 +1913,7 @@ knitr::kable(q19_q1) %>%
 
 ```
 
-```{r q19d, echo=F, message=F, warning=F}
+```{r q19d, eval=F, echo=F, message=F, warning=F}
 
 q19_q5 <- base %>%
   filter(!is.na(q19_lose_funding) & !is.na(q5_registered) & q5_registered!="98") %>%
@@ -1961,6 +2071,38 @@ knitr::kable(q19_q9) %>%
 
 ```
 
+```{r q19g, echo=F, message=F, warning=F}
+
+
+
+q19_10 <- base %>%
+    filter(!is.na(q10_budget_grp_2023) & (q19_lose_funding.no!=1 )) %>%
+  group_by(q10_budget_grp_2023) %>% 
+  summarise(
+    Total = (round(n(),0)),
+    multilateral = sum(q19_lose_funding.y_multilateral_funders == 1, na.rm = TRUE),
+    bilateral = sum(q19_lose_funding.y_bilateral_funders == 1, na.rm = TRUE),
+    philanthropic = sum(q19_lose_funding.y_philanthropic_foundations == 1, na.rm = TRUE),
+    womens = sum(q19_lose_funding.y_womens_feminist_funds == 1, na.rm = TRUE),
+    private = sum(q19_lose_funding.y_private_sector == 1, na.rm = TRUE),
+    ingos = sum(q19_lose_funding.y_ingos == 1, na.rm = TRUE),
+    individual = sum(q19_lose_funding.y_individual_donors == 1, na.rm = TRUE),
+    gov = sum(q19_lose_funding.y_national_goverment== 1, na.rm = TRUE),
+    other = sum(q19_lose_funding.y_other == 1, na.rm = TRUE),
+    Multilateral = round(multilateral / Total * 100, 1),
+    Bilateral = round(bilateral / Total * 100, 1),
+    Philanthropic = round(philanthropic / Total * 100, 1),
+    Feminist = round(womens / Total * 100, 1),
+    Private = round(private / Total * 100, 1),
+    INGOS = round(ingos / Total * 100, 1),
+    Individual = round(individual / Total * 100, 1),
+    Government = round(gov / Total * 100, 1),
+    Other = round(other / Total * 100, 1))  %>% 
+  select("Budget 2023"="q10_budget_grp_2023",2,12:20)
+
+knitr::kable(q19_10) %>% 
+  kable_minimal()
+```
 
 **Loss of funding impact**
 
@@ -2060,7 +2202,7 @@ knitr::kable(q20_q1) %>%
 
 ```
 
-```{r q20b, echo=F, message=F, warning=F}
+```{r q20b, eval=F, echo=F, message=F, warning=F}
 
 q20_q5 <- base %>%
   filter(q19_lose_funding!=1 & !is.na(q20_loss_impact) & !is.na(q5_registered) & q5_registered!="98") %>%
@@ -2146,5 +2288,31 @@ q20_q9 <- base %>%
 
 knitr::kable(q20_q9) %>% 
   kable_minimal()
+```
+
+
+```{r q20e, echo=F, message=F, warning=F}
+
+q20_10 <- base %>%
+  filter(!is.na(q10_budget_grp_2023) & q19_lose_funding!=1 & !is.na(q20_loss_impact)) %>%
+  group_by(q10_budget_grp_2023) %>% 
+  summarise(Total = (round(n(),0)),
+    no=sum(q20_loss_impact.no_impact==1, na.rm=TRUE),
+    staff=sum(q20_loss_impact.staff_fired==1, na.rm = TRUE),
+    act=sum(q20_loss_impact.activity_reduction==1, na.rm = TRUE),
+    prog=sum(q20_loss_impact.cut_programs==1, na.rm = TRUE),
+    salary=sum(q20_loss_impact.cut_staff_salary==1, na.rm = TRUE),
+    other=sum(q20_loss_impact.98==1, na.rm=TRUE),
+    "No big impact"= round(no/Total*100,1),
+    "Staff reduction"= round(staff/Total*100,1),
+    "Activity reduction"= round(act/Total*100,1),
+    "Discontinuation of programs or projects"= round(no/Total*100,1),
+    "Staff faced a salary gap"= round(salary/Total*100,1),
+    "Other"= round(other/Total*100,1)) %>% 
+  select("Budget 2023"="q10_budget_grp_2023",2,9:14)
+
+knitr::kable(q20_10) %>% 
+  kable_minimal()
+  
 ```
 
