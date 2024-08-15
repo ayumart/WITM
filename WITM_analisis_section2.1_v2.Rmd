@@ -1,0 +1,2318 @@
+---
+title: "Where is the Money for Feminist Organizing? Survey for feminist, women’s rights and gender justice movements, groups and organizations"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+```{r setup, include=FALSE, echo=F}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+
+
+
+```{r library, echo=F, message=F, warning=F}
+
+#Library upload
+
+library(tidyverse)
+library(readxl)
+library(janitor)
+library(dplyr)
+library(writexl)
+library(eph)
+library(openxlsx)
+library(rmarkdown)
+library(knitr)
+library(kableExtra)
+
+
+library(readr)
+
+
+rm(list = ls())
+
+
+```
+
+
+```{r upload, echo=F, message=F, warning=F}
+
+# OPEN CSV file
+witm <- read.csv2("Data/WITM_csv_last.csv")
+
+source(file="WITM_variables.R") 
+
+
+#2024-05-23 08:37:41.178000-04:00
+base$date <-  as.Date(base$end,'%Y-%m-%d')
+
+#Variable names
+#names(witm)
+
+```
+
+**-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-**
+
+**Section 2.1: External founding**
+
+```{r filter, echo=F, message=F, warning=F}
+
+#Identification of Those Who Have Provided Consent to Complete the Survey
+
+base <- base %>% 
+  filter(q0_consent=="yes")
+```
+
+**Organizations based on external funding received**
+
+
+Q13. Between 2021 and 2023, did your group, organization and/or movement receive any external funding? 
+
+
+```{r q13, echo=F, message=F, warning=F}
+#Convertir campos vacíos de la variable q13 en NA
+ base <- base %>%
+  mutate(q13_ext_funding = na_if(q13_ext_funding, ""))
+
+q13<-base %>%
+  filter(!is.na(q13_ext_funding)) %>% 
+  group_by(q13_ext_funding) %>% 
+  summarise(n=n()) %>% 
+  mutate(Percentage=round((n/sum(n))*100,1)) %>% 
+  rename("External funding"=q13_ext_funding)
+
+Percentage_yes <- base %>%
+  filter(!is.na(q13_ext_funding)) %>%
+  summarise(
+    Total = n(),
+    Yes = sum(q13_ext_funding == "yes", na.rm = TRUE),
+    Percentage_Yes = round(Yes / Total * 100, 1)
+  ) %>%
+  pull(Percentage_Yes)  
+
+
+
+knitr::kable(q13) %>% 
+  kable_minimal()
+```
+
+
+
+```{r q13_graf, echo=F, message=F, warning=F}
+
+q13<-base %>%
+  filter(!is.na(q13_ext_funding)) %>% 
+  group_by(q13_ext_funding) %>% 
+  summarise(n=n()) %>% 
+  mutate(Percentage=round((n/sum(n))*100,1))
+
+ggplot(q13, aes(x = q13_ext_funding, y = Percentage, fill=q13_ext_funding)) +
+  geom_bar(stat = "identity") +
+  geom_text(aes(label = sprintf("%.1f%%", Percentage)), vjust = -0.5, size = 3.5) +
+  labs(title = "External funding",
+       x = " ",
+       y = "Percentage") +
+  theme_minimal() +
+  theme(legend.position = "none")
+
+
+```
+
+It is noted that `r Percentage_yes`% of organizations participating on the survey have received external funding.
+
+
+```{r description, echo=F, message=F, warning=F}
+# Calculate counting and Percentages
+
+q13_q1 <- base %>%
+  mutate(q1_var = case_when(
+    q1_description == "primary_focus" ~ "Primary focus",
+    q1_description == "specific_projects" ~ "Specific project(s)",
+    q1_description == "98" ~ "Other",
+    TRUE ~ NA 
+  )) %>%
+  filter(!is.na(q13_ext_funding)) %>%
+  group_by(q13_ext_funding, q1_var) %>%
+  summarise(n= n(), .groups = 'drop') %>%
+  group_by(q1_var) %>%
+  mutate(total_count = sum(n),
+         Percentage = round((n / total_count) * 100, 2)) %>%
+  select(-n, -total_count) %>%
+  pivot_wider(names_from = q13_ext_funding, values_from = Percentage, values_fill = list(Percentage = 0)) %>% 
+  rename("Organization description" = q1_var)
+
+
+#dato de % que tienen foco principal y reciben financiación externa
+primary_yes <- base %>%
+  filter(!is.na(q13_ext_funding) & q1_description=="primary_focus") %>%
+  group_by(q1_description) %>% 
+  summarise(
+    Total = n(),
+    Yes = sum(q13_ext_funding == "yes", na.rm = TRUE),
+    Percentage_Yes = round(Yes / Total * 100, 1)
+  ) %>%
+  pull(Percentage_Yes) 
+
+#Convertir campos vacíos de la variable q5 en NA
+ base <- base %>%
+  mutate(q5_registered = na_if(q5_registered, ""))
+
+ 
+ q13_q5 <- base %>%
+  mutate(q5_var = case_when(
+    q5_registered == "n_registered" ~ "No",
+    q5_registered == "y_registered" ~ "Yes",
+    q5_registered == "98" ~ "Other",
+    TRUE ~ NA  # Para manejar casos no previstos
+  )) %>%
+  filter(!is.na(q13_ext_funding) & !is.na(q5_var) & q5_var!="Other") %>%
+  group_by(q13_ext_funding, q5_var) %>%
+  summarise(n = n(), .groups = 'drop') %>%
+  group_by(q5_var) %>%
+  mutate(total_count = sum(n),
+         Percentage = round((n / total_count) * 100, 2)) %>%
+  select(-n, -total_count) %>%
+  pivot_wider(names_from = q13_ext_funding, values_from = Percentage, values_fill = list(Percentage = 0)) %>% 
+  rename("Registration" = q5_var)
+ 
+ knitr::kable(q13_q5) %>% 
+  kable_minimal()
+
+ 
+ q13_q5 <- base %>%
+  mutate(q5_var = case_when(
+    q5_registered == "n_registered" ~ "No",
+    q5_registered == "y_registered" ~ "Yes",
+    q5_registered == "98" ~ "Other",
+    TRUE ~ NA  # Para manejar casos no previstos
+  )) %>%
+  filter(!is.na(q13_ext_funding) & !is.na(q5_var) & q5_var!="Other") %>%
+  group_by(q13_ext_funding, q5_var) %>%
+  summarise(n = n(), .groups = 'drop') %>%
+  group_by(q5_var) %>%
+  mutate(total_count = sum(n),
+         Percentage = round((n / total_count) * 100, 2)) %>% 
+   filter(q13_ext_funding=="yes")
+
+
+ggplot(q13_q5, aes(x = q13_ext_funding, y = Percentage, fill=q5_var)) +
+  geom_bar(stat = "identity", position = "dodge") +
+    geom_text(aes(label = paste0(Percentage, "%")), 
+            position = position_dodge(width = 0.9), 
+            vjust = -0.5,  # Ajustar verticalmente para que las etiquetas aparezcan encima de las barras
+            color = "black") +
+  labs(title = "Percentage of organizations receiving external Funding by registration Status",
+       x = "Registration",
+       y = "Percentage") +
+  theme_minimal() +
+  theme(legend.position = "none")
+ 
+ #dato de % que estan registradas y reciben financiación externa
+ registered_yes <- base %>%
+  filter(!is.na(q13_ext_funding) & q5_registered=="y_registered") %>%
+  group_by(q5_registered) %>% 
+  summarise(
+    Total = n(),
+    Yes = sum(q13_ext_funding == "yes", na.rm = TRUE),
+    Percentage_Yes = round(Yes / Total * 100, 1)
+  ) %>%
+  pull(Percentage_Yes) 
+ 
+ #dato de % que no estan registradas y reciben financiación externa
+  registered_no <- base %>%
+  filter(!is.na(q13_ext_funding) & q5_registered=="n_registered") %>%
+  group_by(q5_registered) %>% 
+  summarise(
+    Total = n(),
+    Yes = sum(q13_ext_funding == "yes", na.rm = TRUE),
+    Percentage_Yes = round(Yes / Total * 100, 1)
+  ) %>%
+  pull(Percentage_Yes) 
+```
+
+The Percentage of organizations receiving external funding increases to `r primary_yes`% among those that promote the rights of women, girls, or trans and gender-diverse individuals with intersecting identities, where this is the 'primary focus of all our work.' The Percentage rises to `r registered_yes`% among registered organizations, but drops to `r registered_no`% among those that are not registered.
+
+```{r data, eval=F, echo=F, message=F, warning=F}
+
+# knitr::kable(q13_q1) %>% 
+#  kable_minimal()
+ 
+```
+
+
+
+
+```{r registration, eval=F, echo=F, message=F, warning=F}
+#*Responses from organizations that selected 'Other' for their registration status*
+q5_other<-base %>% 
+   filter(q5_registered=="98") %>% 
+   group_by(q5_registered_no) %>% 
+   summarise(n()) %>% 
+   select("Responses"=1)
+
+knitr::kable(q5_other) %>% 
+  kable_minimal()
+ 
+```
+
+
+
+```{r scope, echo=F, message=F, warning=F}
+q13_q6 <- base %>%
+  mutate(q6_var = case_when(
+    q6_geo_scope == "globally_focused" ~ "Global",
+    q6_geo_scope == "nationally_focused" ~ "National",
+    q6_geo_scope == "locally_focused" ~ "Local",
+    q6_geo_scope == "regionally_focused" ~ "Regional",
+    q6_geo_scope == "transnationally_focused" ~ "Transnational",
+    q6_geo_scope == "diaspora_and_or_exile" ~ "Diaspora",
+    TRUE ~ NA_character_  # Para manejar casos no previstos
+  )) %>%
+  filter(!is.na(q13_ext_funding) & !is.na(q6_var)) %>%
+  group_by(q13_ext_funding, q6_var) %>%
+  summarise(count = n(), .groups = 'drop') %>%
+  group_by(q6_var) %>%
+  mutate(total_count = sum(count),
+         Percentage = round((count / total_count) * 100, 2)) %>%
+  select(-count, -total_count) %>%
+  pivot_wider(names_from = q13_ext_funding, values_from = Percentage, values_fill = list(Percentage = 0)) %>%
+  rename("Scope" = q6_var)
+
+ #dato de % con scope local que reciben financiación externa
+local<- base %>%
+  filter(!is.na(q13_ext_funding) & q6_geo_scope=="locally_focused") %>%
+  group_by(q6_geo_scope) %>% 
+  summarise(
+    Total = n(),
+    Yes = sum(q13_ext_funding == "yes", na.rm = TRUE),
+    Percentage_Yes = round(Yes / Total * 100, 1)
+  ) %>%
+  pull(Percentage_Yes)
+```
+
+Regarding organizational scope, those with a regional focus receive external funding more frequently. In contrast, less than `r local`% of organizations with a local focus report receiving external funding
+
+
+```{r data1, echo=F, message=F, warning=F}
+knitr::kable(q13_q6) %>% 
+  kable_minimal()
+
+
+q13_q6 <- base %>%
+  mutate(q6_var = case_when(
+    q6_geo_scope == "globally_focused" ~ "Global",
+    q6_geo_scope == "nationally_focused" ~ "National",
+    q6_geo_scope == "locally_focused" ~ "Local",
+    q6_geo_scope == "regionally_focused" ~ "Regional",
+    q6_geo_scope == "transnationally_focused" ~ "Transnational",
+    q6_geo_scope == "diaspora_and_or_exile" ~ "Diaspora",
+    TRUE ~ NA_character_  # Para manejar casos no previstos
+  )) %>%
+  filter(!is.na(q13_ext_funding) & !is.na(q6_var)) %>%
+  group_by(q13_ext_funding, q6_var) %>%
+  summarise(count = n(), .groups = 'drop') %>%
+  group_by(q6_var) %>%
+  mutate(total_count = sum(count),
+         Percentage = round((count / total_count) * 100, 2)) %>% 
+  filter(q13_ext_funding=="yes")
+
+ggplot(q13_q6, aes(x = reorder(q6_var, Percentage), y = Percentage, fill = q6_var)) +
+  geom_bar(stat = "identity", fill = "steelblue") +
+  geom_text(aes(label = paste0(Percentage, "%")), 
+            vjust = -0.5,  # Ajustar verticalmente para que las etiquetas aparezcan encima de las barras
+            color = "black") +  # Color del texto de las etiquetas
+  labs(title = "Percentage of Organizations with External Funding by Geographic Scope",
+       x = "Geographic scopt",
+       y = "Percentage (%)") +
+  theme_minimal() +
+  theme(legend.position = "none")+
+  coord_flip()  # Opcional: voltear el gráfico si hay muchas categorías para mejorar la legibilidad
+
+
+```
+
+
+
+```{r year, echo=F, message=F, warning=F}
+q13_q9 <- base %>%
+  filter(!is.na(q13_ext_funding) & !is.na(q9_year_formation_agrup)) %>%
+  group_by(q13_ext_funding, q9_year_formation_agrup) %>%
+  summarise(count = n(), .groups = 'drop') %>%
+  group_by(q9_year_formation_agrup) %>%
+  mutate(total_count = sum(count),
+         Percentage = round((count / total_count) * 100, 2)) %>%
+  select(-count, -total_count) %>%
+  pivot_wider(names_from = q13_ext_funding, values_from = Percentage, values_fill = list(Percentage = 0)) %>%
+  rename("Formation period" = q9_year_formation_agrup) %>% 
+  arrange(desc(`yes`))  # Ordena de mayor a menor según la columna 'yes'
+  
+
+
+#dato de % formadas en 2023 que reciben financiación externa
+form_2023<- base %>%
+  filter(!is.na(q13_ext_funding) & q9_year_formation_agrup=="Year 2023") %>%
+  group_by(q9_year_formation_agrup) %>% 
+  summarise(
+    Total = n(),
+    Yes = sum(q13_ext_funding == "yes", na.rm = TRUE),
+    Percentage_Yes = round(Yes / Total * 100, 1)
+  ) %>%
+  pull(Percentage_Yes)
+
+
+#dato de % formadas antes del 2000 que reciben financiación externa
+form_2000<- base %>%
+  filter(!is.na(q13_ext_funding) & q9_year_formation_agrup=="Before 2000") %>%
+  group_by(q9_year_formation_agrup) %>% 
+  summarise(
+    Total = n(),
+    Yes = sum(q13_ext_funding == "yes", na.rm = TRUE),
+    Percentage_Yes = round(Yes / Total * 100, 1)
+  ) %>%
+  pull(Percentage_Yes)
+```
+
+Finally, it is observed that as the organization ages, the Percentage of those receiving external funding increases, while this Percentage decreases significantly for more recently established organizations. Only `r form_2023`% of organizations formed in 2023 report receiving external funding, in contrast to `r form_2000`% of those established before the year 2000.
+
+
+```{r data2, echo=F, message=F, warning=F}
+knitr::kable(q13_q9) %>% 
+  kable_minimal()
+
+
+q13_q9 <- base %>%
+  filter(!is.na(q13_ext_funding) & !is.na(q9_year_formation_agrup)) %>%
+  group_by(q13_ext_funding, q9_year_formation_agrup) %>%
+  summarise(count = n(), .groups = 'drop') %>%
+  group_by(q9_year_formation_agrup) %>%
+  mutate(total_count = sum(count),
+         Percentage = round((count / total_count) * 100, 2)) %>%
+  filter(q13_ext_funding=="yes")
+  
+
+
+ggplot(q13_q9, aes(x = reorder(q9_year_formation_agrup, Percentage), y = Percentage, fill = q9_year_formation_agrup)) +
+  geom_bar(stat = "identity", fill = "steelblue") +
+  geom_text(aes(label = paste0(Percentage, "%")), 
+            vjust = -0.5,  # Ajustar verticalmente para que las etiquetas aparezcan encima de las barras
+            color = "black") +  # Color del texto de las etiquetas
+  labs(title = "Percentage of Organizations with External Funding by formation year",
+       x = "Formation year",
+       y = "Percentage (%)") +
+  theme_minimal() +
+  coord_flip()  # Opcional: voltear el gráfico si hay muchas categorías para mejorar la legibilidad
+
+
+```
+
+```{r data11, echo=F, message=F, warning=F}
+
+q13_q10<-base %>%
+  filter(!is.na(q10_budget_grp_2023) & q10_budget_grp_2023!="" & !is.na(q13_ext_funding)) %>%
+  group_by(q10_budget_grp_2023,q13_ext_funding)%>%
+  summarise(n=n()) %>%
+  mutate(percentage=round((n/sum(n))*100,1))%>%
+  filter(q13_ext_funding=="yes") %>% 
+  arrange(desc(n)) %>% 
+  select("Budget 2023"=1,-2, 3, "Percentage"=4)
+
+knitr::kable(q13_q10) %>% 
+  kable_minimal()
+
+q13_q10<-base %>%
+  filter(!is.na(q10_budget_grp_2023) & q10_budget_grp_2023!="" & !is.na(q13_ext_funding)) %>%
+  group_by(q10_budget_grp_2023,q13_ext_funding)%>%
+  summarise(n=n()) %>%
+  mutate(percentage=round((n/sum(n))*100,1))%>%
+  filter(q13_ext_funding=="yes") %>% 
+  arrange(desc(n))
+
+# Crear el gráfico
+ggplot(q13_q10, aes(x = reorder(q10_budget_grp_2023, percentage), y = percentage, fill = q10_budget_grp_2023)) +
+  geom_bar(stat = "identity", fill="steelblue") +
+  geom_text(aes(label = paste0(percentage, "%")), 
+            vjust = -0.5,  # Ajustar verticalmente para que las etiquetas aparezcan encima de las barras
+            color = "black") +  # Color del texto de las etiquetas
+  labs(title = "Percentage of Organizations with External Funding by 2023 Budget",
+       x = "Budget 2023",
+       y = "Percentage (%)") +
+  theme_minimal() +
+  coord_flip()  # Opcional: voltear el gráfico si hay muchas categorías para mejorar la legibilidad
+
+```
+
+
+```{r q13b, echo=F, message=F, warning=F}
+#Distribución por año de recepción de fondos externos
+result <- base %>%
+  filter(q13_ext_funding == "yes") %>%
+  summarise(
+    Total = n(),
+    year_2023_abs = sum(q14_funding_annual_budget_2023 > 0, na.rm = TRUE),
+    year_2022_abs = sum(q14_funding_annual_budget_2022 > 0, na.rm = TRUE),
+    year_2021_abs = sum(q14_funding_annual_budget_2021 > 0, na.rm = TRUE),
+    year_2023_perc = round(year_2023_abs / Total * 100, 1),
+    year_2022_perc = round(year_2022_abs / Total * 100, 1),
+    year_2021_perc = round(year_2021_abs / Total * 100, 1)
+  )
+
+
+# Convertir los resultados a formato largo para valores absolutos
+result_abs_long <- result %>%
+  pivot_longer(
+    cols = starts_with("year") & ends_with("abs"),  # Selecciona columnas de valores absolutos
+    names_to = "Year",
+    values_to = "n"
+  ) %>%
+  mutate(Year = gsub("_abs", "", Year))  # Quita el sufijo "_abs" para que quede solo el año
+
+# Convertir los resultados a formato largo para porcentajes
+result_perc_long <- result %>%
+  pivot_longer(
+    cols = starts_with("year") & ends_with("perc"),  # Selecciona columnas de porcentajes
+    names_to = "Year",
+    values_to = "Percentage"
+  ) %>%
+  mutate(Year = gsub("_perc", "", Year))  # Quita el sufijo "_perc" para que quede solo el año
+
+# Combinar ambas tablas
+result_combined <- result_abs_long %>%
+  left_join(result_perc_long, by = "Year")
+
+funding<-result_combined %>% 
+  select(5:6,11) %>% 
+  mutate(Year= case_when(Year=="year_2023" ~  "2023",
+                         Year=="year_2022"~ "2022",
+                         Year=="year_2021"~ "2021"))
+
+
+ext_2023 <- result %>%
+  pull(year_2023_perc)
+ext_2022 <- result %>%
+  pull(year_2022_perc)
+ext_2021 <- result %>%
+  pull(year_2021_perc)
+
+
+```
+
+
+Among the organizations that received external funding between 2021 and 2023, `r ext_2021`% reported receiving funding in 2021, `r ext_2022`% in 2022, and `r ext_2023`% in 2023.
+
+```{r data3, echo=F, message=F, warning=F}
+
+
+   knitr::kable(funding) %>% 
+  kable_minimal()
+
+```
+
+**Organizations that received external funding during 2023**
+
+```{r funding, eval=F, echo=F, message=F, warning=F}
+funding_q1 <- base %>%
+  mutate(q1_var = case_when(
+    q1_description == "primary_focus" ~ "Primary focus",
+    q1_description == "specific_projects" ~ "Specific project(s)",
+    q1_description == "98" ~ "Other",
+    TRUE ~ NA_character_  # Usar NA_character_ para la coherencia de tipo de datos
+  )) %>%
+  filter(q13_ext_funding == "yes" & q14_funding_annual_budget_2023 > 0) %>%
+  group_by(q1_var) %>%
+  summarise(count = n(), .groups = 'drop') %>%
+  mutate(total_count = sum(count),  # Calcula el total de conteos
+         Percentage = round((count / total_count) * 100, 2)) %>%  # Calcula el porcentaje
+  select(-total_count) %>%  # Elimina la columna total_count si no es necesaria
+  rename("Organization description"=q1_var)
+
+
+#dato de % formadas antes del 2000 que reciben financiación externa
+primary_focus1<- base %>%
+  filter(!is.na(q13_ext_funding) & q1_description=="primary_focus") %>%
+  group_by(q1_description) %>% 
+  summarise(
+    Total = n(),
+    Yes = sum(q13_ext_funding == "yes", na.rm = TRUE),
+    Percentage_Yes = round(Yes / Total * 100, 1)
+  ) %>%
+  pull(Percentage_Yes)
+```
+
+
+
+```{r data4, eval=F, echo=F, message=F, warning=F}
+#knitr::kable(funding_q1) %>% 
+#  kable_minimal()
+```
+
+
+```{r fundingb, eval=F, echo=F, message=F, warning=F}
+funding_q2 <- base %>%
+  mutate(q1_var = case_when(
+    q1_description == "primary_focus" ~ "Primary focus",
+    q1_description == "specific_projects" ~ "Specific project(s)",
+    q1_description == "98" ~ "Other",
+    TRUE ~ NA_character_  # Usar NA_character_ para la coherencia de tipo de datos
+  )) %>%
+  filter(q13_ext_funding == "yes" & q14_funding_annual_budget_2022 > 0) %>%
+  group_by(q1_var) %>%
+  summarise(n = n(), .groups = 'drop') %>%
+  mutate(total_count = sum(n),  # Calcula el total de conteos
+         Percentage = round((n/ total_count) * 100, 2)) %>%  # Calcula el porcentaje
+  select(-total_count) %>%  # Elimina la columna total_count si no es necesaria
+  rename("Organization description"=q1_var)
+
+funding_q23<- base %>%
+  mutate(q1_var = case_when(
+    q1_description == "primary_focus" ~ "Primary focus",
+    q1_description == "specific_projects" ~ "Specific project(s)",
+    q1_description == "98" ~ "Other",
+    TRUE ~ NA_character_  # Usar NA_character_ para la coherencia de tipo de datos
+  )) %>%
+  filter(q13_ext_funding == "yes" & q14_funding_annual_budget_2021 > 0) %>%
+  group_by(q1_var) %>%
+  summarise(n = n(), .groups = 'drop') %>%
+  mutate(total_count = sum(n),  # Calcula el total de conteos
+         Percentage = round((n / total_count) * 100, 2)) %>%  # Calcula el porcentaje
+  select(-total_count) %>%  # Elimina la columna total_count si no es necesaria
+  rename("Organization description"=q1_var)
+
+```
+
+```{r fundingc,echo=F, message=F, warning=F}
+funding_q5 <- base %>%
+  mutate(q5_var = case_when(
+    q5_registered == "n_registered" ~ "No",
+    q5_registered == "y_registered" ~ "Yes",
+    q5_registered == "98" ~ "Other",
+    TRUE ~ NA_character_ # Para manejar casos no previstos
+  )) %>%
+  filter(q13_ext_funding == "yes" & q14_funding_annual_budget_2023 > 0 & !is.na(q5_var) & q5_var!="Other") %>%
+  group_by(q5_var) %>%
+  summarise(count = n(), .groups = 'drop') %>%
+  mutate(total_count = sum(count),  # Calcula el total de conteos
+         Percentage = round((count / total_count) * 100, 2)) %>%  # Calcula el porcentaje
+  select(-total_count) %>%  # Elimina la columna total_count si no es necesaria
+  rename("Registration"=q5_var)
+
+registration1 <- base %>%
+  filter(q13_ext_funding == "yes" & 
+         q14_funding_annual_budget_2023 > 0 & 
+         !is.na(q5_registered)) %>%
+  summarise(
+    Total = n(),
+    Yes = sum(q5_registered == "y_registered", na.rm = TRUE),  # Ajustar el valor comparado según tus datos
+    Percentage_Yes = round(Yes / Total * 100, 1)
+  ) %>%
+  pull(Percentage_Yes)
+```
+
+Of the total organizations that received external funding in 2023, `r registration1`%  were registered organizations”.
+
+```{r data6,echo=F, message=F, warning=F}
+knitr::kable(funding_q5) %>% 
+  kable_minimal()
+
+
+
+funding_q5 <- base %>%
+  mutate(q5_var = case_when(
+    q5_registered == "n_registered" ~ "No",
+    q5_registered == "y_registered" ~ "Yes",
+    q5_registered == "98" ~ "Other",
+    TRUE ~ NA_character_ # Para manejar casos no previstos
+  )) %>%
+  filter(q13_ext_funding == "yes" & q14_funding_annual_budget_2023 > 0 & !is.na(q5_var) & q5_var!="Other") %>%
+  group_by(q5_var) %>%
+  summarise(count = n(), .groups = 'drop') %>%
+  mutate(total_count = sum(count),  # Calcula el total de conteos
+         Percentage = round((count / total_count) * 100, 2))
+
+
+
+
+ggplot(funding_q5, aes(x = reorder(q5_var, Percentage), y = Percentage, fill = q5_var)) +
+  geom_bar(stat = "identity") +
+  geom_text(aes(label = paste0(Percentage, "%")), 
+            vjust = -0.5,  # Ajustar verticalmente para que las etiquetas aparezcan encima de las barras
+            color = "black") +  # Color del texto de las etiquetas
+  labs(title = "Distribution by Registration Status of Organizations Receiving External Funding in 2023",
+       x = "Registration Status",
+       y = "Percentage (%)") +
+  theme_minimal()+
+  theme(legend.position = "none")
+ 
+```
+
+
+
+```{r fundingd, echo=F, message=F, warning=F}
+funding_q6 <- base %>%
+  mutate(q6_var = case_when(
+    q6_geo_scope == "globally_focused" ~ "Global",
+    q6_geo_scope == "nationally_focused" ~ "National",
+    q6_geo_scope == "locally_focused" ~ "Local",
+    q6_geo_scope == "regionally_focused" ~ "Regional",
+    q6_geo_scope == "transnationally_focused" ~ "Transnational",
+    q6_geo_scope == "diaspora_and_or_exile" ~ "Diaspora",
+    TRUE ~ NA_character_  # Para manejar casos no previstos
+  )) %>%
+  filter(q13_ext_funding == "yes" & q14_funding_annual_budget_2023 > 0 & !is.na(q6_var)) %>%
+  group_by(q6_var) %>%
+  summarise(n = n(), .groups = 'drop') %>%
+  mutate(total_count = sum(n),  # Calcula el total de conteos
+         Percentage = round((n/ total_count) * 100, 2)) %>%  # Calcula el porcentaje
+  select(-total_count) %>%  # Elimina la columna total_count si no es necesaria
+  rename("Scope" = q6_var)
+
+
+
+scope1 <- base %>%
+  filter(q13_ext_funding == "yes" & 
+         q14_funding_annual_budget_2023 > 0 & 
+         !is.na(q6_geo_scope)) %>%
+  summarise(
+    Total = n(),
+    Yes = sum(q6_geo_scope == "nationally_focused", na.rm = TRUE),  # Ajustar el valor comparado según tus datos
+    Percentage_Yes = round(Yes / Total * 100, 1)
+  ) %>%
+  pull(Percentage_Yes)
+
+```
+
+On the other hand, most organizations that received external funding in the past year were characterized by having a national scope: `r scope1`%.
+
+
+```{r data7, echo=F, message=F, warning=F}
+knitr::kable(funding_q6) %>% 
+  kable_minimal()
+   
+
+funding_q6 <- base %>%
+  mutate(q6_var = case_when(
+    q6_geo_scope == "globally_focused" ~ "Global",
+    q6_geo_scope == "nationally_focused" ~ "National",
+    q6_geo_scope == "locally_focused" ~ "Local",
+    q6_geo_scope == "regionally_focused" ~ "Regional",
+    q6_geo_scope == "transnationally_focused" ~ "Transnational",
+    q6_geo_scope == "diaspora_and_or_exile" ~ "Diaspora",
+    TRUE ~ NA_character_  # Para manejar casos no previstos
+  )) %>%
+  filter(q13_ext_funding == "yes" & q14_funding_annual_budget_2023 > 0 & !is.na(q6_var)) %>%
+  group_by(q6_var) %>%
+  summarise(n = n(), .groups = 'drop') %>%
+  mutate(total_count = sum(n),  # Calcula el total de conteos
+         Percentage = round((n/ total_count) * 100, 2))   # Calcula el porcentaje
+
+
+ggplot(funding_q6, aes(x = reorder(q6_var, Percentage), y = Percentage, fill = q6_var)) +
+  geom_bar(stat = "identity", fill="steelblue") +
+  geom_text(aes(label = paste0(Percentage, "%")), 
+            vjust = -0.5,  # Ajustar verticalmente para que las etiquetas aparezcan encima de las barras
+            color = "black") +  # Color del texto de las etiquetas
+  labs(title = "Distribution by Geographical Scope of Organizations Receiving External Funding in 2023",
+       x = "Registration Status",
+       y = "Percentage (%)") +
+  theme_minimal()+
+  theme(legend.position = "none")+
+  coord_flip()
+
+
+```
+
+Lastly, it is observed that the Percentage of organizations receiving external funding in 2023 increases with the length of their establishment
+
+```{r fundinge, echo=F, message=F, warning=F}
+
+
+funding_q9 <- base %>%
+  filter(q13_ext_funding == "yes" & q14_funding_annual_budget_2023 > 0 & !is.na(q9_year_formation_agrup)) %>%
+  group_by(q9_year_formation_agrup) %>%
+  summarise(n = n(), .groups = 'drop') %>%
+  mutate(total_count = sum(n),  # Calcula el total de conteos
+         Percentage = round((n / total_count) * 100, 2)) %>%  # Calcula el porcentaje
+  select(-total_count) %>%  # Elimina la columna total_count si no es necesaria
+  rename("Formation period" = q9_year_formation_agrup) %>% 
+  arrange(desc(Percentage))
+
+
+  knitr::kable(funding_q9) %>% 
+  kable_minimal()
+  
+  
+  
+funding_q9 <- base %>%
+  filter(q13_ext_funding == "yes" & q14_funding_annual_budget_2023 > 0 & !is.na(q9_year_formation_agrup)) %>%
+  group_by(q9_year_formation_agrup) %>%
+  summarise(n = n(), .groups = 'drop') %>%
+  mutate(total_count = sum(n),  # Calcula el total de conteos
+         Percentage = round((n / total_count) * 100, 2))  # Calcula el porcentaje
+
+  ggplot(funding_q9, aes(x = reorder(q9_year_formation_agrup, Percentage), y = Percentage, fill = q9_year_formation_agrup)) +
+  geom_bar(stat = "identity", fill="steelblue") +
+  geom_text(aes(label = paste0(Percentage, "%")), 
+            vjust = -0.5,  # Ajustar verticalmente para que las etiquetas aparezcan encima de las barras
+            color = "black") +  # Color del texto de las etiquetas
+  labs(title = "Distribution by formation year of Organizations Receiving External Funding in 2023",
+       x = "Registration Status",
+       y = "Percentage (%)") +
+  theme_minimal()+
+  theme(legend.position = "none")+
+  coord_flip()
+
+```
+
+```{r ffundinge, echo=F, message=F, warning=F}
+
+
+funding_q10 <- base %>%
+  filter(q13_ext_funding == "yes" & q14_funding_annual_budget_2023 > 0 & !is.na(q10_budget_grp_2023) & q10_budget_grp_2023!="") %>%
+  group_by(q10_budget_grp_2023) %>%
+  summarise(n = n(), .groups = 'drop') %>%
+  mutate(total_count = sum(n),  # Calcula el total de conteos
+         Percentage = round((n / total_count) * 100, 2)) %>%   # Calcula el porcentaje
+  select(-total_count) %>%   # Elimina la columna total_count si no es necesaria
+  rename("Budget 2023" = q10_budget_grp_2023) %>% 
+  arrange(desc(Percentage))
+
+
+  knitr::kable(funding_q10) %>% 
+  kable_minimal()
+
+  funding_q10 <- base %>%
+  filter(q13_ext_funding == "yes" & q14_funding_annual_budget_2023 > 0 & !is.na(q10_budget_grp_2023) & q10_budget_grp_2023!="") %>%
+  group_by(q10_budget_grp_2023) %>%
+  summarise(n = n(), .groups = 'drop') %>%
+  mutate(total_count = sum(n),  # Calcula el total de conteos
+         Percentage = round((n / total_count) * 100, 2)) %>%   # Calcula el porcentaje
+  select(-total_count)
+  
+  ggplot(funding_q10, aes(x = reorder(q10_budget_grp_2023, Percentage), y = Percentage, fill = q10_budget_grp_2023)) +
+  geom_bar(stat = "identity", fill="steelblue") +
+  geom_text(aes(label = paste0(Percentage, "%")), 
+            vjust = -0.5,  # Ajustar verticalmente para que las etiquetas aparezcan encima de las barras
+            color = "black") +  # Color del texto de las etiquetas
+  labs(title = "Distribution by Organization budget in 2023 by Receiving External Funding",
+       x = "Registration Status",
+       y = "Percentage (%)") +
+  theme_minimal()+
+  theme(legend.position = "none")+
+  coord_flip()
+    
+
+
+```
+
+
+**Percentage of external funding received in total budget by year**
+
+```{r q14, echo=F, message=F, warning=F}
+
+# Calcular porcentaje de fondos para el año 2023
+q14_2023 <- base %>% 
+  filter(q13_ext_funding == "yes") %>% 
+  group_by(q14_funding_annual_budget_2023) %>% 
+  summarise(n = n()) %>% 
+  mutate(Percentage_2023 = round((n / sum(n)) * 100, 1)) %>% 
+  rename("Range"=q14_funding_annual_budget_2023)
+
+# Filtra las organizaciones que recibieron financiamiento externo
+q14_2023_median <- base %>%
+  filter(q13_ext_funding == "yes") %>%
+  # Selecciona la columna de presupuesto anual para 2023
+  pull(q14_funding_annual_budget_2023) %>%
+  # Calcula la mediana de los valores
+  median(na.rm = TRUE)
+
+# Filtra las organizaciones que recibieron financiamiento externo
+q14_2023_media <- base %>%
+  filter(q13_ext_funding == "yes") %>%
+  # Selecciona la columna de presupuesto anual para 2023
+  pull(q14_funding_annual_budget_2023) %>%
+  # Calcula la media de los valores
+  mean(na.rm = TRUE)
+
+
+# Calcular porcentaje de fondos para el año 2022
+q14_2022 <- base %>% 
+  filter(q13_ext_funding == "yes" & q9_year_formation < 2023) %>% 
+  group_by(q14_funding_annual_budget_2022) %>% 
+  summarise(n = n()) %>% 
+  mutate(Percentage_2022 = round((n / sum(n)) * 100, 1)) %>% 
+  rename("Range"=q14_funding_annual_budget_2022)
+
+
+# Filtra las organizaciones que recibieron financiamiento externo
+q14_2022_median <- base %>%
+  filter(q13_ext_funding == "yes") %>%
+  # Selecciona la columna de presupuesto anual para 2023
+  pull(q14_funding_annual_budget_2022) %>%
+  # Calcula la mediana de los valores
+  median(na.rm = TRUE)
+# Filtra las organizaciones que recibieron financiamiento externo
+q14_2022_media <- base %>%
+  filter(q13_ext_funding == "yes") %>%
+  # Selecciona la columna de presupuesto anual para 2023
+  pull(q14_funding_annual_budget_2022) %>%
+  # Calcula la media de los valores
+  mean(na.rm = TRUE)
+
+
+  
+# Calcular porcentaje de fondos para el año 2021
+q14_2021 <- base %>% 
+  filter(q13_ext_funding == "yes" & q9_year_formation < 2022) %>% 
+  group_by(q14_funding_annual_budget_2021) %>% 
+  summarise(n = n()) %>% 
+  mutate(Percentage_2021 = round((n / sum(n)) * 100, 1)) %>% 
+  rename("Range"=q14_funding_annual_budget_2021)
+
+
+
+# Filtra las organizaciones que recibieron financiamiento externo
+q14_2021_median <- base %>%
+  filter(q13_ext_funding == "yes") %>%
+  # Selecciona la columna de presupuesto anual para 2023
+  pull(q14_funding_annual_budget_2021) %>%
+  # Calcula la mediana de los valores
+  median(na.rm = TRUE)
+# Filtra las organizaciones que recibieron financiamiento externo
+q14_2021_media <- base %>%
+  filter(q13_ext_funding == "yes") %>%
+  # Selecciona la columna de presupuesto anual para 2023
+  pull(q14_funding_annual_budget_2021) %>%
+  # Calcula la media de los valores
+  mean(na.rm = TRUE)
+
+
+# Unir los resultados en un solo data frame
+funding_summary <- q14_2023 %>%
+  full_join(q14_2022, by = "Range") %>%
+  full_join(q14_2021, by = "Range") %>%
+  select(
+    Range = Range,
+    "Percentage 2023"=Percentage_2023,
+    "Percentage 2022"= Percentage_2022,
+    "Percentage 2021"= Percentage_2021
+  )
+
+
+knitr::kable(funding_summary) %>% 
+  kable_minimal() #imprime cuadro
+
+```
+
+
+Examining the Percentage of external funding received each year in 2021, 2022, and 2023, we can see that in the last two years, the median distribution was around `r q14_2023_median`, whereas in 2021 it was approximately r `r q14_2021_median`. Additionally, the average has increased each year: it was `r q14_2021_media` in 2021 and rose to `r q14_2023_media` by 2023.
+
+
+**Main Sources of External Funding**
+
+
+Q15. Considering these definitions, what were your group, organization, and/or movement’s key sources of external funding between 2021 and 2023? 
+
+
+As it is showns below, the main source of external funding among organizations participating in the survey is from Women's and Feminist Funds, followed by International Non-Governmental Organizations (INGOs).
+
+```{r q15, echo=F, message=F, warning=F}
+
+#Convertir campos vacíos de la variable q15 en NA
+ base <- base %>%
+  mutate(q15_key_sources = na_if(q15_key_sources, ""))
+
+#Total valid responses for calculating Percentage
+
+total<-base %>%
+  count(q15_key_sources) %>% 
+  summarise(sum(n))
+
+total<-total$n
+
+q15 <- base %>%
+  filter( !is.na(q15_key_sources)) %>%
+  summarise(Total = n(),
+    multirateral = sum(q15_key_sources.multilateral_funders == 1),
+    bilateral = sum(q15_key_sources.bilateral_funders == 1),
+    philanthropic = sum(q15_key_sources.philanthropic_foundations == 1),
+    womens = sum(q15_key_sources.womens_feminist_funds == 1),
+    private = sum(q15_key_sources.private_sector == 1),
+    ingos = sum(q15_key_sources.ingos == 1),
+    individual = sum(q15_key_sources.individual_donors == 1),
+    gov = sum(q15_key_sources.national_local_goverment_or_bodies == 1),
+    other = sum(q15_key_sources.98 == 1),
+    Multirateral = round(multirateral / Total*100, 1),
+    Bilateral = round(bilateral / Total*100, 1),
+    Philanthropic = round(philanthropic / Total*100, 1),
+    Feminist = round(womens / Total*100, 1),
+    Private = round(private / Total*100, 1),
+    INGOS = round(ingos / Total*100, 1),
+    Individual = round(individual / Total*100, 1),
+    Government = round(gov / Total*100, 1),
+    Other = round(other / Total*100, 1)) %>% 
+  select(11:19) %>% 
+  pivot_longer(cols = 1:9,
+               names_to = "Source",
+               values_to = "Percentage")
+
+
+knitr::kable(q15) %>% 
+  kable_minimal()
+
+# Crear el gráfico
+ggplot(q15, aes(x = reorder(Source, Percentage), y = Percentage, fill = Source)) +
+  geom_bar(stat = "identity") +
+  geom_text(aes(label = paste0(Percentage, "%")), 
+            vjust = -0.5,  # Ajusta verticalmente para que las etiquetas aparezcan encima de las barras
+            color = "black") +  # Color del texto de las etiquetas
+  labs(title = "Percentage of Organizations Receiving Funding by Source",
+       x = "Funding Source",
+       y = "Percentage (%)") +
+  theme_minimal() +
+  theme(legend.position = "none") +  # Elimina la leyenda si no es necesaria
+  coord_flip()  # Opcional: voltear el gráfico si hay muchas categorías para mejorar la legibilidad
+
+
+
+```
+
+
+
+
+```{r q15b, eval=F,echo=F, message=F, warning=F}
+#Convertir campos vacíos de la variable country en NA
+ base <- base %>%
+  mutate(q15_key_sources = na_if(q15_key_sources, ""))
+
+q15_q1 <- base %>%
+  filter(!is.na(q1_description) & !is.na(q15_key_sources)) %>%
+  group_by(q1_description) %>%
+  summarise(Total = n(),
+    multirateral = sum(q15_key_sources.multilateral_funders == 1),
+    bilateral = sum(q15_key_sources.bilateral_funders == 1),
+    philanthropic = sum(q15_key_sources.philanthropic_foundations == 1),
+    womens = sum(q15_key_sources.womens_feminist_funds == 1),
+    private = sum(q15_key_sources.private_sector == 1),
+    ingos = sum(q15_key_sources.ingos == 1),
+    individual = sum(q15_key_sources.individual_donors == 1),
+    gov = sum(q15_key_sources.national_local_goverment_or_bodies == 1),
+    other = sum(q15_key_sources.98 == 1),
+    Multirateral = round(multirateral / Total*100, 1),
+    Bilateral = round(bilateral / Total*100, 1),
+    Philanthropic = round(philanthropic / Total*100, 1),
+    Feminist = round(womens / Total*100, 1),
+    Private = round(private / Total*100, 1),
+    INGOS = round(ingos / Total*100, 1),
+    Individual = round(individual / Total*100, 1),
+    Government = round(gov / Total*100, 1),
+    Other = round(other / Total*100, 1)) %>% 
+  select("Description"="q1_description",2,12:20) %>% 
+  mutate(Description=recode(Description, "98"="Other", "primary_focus"="Primary focus", "specific_projects"="Specific projects"))
+
+
+```
+
+
+```{r q15r, eval=F, echo=F, message=F, warning=F}
+knitr::kable(q15_q1) %>% 
+  kable_minimal()
+
+```
+
+Regarding organizational registration, it is noted that registered organizations received more funding from multilateral, bilateral, private, and government sources compared to those that are not registered. 
+
+```{r q15c, echo=F, message=F, warning=F}
+
+base <- base %>%
+  mutate(q5_registered = na_if(q5_registered, ""))
+ 
+
+q15_q5 <- base %>%
+  filter(!is.na(q5_registered) & !is.na(q15_key_sources) & q5_registered!="98") %>%
+  group_by(q5_registered) %>%
+  summarise(Total = n(),
+    multirateral = sum(q15_key_sources.multilateral_funders == 1),
+    bilateral = sum(q15_key_sources.bilateral_funders == 1),
+    philanthropic = sum(q15_key_sources.philanthropic_foundations == 1),
+    womens = sum(q15_key_sources.womens_feminist_funds == 1),
+    private = sum(q15_key_sources.private_sector == 1),
+    ingos = sum(q15_key_sources.ingos == 1),
+    individual = sum(q15_key_sources.individual_donors == 1),
+    gov = sum(q15_key_sources.national_local_goverment_or_bodies == 1),
+    other = sum(q15_key_sources.98 == 1),
+    Multirateral = round(multirateral / Total*100, 1),
+    Bilateral = round(bilateral / Total*100, 1),
+    Philanthropic = round(philanthropic / Total*100, 1),
+    Feminist = round(womens / Total*100, 1),
+    Private = round(private / Total*100, 1),
+    INGOS = round(ingos / Total*100, 1),
+    Individual = round(individual / Total*100, 1),
+    Government = round(gov / Total*100, 1),
+    Other = round(other / Total*100, 1)) %>% 
+  select("Registered"="q5_registered",2,12:20) %>% 
+  mutate(Registered=recode(Registered, "98"="Other", "n_registered"="No registered", "y_registered"="Registered"))
+
+
+
+
+knitr::kable(q15_q5) %>% 
+  kable_minimal()
+```
+
+
+
+
+```{r q15d, echo=F, message=F, warning=F}
+
+
+base <- base %>%
+  mutate(q5_registered = na_if(q6_geo_scope, ""))
+ 
+
+q15_q6 <- base %>%
+  mutate(q6_var = case_when(
+    q6_geo_scope == "globally_focused" ~ "Global",
+    q6_geo_scope == "nationally_focused" ~ "National",
+    q6_geo_scope == "locally_focused" ~ "Local",
+    q6_geo_scope == "regionally_focused" ~ "Regional",
+    q6_geo_scope == "transnationally_focused" ~ "Transnational",
+    q6_geo_scope == "diaspora_and_or_exile" ~ "Diaspora")) %>% 
+  filter(!is.na(q6_var) & !is.na(q15_key_sources)) %>%
+  group_by(q6_var) %>%
+  summarise(Total = n(),
+    multirateral = sum(q15_key_sources.multilateral_funders == 1),
+    bilateral = sum(q15_key_sources.bilateral_funders == 1),
+    philanthropic = sum(q15_key_sources.philanthropic_foundations == 1),
+    womens = sum(q15_key_sources.womens_feminist_funds == 1),
+    private = sum(q15_key_sources.private_sector == 1),
+    ingos = sum(q15_key_sources.ingos == 1),
+    individual = sum(q15_key_sources.individual_donors == 1),
+    gov = sum(q15_key_sources.national_local_goverment_or_bodies == 1),
+    other = sum(q15_key_sources.98 == 1),
+    Multirateral = round(multirateral / Total*100, 1),
+    Bilateral = round(bilateral / Total*100, 1),
+    Philanthropic = round(philanthropic / Total*100, 1),
+    Feminist = round(womens / Total*100, 1),
+    Private = round(private / Total*100, 1),
+    INGOS = round(ingos / Total*100, 1),
+    Individual = round(individual / Total*100, 1),
+    Government = round(gov / Total*100, 1),
+    Other = round(other / Total*100, 1)) %>% 
+    select("Scope"=q6_var,2,12:20)
+
+
+knitr::kable(q15_q6) %>% 
+  kable_minimal()
+```
+
+
+
+```{r q15e, echo=F, message=F, warning=F}
+q15_q9 <- base %>%
+  filter(!is.na(q9_year_formation_agrup) & !is.na(q15_key_sources)) %>% 
+  group_by(q9_year_formation_agrup) %>%
+  summarise(Total = n(),
+    multirateral = sum(q15_key_sources.multilateral_funders == 1),
+    bilateral = sum(q15_key_sources.bilateral_funders == 1),
+    philanthropic = sum(q15_key_sources.philanthropic_foundations == 1),
+    womens = sum(q15_key_sources.womens_feminist_funds == 1),
+    private = sum(q15_key_sources.private_sector == 1),
+    ingos = sum(q15_key_sources.ingos == 1),
+    individual = sum(q15_key_sources.individual_donors == 1),
+    gov = sum(q15_key_sources.national_local_goverment_or_bodies == 1),
+    other = sum(q15_key_sources.98 == 1),
+    Multirateral = round(multirateral / Total*100, 1),
+    Bilateral = round(bilateral / Total*100, 1),
+    Philanthropic = round(philanthropic / Total*100, 1),
+    Feminist = round(womens / Total*100, 1),
+    Private = round(private / Total*100, 1),
+    INGOS = round(ingos / Total*100, 1),
+    Individual = round(individual / Total*100, 1),
+    Government = round(gov / Total*100, 1),
+    Other = round(other / Total*100, 1)) %>% 
+    select("Formation period"=q9_year_formation_agrup,2,12:20)
+
+
+knitr::kable(q15_q9) %>% 
+  kable_minimal()
+```
+
+
+
+```{r q15f, echo=F, message=F, warning=F}
+q15_q10 <- base %>%
+  filter(!is.na(q10_budget_grp_2023) & !is.na(q15_key_sources)) %>% 
+  group_by(q10_budget_grp_2023) %>%
+  summarise(Total = n(),
+    multirateral = sum(q15_key_sources.multilateral_funders == 1),
+    bilateral = sum(q15_key_sources.bilateral_funders == 1),
+    philanthropic = sum(q15_key_sources.philanthropic_foundations == 1),
+    womens = sum(q15_key_sources.womens_feminist_funds == 1),
+    private = sum(q15_key_sources.private_sector == 1),
+    ingos = sum(q15_key_sources.ingos == 1),
+    individual = sum(q15_key_sources.individual_donors == 1),
+    gov = sum(q15_key_sources.national_local_goverment_or_bodies == 1),
+    other = sum(q15_key_sources.98 == 1),
+    Multirateral = round(multirateral / Total*100, 1),
+    Bilateral = round(bilateral / Total*100, 1),
+    Philanthropic = round(philanthropic / Total*100, 1),
+    Feminist = round(womens / Total*100, 1),
+    Private = round(private / Total*100, 1),
+    INGOS = round(ingos / Total*100, 1),
+    Individual = round(individual / Total*100, 1),
+    Government = round(gov / Total*100, 1),
+    Other = round(other / Total*100, 1)) %>% 
+    select("Budget 2023"=q10_budget_grp_2023,2,12:20)
+
+
+knitr::kable(q15_q10) %>% 
+  kable_minimal()
+```
+
+
+```
+
+**Main Sources of External Funding by Type and Year**
+
+Q16. Please indicate the percentage of each source of external funding for your budget in 2021, 2022 and 2023. 
+
+
+```{r q16, echo=F, message=F, warning=F}
+
+
+#Convertir campos vacíos de la variable q13 en NA
+ datos <- base %>%
+  mutate(q13_ext_funding = na_if(q13_ext_funding, ""))
+ 
+#MULTIRATERAL
+q16_multirateral_2023<- datos %>% 
+  filter(q13_ext_funding == "yes" & q15_key_sources.multilateral_funders==1) %>% 
+  group_by(q16_funding_source_2023_multilateral) %>% 
+  summarise(n = n()) %>% 
+  mutate(Percentage = round((n / sum(n)) * 100, 1)) %>% 
+  rename_with(~ "2023", 1) %>% 
+  mutate(Type="Multirateral")
+
+q16_multirateral_2022<- datos %>% 
+  filter(q13_ext_funding == "yes" & q15_key_sources.multilateral_funders==1) %>% 
+  group_by(q16_funding_source_2022_multilateral) %>% 
+  summarise(n = n()) %>% 
+  mutate(Percentage = round((n / sum(n)) * 100, 1)) %>% 
+  rename_with(~ "2022", 1) %>% 
+  mutate(Type="Multirateral")
+
+q16_multirateral_2021<- datos %>% 
+  filter(q13_ext_funding == "yes" & q15_key_sources.multilateral_funders==1) %>% 
+  group_by(q16_funding_source_2021_multilateral) %>% 
+  summarise(n = n()) %>% 
+  mutate(Percentage = round((n / sum(n)) * 100, 1)) %>% 
+  rename_with(~ "2021", 1)%>% 
+  mutate(Type="Multirateral")
+
+#BILATERAL
+q16_bilateral_2023<- datos %>% 
+  filter(q13_ext_funding == "yes" & q15_key_sources.bilateral_funders==1) %>% 
+  group_by(q16_funding_source_2023_bilateral) %>% 
+  summarise(n = n()) %>% 
+  mutate(Percentage = round((n / sum(n)) * 100, 1)) %>% 
+  rename_with(~ "2023", 1) %>% 
+  mutate(Type="Bilateral")
+
+q16_bilateral_2022<- datos %>% 
+  filter(q13_ext_funding == "yes" & q15_key_sources.bilateral_funders==1) %>% 
+  group_by(q16_funding_source_2022_bilateral) %>% 
+  summarise(n = n()) %>% 
+  mutate(Percentage = round((n / sum(n)) * 100, 1))%>% 
+  rename_with(~ "2022", 1) %>% 
+  mutate(Type="Bilateral")
+
+q16_bilateral_2021<- datos %>% 
+  filter(q13_ext_funding == "yes" & q15_key_sources.bilateral_funders==1) %>% 
+  group_by(q16_funding_source_2021_bilateral) %>% 
+  summarise(n = n()) %>% 
+  mutate(Percentage = round((n / sum(n)) * 100, 1))%>% 
+  rename_with(~ "2021", 1) %>% 
+  mutate(Type="Bilateral")
+
+#PHILANTHROPIC
+q16_philanthropic_2023<- datos %>% 
+  filter(q13_ext_funding == "yes" & q15_key_sources.philanthropic_foundations==1) %>% 
+  group_by(q16_funding_source_2023_philanthropic) %>% 
+  summarise(n = n()) %>% 
+  mutate(Percentage = round((n / sum(n)) * 100, 1))%>% 
+  rename_with(~ "2023", 1) %>% 
+  mutate(Type="Philanthropic")
+
+q16_philanthropic_2022<- datos %>% 
+  filter(q13_ext_funding == "yes" & q15_key_sources.philanthropic_foundations==1) %>% 
+  group_by(q16_funding_source_2022_philanthropic) %>% 
+  summarise(n = n()) %>% 
+  mutate(Percentage = round((n / sum(n)) * 100, 1))%>% 
+  rename_with(~ "2022", 1) %>% 
+  mutate(Type="Philanthropic")
+
+q16_philanthropic_2021<- datos %>% 
+  filter(q13_ext_funding == "yes" & q15_key_sources.philanthropic_foundations==1) %>% 
+  group_by(q16_funding_source_2021_philanthropic) %>% 
+  summarise(n = n()) %>% 
+  mutate(Percentage = round((n / sum(n)) * 100, 1))%>% 
+  rename_with(~ "2021", 1) %>% 
+  mutate(Type="Philanthropic")
+
+#FEMINIST
+q16_feminist_2023<- datos %>% 
+  filter(q13_ext_funding == "yes" & q15_key_sources.womens_feminist_funds ==1) %>% 
+  group_by(q16_funding_source_2023_feminist) %>% 
+  summarise(n = n()) %>% 
+  mutate(Percentage = round((n / sum(n)) * 100, 1))%>% 
+  rename_with(~ "2023", 1) %>% 
+  mutate(Type="Feminist")
+
+q16_feminist_2022<- datos %>% 
+  filter(q13_ext_funding == "yes" & q15_key_sources.womens_feminist_funds ==1) %>% 
+  group_by(q16_funding_source_2022_feminist) %>% 
+  summarise(n = n()) %>% 
+  mutate(Percentage = round((n / sum(n)) * 100, 1))%>% 
+  rename_with(~ "2022", 1) %>% 
+  mutate(Type="Feminist")
+
+
+q16_feminist_2021<- datos %>% 
+  filter(q13_ext_funding == "yes" & q15_key_sources.womens_feminist_funds ==1) %>% 
+  group_by(q16_funding_source_2021_feminist) %>% 
+  summarise(n = n()) %>% 
+  mutate(Percentage = round((n / sum(n)) * 100, 1))%>% 
+  rename_with(~ "2021", 1) %>% 
+  mutate(Type="Feminist")
+
+
+#PRIVATE
+q16_private_2023<- datos %>% 
+  filter(q13_ext_funding == "yes" & q15_key_sources.private_sector ==1) %>% 
+  group_by(q16_funding_source_2023_private) %>% 
+  summarise(n = n()) %>% 
+  mutate(Percentage = round((n / sum(n)) * 100, 1))%>% 
+  rename_with(~ "2023", 1) %>% 
+  mutate(Type="Private")
+
+
+q16_private_2022<- datos %>% 
+  filter(q13_ext_funding == "yes" & q15_key_sources.private_sector ==1) %>% 
+  group_by(q16_funding_source_2022_private) %>% 
+  summarise(n = n()) %>% 
+  mutate(Percentage = round((n / sum(n)) * 100, 1))%>% 
+  rename_with(~ "2022", 1) %>% 
+  mutate(Type="Private")
+
+q16_private_2021<- datos %>% 
+  filter(q13_ext_funding == "yes" & q15_key_sources.private_sector ==1) %>% 
+  group_by(q16_funding_source_2021_private) %>% 
+  summarise(n = n()) %>% 
+  mutate(Percentage = round((n / sum(n)) * 100, 1))%>% 
+  rename_with(~ "2021", 1) %>% 
+  mutate(Type="Private")
+
+#INGOS
+q16_ingos_2023<- datos %>% 
+  filter(q13_ext_funding == "yes" & q15_key_sources.ingos==1) %>% 
+  group_by(q16_funding_source_2023_ingos) %>% 
+  summarise(n = n()) %>% 
+  mutate(Percentage = round((n / sum(n)) * 100, 1))%>% 
+  rename_with(~ "2023", 1) %>% 
+  mutate(Type="INGOS")
+
+q16_ingos_2022<- datos %>% 
+  filter(q13_ext_funding == "yes" & q15_key_sources.ingos==1) %>% 
+  group_by(q16_funding_source_2022_ingos) %>% 
+  summarise(n = n()) %>% 
+  mutate(Percentage = round((n / sum(n)) * 100, 1))%>% 
+  rename_with(~ "2022", 1) %>% 
+  mutate(Type="INGOS")
+
+q16_ingos_2021<- datos %>% 
+  filter(q13_ext_funding == "yes" & q15_key_sources.ingos==1) %>% 
+  group_by(q16_funding_source_2021_ingos) %>% 
+  summarise(n = n()) %>% 
+  mutate(Percentage = round((n / sum(n)) * 100, 1))%>% 
+  rename_with(~ "2021", 1) %>% 
+  mutate(Type="INGOS")
+
+#INDIVIDUAL
+q16_individual_2023<- datos %>% 
+  filter(q13_ext_funding == "yes" & q15_key_sources.individual_donors==1) %>% 
+  group_by(q16_funding_source_2023_individual) %>% 
+  summarise(n = n()) %>% 
+  mutate(Percentage = round((n / sum(n)) * 100, 1))%>% 
+  rename_with(~ "2023", 1) %>% 
+  mutate(Type="Individual")
+
+q16_individual_2022<- datos %>% 
+  filter(q13_ext_funding == "yes" & q15_key_sources.individual_donors==1) %>% 
+  group_by(q16_funding_source_2022_individual) %>% 
+  summarise(n = n()) %>% 
+  mutate(Percentage = round((n / sum(n)) * 100, 1))%>% 
+  rename_with(~ "2022", 1) %>% 
+  mutate(Type="Individual")
+
+q16_individual_2021<- datos %>% 
+  filter(q13_ext_funding == "yes" & q15_key_sources.individual_donors==1) %>% 
+  group_by(q16_funding_source_2021_individual) %>% 
+  summarise(n = n()) %>% 
+  mutate(Percentage = round((n / sum(n)) * 100, 1))%>% 
+  rename_with(~ "2021", 1) %>% 
+  mutate(Type="Individual")
+
+#GOVERMENT
+q16_goverment_2023<- datos %>% 
+  filter(q13_ext_funding == "yes" & q15_key_sources.national_local_goverment_or_bodies ==1) %>% 
+  group_by(q16_funding_source_2023_goverment) %>% 
+  summarise(n = n()) %>% 
+  mutate(Percentage = round((n / sum(n)) * 100, 1))%>% 
+  rename_with(~ "2023", 1) %>% 
+  mutate(Type="Goverment")
+
+q16_goverment_2022<- datos %>% 
+  filter(q13_ext_funding == "yes" & q15_key_sources.national_local_goverment_or_bodies ==1) %>% 
+  group_by(q16_funding_source_2022_goverment) %>% 
+  summarise(n = n()) %>% 
+  mutate(Percentage = round((n / sum(n)) * 100, 1))%>% 
+  rename_with(~ "2022", 1) %>% 
+  mutate(Type="Goverment")
+
+q16_goverment_2021<- datos %>% 
+  filter(q13_ext_funding == "yes" & q15_key_sources.national_local_goverment_or_bodies ==1) %>% 
+  group_by(q16_funding_source_2021_goverment) %>% 
+  summarise(n = n()) %>% 
+  mutate(Percentage = round((n / sum(n)) * 100, 1))%>% 
+  rename_with(~ "2021", 1) %>% 
+  mutate(Type="Goverment")
+
+#OTHER
+q16_other_2023<- datos %>% 
+  filter(q13_ext_funding == "yes" & q15_key_sources.98==1) %>% 
+  group_by(q16_funding_source_2023_other) %>% 
+  summarise(n = n()) %>% 
+  mutate(Percentage = round((n / sum(n)) * 100, 1))%>% 
+  rename_with(~ "2023", 1) %>% 
+  mutate(Type="Other")
+
+q16_other_2022<- datos %>% 
+  filter(q13_ext_funding == "yes" & q15_key_sources.98==1) %>% 
+  group_by(q16_funding_source_2022_other) %>% 
+  summarise(n = n()) %>% 
+  mutate(Percentage = round((n / sum(n)) * 100, 1))%>% 
+  rename_with(~ "2022", 1) %>% 
+  mutate(Type="Other")
+
+q16_other_2021<- datos %>% 
+  filter(q13_ext_funding == "yes" & q15_key_sources.98==1) %>% 
+  group_by(q16_funding_source_2021_other) %>% 
+  summarise(n = n()) %>% 
+  mutate(Percentage = round((n / sum(n)) * 100, 1))%>% 
+  rename_with(~ "2021", 1) %>% 
+  mutate(Type="Other")
+
+```
+
+*Funding from 2023*
+```{r q16b, echo=F, message=F, warning=F}
+#2023
+# Unir los dataframes
+ext_2023 <- bind_rows(q16_bilateral_2023,q16_feminist_2023, q16_goverment_2023, q16_individual_2023, q16_ingos_2023, q16_multirateral_2023, q16_other_2023, q16_philanthropic_2023, q16_private_2023)
+
+# Crear un nuevo data frame con los resultados
+q16_2023 <- ext_2023 %>%
+  pivot_wider(names_from = Type, values_from = c(n, Percentage)) %>% 
+  select(1,11:19) %>%
+  rename("Range"=1, "% Bilateral"=2, "% Feminist"=3, "% Goverment"=4, "% Individual"=5, "% INGOS"=6, "% Multirateral"=7, "% Other"=8, "% Philanthropic"=9, "% Private"=10) %>% 
+    select(1:7, 9:10, 8)
+
+
+
+knitr::kable(q16_2023) %>% 
+  kable_minimal()
+```
+
+
+*Funding from 2022*
+```{r q16c, echo=F, message=F, warning=F}
+#2022
+# Unir los dataframes
+ext_2022 <- bind_rows(q16_bilateral_2022,q16_feminist_2022, q16_goverment_2022, q16_individual_2022, q16_ingos_2022, q16_multirateral_2022, q16_other_2022, q16_philanthropic_2022, q16_private_2022)
+
+# Crear un nuevo data frame con los resultados
+q16_2022 <- ext_2022 %>%
+  pivot_wider(names_from = Type, values_from = c(n, Percentage)) %>% 
+  select(1,11:19)%>% 
+  rename("Range"=1, "% Bilateral"=2, "% Feminist"=3, "% Goverment"=4, "% Individual"=5, "% INGOS"=6, "% Multirateral"=7, "% Other"=8, "% Philanthropic"=9, "% Private"=10) %>% 
+    select(1:7, 9:10, 8)
+
+knitr::kable(q16_2022) %>% 
+  kable_minimal()
+```
+
+*Funding from 2021*
+```{r q16e, echo=F, message=F, warning=F}
+#2021
+# Unir los dataframes
+ext_2021 <- bind_rows(q16_bilateral_2021,q16_feminist_2021, q16_goverment_2021, q16_individual_2021, q16_ingos_2021, q16_multirateral_2021, q16_other_2021, q16_philanthropic_2021, q16_private_2021)
+
+# Crear un nuevo data frame con los resultados
+q16_2021 <- ext_2021 %>%
+  pivot_wider(names_from = Type, values_from = c(n, Percentage)) %>% 
+  select(1,11:19)%>% 
+  rename("Range"=1, "% Bilateral"=2, "% Feminist"=3, "% Goverment"=4, "% Individual"=5, "% INGOS"=6, "% Multirateral"=7, "% Other"=8, "% Philanthropic"=9, "% Private"=10) %>% 
+    select(1:7, 9:10, 8)
+
+knitr::kable(q16_2021) %>% 
+  kable_minimal()
+
+
+```
+
+**Organizations that received funding from new donors between 2021 and 2023**
+
+Q18. Between 2021 and 2023, which new funders, if any,  did you receive funding from? 
+
+```{r q18, echo=F, message=F, warning=F}
+q18a<-base %>% 
+  filter(!is.na(q18_new_funders)) %>% 
+  summarise(
+    Total=round(n(),0),
+    no = sum(q18_new_funders.not_new_funders == 1, na.rm = TRUE),
+    si=sum(q18_new_funders.not_new_funders != 1, na.rm = TRUE),
+    "No new founder" = round(no / Total * 100, 1),
+    "New founder" = round(si / Total * 100, 1) ) %>% 
+  select(1,4:5)
+
+
+
+q18a<-q18a %>% 
+  pivot_longer(cols = 2:3,
+               names_to = "Source",
+               values_to = "Percentage") %>% 
+  select(2:3)
+
+
+q18a1 <- base %>%
+  filter(!is.na(q18_new_funders)) %>%
+  summarise(
+    Total = n(),
+    Yes = sum(q18_new_funders.not_new_funders != 1, na.rm = TRUE),  # Ajustar el valor comparado según tus datos
+    Percentage_Yes = round(Yes / Total * 100, 1)
+  ) %>%
+  pull(Percentage_Yes)
+
+q18 <- base %>%
+  filter(q18_new_funders.not_new_funders!=1) %>%
+  summarise(
+    Total = (round(n(),0)),
+    multilateral = sum(q18_new_funders.multilateral_funders == 1, na.rm = TRUE),
+    bilateral = sum(q18_new_funders.bilateral_funders == 1, na.rm = TRUE),
+    philanthropic = sum(q18_new_funders.philanthropic_foundations == 1, na.rm = TRUE),
+    womens = sum(q18_new_funders.womens_feminist_funds == 1, na.rm = TRUE),
+    private = sum(q18_new_funders.private_sector == 1, na.rm = TRUE),
+    ingos = sum(q18_new_funders.ingos == 1, na.rm = TRUE),
+    individual = sum(q18_new_funders.individual_donors == 1, na.rm = TRUE),
+    gov = sum(q18_new_funders.national_goverment == 1, na.rm = TRUE),
+    other = sum(q18_new_funders.98 == 1, na.rm = TRUE),
+    Multilateral = round(multilateral / Total * 100, 1),
+    Bilateral = round(bilateral / Total * 100, 1),
+    Philanthropic = round(philanthropic / Total * 100, 1),
+    Feminist = round(womens / Total * 100, 1),
+    Private = round(private / Total * 100, 1),
+    INGOS = round(ingos / Total * 100, 1),
+    Individual = round(individual / Total * 100, 1),
+    Government = round(gov / Total * 100, 1),
+    Other = round(other / Total * 100, 1)) %>% 
+  select(1,11:19)
+
+q18<-q18 %>% 
+  pivot_longer(cols = 2:10,
+               names_to = "Source",
+               values_to = "Percentage") %>% 
+  select(2:3)
+```
+
+
+It is noted that `r q18a1`% of organizations reported receiving funding from new donors between 2021 and 2023.
+Among these organizations, feminist funds are the primary source of new funding
+
+**Reception of new funding between 2021 and 2023**
+```{r q18aa, echo=F, message=F, warning=F}
+knitr::kable(q18a) %>% 
+  kable_minimal()
+
+
+ggplot(q18a, aes(x = Source, y = Percentage, fill=Source)) +
+  geom_bar(stat = "identity") +
+  geom_text(aes(label = sprintf("%.1f%%", Percentage)), vjust = -0.5, size = 3.5) +
+  labs(title = "New funding between 2021-2023",
+       x = " ",
+       y = "Percentage") +
+  theme_minimal() +
+  theme(legend.position = "none")
+
+```
+
+*Source of new funding*
+```{r q18_data, echo=F, message=F, warning=F}
+knitr::kable(q18) %>% 
+  kable_minimal()
+
+# Crear el gráfico
+ggplot(q18, aes(x = reorder(Source, Percentage), y = Percentage, fill = Source)) +
+  geom_bar(stat = "identity") +
+  geom_text(aes(label = paste0(Percentage, "%")), 
+            vjust = -0.5,  # Ajusta verticalmente para que las etiquetas aparezcan encima de las barras
+            color = "black") +  # Color del texto de las etiquetas
+  labs(title = "Percentage of Organizations Receiving new funding between 2021-2023 by Source",
+       x = "Funding Source",
+       y = "Percentage (%)") +
+  theme_minimal() +
+  theme(legend.position = "none") +  # Elimina la leyenda si no es necesaria
+  coord_flip()  # Opcional: voltear el gráfico si hay muchas categorías para mejorar la legibilidad
+
+
+```
+
+As shown below, new feminist funds are even more significant among organizations that focus on prioritizing women's rights.
+
+```{r q18_descr, eval=F, echo=F, message=F, warning=F}
+
+q18_1 <- base %>%
+  filter(!is.na(q1_description) & (q18_new_funders.not_new_funders!=1)) %>%
+  group_by(q1_description) %>% 
+  summarise(
+    Total = (round(n(),0)),
+    multilateral = sum(q18_new_funders.multilateral_funders == 1, na.rm = TRUE),
+    bilateral = sum(q18_new_funders.bilateral_funders == 1, na.rm = TRUE),
+    philanthropic = sum(q18_new_funders.philanthropic_foundations == 1, na.rm = TRUE),
+    womens = sum(q18_new_funders.womens_feminist_funds == 1, na.rm = TRUE),
+    private = sum(q18_new_funders.private_sector == 1, na.rm = TRUE),
+    ingos = sum(q18_new_funders.ingos == 1, na.rm = TRUE),
+    individual = sum(q18_new_funders.individual_donors == 1, na.rm = TRUE),
+    gov = sum(q18_new_funders.national_goverment == 1, na.rm = TRUE),
+    other = sum(q18_new_funders.98 == 1, na.rm = TRUE),
+    Multilateral = round(multilateral / Total * 100, 1),
+    Bilateral = round(bilateral / Total * 100, 1),
+    Philanthropic = round(philanthropic / Total * 100, 1),
+    Feminist = round(womens / Total * 100, 1),
+    Private = round(private / Total * 100, 1),
+    INGOS = round(ingos / Total * 100, 1),
+    Individual = round(individual / Total * 100, 1),
+    Government = round(gov / Total * 100, 1),
+    Other = round(other / Total * 100, 1)) %>% 
+  select("Description"="q1_description",2,12:20) %>% 
+  mutate(Description=recode(Description, "98"="Other", "primary_focus"="Primary focus", "specific_projects"="Specific projects"))
+
+knitr::kable(q18_1) %>% 
+  kable_minimal()
+
+```
+
+```{r q18a, eval=F, echo=F, message=F, warning=F}
+
+q18_5 <- base %>%
+  filter(!is.na(q5_registered) & (q18_new_funders.not_new_funders!=1) & q5_registered!="98") %>%
+  group_by(q5_registered) %>% 
+  summarise(
+    Total = (round(n(),0)),
+    multilateral = sum(q18_new_funders.multilateral_funders == 1, na.rm = TRUE),
+    bilateral = sum(q18_new_funders.bilateral_funders == 1, na.rm = TRUE),
+    philanthropic = sum(q18_new_funders.philanthropic_foundations == 1, na.rm = TRUE),
+    womens = sum(q18_new_funders.womens_feminist_funds == 1, na.rm = TRUE),
+    private = sum(q18_new_funders.private_sector == 1, na.rm = TRUE),
+    ingos = sum(q18_new_funders.ingos == 1, na.rm = TRUE),
+    individual = sum(q18_new_funders.individual_donors == 1, na.rm = TRUE),
+    gov = sum(q18_new_funders.national_goverment == 1, na.rm = TRUE),
+    other = sum(q18_new_funders.98 == 1, na.rm = TRUE),
+    Multilateral = round(multilateral / Total * 100, 1),
+    Bilateral = round(bilateral / Total * 100, 1),
+    Philanthropic = round(philanthropic / Total * 100, 1),
+    Feminist = round(womens / Total * 100, 1),
+    Private = round(private / Total * 100, 1),
+    INGOS = round(ingos / Total * 100, 1),
+    Individual = round(individual / Total * 100, 1),
+    Government = round(gov / Total * 100, 1),
+    Other = round(other / Total * 100, 1)) %>% 
+  select("Registration"="q5_registered",2,12:20) %>% 
+  mutate(Registration=recode(Registration,"n_registered"="No registered", "y_registered"="Registered"))
+
+knitr::kable(q18_5) %>% 
+  kable_minimal()
+
+
+```
+
+
+```{r q18b, echo=F, message=F, warning=F}
+
+q18_6 <- base %>%
+  mutate(q6_var = case_when(
+    q6_geo_scope == "globally_focused" ~ "Global",
+    q6_geo_scope == "nationally_focused" ~ "National",
+    q6_geo_scope == "locally_focused" ~ "Local",
+    q6_geo_scope == "regionally_focused" ~ "Regional",
+    q6_geo_scope == "transnationally_focused" ~ "Transnational",
+    q6_geo_scope == "diaspora_and_or_exile" ~ "Diaspora")) %>% 
+    filter(!is.na(q6_var) & (q18_new_funders.not_new_funders!=1)) %>%
+  group_by(q6_var) %>% 
+  summarise(
+    Total = (round(n(),0)),
+    multilateral = sum(q18_new_funders.multilateral_funders == 1, na.rm = TRUE),
+    bilateral = sum(q18_new_funders.bilateral_funders == 1, na.rm = TRUE),
+    philanthropic = sum(q18_new_funders.philanthropic_foundations == 1, na.rm = TRUE),
+    womens = sum(q18_new_funders.womens_feminist_funds == 1, na.rm = TRUE),
+    private = sum(q18_new_funders.private_sector == 1, na.rm = TRUE),
+    ingos = sum(q18_new_funders.ingos == 1, na.rm = TRUE),
+    individual = sum(q18_new_funders.individual_donors == 1, na.rm = TRUE),
+    gov = sum(q18_new_funders.national_goverment == 1, na.rm = TRUE),
+    other = sum(q18_new_funders.98 == 1, na.rm = TRUE),
+    Multilateral = round(multilateral / Total * 100, 1),
+    Bilateral = round(bilateral / Total * 100, 1),
+    Philanthropic = round(philanthropic / Total * 100, 1),
+    Feminist = round(womens / Total * 100, 1),
+    Private = round(private / Total * 100, 1),
+    INGOS = round(ingos / Total * 100, 1),
+    Individual = round(individual / Total * 100, 1),
+    Government = round(gov / Total * 100, 1),
+    Other = round(other / Total * 100, 1)) %>% 
+  select("Scope"="q6_var",2,12:20) %>% 
+  slice(2:5)
+
+knitr::kable(q18_6) %>% 
+  kable_minimal()
+```
+
+```{r q18c, echo=F, message=F, warning=F}
+
+q18_9 <- base %>%
+    filter(!is.na(q9_year_formation_agrup) & (q18_new_funders.not_new_funders!=1)) %>%
+  group_by(q9_year_formation_agrup) %>% 
+  summarise(
+    Total = (round(n(),0)),
+    multilateral = sum(q18_new_funders.multilateral_funders == 1, na.rm = TRUE),
+    bilateral = sum(q18_new_funders.bilateral_funders == 1, na.rm = TRUE),
+    philanthropic = sum(q18_new_funders.philanthropic_foundations == 1, na.rm = TRUE),
+    womens = sum(q18_new_funders.womens_feminist_funds == 1, na.rm = TRUE),
+    private = sum(q18_new_funders.private_sector == 1, na.rm = TRUE),
+    ingos = sum(q18_new_funders.ingos == 1, na.rm = TRUE),
+    individual = sum(q18_new_funders.individual_donors == 1, na.rm = TRUE),
+    gov = sum(q18_new_funders.national_goverment == 1, na.rm = TRUE),
+    other = sum(q18_new_funders.98 == 1, na.rm = TRUE),
+    Multilateral = round(multilateral / Total * 100, 1),
+    Bilateral = round(bilateral / Total * 100, 1),
+    Philanthropic = round(philanthropic / Total * 100, 1),
+    Feminist = round(womens / Total * 100, 1),
+    Private = round(private / Total * 100, 1),
+    INGOS = round(ingos / Total * 100, 1),
+    Individual = round(individual / Total * 100, 1),
+    Government = round(gov / Total * 100, 1),
+    Other = round(other / Total * 100, 1)) %>% 
+  select("Formation period"="q9_year_formation_agrup",2,12:20)
+
+knitr::kable(q18_9) %>% 
+  kable_minimal()
+
+```
+
+
+```{r q18d, echo=F, message=F, warning=F}
+
+q18_10 <- base %>%
+    filter(!is.na(q10_budget_grp_2023) & (q18_new_funders.not_new_funders!=1)) %>%
+  group_by(q10_budget_grp_2023) %>% 
+  summarise(
+    Total = (round(n(),0)),
+    multilateral = sum(q18_new_funders.multilateral_funders == 1, na.rm = TRUE),
+    bilateral = sum(q18_new_funders.bilateral_funders == 1, na.rm = TRUE),
+    philanthropic = sum(q18_new_funders.philanthropic_foundations == 1, na.rm = TRUE),
+    womens = sum(q18_new_funders.womens_feminist_funds == 1, na.rm = TRUE),
+    private = sum(q18_new_funders.private_sector == 1, na.rm = TRUE),
+    ingos = sum(q18_new_funders.ingos == 1, na.rm = TRUE),
+    individual = sum(q18_new_funders.individual_donors == 1, na.rm = TRUE),
+    gov = sum(q18_new_funders.national_goverment == 1, na.rm = TRUE),
+    other = sum(q18_new_funders.98 == 1, na.rm = TRUE),
+    Multilateral = round(multilateral / Total * 100, 1),
+    Bilateral = round(bilateral / Total * 100, 1),
+    Philanthropic = round(philanthropic / Total * 100, 1),
+    Feminist = round(womens / Total * 100, 1),
+    Private = round(private / Total * 100, 1),
+    INGOS = round(ingos / Total * 100, 1),
+    Individual = round(individual / Total * 100, 1),
+    Government = round(gov / Total * 100, 1),
+    Other = round(other / Total * 100, 1)) %>% 
+  select("Budget 2023"="q10_budget_grp_2023",2,12:20)
+
+knitr::kable(q18_10) %>% 
+  kable_minimal()
+
+
+```
+
+**Loss of funding**
+
+Q19. Between 2021 and 2023, did your group, organization and/or movement lose funding from any long-term funders who previously supported your work? 
+
+
+```{r q19df, echo=F, message=F, warning=F}
+#Convertir campos vacíos de la variable q19 en NA
+ base <- base %>%
+  mutate(q19_lose_funding = na_if(q19_lose_funding, ""))
+
+q19_general <- base %>%
+  filter(!is.na(q19_lose_funding)) %>%
+  summarise(
+    Total = (round(n(),0)),
+    no=sum(q19_lose_funding.no==1, na.rm=TRUE),
+    yes=sum(q19_lose_funding.no!=1, na.rm=TRUE),
+    "No funding lost"= round(no/Total*100,1),
+    "Yes, lost funding"= round(yes/Total*100,1)) %>% 
+  select(1,4:5)
+
+q19a1 <- base %>%
+  filter(!is.na(q19_lose_funding)) %>%
+  summarise(
+    Total = n(),
+    Yes = sum(q19_lose_funding.no != 1, na.rm = TRUE),  # Ajustar el valor comparado según tus datos
+    Percentage_Yes = round(Yes / Total * 100, 1)
+  ) %>%
+  pull(Percentage_Yes)
+
+
+
+q19_general<-q19_general %>% 
+  pivot_longer(cols = 2:3,
+               names_to = "Source",
+               values_to = "Percentage") %>% 
+  select(2:3)
+
+
+q19_yes<-base %>%
+  filter(q19_lose_funding.no != 1 | is.na(q19_lose_funding.no)) %>% 
+  summarise(Total= round(n(),0),
+    multilateral = sum(q19_lose_funding.y_multilateral_funders == 1, na.rm = TRUE),
+    bilateral = sum(q19_lose_funding.y_bilateral_funders == 1, na.rm = TRUE),
+    philanthropic = sum(q19_lose_funding.y_philanthropic_foundations == 1, na.rm = TRUE),
+    womens = sum(q19_lose_funding.y_womens_feminist_funds == 1, na.rm = TRUE),
+    private = sum(q19_lose_funding.y_private_sector == 1, na.rm = TRUE),
+    ingos = sum(q19_lose_funding.y_ingos == 1, na.rm = TRUE),
+    individual = sum(q19_lose_funding.y_individual_donors == 1, na.rm = TRUE),
+    gov = sum(q19_lose_funding.y_national_goverment== 1, na.rm = TRUE),
+    other = sum(q19_lose_funding.y_other == 1, na.rm = TRUE),
+    Multilateral = round(multilateral / Total * 100, 1),
+    Bilateral = round(bilateral / Total * 100, 1),
+    Philanthropic = round(philanthropic / Total * 100, 1),
+    Feminist = round(womens / Total * 100, 1),
+    Private = round(private / Total * 100, 1),
+    INGOS = round(ingos / Total * 100, 1),
+    Individual = round(individual / Total * 100, 1),
+    Government = round(gov / Total * 100, 1),
+    Other = round(other / Total * 100, 1)) %>% 
+  select(1,11:19)
+
+
+
+q19_yes<-q19_yes %>% 
+  pivot_longer(cols = 2:10,
+               names_to = "Source",
+               values_to = "Percentage") %>% 
+  select(2:3)
+```
+
+It is noted that `r q19a1`% of organizations reported losing funding from new donors between 2021 and 2023. Among these organizations, the greatest loss came from INGOs, followed by philanthropic donors.
+
+
+```{r q19, echo=F, message=F, warning=F}
+knitr::kable(q19_general) %>% 
+  kable_minimal()
+
+
+ggplot(q19_general, aes(x = Source, y = Percentage, fill=Source)) +
+  geom_bar(stat = "identity") +
+  geom_text(aes(label = sprintf("%.1f%%", Percentage)), vjust = -0.5, size = 3.5) +
+  labs(title = "Organizations reporting losing funding from new donors",
+       x = " ",
+       y = "Percentage") +
+  theme_minimal() +
+  theme(legend.position = "none")
+```
+
+
+**Organizations that Experienced a Decrease in Funding by Source Between 2021 and 2023**
+```{r q19bb, echo=F, message=F, warning=F}
+knitr::kable(q19_yes) %>% 
+  kable_minimal()
+
+
+# Crear el gráfico
+ggplot(q19_yes, aes(x = reorder(Source, Percentage), y = Percentage, fill = Source)) +
+  geom_bar(stat = "identity") +
+  geom_text(aes(label = paste0(Percentage, "%")), 
+            vjust = -0.5,  # Ajusta verticalmente para que las etiquetas aparezcan encima de las barras
+            color = "black") +  # Color del texto de las etiquetas
+  labs(title = "Percentage of Organizations reporting losing funding from new donors by Source",
+       x = "Funding Source",
+       y = "Percentage (%)") +
+  theme_minimal() +
+  theme(legend.position = "none") +  # Elimina la leyenda si no es necesaria
+  coord_flip()  # Opcional: voltear el gráfico si hay muchas categorías para mejorar la legibilidad
+
+
+```
+
+```{r q19a, eval=F, echo=F, message=F, warning=F}
+
+
+q19_q1 <- base %>%
+  filter(!is.na(q19_lose_funding) & !is.na(q1_description)) %>%
+  group_by(q1_description) %>% 
+  summarise(
+    Total = (round(n(),0)),
+    no=sum(q19_lose_funding.no==1, na.rm=TRUE),
+    yes=sum(q19_lose_funding.no!=1, na.rm=TRUE),
+    "No funding lost"= round(no/Total*100,1),
+    "Yes, lost funding"= round(yes/Total*100,1)) %>% 
+  select("Description"="q1_description",2,5:6) %>% 
+  mutate(Description=recode(Description, "98"="Other", "primary_focus"="Primary focus", "specific_projects"="Specific projects"))
+
+
+
+q19_yes_q1<-base %>%
+  filter(q19_lose_funding.no!=1 & !is.na(q1_description)) %>% 
+  group_by(q1_description) %>% 
+  summarise(Total= round(n(),0),
+    multilateral = sum(q19_lose_funding.y_multilateral_funders == 1, na.rm = TRUE),
+    bilateral = sum(q19_lose_funding.y_bilateral_funders == 1, na.rm = TRUE),
+    philanthropic = sum(q19_lose_funding.y_philanthropic_foundations == 1, na.rm = TRUE),
+    womens = sum(q19_lose_funding.y_womens_feminist_funds == 1, na.rm = TRUE),
+    private = sum(q19_lose_funding.y_private_sector == 1, na.rm = TRUE),
+    ingos = sum(q19_lose_funding.y_ingos == 1, na.rm = TRUE),
+    individual = sum(q19_lose_funding.y_individual_donors == 1, na.rm = TRUE),
+    gov = sum(q19_lose_funding.y_national_goverment== 1, na.rm = TRUE),
+    other = sum(q19_lose_funding.y_other == 1, na.rm = TRUE),
+    Multilateral = round(multilateral / Total * 100, 1),
+    Bilateral = round(bilateral / Total * 100, 1),
+    Philanthropic = round(philanthropic / Total * 100, 1),
+    Feminist = round(womens / Total * 100, 1),
+    Private = round(private / Total * 100, 1),
+    INGOS = round(ingos / Total * 100, 1),
+    Individual = round(individual / Total * 100, 1),
+    Government = round(gov / Total * 100, 1),
+    Other = round(other / Total * 100, 1)) %>% 
+  select("Description"="q1_description",2,12:20) %>% 
+  mutate(Description=recode(Description, "98"="Other", "primary_focus"="Primary focus", "specific_projects"="Specific projects"))
+  
+
+
+knitr::kable(q19_q1) %>% 
+  kable_minimal()
+
+
+
+```
+
+```{r q19d, eval=F, echo=F, message=F, warning=F}
+
+q19_q5 <- base %>%
+  filter(!is.na(q19_lose_funding) & !is.na(q5_registered) & q5_registered!="98") %>%
+  group_by(q5_registered) %>% 
+  summarise(
+    Total = (round(n(),0)),
+    no=sum(q19_lose_funding.no==1, na.rm=TRUE),
+    yes=sum(q19_lose_funding.no!=1, na.rm=TRUE),
+    "No funding lost"= round(no/Total*100,1),
+    "Yes, lost funding"= round(yes/Total*100,1)) %>% 
+  select("Registration"="q5_registered",2,5:6) %>% 
+  mutate(Registration=recode(Registration, "n_registered"="No registered", "y_registered"="Registered"))
+
+q19_yes_q5<-base %>%
+  filter(q19_lose_funding.no!=1 & !is.na(q5_registered) & q5_registered!="98") %>% 
+  group_by(q5_registered) %>% 
+  summarise(Total= round(n(),0),
+    multilateral = sum(q19_lose_funding.y_multilateral_funders == 1, na.rm = TRUE),
+    bilateral = sum(q19_lose_funding.y_bilateral_funders == 1, na.rm = TRUE),
+    philanthropic = sum(q19_lose_funding.y_philanthropic_foundations == 1, na.rm = TRUE),
+    womens = sum(q19_lose_funding.y_womens_feminist_funds == 1, na.rm = TRUE),
+    private = sum(q19_lose_funding.y_private_sector == 1, na.rm = TRUE),
+    ingos = sum(q19_lose_funding.y_ingos == 1, na.rm = TRUE),
+    individual = sum(q19_lose_funding.y_individual_donors == 1, na.rm = TRUE),
+    gov = sum(q19_lose_funding.y_national_goverment== 1, na.rm = TRUE),
+    other = sum(q19_lose_funding.y_other == 1, na.rm = TRUE),
+    Multilateral = round(multilateral / Total * 100, 1),
+    Bilateral = round(bilateral / Total * 100, 1),
+    Philanthropic = round(philanthropic / Total * 100, 1),
+    Feminist = round(womens / Total * 100, 1),
+    Private = round(private / Total * 100, 1),
+    INGOS = round(ingos / Total * 100, 1),
+    Individual = round(individual / Total * 100, 1),
+    Government = round(gov / Total * 100, 1),
+    Other = round(other / Total * 100, 1)) %>% 
+  select("Registration"="q5_registered",2,12:20) %>% 
+  mutate(Registration=recode(Registration, "n_registered"="No registered", "y_registered"="Registered"))
+  
+
+
+knitr::kable(q19_q5) %>% 
+  kable_minimal()
+
+```
+
+```{r q19e, echo=F, message=F, warning=F}
+
+q19_q6 <- base %>%
+  mutate(q6_var = case_when(
+    q6_geo_scope == "globally_focused" ~ "Global",
+    q6_geo_scope == "nationally_focused" ~ "National",
+    q6_geo_scope == "locally_focused" ~ "Local",
+    q6_geo_scope == "regionally_focused" ~ "Regional",
+    q6_geo_scope == "transnationally_focused" ~ "Transnational",
+    q6_geo_scope == "diaspora_and_or_exile" ~ "Diaspora")) %>%
+  filter(!is.na(q19_lose_funding) & !is.na(q6_var)) %>%
+  group_by(q6_var) %>% 
+  summarise(
+    Total = (round(n(),0)),
+    no=sum(q19_lose_funding.no==1, na.rm=TRUE),
+    yes=sum(q19_lose_funding.no!=1, na.rm=TRUE),
+    "No funding lost"= round(no/Total*100,1),
+    "Yes, lost funding"= round(yes/Total*100,1)) %>% 
+  select("Scope"="q6_var",2,5:6) %>% 
+  slice(2:5)
+
+q19_yes_q6<-base %>%
+  mutate(q6_var = case_when(
+    q6_geo_scope == "globally_focused" ~ "Global",
+    q6_geo_scope == "nationally_focused" ~ "National",
+    q6_geo_scope == "locally_focused" ~ "Local",
+    q6_geo_scope == "regionally_focused" ~ "Regional",
+    q6_geo_scope == "transnationally_focused" ~ "Transnational",
+    q6_geo_scope == "diaspora_and_or_exile" ~ "Diaspora")) %>%
+  filter(q19_lose_funding.no!=1 & !is.na(q6_var)) %>% 
+  group_by(q6_var) %>% 
+  summarise(Total= round(n(),0),
+    multilateral = sum(q19_lose_funding.y_multilateral_funders == 1, na.rm = TRUE),
+    bilateral = sum(q19_lose_funding.y_bilateral_funders == 1, na.rm = TRUE),
+    philanthropic = sum(q19_lose_funding.y_philanthropic_foundations == 1, na.rm = TRUE),
+    womens = sum(q19_lose_funding.y_womens_feminist_funds == 1, na.rm = TRUE),
+    private = sum(q19_lose_funding.y_private_sector == 1, na.rm = TRUE),
+    ingos = sum(q19_lose_funding.y_ingos == 1, na.rm = TRUE),
+    individual = sum(q19_lose_funding.y_individual_donors == 1, na.rm = TRUE),
+    gov = sum(q19_lose_funding.y_national_goverment== 1, na.rm = TRUE),
+    other = sum(q19_lose_funding.y_other == 1, na.rm = TRUE),
+    Multilateral = round(multilateral / Total * 100, 1),
+    Bilateral = round(bilateral / Total * 100, 1),
+    Philanthropic = round(philanthropic / Total * 100, 1),
+    Feminist = round(womens / Total * 100, 1),
+    Private = round(private / Total * 100, 1),
+    INGOS = round(ingos / Total * 100, 1),
+    Individual = round(individual / Total * 100, 1),
+    Government = round(gov / Total * 100, 1),
+    Other = round(other / Total * 100, 1)) %>% 
+  select("Scope"="q6_var",2,12:20) %>% 
+  slice(2:5)
+  
+
+
+knitr::kable(q19_q6) %>% 
+  kable_minimal()
+
+
+```
+
+
+Lastly, it is noted that more recently established organizations experienced the greatest losses.
+
+```{r q19f, echo=F, message=F, warning=F}
+
+q19_q9 <- base %>%
+  mutate(q9_year_formation_agrup2=ifelse((q9_year_formation_agrup=="Year 2023" | q9_year_formation_agrup=="Year 2022" | q9_year_formation_agrup=="Year 2021"),"Between 2021 and 2023", q9_year_formation_agrup)) %>% 
+  filter(!is.na(q19_lose_funding) & !is.na(q9_year_formation_agrup2)) %>%
+  group_by(q9_year_formation_agrup2) %>% 
+  summarise(
+    Total = (round(n(),0)),
+    no=sum(q19_lose_funding.no==1, na.rm=TRUE),
+    yes=sum(q19_lose_funding.no!=1, na.rm=TRUE),
+    "No funding lost"= round(no/Total*100,1),
+    "Yes, lost funding"= round(yes/Total*100,1)) %>% 
+  select("Formation period"="q9_year_formation_agrup2",2,5:6)
+
+
+q19_yes_q9<-base %>%
+    mutate(q9_year_formation_agrup2=ifelse((q9_year_formation_agrup=="Year 2023" | q9_year_formation_agrup=="Year 2022" | q9_year_formation_agrup=="Year 2021"),"Between 2021 and 2023", q9_year_formation_agrup)) %>% 
+  filter(q19_lose_funding.no!=1 & !is.na(q9_year_formation_agrup)) %>% 
+  group_by(q9_year_formation_agrup2) %>% 
+  summarise(Total= round(n(),0),
+    multilateral = sum(q19_lose_funding.y_multilateral_funders == 1, na.rm = TRUE),
+    bilateral = sum(q19_lose_funding.y_bilateral_funders == 1, na.rm = TRUE),
+    philanthropic = sum(q19_lose_funding.y_philanthropic_foundations == 1, na.rm = TRUE),
+    womens = sum(q19_lose_funding.y_womens_feminist_funds == 1, na.rm = TRUE),
+    private = sum(q19_lose_funding.y_private_sector == 1, na.rm = TRUE),
+    ingos = sum(q19_lose_funding.y_ingos == 1, na.rm = TRUE),
+    individual = sum(q19_lose_funding.y_individual_donors == 1, na.rm = TRUE),
+    gov = sum(q19_lose_funding.y_national_goverment== 1, na.rm = TRUE),
+    other = sum(q19_lose_funding.y_other == 1, na.rm = TRUE),
+    Multilateral = round(multilateral / Total * 100, 1),
+    Bilateral = round(bilateral / Total * 100, 1),
+    Philanthropic = round(philanthropic / Total * 100, 1),
+    Feminist = round(womens / Total * 100, 1),
+    Private = round(private / Total * 100, 1),
+    INGOS = round(ingos / Total * 100, 1),
+    Individual = round(individual / Total * 100, 1),
+    Government = round(gov / Total * 100, 1),
+    Other = round(other / Total * 100, 1)) %>% 
+  select("Formation period"="q9_year_formation_agrup2",2,12:20) %>% 
+    arrange(desc(Total))
+  
+
+
+knitr::kable(q19_q9) %>% 
+  kable_minimal()
+
+```
+
+```{r q19g, echo=F, message=F, warning=F}
+
+
+
+q19_10 <- base %>%
+    filter(!is.na(q10_budget_grp_2023) & (q19_lose_funding.no!=1 )) %>%
+  group_by(q10_budget_grp_2023) %>% 
+  summarise(
+    Total = (round(n(),0)),
+    multilateral = sum(q19_lose_funding.y_multilateral_funders == 1, na.rm = TRUE),
+    bilateral = sum(q19_lose_funding.y_bilateral_funders == 1, na.rm = TRUE),
+    philanthropic = sum(q19_lose_funding.y_philanthropic_foundations == 1, na.rm = TRUE),
+    womens = sum(q19_lose_funding.y_womens_feminist_funds == 1, na.rm = TRUE),
+    private = sum(q19_lose_funding.y_private_sector == 1, na.rm = TRUE),
+    ingos = sum(q19_lose_funding.y_ingos == 1, na.rm = TRUE),
+    individual = sum(q19_lose_funding.y_individual_donors == 1, na.rm = TRUE),
+    gov = sum(q19_lose_funding.y_national_goverment== 1, na.rm = TRUE),
+    other = sum(q19_lose_funding.y_other == 1, na.rm = TRUE),
+    Multilateral = round(multilateral / Total * 100, 1),
+    Bilateral = round(bilateral / Total * 100, 1),
+    Philanthropic = round(philanthropic / Total * 100, 1),
+    Feminist = round(womens / Total * 100, 1),
+    Private = round(private / Total * 100, 1),
+    INGOS = round(ingos / Total * 100, 1),
+    Individual = round(individual / Total * 100, 1),
+    Government = round(gov / Total * 100, 1),
+    Other = round(other / Total * 100, 1))  %>% 
+  select("Budget 2023"="q10_budget_grp_2023",2,12:20)
+
+knitr::kable(q19_10) %>% 
+  kable_minimal()
+```
+
+**Loss of funding impact**
+
+Q20. What impact has this loss of funding had on your group, organization and/or movement?
+
+
+```{r q20, echo=F, message=F, warning=F}
+#Convertir campos vacíos de la variable q20 en NA
+ base <- base %>%
+  mutate(q20_loss_impact = na_if(q20_loss_impact, ""))
+ 
+q20 <- base %>%
+  filter(q19_lose_funding!=1 & !is.na(q20_loss_impact)) %>%
+  summarise(
+    Total = (round(n(),0)),
+    no=sum(q20_loss_impact.no_impact==1, na.rm=TRUE),
+    staff=sum(q20_loss_impact.staff_fired==1, na.rm = TRUE),
+    act=sum(q20_loss_impact.activity_reduction==1, na.rm = TRUE),
+    prog=sum(q20_loss_impact.cut_programs==1, na.rm = TRUE),
+    salary=sum(q20_loss_impact.cut_staff_salary==1, na.rm = TRUE),
+    other=sum(q20_loss_impact.98==1, na.rm=TRUE),
+    "No big impact"= round(no/Total*100,1),
+    "Staff reduction"= round(staff/Total*100,1),
+    "Activity reduction"= round(act/Total*100,1),
+    "Discontinuation of programs or projects"= round(no/Total*100,1),
+    "Staff faced a salary gap"= round(salary/Total*100,1),
+    "Other"= round(other/Total*100,1)) %>% 
+  select(1,8:13)
+
+
+
+q20<-q20 %>% 
+  pivot_longer(cols = 2:7,
+               names_to = "Source",
+               values_to = "Percentage") %>% 
+  select(2:3)
+
+
+
+
+q201 <- base %>%
+  filter(!is.na(q20_loss_impact)) %>%
+  summarise(
+    Total = n(),
+    Yes = sum(q20_loss_impact.activity_reduction== 1, na.rm = TRUE),  # Ajustar el valor comparado según tus datos
+    Percentage_Yes = round(Yes / Total * 100, 1)
+  ) %>%
+  pull(Percentage_Yes)
+
+
+```
+
+
+The greatest impact of the reduction in funding between 2021 and 2023, as observed among the organizations that responded to the survey, is seen in the decrease in their activities, with a Percentage of `r q201`%, followed by a reduction in staff. It is noteworthy that the loss of funding has not had a significant impact on the discontinuation of programs or projects.
+
+```{r data44, echo=F, message=F, warning=F}
+knitr::kable(q20) %>% 
+  kable_minimal()
+
+ggplot(q20, aes(x = reorder(Source, Percentage), y = Percentage, fill=Source)) +
+  geom_bar(stat = "identity") +
+  geom_text(aes(label = sprintf("%.1f%%", Percentage)), vjust = -0.5, size = 3.5) +
+  labs(title = "Loss of funding impact",
+       x = " ",
+       y = "Percentage") +
+  theme_minimal() +
+  theme(legend.position = "none")+
+  coord_flip()
+
+```
+
+
+```{r q20a, eval=F, echo=F, message=F, warning=F}
+
+q20_q1 <- base %>%
+  filter(q19_lose_funding!=1 & !is.na(q20_loss_impact) & !is.na(q1_description)) %>%
+  group_by(q1_description) %>% 
+  summarise(
+    Total = (round(n(),0)),
+    no=sum(q20_loss_impact.no_impact==1, na.rm=TRUE),
+    staff=sum(q20_loss_impact.staff_fired==1, na.rm = TRUE),
+    act=sum(q20_loss_impact.activity_reduction==1, na.rm = TRUE),
+    prog=sum(q20_loss_impact.cut_programs==1, na.rm = TRUE),
+    salary=sum(q20_loss_impact.cut_staff_salary==1, na.rm = TRUE),
+    other=sum(q20_loss_impact.98==1, na.rm=TRUE),
+    "No big impact"= round(no/Total*100,1),
+    "Staff reduction"= round(staff/Total*100,1),
+    "Activity reduction"= round(act/Total*100,1),
+    "Discontinuation of programs or projects"= round(no/Total*100,1),
+    "Staff faced a salary gap"= round(salary/Total*100,1),
+    "Other"= round(other/Total*100,1)) %>% 
+  select("Description"="q1_description",2,9:14) %>% 
+  mutate(Description=recode(Description, "98"="Other", "primary_focus"="Primary focus", "specific_projects"="Specific projects"))
+
+knitr::kable(q20_q1) %>% 
+  kable_minimal()
+
+```
+
+```{r q20b, eval=F, echo=F, message=F, warning=F}
+
+q20_q5 <- base %>%
+  filter(q19_lose_funding!=1 & !is.na(q20_loss_impact) & !is.na(q5_registered) & q5_registered!="98") %>%
+  group_by(q5_registered) %>% 
+  summarise(
+    Total = (round(n(),0)),
+    no=sum(q20_loss_impact.no_impact==1, na.rm=TRUE),
+    staff=sum(q20_loss_impact.staff_fired==1, na.rm = TRUE),
+    act=sum(q20_loss_impact.activity_reduction==1, na.rm = TRUE),
+    prog=sum(q20_loss_impact.cut_programs==1, na.rm = TRUE),
+    salary=sum(q20_loss_impact.cut_staff_salary==1, na.rm = TRUE),
+    other=sum(q20_loss_impact.98==1, na.rm=TRUE),
+    "No big impact"= round(no/Total*100,1),
+    "Staff reduction"= round(staff/Total*100,1),
+    "Activity reduction"= round(act/Total*100,1),
+    "Discontinuation of programs or projects"= round(no/Total*100,1),
+    "Staff faced a salary gap"= round(salary/Total*100,1),
+    "Other"= round(other/Total*100,1)) %>% 
+  select("Registration"="q5_registered",2,9:14) %>% 
+  mutate(Registration=recode(Registration, "n_registered"="No registered", "y_registered"="Registered")) %>% 
+  slice(-1)
+
+knitr::kable(q20_q5) %>% 
+  kable_minimal()
+
+```
+
+```{r q20c, echo=F, message=F, warning=F}
+
+
+q20_q6 <- base %>%
+  mutate(q6_var = case_when(
+    q6_geo_scope == "globally_focused" ~ "Global",
+    q6_geo_scope == "nationally_focused" ~ "National",
+    q6_geo_scope == "locally_focused" ~ "Local",
+    q6_geo_scope == "regionally_focused" ~ "Regional",
+    q6_geo_scope == "transnationally_focused" ~ "Transnational",
+    q6_geo_scope == "diaspora_and_or_exile" ~ "Diaspora")) %>%
+  filter(q19_lose_funding!=1 & !is.na(q20_loss_impact) & !is.na(q6_geo_scope)) %>%
+  group_by(q6_var) %>% 
+  summarise(
+    Total = (round(n(),0)),
+    no=sum(q20_loss_impact.no_impact==1, na.rm=TRUE),
+    staff=sum(q20_loss_impact.staff_fired==1, na.rm = TRUE),
+    act=sum(q20_loss_impact.activity_reduction==1, na.rm = TRUE),
+    prog=sum(q20_loss_impact.cut_programs==1, na.rm = TRUE),
+    salary=sum(q20_loss_impact.cut_staff_salary==1, na.rm = TRUE),
+    other=sum(q20_loss_impact.98==1, na.rm=TRUE),
+    "No big impact"= round(no/Total*100,1),
+    "Staff reduction"= round(staff/Total*100,1),
+    "Activity reduction"= round(act/Total*100,1),
+    "Discontinuation of programs or projects"= round(no/Total*100,1),
+    "Staff faced a salary gap"= round(salary/Total*100,1),
+    "Other"= round(other/Total*100,1)) %>% 
+  select("Scope"="q6_var",2,9:14) %>% 
+  slice(2:5)
+
+knitr::kable(q20_q6) %>% 
+  kable_minimal()
+```
+
+```{r q20d, echo=F, message=F, warning=F}
+
+q20_q9 <- base %>%
+  mutate(q9_year_formation_agrup2=ifelse((q9_year_formation_agrup=="Year 2023" | q9_year_formation_agrup=="Year 2022" | q9_year_formation_agrup=="Year 2021"),"Between 2021 and 2023", q9_year_formation_agrup)) %>% 
+  filter(q19_lose_funding!=1 & !is.na(q20_loss_impact) & !is.na(q9_year_formation_agrup2)) %>%
+  group_by(q9_year_formation_agrup2) %>% 
+  summarise(
+    Total = (round(n(),0)),
+    no=sum(q20_loss_impact.no_impact==1, na.rm=TRUE),
+    staff=sum(q20_loss_impact.staff_fired==1, na.rm = TRUE),
+    act=sum(q20_loss_impact.activity_reduction==1, na.rm = TRUE),
+    prog=sum(q20_loss_impact.cut_programs==1, na.rm = TRUE),
+    salary=sum(q20_loss_impact.cut_staff_salary==1, na.rm = TRUE),
+    other=sum(q20_loss_impact.98==1, na.rm=TRUE),
+    "No big impact"= round(no/Total*100,1),
+    "Staff reduction"= round(staff/Total*100,1),
+    "Activity reduction"= round(act/Total*100,1),
+    "Discontinuation of programs or projects"= round(no/Total*100,1),
+    "Staff faced a salary gap"= round(salary/Total*100,1),
+    "Other"= round(other/Total*100,1)) %>% 
+  select("Formation period"="q9_year_formation_agrup2",2,9:14)
+
+knitr::kable(q20_q9) %>% 
+  kable_minimal()
+```
+
+
+```{r q20e, echo=F, message=F, warning=F}
+
+q20_10 <- base %>%
+  filter(!is.na(q10_budget_grp_2023) & q19_lose_funding!=1 & !is.na(q20_loss_impact)) %>%
+  group_by(q10_budget_grp_2023) %>% 
+  summarise(Total = (round(n(),0)),
+    no=sum(q20_loss_impact.no_impact==1, na.rm=TRUE),
+    staff=sum(q20_loss_impact.staff_fired==1, na.rm = TRUE),
+    act=sum(q20_loss_impact.activity_reduction==1, na.rm = TRUE),
+    prog=sum(q20_loss_impact.cut_programs==1, na.rm = TRUE),
+    salary=sum(q20_loss_impact.cut_staff_salary==1, na.rm = TRUE),
+    other=sum(q20_loss_impact.98==1, na.rm=TRUE),
+    "No big impact"= round(no/Total*100,1),
+    "Staff reduction"= round(staff/Total*100,1),
+    "Activity reduction"= round(act/Total*100,1),
+    "Discontinuation of programs or projects"= round(no/Total*100,1),
+    "Staff faced a salary gap"= round(salary/Total*100,1),
+    "Other"= round(other/Total*100,1)) %>% 
+  select("Budget 2023"="q10_budget_grp_2023",2,9:14)
+
+knitr::kable(q20_10) %>% 
+  kable_minimal()
+  
+```
+
