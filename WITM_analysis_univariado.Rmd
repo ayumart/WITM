@@ -280,6 +280,7 @@ ggplot(q4_focus, aes(x = reorder(q4_awid_focus, -Percentage), y = Percentage, fi
 Q5. Is your group, organization and/or movement registered?
 
 ```{r registered, echo=F, message=F, warning=F}
+
 #Convertir campos vacíos de la variable q13 en NA
  base <- base %>%
   mutate(q5_registered = na_if(q5_registered, ""))
@@ -858,8 +859,118 @@ ggplot(q9, aes(x = q9_year_formation_agrup, y = Percentage, fill = q9_year_forma
        x = "Year",
        y = "Percentage") +
   theme_minimal() +
-  theme(legend.position = "none")
+  theme(legend.position = "none",
+        panel.grid.major.x = element_blank(), # Eliminar líneas de la cuadrícula vertical
+        panel.grid.minor.x = element_blank() # Eliminar líneas de la cuadrícula vertical menores
+  )
 
 
+
+```
+
+
+
+## Section 2: Financial Status
+
+*This section asks about the financial status of your group, organization and/or movement over the last three years, from 2021 to 2023. This includes questions about your annual budget, the sources and type of external funding you receive and the resources you mobilize autonomously. To account for the impact that COVID-19 and other crises may have had on your budgets, we have included one question that dates back to 2019. This section is very important to this survey, and we request that you are as accurate in your responses as possible.*
+
+
+Q10. What was the annual budget for your group, organization and/or movement in each of the following years in $USD?
+
+
+```{r q10, echo=F, message=F, warning=F}
+
+q10_2021<-base %>% 
+  filter(q9_year_formation<2022) %>% 
+  group_by(q10_budget_grp_2021) %>% 
+  summarise(n=n()) %>% 
+  mutate(Percentage=round((n/sum(n))*100,1)) %>% 
+  rename("Annual_budget"=q10_budget_grp_2021) %>% 
+  mutate(Year=2021)
+
+q10_2022<-base %>% 
+  filter(q9_year_formation<2023) %>% 
+  group_by(q10_budget_grp_2022) %>% 
+  summarise(n=n()) %>% 
+  mutate(Percentage=round((n/sum(n))*100,1)) %>% 
+  rename("Annual_budget"=q10_budget_grp_2022) %>% 
+  mutate(Year=2022)
+
+q10_2023<-base %>% 
+  filter(!is.na(q10_budget_year_2023)) %>% 
+  group_by(q10_budget_grp_2023) %>% 
+  summarise(n=n()) %>% 
+  mutate(Percentage=round((n/sum(n))*100,1)) %>% 
+  rename("Annual_budget"=q10_budget_grp_2023) %>% 
+  mutate(Year=2023)
+
+# Unir los dataframes
+q10_grouped <- bind_rows(q10_2021, q10_2022, q10_2023)
+
+#q10_total
+q10_grouped<-q10_grouped %>% arrange(Annual_budget)
+# Crear un nuevo data frame con los resultados
+q10_grouped <- q10_grouped %>%
+  pivot_wider(names_from = Year, values_from = c(n, Percentage)) %>% 
+  select(1,5:7)
+
+
+knitr::kable(q10_grouped) %>% 
+  kable_minimal() #imprime cuadro
+```
+
+
+**--Lecture -----------------------------------------------------------------------**
+
+This grouping maintains interesting proportions respecting the way the question was asked. Only the highest amounts are grouped together.
+
+We suggest using the year 2023 as a crossover variable for other questions as it accounts for size.
+
+**------------------------------------------------------------------------------------------------**
+
+
+Q11. In 2020 (during COVID-19 pandemic), how was your budget affected?
+
+
+
+```{r q11, echo=F, message=F, warning=F}
+
+q11<-base %>%
+  filter(!is.na(q11_covid_incidence) & q11_covid_incidence!="not_applicable" & q11_covid_incidence!="")%>%
+  group_by(q11_covid_incidence) %>% 
+   mutate(q11_covid_incidence= case_when(
+    q11_covid_incidence=="grown_substantially" ~ "1 Grow substantively",
+    q11_covid_incidence=="grown_slightly" ~ "2 Grow slightly",
+    q11_covid_incidence=="stayed_the_same" ~ "3 Stay the same",
+    q11_covid_incidence=="decreased_slightly" ~ "4 Decrease slightly",
+    q11_covid_incidence=="decreased_substantially" ~ "5 Decrease substantially",
+   # q11_covid_incidence=="not_applicable" ~ NA,
+    TRUE ~ NA)) %>%  
+  summarise(Count=n()) %>% 
+  mutate(Percentage=round((Count/sum(Count))*100,1)) %>% 
+  arrange(q11_covid_incidence) 
+
+#knitr::kable(q11) %>% 
+#  kable_minimal()
+
+ggplot(q11, aes(x = q11_covid_incidence, y = Percentage, fill = q11_covid_incidence)) +
+  geom_bar(stat = "identity") +
+  geom_text(aes(label = sprintf("%.1f%%", Percentage)), vjust = -0.5, size = 3.5) +
+  labs(title = "Covid incidence on budget",
+       x = " ",
+       y = "Percentage") +
+  theme_minimal() +
+  theme(legend.position = "none",
+        panel.grid.major.x = element_blank(), # Eliminar líneas de la cuadrícula vertical
+        panel.grid.minor.x = element_blank() # Eliminar líneas de la cuadrícula vertical menores
+  )
+
+```
+
+### Sub-section 2.1: External funding
+
+*External funding includes grants and other forms of funding from philanthropic foundations, governments, bilateral, multilateral or corporate funders and individual donors. It excludes resources that groups, organizations and/or movements generate autonomously such as, for example, membership fees, the voluntary contributions of staff, members and/or supporters, community fundraisers, venue hires or sale of services.*
+
+```{r}
 
 ```
