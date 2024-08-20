@@ -1,0 +1,865 @@
+---
+title: "WITM analysis"
+output: html_document
+date: "`r Sys.Date()`"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Where is the Money for Feminist Organizing? Survey for feminist, women’s rights and gender justice movements, groups and organizations
+
+
+The Where is the Money for Feminist Organizing survey (in short, Where is the Money or WITM) was developed by AWID – a global, feminist, membership, movement-support organization – in a consultative process with our members and movement partners. 
+
+The survey aims to: 
+
+*Shine light on the financial status of feminist, women’s rights and gender justice organizing
+
+*Make the complex resourcing realities of diverse feminist movements visible
+
+*Reflect on the funding ecosystem and trends impacting feminist and gender justice movements regionally and globally 
+
+
+
+```{r library, echo=F, message=F, warning=F}
+
+#Library upload
+
+library(tidyverse)
+library(readxl)
+library(janitor)
+library(dplyr)
+library(writexl)
+library(eph)
+library(openxlsx)
+library(rmarkdown)
+library(knitr)
+library(kableExtra)
+
+library(readr)
+
+
+rm(list = ls())
+```
+
+
+
+```{r upload, echo=F, message=F, warning=F}
+
+# OPEN CSV file
+witm <- read.csv2("Data/WITM_csv_0820.csv")
+
+source(file="WITM_variables.R") 
+
+```
+
+
+
+```{r date, echo=F, message=F, warning=F}
+answers_by_date<-witm  %>% 
+  group_by(date) %>%  
+  summarise(qt=n())
+
+
+ggplot(answers_by_date, aes(x =  as.POSIXct(date), y=qt)) +                      
+  geom_bar(stat="identity",width=0.5, colour="red", fill="skyblue") +
+  labs(x="date",y= "Number") +                 
+  ggtitle("Number of answers by date") +                
+  theme_bw(base_size = 12)+  
+  scale_x_datetime(breaks=scales::breaks_pretty(8))+
+  geom_text(aes(label = signif(qt)), nudge_y = 3)
+```
+
+**--Analysis notes-----------------------------------------------------------------------**
+
+In general the polls always have a high peak on the firsts days, WITM also shows this. Then there is another spike on 27-28 June, probably a strengthening of communication. On the 4th of July it increases again.
+During the days of the sessions, the number of responses also increased significantly.
+
+
+**------------------------------------------------------------------------------------------------**
+
+**Consent**
+
+Q1. I consent to take the WITM survey on behalf of my group, organization or movement.
+```{r consent, echo=F, message=F, warning=F}
+
+q0<-witm %>%
+  group_by(q0_consent) %>% 
+  summarise(Count=n()) %>% 
+  mutate(Percentage=round((Count/sum(Count))*100,1)) %>% 
+  rename("Consent"=q0_consent)
+
+knitr::kable(q0) %>% 
+  kable_minimal()
+
+```
+
+## Section 1: Group Information
+
+
+
+**Group information:**
+
+Q2. Which of the following statements best describes your group, organization and/or movement?
+
+```{r info, echo=F, message=F, warning=F}
+q1<-base %>%
+  group_by(q1_description) %>% 
+  mutate(q1_description=forcats::fct_recode(as_factor(q1_description),
+                                                     "Primary focus of all our work" = "primary_focus",
+                                            "Specific project(s)" = "specific_projects",
+                                            "Other" = "98")) %>%
+  summarise(Count=n()) %>% 
+  mutate(Percentage=round((Count/sum(Count))*100,1)) %>% 
+  arrange(desc(q1_description)) %>% 
+  rename("Description"=q1_description)
+
+
+ggplot(q1, aes(x = reorder(Description, -Percentage), y = Percentage, fill=Description)) +
+  geom_bar(stat = "identity") +
+  geom_text(aes(label = sprintf("%.1f%%", Percentage)), vjust = -0.5, size = 3.5) +
+  labs(title = "Distribution by type of organization",
+       x = " ",
+       y = "Percentage") +
+  theme_minimal() +
+  theme(legend.position = "none",
+        panel.grid.major.x = element_blank(), # Eliminar líneas de la cuadrícula vertical
+        panel.grid.minor.x = element_blank() # Eliminar líneas de la cuadrícula vertical menores
+  )
+
+```
+**-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-**
+
+**Organization names:**
+
+Q3. The name of your group, organization and/or movement
+
+
+```{r name1, echo=F, message=F, warning=F}
+
+n_temp<-sum(base$q2_name=="")
+print(paste("The number of organizations that did not answer their name is:",n_temp))
+
+```
+**--Analysis notes-----------------------------------------------------------------------**
+
+Very interesting that almost all organizations responded with their name despite the fact that the possibility of not responding is informed and underlined.
+
+**-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-**
+
+**Type of organization**
+
+Q4. Which of the following forms of organizing best describes your group, organization and/or movement?
+
+*This is a multiple-choice question so the sum of the % does NOT add up to 100.*
+
+```{r type, echo=F, message=F, warning=F}
+
+#Total valid responses for calculating percentage
+
+total<-base %>%
+  count(q4_forms_organizing) %>% 
+  summarise(Count=sum(n))
+
+total<-total$Count
+
+#Choose only multiple-choice answers -Q4-
+q4_select<-base %>% 
+  select(starts_with("q4_forms_organizing."))
+#q4_select
+
+#q4 calculation
+q4<-q4_select%>% 
+  summarize_all(sum) %>% 
+  gather(q4, Count) %>%
+  mutate(q4=forcats::fct_recode(as_factor(q4),
+                                "Anti-caste"="q4_forms_organizing.anti_caste",
+                                "Anti-militarization and peace"="q4_forms_organizing.anti_militarization",
+                                "Black rights/ Black feminist rights"="q4_forms_organizing.black_rights",
+                                "Climate and environmental justice"="q4_forms_organizing.climate_justice",
+                                "Crisis response"="q4_forms_organizing.crisis_response",
+                                "Countering anti-gender and anti-rights"="q4_forms_organizing.countering_anti_gender",
+                                "Digital rights"="q4_forms_organizing.digital_rights",
+                                "Disability rights and justice"="q4_forms_organizing.disability_rights",
+                                "Displaced, migrant and refugee rights"="q4_forms_organizing.displaced_migrant_refugee_rights",
+                                "Economic justice, rights and alternatives"="q4_forms_organizing.economic_justice",
+                                "Freedom of information and media"="q4_forms_organizing.information_media_freedom",
+                                "Harm reduction"="q4_forms_organizing.harm_reduction",
+                                "Ending gender based violence"="q4_forms_organizing.end_gender_violence",
+                                "Pleasure and bodily care"="q4_forms_organizing.pleasure_bodily_care",
+                                "Resisting the war on drugs"="q4_forms_organizing.resisting_war_on_drugs",
+                                "Rights for people living with HIV+"="q4_forms_organizing.rights_for_people_living_with_hiv",
+                                "Holistic safety, protection and collective care"="q4_forms_organizing.holistic_safety_protection_collective_care",
+                                "Human rights"="q4_forms_organizing.human_rights",
+                                "Indigenous rights"="q4_forms_organizing.indigenous_rights",
+                                "Intersex rights"="q4_forms_organizing.intersex_rights",
+                                "Labour rights"="q4_forms_organizing.labour_rights",
+                                "Lesbian, Bisexual and queer rights"="q4_forms_organizing.lesbian_bisexual_queer_rights",
+                                "Racial justice"="q4_forms_organizing.racial_justice",
+                                "Religious and ethnic minority rights"="q4_forms_organizing.religious_ethnic_minority_rights",
+                                "Sex workers rights"="q4_forms_organizing.sex_workers_rights",
+                                "Sexual and reproductive health & rights (SRHR) and bodily autonomy"="q4_forms_organizing.srhr_bodily_autonomy",
+                                "Trans and non-binary rights"="q4_forms_organizing.trans_non_binary_rights",
+                                "Women's rights"="q4_forms_organizing.womens_rights",
+                                "Young feminists"="q4_forms_organizing.young_feminists",
+                                "Girls’ movements"="q4_forms_organizing.girls_movements",
+                                "Human rights defenders at risk"="q4_forms_organizing.hr_defenders_at_risk",
+                                "Other"="q4_forms_organizing.98"))%>% 
+  mutate(Percentage=round(Count/total*100,1)) %>% 
+  arrange(desc(Percentage)) %>% 
+  rename("Organization type"=q4)
+
+
+
+knitr::kable(q4) %>% 
+  kable_minimal()
+
+
+```
+
+**-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-**
+
+
+**Type of organization - grouped (q4_grouped)**
+
+This variable is constructed by recognizing the organizations that work on one of AWID's focus topics and those that do not, are placed as "other subjects (not focus)".
+
+-	Lesbian, bisexual and queer rights 
+-	Sex workers rights
+-	Trans and non-binary-rights
+-	Anti-caste 
+-	Climate and environmental justice  
+-	Countering anti-gender and anti-rights 
+-	Anti-militarization and peace 
+-	Holistic safety, protection and collective care 
+
+
+
+```{r type_grouped, echo=F, message=F, warning=F}
+
+q4_focus<-base %>%
+  filter( q4_grouped_feminist!="98") %>%
+  group_by(q4_awid_focus) %>%
+  summarise(Count=n()) %>%
+  mutate(Percentage=round((Count/sum(Count))*100,1)) %>%
+  mutate(q4_awid_focus=recode(q4_awid_focus,"1"="Specific AWID subjects","0"="Other subjects")) 
+  #rename("Organization type"=q4_awid_focus)
+  #arrange(desc("Organization type"))
+
+
+#knitr::kable(q4_focus) %>% 
+#  kable_minimal()
+
+#Crear el gráfico
+ggplot(q4_focus, aes(x = reorder(q4_awid_focus, -Percentage), y = Percentage, fill=q4_awid_focus)) +
+  geom_bar(stat = "identity") +
+  geom_text(aes(label = sprintf("%.1f%%", Percentage)), vjust = -0.5, size = 3.5) +
+  labs(title = "Distribution by organization type",
+       x = " ",
+       y = "Percentage") +
+  theme_minimal() +
+  theme(legend.position = "none",
+        panel.grid.major.x = element_blank(), # Eliminar líneas de la cuadrícula vertical
+        panel.grid.minor.x = element_blank() # Eliminar líneas de la cuadrícula vertical menores
+  )
+
+
+
+```
+
+**--Analysis notes-----------------------------------------------------------------------**
+
+
+
+**------------------------------------------------------------------------------------------------**
+
+**Registration**
+
+Q5. Is your group, organization and/or movement registered?
+
+```{r registered, echo=F, message=F, warning=F}
+#Convertir campos vacíos de la variable q13 en NA
+ base <- base %>%
+  mutate(q5_registered = na_if(q5_registered, ""))
+
+q5<-base %>%
+  filter(!is.na(q5_registered)) %>% 
+  group_by(q5_registered) %>% 
+  mutate(q5_registered= case_when(
+    q5_registered=="y_registered" ~ "Yes",
+    q5_registered=="n_registered" ~ "No",
+    q5_registered==98 ~ "Other",
+    TRUE ~ NA)) %>%  
+  summarise(Count=n()) %>% 
+  mutate(Percentage=round((Count/sum(Count))*100,1)) %>% 
+  arrange(desc(Count)) %>% 
+  rename("Register"=q5_registered)
+
+#Crear tabla
+#knitr::kable(q5) %>% 
+#  kable_minimal()
+
+
+#Crear el gráfico
+ggplot(q5, aes(x = reorder(Register, -Percentage), y = Percentage, fill=Register)) +
+  geom_bar(stat = "identity") +
+  geom_text(aes(label = sprintf("%.1f%%", Percentage)), vjust = -0.5, size = 3.5) +
+  labs(title = "Distribution by registration",
+       x = " ",
+       y = "Percentage") +
+  theme_minimal() +
+  theme(legend.position = "none",
+        panel.grid.major.x = element_blank(), # Eliminar líneas de la cuadrícula vertical
+        panel.grid.minor.x = element_blank() # Eliminar líneas de la cuadrícula vertical menores
+  )
+
+
+
+```
+
+**--Analysis notes-----------------------------------------------------------------------**
+
+
+
+**------------------------------------------------------------------------------------------------**
+___
+
+
+**Scope:**
+
+Q6. What is the geographical scope of your work?
+
+```{r scope, echo=F, message=F, warning=F}
+
+q6<-base %>%  
+  mutate(q6_var = case_when(
+    q6_geo_scope == "globally_focused" ~ "Global",
+    q6_geo_scope == "nationally_focused" ~ "National",
+    q6_geo_scope == "locally_focused" ~ "Local",
+    q6_geo_scope == "regionally_focused" ~ "Regional",
+    q6_geo_scope == "transnationally_focused" ~ "Transnational",
+    q6_geo_scope == "diaspora_and_or_exile" ~ "Diaspora",
+    TRUE ~ NA_character_  # Para manejar casos no previstos
+  )) %>%
+  group_by(q6_var) %>% 
+  summarise(Count=n()) %>% 
+  mutate(Percentage = round(Count/sum(Count) * 100,1))  %>% 
+  arrange(desc(Percentage)) %>% 
+  rename("Scope"=q6_var)
+
+
+
+#knitr::kable(q6) %>% 
+#  kable_minimal()
+
+
+#Crear el gráfico
+ggplot(q6, aes(x = reorder(Scope, -Percentage), y = Percentage, fill=Scope)) +
+  geom_bar(stat = "identity") +
+  geom_text(aes(label = sprintf("%.1f%%", Percentage)), vjust = -0.5, size = 3.5) +
+  labs(title = "Distribution by scope",
+       x = " ",
+       y = "Percentage") +
+  theme_minimal() +
+  theme(legend.position = "none",
+        panel.grid.major.x = element_blank(), # Eliminar líneas de la cuadrícula vertical
+        panel.grid.minor.x = element_blank() # Eliminar líneas de la cuadrícula vertical menores
+  )
+
+
+```
+
+**--Analysis notes-----------------------------------------------------------------------**
+The sample is very interesting because most of the organizations are national or local (80%). 
+
+**------------------------------------------------------------------------------------------------**
+___
+
+
+**Region:**
+
+Q7. Indicate in which region(s) your group, organization and/or movement works
+
+*Reading: 35.7% of the organizations work in África.
+Organizations working locally, regionally or globally were consolidated.*
+
+
+```{r region, echo=F, message=F, warning=F}
+
+
+
+
+q7_a<-base %>% 
+  filter(q6_geo_scope=="locally_focused" | q6_geo_scope=="nationally_focused") %>% 
+  group_by(q7_region_one) %>%
+  mutate(q7_region_one=forcats::fct_recode(as_factor(q7_region_one),
+                                                     "South America" = "samerica",
+                                            "Central America & Mexico" = "camerica",
+                                    "North America" = "namerica",
+                                    "Caribbean" = "caribbean",
+                                    "South Asia" = "sasia",
+                                    "Southeast Asia" = "seasia",
+                                    "East Asia" = "easia",
+                                    "The Pacific" = "pacific",
+                                    "South West Asia/Middle East" = "swasiamiddleeast",
+                                    "Central Asia & Caucasus" = "casia",
+                                    "Eastern Europe, Southeast Europe and Central Europe" = "caucasuseurope",
+                                    "Western Europe" = "weurope",
+                                    "West Africa"="wafrica",
+                                    "East Africa"="eafrica",
+                                    "Southern Africa"="safrica",
+                                    "Central Africa"="cafrica",
+                                    "North Africa"="nafrica")) %>%   
+  summarise(n=n())%>% 
+  rename(q7=q7_region_one) %>% 
+  arrange(q7)
+
+q7_select<-base %>% 
+  select(starts_with("q7_region_multiple.")) %>% 
+  filter(!is.na(q7_region_multiple.samerica))
+
+total<-base %>%
+  count(q7_region_multiple) %>% 
+  summarise(Count=sum(n))
+total<-total$Count
+
+
+q7_b<-q7_select%>% 
+  summarize_all(sum) %>% 
+  gather(q7, n) %>% 
+  mutate(q7= str_replace(q7, "q7_region_multiple.", "")) %>% 
+  mutate(q7=forcats::fct_recode(as_factor(q7),
+                                 "South America" = "samerica",
+                                 "Central America & Mexico" = "camerica",
+                                    "North America" = "namerica",
+                                    "Caribbean" = "caribbean",
+                                    "South Asia" = "sasia",
+                                    "Southeast Asia" = "seasia",
+                                    "East Asia" = "easia",
+                                    "The Pacific" = "pacific",
+                                    "South West Asia/Middle East" = "swasiamiddleeast",
+                                    "Central Asia & Caucasus" = "casia",
+                                    "Eastern Europe, Southeast Europe and Central Europe" = "caucasuseurope",
+                                    "Western Europe" = "weurope",
+                                    "West Africa"="wafrica",
+                                    "East Africa"="eafrica",
+                                    "Southern Africa"="safrica",
+                                    "Central Africa"="cafrica",
+                                    "North Africa"="nafrica"))
+
+
+q7_final <- q7_a %>% left_join(q7_b, by = "q7") %>% 
+  mutate(Count=n.x+n.y) %>% 
+  select(-n.x,-n.y, "Region"=q7) %>%
+  mutate(Percentage=round((Count/total)*100,1)) %>% 
+  arrange(desc(Percentage)) 
+  
+knitr::kable(q7_final) %>% 
+  kable_minimal()
+
+#########################################################################################
+
+
+##crear gráfico
+
+base1<-base %>% 
+  #Convertir campos vacíos de la variable q7 en NA
+  mutate(q7_region_one = na_if(q7_region_one, ""),
+                  q7_region_multiple = na_if(q7_region_multiple, "")) %>%
+  #Unifico REGIÓN en variables únicas
+  mutate(samerica= ifelse(q7_region_one=="samerica"| q7_region_multiple.samerica==1, 1, 0),
+        camerica= ifelse(q7_region_one=="camerica"| q7_region_multiple.camerica==1, 1, 0),
+        namerica=ifelse(q7_region_one=="namerica"| q7_region_multiple.namerica==1, 1, 0),
+        caribbean=ifelse(q7_region_one=="caribbean"| q7_region_multiple.caribbean==1, 1, 0),
+        sasia=ifelse(q7_region_one=="sasia"| q7_region_multiple.sasia==1, 1, 0),
+        seasia=ifelse(q7_region_one=="seasia"| q7_region_multiple.seasia==1, 1, 0),
+        pacific=ifelse(q7_region_one=="pacific"| q7_region_multiple.pacific==1, 1, 0),
+        easia=ifelse(q7_region_one=="easia"| q7_region_multiple.easia==1, 1, 0),
+        casia=ifelse(q7_region_one=="casia"| q7_region_multiple.casia==1, 1, 0),
+        swasiamiddleeast=ifelse(q7_region_one=="swasiamiddleeast"| q7_region_multiple.swasiamiddleeast==1, 1, 0),
+        caucasuseurope=ifelse(q7_region_one=="caucasuseurope"| q7_region_multiple.caucasuseurope==1, 1, 0),
+        weurope=ifelse(q7_region_one=="weurope"| q7_region_multiple.weurope==1, 1, 0),
+        eafrica=ifelse(q7_region_one=="eafrica"| q7_region_multiple.eafrica==1, 1, 0),
+        wafrica=ifelse(q7_region_one=="wafrica"| q7_region_multiple.wafrica==1, 1, 0),
+        safrica=ifelse(q7_region_one=="safrica"| q7_region_multiple.safrica==1, 1, 0),
+        cafrica=ifelse(q7_region_one=="cafrica"| q7_region_multiple.cafrica==1, 1, 0),
+        nafrica=ifelse(q7_region_one=="nafrica"| q7_region_multiple.nafrica==1, 1, 0)) %>% 
+  #agrupo en continentes
+  mutate(AFRICA=ifelse(eafrica==1 | wafrica==1 | safrica==1 | cafrica==1 | nafrica==1,1,0),
+         LATINAMERICA=ifelse(samerica==1 | camerica==1 | caribbean==1,1,0),
+         NORTHAMERICA=ifelse(namerica==1,1,0),
+         ASIA=ifelse(sasia==1 | seasia==1 | easia==1 | casia==1 | swasiamiddleeast==1,1,0),
+         OCEANIA=ifelse(pacific==1,1,0),
+         EUROPE=ifelse(caucasuseurope==1 | weurope==1,1,0))
+
+
+
+# Resumir datos por región
+region_summary <- base1 %>%
+  # Contar el número de registros para cada región
+  summarise(AFRICA = sum(AFRICA, na.rm = TRUE),
+    LATINAMERICA = sum(LATINAMERICA, na.rm = TRUE),
+    NORTHAMERICA = sum(NORTHAMERICA, na.rm = TRUE),
+    ASIA = sum(ASIA, na.rm = TRUE),
+    OCEANIA = sum(OCEANIA, na.rm = TRUE),
+    EUROPE = sum(EUROPE, na.rm = TRUE)
+  ) %>%
+  pivot_longer(cols = everything(), names_to = "Region", values_to = "Count") %>%
+  mutate(Percentage = round((Count / sum(Count)) * 100, 1))
+
+
+#Crear el gráfico
+ggplot(region_summary, aes(x = reorder(Region, -Percentage), y = Percentage, fill=Region)) +
+  geom_bar(stat = "identity") +
+  geom_text(aes(label = sprintf("%.1f%%", Percentage)), vjust = -0.5, size = 3.5) +
+  labs(title = "Distribution by Region",
+       x = NULL, # Sin etiqueta en el eje x
+       y = "Percentage") +
+  theme_minimal() +
+  theme(legend.position = "none",
+        panel.grid.major.x = element_blank(), # Eliminar líneas de la cuadrícula vertical
+        panel.grid.minor.x = element_blank() # Eliminar líneas de la cuadrícula vertical menores
+  )
+
+```
+
+**--Analysis notes-----------------------------------------------------------------------**
+The sample is very interesting because most of the organizations are national or local (80%). 
+
+**------------------------------------------------------------------------------------------------**
+___
+
+**-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-**
+
+**Country:**
+
+Q8. Which countries are you working in?
+
+
+
+```{r q6, echo=F, message=F, warning=F}
+
+#Convertir campos vacíos de la variable country en NA
+ base <- base %>%
+  mutate(q8_country = na_if(q8_country, ""))
+
+base<-base %>% 
+  filter(q6_geo_scope=="locally_focused"| q6_geo_scope=="nationally_focused") %>% 
+  mutate(q7_region_one=forcats::fct_recode(as_factor(q7_region_one),
+                                                     "South America" = "samerica",
+                                            "Central America & Mexico" = "camerica",
+                                    "North America" = "namerica",
+                                    "Caribbean" = "caribbean",
+                                    "South Asia" = "sasia",
+                                    "Southeast Asia" = "seasia",
+                                    "East Asia" = "easia",
+                                    "The Pacific" = "pacific",
+                                    "South West Asia/Middle East" = "swasiamiddleeast",
+                                    "Central Asia & Caucasus" = "casia",
+                                    "Eastern Europe, Southeast Europe and Central Europe" = "caucasuseurope",
+                                    "Western Europe" = "weurope",
+                                    "West Africa"="wafrica",
+                                    "East Africa"="eafrica",
+                                    "Southern Africa"="safrica",
+                                    "Central Africa"="cafrica",
+                                    "North Africa"="nafrica")) %>%
+  mutate(q8_country=forcats::fct_recode(as_factor(q8_country),
+                                      "Afghanistan"="afghanistan",
+                                      "Albania"="albania",
+                                      "Algeria"="algeria",
+                                      "American Samoa"="american_samoa",
+                                      "Andorra"="andorra",
+                                      "Angola"="angola",
+                                      "Anguilla"="anguilla",
+                                      "Antigua and Barbuda"="antigua_and_barbuda",
+                                      "Argentina"="argentina",
+                                      "Armenia"="armenia",
+                                      "Aruba"="aruba",
+                                      "Australia"="australia",
+                                      "Austria"="austria",
+                                      "Azerbaijan"="azerbaijan",
+                                      "Bahamas"="bahamas",
+                                      "Bahrain"="bahrain",
+                                      "Bangladesh"="bangladesh",
+                                      "Barbados"="barbados",
+                                      "Belarus"="belarus",
+                                      "Belgium"="belgium",
+                                      "Belize"="belize",
+                                      "Benin"="benin",
+                                      "Bhutan"="bhutan",
+                                      "Bolivia"="bolivia",
+                                      "Bonaire, Sint Eustatius and Saba"="bonaire_sint_eustatius_saba",
+                                      "Bosnia and Herzegovina"="bosnia_and_herzegovina",
+                                      "Botswana"="botswana",
+                                      "Brazil"="brazil",
+                                      "British Virgin Islands"="british_virgin_islands",
+                                      "Brunei Darussalam"="brunei_darussalam",
+                                      "Bulgaria"="bulgaria",
+                                      "Burkina Faso"="burkina_faso",
+                                      "Burundi"="burundi",
+                                      "Cabo Verde"="cabo_verde",
+                                      "Cambodia"="cambodia",
+                                      "Cameroon"="cameroon",
+                                      "Canada"="canada",
+                                      "Cayman Islands"="cayman_islands",
+                                      "Central African Republic"="cafrican_republic",
+                                      "Chad"="chad",
+                                      "Chile"="chile",
+                                      "China"="china",
+                                      "Colombia"="colombia",
+                                      "Comoros"="comoros",
+                                      "Congo"="congo",
+                                      "Cook Islands"="cook_islands",
+                                      "Costa Rica"="costa_rica",
+                                      "Côte d'Ivoire"="côte_divoire",
+                                      "Croatia"="croatia",
+                                      "Cuba"="cuba",
+                                      "Curaçao"="curaçao",
+                                      "Cyprus"="cyprus",
+                                      "Czech Republic"="czech_republic",
+                                      "Dem. People's Republic of Korea"="dem_peoples_rep_of_korea",
+                                      "Democratic Republic of the Congo"="democratic_republic_of_the_congo",
+                                      "Denmark"="denmark",
+                                      "Djibouti"="djibouti",
+                                      "Dominica"="dominica",
+                                      "Dominican Republic"="dominican_republic",
+                                      "Ecuador"="ecuador",
+                                      "Egypt"="egypt",
+                                      "El Salvador"="el_salvador",
+                                      "Equatorial Guinea"="equatorial_guinea",
+                                      "Eritrea"="eritrea",
+                                      "Estonia"="estonia",
+                                      "Eswatini"="eswatini",
+                                      "Ethiopia"="ethiopia",
+                                      "Fiji"="fiji",
+                                      "Finland"="finland",
+                                      "France"="france",
+                                      "French Guiana"="french_guiana",
+                                      "French Polynesia"="french_polynesia",
+                                      "Gabon"="gabon",
+                                      "Gambia"="gambia",
+                                      "Georgia"="georgia",
+                                      "Germany"="germany",
+                                      "Ghana"="ghana",
+                                      "Greece"="greece",
+                                      "Greenland"="greenland",
+                                      "Grenada"="grenada",
+                                      "Guadeloupe"="guadeloupe",
+                                      "Guam"="guam",
+                                      "Guatemala"="guatemala",
+                                      "Guinea"="guinea",
+                                  "Guinea-Bissau"="guinea_bissau",
+                                      "Guyana"="guyana",
+                                      "Haiti"="haiti",
+                                      "Honduras"="honduras",
+                                      "Hong Kong"="hong_kong",
+                                      "Hungary"="hungary",
+                                      "Iceland"="iceland",
+                                      "India"="india",
+                                      "Indonesia"="indonesia",
+                                      "Iran"="iran",
+                                      "Iraq"="iraq",
+                                      "Ireland"="ireland",
+                                      "Israel"="israel",
+                                      "Italy"="italy",
+                                      "Jamaica"="jamaica",
+                                      "Japan"="japan",
+                                      "Jordan"="jordan",  
+                                      "Kazakhstan"="kazakhstan",
+                                  "Kenya"="kenya",
+                                  "Kiribati"="kiribati",
+                                  "Kuwait"="kuwait",
+                                  "Kyrgyzstan"="kyrgyzstan",
+                                  "Lao People's Democratic Republic"="lao_peoples_democratic_republic",
+                                  "Latvia"="latvia",
+                                  "Lebanon"="lebanon",
+                                  "Lesotho"="lesotho",
+                                  "Liberia"="liberia",
+                                  "Libya"="libya",
+                                  "Liechtenstein"="liechtenstein",
+                                  "Lithuania"="lithuania",
+                                  "Luxembourg"="luxembourg",
+                                  "Macao"="macao",
+                                  "Madagascar"="madagascar",
+                                  "Malawi"="malawi",
+                                  "Malaysia"="malaysia",
+                                  "Maldives"="maldives",
+                                  "Mali"="mali",
+                                  "Malta"="malta",
+                                  "Marshall
+                                  Islands"="marshall_islands",
+                                  "Martinique"="martinique",
+                                  "Mauritania"="mauritania",
+                                  "Mauritius"="mauritius",
+                                  "Mayotte"="mayotte",
+                                  "Mexico"="mexico",
+                                  "Micronesia (Fed. States of)"="micronesia_fed_states_of",
+                                  "Monaco"="monaco",
+                                  "Mongolia"="mongolia",
+                                  "Montenegro"="montenegro",
+                                  "Montserrat"="montserrat",
+                                  "Morocco"="morocco",
+                                  "Mozambique"="mozambique",
+                                  "Myanmar"="myanmar",
+                                  "Namibia"="namibia",
+                                  "Nauru"="nauru",
+                                  "Nepal"="nepal",
+                                  "Netherlands"="netherlands",
+                                  "New Caledonia"="new_caledonia",
+                                  "New Zealand"="new_zealand",
+                                  "Nicaragua"="nicaragua",
+                                  "Niger"="niger",
+                                  "Nigeria"="nigeria",
+                                "Niue"="niue",
+                                "North Macedonia"="north_macedonia",
+                                "Northern Mariana Islands"="northern_mariana_islands",
+                                "Norway"="norway",
+                                "Oman"="oman",
+                                "Pakistan"="pakistan",
+                                "Palau"="palau",
+                                "Palestine"="palestine",
+                                "Panama"="panama",
+                                "Papua New Guinea"="papua_new_guinea",
+                                "Paraguay"="paraguay",
+                                "Peru"="peru",
+                                "Philippines"="philippines",
+                                "Poland"="poland",
+                                "Portugal"="portugal",
+                                "Puerto Rico"="puerto_rico",
+                                "Qatar"="qatar",
+                                "Republic of Korea"="republic_of_korea",
+                                "Republic of Moldova"="republic_of_moldova",
+                                "Réunion"="reunion",
+                                "Romania"="romania",
+                                "Russia"="russia",
+                                "Rwanda"="rwanda",
+                                "Saint Barthélemy"="saint_barthelemy",
+                                "Saint Helena"="saint_helena",
+                                "Saint Kitts and Nevis"="saint_kitts_and_nevis",
+                                "Saint Lucia"="saint_lucia",
+                                "Saint Martin (French part)"="saint_martin_french_part",
+                                "Saint Vincent and the Grenadines"="saint_vincent_and_the_grenadines",
+                                "Samoa"="samoa",
+                                "San Marino"="san_marino",
+                                "Sao Tome and Principe"="sao_tome_and_principe",
+                                "Saudi Arabia"="saudi_arabia",
+                                "Senegal"="senegal",
+                                "Serbia"="serbia",
+                                "Seychelles"="seychelles",
+                                "Sierra Leone"="sierra_leone",
+                                "Singapore"="singapore",
+                                "Sint Maarten (Dutch part)"="sint_maarten_dutch_part",
+                                "Slovakia"="slovakia",
+                                "Slovenia"="slovenia",
+                                "Solomon Islands"="solomon_islands",
+                                "Somalia"="somalia",
+                                "South Africa"="south_africa",
+                                "South Sudan"="south_sudan",
+                                "Spain"="spain",
+                                "Sri Lanka"="sri_lanka",
+                                "Sudan"="sudan",
+                                "Suriname"="suriname",
+                                "Sweden"="sweden",
+                                "Switzerland"="switzerland",
+                                "Syrian Arab Republic"="syrian_arab_republic",
+                                "Taiwan"="taiwan",
+                                "Tajikistan"="tajikistan",
+                                "Tanzania"="tanzania",
+                                "Thailand"="thailand",
+                                "Timor-Leste"="timor_leste",
+                                "Togo"="togo",
+                                "Tokelau"="tokelau",
+                                "Tonga"="tonga",
+                                "Trinidad and Tobago"="trinidad_and_tobago",
+                                "Tunisia"="tunisia",
+                                "Turkey"="turkey",
+                                "Turkmenistan"="turkmenistan",
+                                "Turks and Caicos Islands"="turks_and_caicos_islands",
+                                "Tuvalu"="tuvalu",
+                                "Uganda"="uganda",
+                                "Ukraine"="ukraine",
+                                "United Arab Emirates"="united_arab_emirates",
+                                "United Kingdom"="united_kingdom",
+                                "United States of America"="united_states_of_america",
+                                "Uruguay"="uruguay",
+                                "Uzbekistan"="uzbekistan",
+                                "Vanuatu"="vanuatu",
+                                "Venezuela (Bolivarian Republic of)"="venezuela_bolivarian_republic_of",
+                                "Viet Nam"="viet_nam",
+                                "Wallis and Futuna Islands"="wallis_and_futuna_islands",
+                                "Western Sahara"="western_sahara",
+                                "Yemen"="yemen",
+                                "Zambia"="zambia",
+                                "Zimbabwe"="zimbabwe",
+                                "Other South America"="country_other1",
+                                "Other Central America & Mexico"="country_other2",
+                                "Other North America"="country_other3",
+                                "Other Caribbean"="country_other4",
+                                "Other South Asia"="country_other5",
+                                "Other Southeast Asia"="country_other6",
+                                "Other East Asia"="country_other7",
+                                "Other The Pacific"="country_other8",
+                                "Other South West Asia/Middle East"="country_other9",
+                                "Other Central Asia & Caucasus"="country_other10",
+                                "Other Eastern Europe, Southeast Europe and Central Europe"="country_other11",
+                                "Other Western Europe"="country_other13",
+
+                              "Other West Africa"="country_other14",
+                              "Other East Africa"="country_other15",
+                              "Other Southern Africa"="country_other16",
+                              "Other Central Africa"="country_other17",
+                              "Other North Africa"="country_other18"))
+
+
+q8<-base %>% 
+  filter(q6_geo_scope=="locally_focused"| q6_geo_scope=="nationally_focused") %>% 
+  group_by(q7_region_one, q8_country) %>% 
+  summarise(Count=n()) %>% 
+  mutate(Percentage=round((Count/sum(Count))*100,1)) %>% 
+  rename("Region"=1, "Country"=2)
+
+knitr::kable(q8) %>% 
+  kable_minimal()
+
+```
+
+
+
+**-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-**
+
+**Year of formation:**
+
+Q9. What year was your group, organization and/ or movement formed?
+
+*Reading: 33.7% of the respondent organizations were formed between the years 2015 and 2020, while around 15.6% were formed from the year 2021 onwards*
+
+```{r year, echo=F, message=F, warning=F}
+
+
+    
+
+q9<-base %>% 
+  filter(!is.na(q9_year_formation_agrup)) %>% 
+  group_by(q9_year_formation_agrup) %>% 
+  summarise(total=n()) %>% 
+  mutate(Percentage=round((total/sum(total))*100,1)) %>% 
+  arrange(q9_year_formation_agrup) 
+
+
+knitr::kable(q9) %>% 
+  kable_minimal()
+
+ggplot(q9, aes(x = q9_year_formation_agrup, y = Percentage, fill = q9_year_formation_agrup)) +
+  geom_bar(stat = "identity") +
+  geom_text(aes(label = sprintf("%.1f%%", Percentage)), vjust = -0.5, size = 3.5) +
+  labs(title = "Year of formation",
+       x = "Year",
+       y = "Percentage") +
+  theme_minimal() +
+  theme(legend.position = "none")
+
+
+
+```
