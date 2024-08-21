@@ -2221,3 +2221,54 @@ knitr::kable(q23_other) %>%
 
 ```
 
+
+**-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-**
+
+
+
+### Sub-section 2.3: Funding to counter anti-rights and anti-gender trends
+
+
+Q25. Between 2021 and 2023, did you receive funding for work to counter the rising power of anti-rights actors and anti-gender trends?
+
+```{r q25, echo=F, message=F, warning=F}
+
+#Convertir campos vacíos de la variable q23 en NA
+ base <- base %>%
+  mutate(q25_counter_anti = na_if(q25_counter_anti, ""))
+
+
+q25<-base %>% 
+  filter(!is.na(q25_counter_anti)) %>% 
+  mutate(q25_recode=case_when(
+    q25_counter_anti=="yes" ~ "Yes",
+    q25_counter_anti=="no" ~ "No",
+    q25_counter_anti=="don_t_want_to_answer" ~ "I don't want to answer",
+    q25_counter_anti=="98" ~ "Other",
+    TRUE ~ NA)) %>% 
+  group_by(q25_recode) %>% 
+  summarise(Count=n()) %>%
+  mutate(Percentage=round((Count/sum(Count)*100),1)) %>% 
+  arrange(desc(Percentage))
+
+ggplot(q25, aes(x = reorder(q25_recode, -Percentage), y = Percentage, fill=q25_recode)) +
+  geom_bar(stat = "identity") +
+  geom_text(aes(label = sprintf("%.1f%%", Percentage)), vjust = -0.5, size = 3.5) +
+  labs(title = "Receive funding counter the rising power of anti-rights and anti-gender trends",
+       x = " ",
+       y = "Percentage") +
+  theme_minimal() +
+  theme(legend.position = "none",
+        panel.grid.major.x = element_blank(), # Eliminar líneas de la cuadrícula vertical
+        panel.grid.minor.x = element_blank() # Eliminar líneas de la cuadrícula vertical menores
+  )
+
+
+  
+
+```
+
+____
+
+
+Q26. Did this funding come from a funder who had not supported your group, organization and/or movement before 2021? If yes, please select which type of funder
