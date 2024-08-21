@@ -2150,3 +2150,74 @@ ggplot(q22, aes(x = q22_var, y = Percentage, fill=q22_var)) +
 
 ```
 
+____
+
+**Context**
+
+
+Q23. If you received urgent response or emergency funding between 2021 and 2023, what was the context you were responding to with these funds?
+
+```{r q23, echo=F, message=F, warning=F}
+#Convertir campos vacíos de la variable q23 en NA
+ base <- base %>%
+  mutate(q23_context_emergency = na_if(q23_context_emergency, ""))
+ 
+  base <- base %>%
+  mutate(q23_context_emergency_spc = na_if(q23_context_emergency_spc, ""))
+ 
+q23 <- base %>%
+  filter(!is.na(q23_context_emergency)) %>%
+  summarise(
+    Total = (round(n(),0)),
+    "1"=sum(q23_context_emergency.conflict_war_violence==1, na.rm=TRUE),
+    "2"=sum(q23_context_emergency.covid19==1, na.rm = TRUE),
+    "3"=sum(q23_context_emergency.health_emergencies==1, na.rm = TRUE),
+    "4"=sum(q23_context_emergency.climate_disaster==1, na.rm = TRUE),
+    "5"=sum(q23_context_emergency.civic_crackdown==1, na.rm = TRUE),
+    "6"=sum(q23_context_emergency.physical_threats==1, na.rm=TRUE),
+    "7"=sum(q23_context_emergency.digital_threats==1, na.rm=TRUE),
+    "8"=sum(q23_context_emergency.Holistic_safety._protection_or_collective_care_for_staff_or_key_partners==1, na.rm=TRUE),
+    other=sum(q23_context_emergency.98==1, na.rm=TRUE),
+    "Outbreak of conflict, war and violence"= round(1/Total*100,1),
+    "COVID-19 pandemic"= round(2/Total*100,1),
+    "Other health-related emergencies"= round(3/Total*100,1),
+    "Climate crisis-related disaster"= round(4/Total*100,1),
+    "Crack-down on civic space and anti-rights backlash"= round(5/Total*100,1),
+    "Physical security threats"= round(6/Total*100,1),
+    "Digital security threats"= round(7/Total*100,1),
+    "Holistic safety, protection or collective care"= round(8/Total*100,1),
+    "Other"= round(other/Total*100,1)) %>% 
+  select(1, 11:19)
+
+
+
+q23<-q23 %>% 
+  pivot_longer(cols = 2:10,
+               names_to = "Context",
+               values_to = "Percentage") %>% 
+  select(2:3) %>% 
+  arrange(desc(Percentage))
+
+knitr::kable(q23) %>% 
+  kable_minimal()
+
+
+```
+
+
+*Other responses*
+```{r q23_other, echo=F, message=F, warning=F}
+
+
+q23_other<-base %>% 
+  filter(q23_context_emergency.98==1 & !is.na(q23_context_emergency_spc)) %>% 
+  group_by(q23_context_emergency_spc) %>% 
+  summarise(n()) %>% 
+  select("Specific context"=1)
+
+knitr::kable(q23_other) %>% 
+  kable_minimal()
+
+
+```
+
