@@ -146,8 +146,8 @@ q2<-base %>%
   select("Organization names"=q2_name) %>% 
   slice(-1)
 
-knitr::kable(q2) %>% 
-  kable_minimal()
+#knitr::kable(q2) %>% 
+#  kable_minimal()
 
 ```
 ___
@@ -339,7 +339,7 @@ q7_b<-q7_select%>%
 q7_final <- q7_a %>% left_join(q7_b, by = "q7") %>% 
   mutate(n=n.x+n.y) %>% 
   select(-n.x,-n.y, "Region"=q7) %>%
-  mutate(porcentaje=round((n/153)*100,1)) %>% 
+  mutate(porcentaje=round((n/total)*100,1)) %>% 
   arrange(desc(porcentaje)) 
   
 
@@ -632,8 +632,8 @@ base<-base %>%
 q8<-base %>% 
   filter(q6_geo_scope=="locally_focused"| q6_geo_scope=="nationally_focused") %>% 
   group_by(q7_region_one, q8_country) %>% 
-  summarise(n=n()) %>% 
-  mutate(Percentage=round((n/sum(n))*100,1))
+  summarise(n=n()) 
+#%>% mutate(Percentage=round((n/sum(n))*100,1))
 
 knitr::kable(q8) %>% 
   kable_minimal()

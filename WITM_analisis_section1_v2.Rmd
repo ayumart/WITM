@@ -405,6 +405,7 @@ Organizations working locally, regionally or globally were consolidated.*
 
 ```{r region, echo=F, message=F, warning=F}
 
+total<-nrow(base)
 
 
 q7_a<-base %>% 
@@ -463,9 +464,13 @@ q7_b<-q7_select%>%
 q7_final <- q7_a %>% left_join(q7_b, by = "q7") %>% 
   mutate(n=n.x+n.y) %>% 
   select(-n.x,-n.y, "Region"=q7) %>%
-  mutate(porcentaje=round((n/153)*100,1)) %>% 
+  mutate(porcentaje=round((n/total)*100,1)) %>% 
   arrange(desc(porcentaje)) 
-  
+
+write.xlsx2(as.data.frame(q7_final), "Output\\region.xlsx", row.names = FALSE, sheetName ="region2",append = TRUE)    
+
+total
+
 knitr::kable(q7_final) %>% 
   kable_minimal()
 

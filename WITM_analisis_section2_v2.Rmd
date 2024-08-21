@@ -727,7 +727,7 @@ knitr::kable(qry_w) %>%
 
 **-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-**
 
-**2023 budget by COVID (Q11)**
+**COVID (Q11) by scope**
 
 
 
@@ -738,17 +738,24 @@ knitr::kable(qry_w) %>%
 
 #q6_geo_scope
 
-q10q5<-base %>%
-  filter(!is.na(q10_budget_grp_2023) & q10_budget_grp_2023!="" & (q5_registered=="y_registered" | q5_registered=="n_registered")) %>%
-  group_by(q10_budget_grp_2023,q5_registered)%>%
+q11q6<-base %>%
+  filter(!is.na(q11_covid_incidence) & q11_covid_incidence!="not_applicable" & q11_covid_incidence!="" & !is.na(q10_budget_grp_2023))%>%
+  group_by(q6_geo_scope,q11_covid_incidence)%>%
   summarise(n=n()) %>%
+   mutate(q11_covid_incidence= case_when(
+    q11_covid_incidence=="grown_substantially" ~ "1 Grow substantively",
+    q11_covid_incidence=="grown_slightly" ~ "2 Grow slightly",
+    q11_covid_incidence=="stayed_the_same" ~ "3 Stay the same",
+    q11_covid_incidence=="decreased_slightly" ~ "4 Decrease slightly",
+    q11_covid_incidence=="decreased_substantially" ~ "5 Decrease substantially",
+   # q11_covid_incidence=="not_applicable" ~ NA,
+    TRUE ~ NA)) %>%  
   mutate(percentage=round((n/sum(n))*100,1))%>%
-  arrange(q10_budget_grp_2023) %>% 
-  select(q5_registered,q10_budget_grp_2023,percentage)
+  arrange(q11_covid_incidence) %>% 
+  select(q11_covid_incidence,q6_geo_scope,percentage)
 
 #q6q5
-qry_w<-q10q5 %>% pivot_wider(names_from = q10_budget_grp_2023, values_from = percentage) %>%
- mutate(q5_registered=recode(q5_registered, "98"="Other", "n_registered"="No registered", "y_registered"="Registered"))
+qry_w<-q11q6 %>% pivot_wider(names_from = q6_geo_scope, values_from = percentage) 
 
 knitr::kable(qry_w) %>% 
   kable_minimal()
@@ -758,11 +765,11 @@ knitr::kable(qry_w) %>%
 
 ```{r}
 
-ggplot(q10q5, aes(x = q10_budget_grp_2023, y=percentage, fill=q5_registered)) +                      
+ggplot(q11q6, aes(x = q6_geo_scope, y=percentage, fill=q11_covid_incidence)) +                      
    geom_bar(position="dodge", stat="identity") +
   scale_colour_distiller() +
   labs(x="Budget",y= "%") +                 
-  ggtitle("Budget by Registration (%)") +                
+  ggtitle("Scope by Covid situation (%)") +                
   theme_light()+
  geom_text(aes(label = sprintf("%0.1f", round(percentage, digits = 1))),position=position_dodge(width=0.9),
             vjust=0.5, hjust=1,size=3) +
