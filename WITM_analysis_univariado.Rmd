@@ -2087,7 +2087,66 @@ knitr::kable(q21_2021_final) %>%
 
 **------------------------------------------------------------------------------------------------**
 
-```{r}
+
+____
+
+
+**Grants average duration**
+
+Q22.  Between 2021 and 2023, what was the average duration of grants your group, organization and/or movement received? 
+
+
+```{r q22, echo=F, message=F, warning=F}
+#Convertir campos vacíos de la variable q20 en NA
+ base <- base %>%
+  mutate(q22_grant_duration = na_if(q22_grant_duration, ""))
+
+q22<-base %>%
+  mutate(q22=case_when(
+    q22_grant_duration=="less_than_3_months" ~ "Less than 3 months",
+    q22_grant_duration=="between_3_and_6_months" ~ "Between 3-6 months",
+    q22_grant_duration=="between_6_and_12_months" ~ "Between 6-12 months",
+    q22_grant_duration=="between_12_and_18_months" ~ "Between 12-18 months",
+    q22_grant_duration=="between_18_and_24_months"~"Between 18-24 months",
+    q22_grant_duration=="between_2_and_3_years"~"Between 2-3 years",
+    q22_grant_duration=="between_3_and_5_years"~"Between 3-5 years",
+    q22_grant_duration=="more_than_5_years"~"More than 5 years",
+    TRUE ~ NA)) %>% 
+  filter(!is.na(q22_grant_duration)) %>% 
+  group_by(q22) %>% 
+  summarise(Count=n()) %>% 
+  mutate(Percentage = round((Count / sum(Count)) * 100, 1)) %>%
+  mutate(q22 = factor(q22, levels = c(
+    "Less than 3 months",
+    "Between 3-6 months",
+    "Between 6-12 months",
+    "Between 12-18 months",
+    "Between 18-24 months",
+    "Between 2-3 years",
+    "Between 3-5 years",
+    "More than 5 years"), ordered = TRUE)) %>%
+  arrange(desc(q22)) %>%
+  rename("q22_var" = q22)
+
+#creación del gráfico
+ggplot(q22, aes(x = q22_var, y = Percentage, fill=q22_var)) +
+  geom_bar(stat = "identity") +
+  geom_text(aes(label = sprintf("%.1f%%", Percentage)), 
+            hjust=-0.1,
+            vjust = 0.5, 
+            size = 3.2) +
+  labs(title = "Distribution by type of organization",
+       x = " ",
+       y = "Percentage") +
+  scale_y_continuous(expand = expansion(mult = c(0, 0.1)))+
+  theme_minimal() +
+  theme(legend.position = "none",
+        panel.grid.major.x = element_blank(), # Eliminar líneas de la cuadrícula vertical
+        panel.grid.minor.x = element_blank() # Eliminar líneas de la cuadrícula vertical menores
+  )+
+  coord_flip()
+
+
 
 ```
 
