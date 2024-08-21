@@ -68,6 +68,7 @@ ggplot(answers_by_date, aes(x =  as.POSIXct(date), y=qt)) +
 
 **--Analysis notes-----------------------------------------------------------------------**
 
+
 In general the polls always have a high peak on the firsts days, WITM also shows this. Then there is another spike on 27-28 June, probably a strengthening of communication. On the 4th of July it increases again.
 During the days of the sessions, the number of responses also increased significantly.
 
@@ -138,6 +139,7 @@ q1_otro<-base %>%
 #  kable_minimal()
 
 ```
+
 **--Analysis notes-----------------------------------------------------------------------**
 
 
@@ -163,6 +165,7 @@ print(paste("The number of organisations that did not answer their name is:",n_t
 
 ```
 **--Analysis notes-----------------------------------------------------------------------**
+
 
 Very interesting that almost all organisations responded with their name despite the fact that the possibility of not responding is informed and underlined.
 
@@ -259,6 +262,7 @@ knitr::kable(q4) %>%
 ___
 
 **--Analysis notes-----------------------------------------------------------------------**
+
 
 Most of the organisations selected many options. Almost all of them defined one of the first four options. Only 10% did not select any of them and in general selected others that can be integrated.
 
@@ -392,6 +396,7 @@ ___
 
 **--Analysis notes-----------------------------------------------------------------------**
 
+
 The problem with this question is that it does not allow us to discriminate much in relation to organizations.
 
 How can we group these organizations in order to better analyze the data?
@@ -452,6 +457,8 @@ ggplot(qry_graph, aes(x = q4_grouped, y=percentage, fill=Description)) +
 
 
 **--Analysis notes-----------------------------------------------------------------------**
+
+
 It reads as follows: Among the organizations that work on the basis of specific projects, 62.9% indicated working on some of the main themes of feminism, while 48.8% indicated working in relation to groups in situation of vulnerability. They may have chosen more than one option (they overlap).
 
 
@@ -541,6 +548,7 @@ knitr::kable(qry_w) %>%
 
 **--Analysis notes-----------------------------------------------------------------------**
 
+
 This crosstabulation shows the information upside down. It indicates that: among the organizations that indicated that they work on some of the main issues of the feminist agenda, 78.3% indicated that they work with a focus on that agenda and 15% through projects. The distribution is very stable among all the issues.
 
 
@@ -621,6 +629,7 @@ ggplot(qry_graph, aes(x = q1_description, y=percentage, fill=Registered)) +
 ```
 
 **--Analysis notes-----------------------------------------------------------------------**
+
 
 The behavior between "primary focus" and "specific projects" organizations is similar in terms of registration. There are slightly more unregistered primary focus organizations, but this is not a relevant difference.
 
@@ -706,6 +715,7 @@ knitr::kable(qry_w) %>%
 
 **--Analysis notes-----------------------------------------------------------------------**
 
+
 This cross-tabulation allows for comparison according to the issues they address and whether or not the organizations are registered. Reading: among those working mainly on specific feminist issues, 80% are registered, while among those working on general human rights issues, this value rises to 83%.
 
 
@@ -742,6 +752,7 @@ knitr::kable(q6) %>%
 ```
 
 **--Analysis notes-----------------------------------------------------------------------**
+
 The sample is very interesting because most of the organizations are national or local (80%). 
 
 
@@ -805,6 +816,7 @@ ggplot(qry_graph, aes(x = Scope, y=percentage, fill=q1_description)) +
 
 **--Analysis notes-----------------------------------------------------------------------**
 
+
 So far, due to the size of the sample, it is only convenient to analyze this crossover for the 3 most numerous groups: national, local and regional. In these 3 cases, the distribution is homogeneous, and there is a slight tendency to work on feminism and gender issues through projects for regional organizations.
 
 **------------------------------------------------------------------------------------------------**
@@ -864,6 +876,7 @@ ggplot(qry_graph, aes(x = Scope, y=percentage, fill=q5_registered)) +
 
 ```
 **--Analysis notes-----------------------------------------------------------------------**
+
 The same analysis as before shows that there is a greater tendency for local organizations to be unregistered.
 
 **------------------------------------------------------------------------------------------------**
@@ -910,6 +923,7 @@ knitr::kable(qry_w) %>%
 ```
 
 **--Analysis notes-----------------------------------------------------------------------**
+
 
 Regional organizations work more often on specifically feminist issues than on group issues, at least in relation to local and national organizations.
 
@@ -1521,6 +1535,7 @@ ggplot(qry_graph, aes(x = q9_year_formation_agrup, y=percentage, fill=q5_registe
 
 **--Analysis notes-----------------------------------------------------------------------**
 
+
 Organizations starting in the last 3 years have a high proportion of non-registration. It decreases as the start-up time passes.
 
 
@@ -1554,6 +1569,7 @@ knitr::kable(qry_w) %>%
 
 
 **--Analysis notes-----------------------------------------------------------------------**
+
 
 Organizations starting in the last 3 years have a high proportion of non-registration. It decreases as the start-up time passes.
 
@@ -1624,6 +1640,7 @@ ggplot(q8, aes(x = q9_year_formation_agrup, y=percentage, fill=q6_geo_scope)) +
 
 
 **--Analysis notes-----------------------------------------------------------------------**
+
 
 The distribution is quite similar in all periods.
 
