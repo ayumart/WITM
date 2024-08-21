@@ -143,10 +143,6 @@ base<- base %>%
                q4_forms_organizing.pleasure_bodily_care==1) ~1, TRUE ~0)) 
 
 
-
-
-
-
 ##we will use this ranges
 # 0 budget
 # > 5000 USD 
@@ -163,9 +159,9 @@ base<- base %>%
   mutate(q10_budget_grp_2021=case_when
          (
            (q10_budget_year_2021=="(g) 100001 - 250000"  |
-              q10_budget_year_2021=="(h) 250001 - 500000") ~ "(g) 100,001 – 500,001 USD",
+            q10_budget_year_2021=="(h) 250001 - 500000") ~ "(g) 100,001 – 500,001 USD",
            (q10_budget_year_2021=="(i) 500001 - 1000000"  |
-              q10_budget_year_2021=="(j) 1000001 - 2000000") ~ "(h) 500,001 – $1,000,000 USD",
+               q10_budget_year_2021=="(j) 1000001 - 2000000") ~ "(h) 500,001 – $1,000,000 USD",
            (q10_budget_year_2021=="(k) 2000001 - 4000000" |
               q10_budget_year_2021=="(l) > 4000001") ~ "(i) 1,000,001 + USD",
            TRUE ~ q10_budget_year_2021))  
@@ -223,3 +219,7 @@ base<- base %>%
 #               q10_budget_year_2023=="(k) 2000001 - 4000000" |
 #               q10_budget_year_2023=="(l) > 4000001") ~ "(h) > 250001",
 #            TRUE ~ q10_budget_year_2023))  
+
+
+
+
