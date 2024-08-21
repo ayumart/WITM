@@ -838,9 +838,6 @@ Q9. What year was your group, organization and/ or movement formed?
 
 ```{r year, echo=F, message=F, warning=F}
 
-
-    
-
 q9<-base %>% 
   filter(!is.na(q9_year_formation_agrup)) %>% 
   group_by(q9_year_formation_agrup) %>% 
@@ -969,8 +966,125 @@ ggplot(q11, aes(x = q11_covid_incidence, y = Percentage, fill = q11_covid_incide
 
 ### Sub-section 2.1: External funding
 
+
 *External funding includes grants and other forms of funding from philanthropic foundations, governments, bilateral, multilateral or corporate funders and individual donors. It excludes resources that groups, organizations and/or movements generate autonomously such as, for example, membership fees, the voluntary contributions of staff, members and/or supporters, community fundraisers, venue hires or sale of services.*
 
-```{r}
+
+Q13. Between 2021 and 2023, did your group, organization and/or movement receive any external funding? 
+
+
+```{r q13_graf, echo=F, message=F, warning=F}
+q13<-base %>%
+  filter(!is.na(q13_ext_funding)) %>% 
+  group_by(q13_ext_funding) %>% 
+  summarise(n=n()) %>% 
+  mutate(Percentage=round((n/sum(n))*100,1))
+
+ggplot(q13, aes(x = q13_ext_funding, y = Percentage, fill=q13_ext_funding)) +
+  geom_bar(stat = "identity") +
+  geom_text(aes(label = sprintf("%.1f%%", Percentage)), vjust = -0.5, size = 3.5) +
+  labs(title = "External funding",
+       x = " ",
+       y = "Percentage") +
+  theme_minimal() +
+  theme(legend.position = "none",
+        panel.grid.major.x = element_blank(), # Eliminar líneas de la cuadrícula vertical
+        panel.grid.minor.x = element_blank() # Eliminar líneas de la cuadrícula vertical menores
+  )
+```
+
+
+Q14. Please indicate the percentage of external funding in your total annual budget for each year:
+
+
+```{r funding, echo=F, message=F, warning=F}
+q14_2023 <- base %>%
+  filter(q13_ext_funding == "yes" & q14_funding_annual_budget_2023 > 0) %>%
+  mutate(q14_funding_annual_budget_2023=case_when(
+    q14_funding_annual_budget_2023=="10" | q14_funding_annual_budget_2023=="20"  ~ "1 Lower than 30%",
+    q14_funding_annual_budget_2023=="30" | q14_funding_annual_budget_2023=="40" ~ "2 Between 30% and 40%",
+    q14_funding_annual_budget_2023=="50" | q14_funding_annual_budget_2023=="60" ~ "3 Between 50% and 60%",
+    q14_funding_annual_budget_2023=="70" | q14_funding_annual_budget_2023=="80" ~ "4 Between 70% and 80%",
+    q14_funding_annual_budget_2023=="90" | q14_funding_annual_budget_2023=="100"~ "5 Higher than 80%",
+    TRUE ~ NA)) %>% 
+  group_by(q14_funding_annual_budget_2023) %>% 
+  summarise(Count = n()) %>%
+  mutate(Total = sum(Count),  # Calcula el total de conteos
+         "2023" = round((Count / Total) * 100, 1)) %>%   # Calcula el porcentaje
+  select("q14"=1, 4)   # Elimina la columna total_count si no es necesaria
+
+
+
+q14_2022 <- base %>%
+  filter(q13_ext_funding == "yes" & q14_funding_annual_budget_2022 > 0) %>%
+  mutate(q14_funding_annual_budget_2022=case_when(
+    q14_funding_annual_budget_2022=="10" | q14_funding_annual_budget_2022=="20"  ~ "1 Lower than 30%",
+    q14_funding_annual_budget_2022=="30" | q14_funding_annual_budget_2022=="40" ~ "2 Between 30% and 40%",
+    q14_funding_annual_budget_2022=="50" | q14_funding_annual_budget_2022=="60" ~ "3 Between 50% and 60%",
+    q14_funding_annual_budget_2022=="70" | q14_funding_annual_budget_2022=="80" ~ "4 Between 70% and 80%",
+    q14_funding_annual_budget_2022=="90" | q14_funding_annual_budget_2022=="100"~ "5 Higher than 80%",
+    TRUE ~ NA)) %>% 
+  group_by(q14_funding_annual_budget_2022) %>% 
+  summarise(Count = n()) %>%
+  mutate(Total = sum(Count),  # Calcula el total de conteos
+         "2022" = round((Count / Total) * 100, 1)) %>%  # Calcula el porcentaje
+  select("q14"=1, 4)    # Elimina la columna total_count si no es necesaria
+
+q14_2021 <- base %>%
+  filter(q13_ext_funding == "yes" & q14_funding_annual_budget_2021 > 0) %>%
+  mutate(q14_funding_annual_budget_2021=case_when(
+    q14_funding_annual_budget_2021=="10" | q14_funding_annual_budget_2021=="20"  ~ "1 Lower than 30%",
+    q14_funding_annual_budget_2021=="30" | q14_funding_annual_budget_2021=="40" ~ "2 Between 30% and 40%",
+    q14_funding_annual_budget_2021=="50" | q14_funding_annual_budget_2021=="60" ~ "3 Between 50% and 60%",
+    q14_funding_annual_budget_2021=="70" | q14_funding_annual_budget_2021=="80" ~ "4 Between 70% and 80%",
+    q14_funding_annual_budget_2021=="90" | q14_funding_annual_budget_2021=="100"~ "5 Higher than 80%",
+    TRUE ~ NA)) %>% 
+  group_by(q14_funding_annual_budget_2021) %>% 
+  summarise(Count = n()) %>%
+  mutate(Total = sum(Count),  # Calcula el total de conteos
+         "2021" = round((Count / Total) * 100, 1)) %>%  # Calcula el porcentaje
+  select("q14"=1, 4)    # Elimina la columna total_count si no es necesaria
+
+
+#Unir los dataframes
+q14_combined <- q14_2021 %>%
+  full_join(q14_2022, by = "q14") %>%
+  full_join(q14_2023, by = "q14")
+
+q14_grouped<-q14_combined %>% 
+  rename("Percentage of External Funding in Total Annual Budget"=q14)
+
+
+knitr::kable(q14_grouped) %>% 
+    kable_minimal() #imprime cuadro
+
+# Transformar los datos a formato largo
+q14_long <- q14_combined %>%
+  pivot_longer(cols = starts_with("20"), names_to = "Year", values_to = "Percentage") %>%
+  mutate(Year = factor(Year, levels = c("2021", "2022", "2023")))  # Ordenar los años
+
+# Crear el gráfico
+ggplot(q14_long, aes(x = q14, y = Percentage, fill = Year)) +
+  geom_bar(stat = "identity", position = "dodge") +
+  geom_text(aes(label = Percentage), 
+            position = position_dodge(width = 0.9), 
+            vjust = 0.9,   # Ajusta la posición vertical de las etiquetas dentro de las barras
+            hjust = 0.5,   # Centra horizontalmente las etiquetas
+            size = 3.2) + # Ajusta el tamaño del texto de las etiquetas
+  labs(
+    title = "Percentage of External Funding in Total Annual Budget by Year",
+    x = NULL,  # Elimina el título del eje x
+    y = "Percentage (%)",
+    fill = "Year") +
+  theme_minimal() +
+  theme(
+    axis.text.x = element_text(angle = 45, hjust = 1),  # Mantiene las etiquetas del eje x y ajusta la rotación
+    panel.grid.major = element_blank(),  # Elimina la cuadrícula mayor
+    panel.grid.minor = element_blank()   # Elimina la cuadrícula menor
+  )
+
 
 ```
+
+
+
