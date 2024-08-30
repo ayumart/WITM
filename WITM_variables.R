@@ -70,16 +70,6 @@ witm<-witm %>%
 
 
 
-Lesbian, bisexual and queer rights + trans and non-binary rights + intersex rights = LBQTI+
-  Young feminist + girls’ movements 
-Sex workers rights
-Religious & ethnic minority rights + anti-caste
-Climate and environmental justice 
-Countering anti-gender & anti-rights 
-Anti-militarization and peace + crisis response 
-Harm reduction + resisting the war on drugs
-
-
 base<-witm %>% 
   filter(q0_consent=="yes")
 
@@ -99,6 +89,18 @@ base<- base %>%
   mutate(q4_awid_focus_no=case_when
          (q4_awid_focus!=1 ~ 1, TRUE ~0))  
 
+
+#último pedido de agregación
+base<-base %>% 
+  mutate(q4_awid_LGBTIQ=case_when(q4_forms_organizing.lesbian_bisexual_queer_rights==1 | q4_forms_organizing.trans_non_binary_rights==1 |
+      q4_forms_organizing.intersex_rights==1 ~1, TRUE ~0)) %>% 
+  mutate(q4_awid_young=case_when(q4_forms_organizing.young_feminists==1 | q4_forms_organizing.girls_movements==1 ~1, TRUE ~0)) %>%
+  mutate(q4_awid_sex=case_when(q4_forms_organizing.sex_workers_rights==1 ~1, TRUE ~0)) %>%
+  mutate(q4_awid_nin=case_when(q4_forms_organizing.religious_ethnic_minority_rights==1 |q4_forms_organizing.anti_caste==1~1, TRUE ~0)) %>%
+  mutate(q4_awid_climate=case_when(q4_forms_organizing.climate_justice ==1 ~1, TRUE ~0)) %>%
+  mutate(q4_awid_antig=case_when(q4_forms_organizing.countering_anti_gender==1 ~1, TRUE ~0)) %>%
+  mutate(q4_awid_crisis=case_when(q4_forms_organizing.anti_militarization==1 | q4_forms_organizing.crisis_response==1 ~1, TRUE ~0)) %>%
+  mutate(q4_awid_harm=case_when(q4_forms_organizing.harm_reduction==1 |q4_forms_organizing.resisting_war_on_drugs==1  ~1, TRUE ~0))
 
 
 base<- base %>%
