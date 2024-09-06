@@ -2507,16 +2507,7 @@ Q29. Between 2021 and 2023, how did your group, organization and/or movement’s
  base <- base %>%
   mutate(q29_reliance_aut_resoursing = na_if(q29_reliance_aut_resoursing, ""))
 
-Single-select
-Grew substantively
-Grew slightly
-Stayed the same
-Decreased slightly
-Decreased substantially
-Not applicable
 
-
-unique(base$q29_reliance_aut_resoursing)
 q29<-base %>%
   filter(!is.na(q29_reliance_aut_resoursing) & q29_reliance_aut_resoursing!="not_applicable") %>% 
   mutate(q29_recod= case_when(
@@ -2557,4 +2548,50 @@ ggplot(q5, aes(x = reorder(Register, -Percentage), y = Percentage, fill=Register
 **-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-**
 
 ## Section 3: Shifting Power
+
+Q30. Has your group, organization and/or movement ever had to shift its priorities, strategies or ways of working to be eligible for and/or increase the chances of receiving external funding?
+
+```{r q30, echo=F, message=F, warning=F}
+
+q30<-base %>% 
+  filter(!is.na(q30_shift_priorities)) %>% 
+  mutate(q30_shift_priorities=case_when(
+    q30_shift_priorities=="no_not_at_all" ~ "No, not at all",
+    q30_shift_priorities=="yes_sometimes" ~ "Yes, sometimes",
+    q30_shift_priorities=="yes_frequently" ~ "Yes, frequently",
+    q30_shift_priorities=="yes_always" ~ "Yes, always",
+    q30_shift_priorities=="99" ~ "Don't know",
+    TRUE ~ NA)) %>% 
+  group_by(q30_shift_priorities) %>% 
+  summarise(Total=n()) %>% 
+  mutate(Percentage=round((Total/sum(Total))*100,1)) %>% 
+  arrange(desc(Percentage))
+  rename("Shifting priorities"="q30_shift_priorities")
+
+
+#knitr::kable(q30) %>% 
+#  kable_minimal()
+
+ggplot(q30, aes(x = reorder(q30_shift_priorities, -Percentage), y = Percentage, fill = q30_shift_priorities)) +
+  geom_bar(stat = "identity") +
+  geom_text(aes(label = sprintf("%.1f%%", Percentage)), vjust = -0.5, size = 3.5) +
+  labs(title = "Shifting Power",
+       x= NULL,
+       y = "Percentage") +
+  theme_minimal() +
+  theme(legend.position = "none",
+        panel.grid.major.x = element_blank(), # Eliminar líneas de la cuadrícula vertical
+        panel.grid.minor.x = element_blank() # Eliminar líneas de la cuadrícula vertical menores
+  )
+
+
+```
+
+
+Q31. In your experience, what are some of the best practices funders have used to share their power with your group, organization, and/or movement?
+
+```{r q31, echo=F, message=F, warning=F}
+
+
+```
 
