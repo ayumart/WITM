@@ -52,7 +52,7 @@ rm(list = ls())
 ```{r upload, echo=F, message=F, warning=F}
 
 # OPEN CSV file
-witm <- read.csv2("Data/WITM_csv_last.csv")
+witm <- read.csv2("Data/WITM_FINAL_sept.csv")
 
 source(file="WITM_variables.R") 
 
@@ -61,7 +61,7 @@ source(file="WITM_variables.R")
 
 
 ```{r date, echo=F, message=F, warning=F}
-answers_by_date<-witm  %>% 
+answers_by_date<-base  %>% 
   group_by(date) %>%  
   summarise(qt=n())
 
@@ -286,6 +286,8 @@ ggplot(q4_focus, aes(x = reorder(q4_awid_focus, -Percentage), y = Percentage, fi
 
 
 ```
+
+
 
 **--Lecture-----------------------------------------------------------------------**
 
@@ -2220,6 +2222,13 @@ knitr::kable(q23_other) %>%
 ```
 
 
+**--Lecture -----------------------------------------------------------------------**
+
+
+
+**------------------------------------------------------------------------------------------------**
+
+
 **-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-**
 
 
@@ -2414,8 +2423,138 @@ ggplot(q27, aes(x = reorder(Source, Percentage), y = Percentage, fill=Source)) +
 
 ```
 
+
+**--Lecture -----------------------------------------------------------------------**
+
+
+
+**------------------------------------------------------------------------------------------------**
+
 **-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-**
 
+### Sub-section 2.3: Funding to counter anti-rights and anti-gender trends
+
+
+**Resources generated autonomously** are the financial, human or material resources that your group, organization and/or movement generates independent from external funders.
+
+*To learn more about the power of autonomous self-generated resourcing, see:* [https://our-resource.com/about/] (https://our-resource.com/about/)
+
+Q28. Between 2021 and 2023, did your group, organization and/or movement rely on any of the following forms of autonomous resourcing to generate income and fund your work? 
+
+```{r q28, echo=F, message=F, warning=F}
+
+#Convertir campos vacíos de la variable q28 en NA
+ base <- base %>%
+  mutate(q28_autonomous_resourcing = na_if(q28_autonomous_resourcing, ""))
+
+
+q28<-base %>%
+  filter(!is.na(q28_autonomous_resourcing)) %>%
+  summarise(Total= round(n(),0),
+    none = sum(q28_autonomous_resourcing.none == 1, na.rm = TRUE),
+    volun = sum(q28_autonomous_resourcing.volunteering == 1, na.rm = TRUE),
+    member = sum(q28_autonomous_resourcing.membership_fees == 1, na.rm = TRUE),
+    product = sum(q28_autonomous_resourcing.product_sales == 1, na.rm = TRUE),
+    service = sum(q28_autonomous_resourcing.service_sales == 1, na.rm = TRUE),
+    property = sum(q28_autonomous_resourcing.property_rent_or_lease == 1, na.rm = TRUE),
+    donation = sum(q28_autonomous_resourcing.donations == 1, na.rm = TRUE),
+    crowd = sum(q28_autonomous_resourcing.crowdfunding== 1, na.rm = TRUE),
+    in_kind = sum(q28_autonomous_resourcing.in_kind_contributions== 1, na.rm = TRUE),
+    aid = sum(q28_autonomous_resourcing.mutual_aid== 1, na.rm = TRUE),
+    other = sum(q28_autonomous_resourcing.98== 1, na.rm = TRUE),
+    None = round(none / Total * 100, 1),
+    Volunteering = round(volun/ Total * 100, 1),
+    "Membership fees" = round(member / Total * 100, 1),
+    "Sale of products" = round(product / Total * 100, 1),
+    "Sale of services" = round(service / Total * 100, 1),
+    "Rent or lease of property"  = round(property / Total * 100, 1),
+    Donations = round(donation / Total * 100, 1),
+    Crowdfunding = round(crowd / Total * 100, 1),
+    "In-kind contributions"  = round(in_kind / Total * 100, 1),
+    "Mutual aid" = round(aid / Total * 100, 1),
+    Other = round(other / Total * 100, 1)) %>% 
+  select(1,13:23)
+
+q28<-q28%>% 
+  pivot_longer(cols = 2:12,
+               names_to = "Source",
+               values_to = "Percentage") %>% 
+  select(2:3) %>% 
+  arrange(desc(Percentage))
+
+ggplot(q28, aes(x = reorder(Source, Percentage), y = Percentage, fill=Source)) +
+  geom_bar(stat = "identity") +
+  geom_text(aes(label = sprintf("%.1f%%", Percentage)), hjust=-0.02, vjust = 0.5, size = 3.2) +
+  labs(title = "Autonomous resourcing",
+       x = " ",
+       y = "Percentage") +
+  scale_y_continuous(expand = expansion(mult = c(0, 0.1)))+
+  theme_minimal() +
+  theme(legend.position = "none",
+        panel.grid.major.x = element_blank(), # Eliminar líneas de la cuadrícula vertical
+        panel.grid.minor.x = element_blank() # Eliminar líneas de la cuadrícula vertical menores
+  )+
+  coord_flip()
+
+
+```
+
+Q29. Between 2021 and 2023, how did your group, organization and/or movement’s reliance on autonomous resourcing change?
+
+```{r q29, echo=F, message=F, warning=F}
+
+#Convertir campos vacíos de la variable q13 en NA
+ base <- base %>%
+  mutate(q29_reliance_aut_resoursing = na_if(q29_reliance_aut_resoursing, ""))
+
+Single-select
+Grew substantively
+Grew slightly
+Stayed the same
+Decreased slightly
+Decreased substantially
+Not applicable
+
+
+unique(base$q29_reliance_aut_resoursing)
+q29<-base %>%
+  filter(!is.na(q29_reliance_aut_resoursing) & q29_reliance_aut_resoursing!="not_applicable") %>% 
+  mutate(q29_recod= case_when(
+    q29_reliance_aut_resoursing=="grown_substantively" ~ "(a) Grew substantively",
+    q29_reliance_aut_resoursing=="grown_slightly" ~ "(b) Grew slightly",
+    q29_reliance_aut_resoursing=="stayed_same" ~ "(c) Stayed the same",
+    q29_reliance_aut_resoursing=="decreased_slightly" ~ "(d) Decreased slightly",
+    q29_reliance_aut_resoursing=="decreased_substantially" ~ "(e) Decreased substantially",
+    TRUE ~ NA)) %>% 
+  group_by(q29_recod) %>% 
+  summarise(Count=n()) %>% 
+  mutate(Percentage=round((Count/sum(Count))*100,1)) %>% 
+  arrange(q29_recod) %>%   
+  rename("Change"=q29_recod)
+
+
+#Crear tabla
+knitr::kable(q29) %>% 
+  kable_minimal()
+
+
+#Crear el gráfico
+ggplot(q5, aes(x = reorder(Register, -Percentage), y = Percentage, fill=Register)) +
+  geom_bar(stat = "identity") +
+  geom_text(aes(label = sprintf("%.1f%%", Percentage)), vjust = -0.5, size = 3.5) +
+  labs(title = "Distribution by registration",
+       x = " ",
+       y = "Percentage") +
+  theme_minimal() +
+  theme(legend.position = "none",
+        panel.grid.major.x = element_blank(), # Eliminar líneas de la cuadrícula vertical
+        panel.grid.minor.x = element_blank() # Eliminar líneas de la cuadrícula vertical menores
+  )
+
+```
+
+
+**-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-**
 
 ## Section 3: Shifting Power
 

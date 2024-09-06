@@ -73,6 +73,29 @@ witm<-witm %>%
 base<-witm %>% 
   filter(q0_consent=="yes")
 
+#################################################
+
+#Convertir campos vacíos de la variable q2 en NA
+base <- base %>%
+  mutate(q2_name_lower = tolower(q2_name),  # Convierte a minúsculas para comparar de manera uniforme
+         is_na_q2_name = is.na(q2_name)) %>%  # Identifica filas con NA en q2_name
+  group_by(q2_name_lower) %>%
+  mutate(
+    non_missing_count = rowSums(across(everything(), ~ !is.na(.))),
+    is_best = ifelse(is_na_q2_name, TRUE, row_number(desc(non_missing_count)) == 1)  # Mantiene filas con NA o con más información
+  ) %>%
+  filter(is_best & q2_name!="International Women*  Space Berlin") %>%
+  select(-non_missing_count, -is_best, -is_na_q2_name) %>%
+  ungroup() %>% 
+  select(-q2_name_lower)
+
+
+################################################
+
+
+
+
+
 base<- base %>%
   mutate(q4_awid_focus=case_when
          (
@@ -178,4 +201,5 @@ base<- base %>%
               q10_budget_year_2023=="(k) 2000001 - 4000000" |
               q10_budget_year_2023=="(l) > 4000001") ~ "(h) > 250001",
            TRUE ~ q10_budget_year_2023))  
+
 
