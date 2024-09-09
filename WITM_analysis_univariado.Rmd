@@ -2566,7 +2566,6 @@ q30<-base %>%
   summarise(Total=n()) %>% 
   mutate(Percentage=round((Total/sum(Total))*100,1)) %>% 
   arrange(desc(Percentage))
-  rename("Shifting priorities"="q30_shift_priorities")
 
 
 #knitr::kable(q30) %>% 

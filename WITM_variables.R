@@ -75,25 +75,37 @@ base<-witm %>%
 
 #################################################
 
+
 #Convertir campos vacíos de la variable q2 en NA
 base <- base %>%
-  mutate(q2_name_lower = tolower(q2_name),  # Convierte a minúsculas para comparar de manera uniforme
+  mutate(q2_name = na_if(q2_name, ""))
+
+# Convertir `q2_name` a minúsculas para la comparación de duplicados
+base <- base %>%
+  mutate(q2_name_lower = tolower(q2_name),  # Normaliza para comparación
          is_na_q2_name = is.na(q2_name)) %>%  # Identifica filas con NA en q2_name
+    # Calcular el número de respuestas no NA para cada fila
   group_by(q2_name_lower) %>%
-  mutate(
-    non_missing_count = rowSums(across(everything(), ~ !is.na(.))),
-    is_best = ifelse(is_na_q2_name, TRUE, row_number(desc(non_missing_count)) == 1)  # Mantiene filas con NA o con más información
-  ) %>%
-  filter(is_best & q2_name!="International Women*  Space Berlin") %>%
-  select(-non_missing_count, -is_best, -is_na_q2_name) %>%
+  mutate(non_missing_count = rowSums(across(everything(), ~ !is.na(.))),
+         is_best = ifelse(is_na_q2_name, TRUE, row_number(desc(non_missing_count)) == 1)) %>% 
+    # Filtrar las filas para la base limpia y las filas eliminadas
   ungroup() %>% 
-  select(-q2_name_lower)
+  filter(is_best | is_na_q2_name) -> base 
+
+#elimino fila repetida
+fila_eliminar <- which(base$q2_name == "International Women*  Space Berlin")
+base <- base[-fila_eliminar, ]
+
+rm(fila_eliminar)
 
 
-################################################
+# Filtrar las filas eliminadas
+base <- base %>%
+  select(-q2_name_lower, -is_na_q2_name, -non_missing_count, -is_best)
 
 
 
+############################################################
 
 
 base<- base %>%
