@@ -52,7 +52,7 @@ rm(list = ls())
 ```{r upload, echo=F, message=F, warning=F}
 
 # OPEN CSV file
-witm <- read.csv2("Data/WITM_csv_0820.csv")
+witm <- read.csv2("Data/WITM_csv_last.csv")
 
 source(file="WITM_variables.R") 
 
