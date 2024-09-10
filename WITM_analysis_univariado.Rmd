@@ -2740,11 +2740,63 @@ Q36. In percentage, how much of your group, organization and/or movement's
 
 ```{r q37, echo=F, message=F, warning=F}
 
+#Convertir campos vacíos de la variable q37 en NA
+ base <- base %>%
+  mutate(q37_operate_savings = na_if(q37_operate_savings, ""))
+
+q37<-base %>% 
+  mutate(q37_operate_savings=case_when(
+    q37_operate_savings=="no_saving_reserves" ~ "We have no savings or reserves",
+    q37_operate_savings=="0_3_months" ~ "Up to 3 months",
+    q37_operate_savings=="3_6_months" ~ "3-6 months",
+    q37_operate_savings=="6_12_months" ~ "6-12 months",
+    q37_operate_savings=="12_24_months" ~ "12-24 months",
+    q37_operate_savings=="over_24_months" ~ "Over 24 months",
+    TRUE ~ NA)) %>% 
+  filter(!is.na(q37_operate_savings)) %>% 
+  group_by(q37_operate_savings) %>% 
+  summarise(Total=n()) %>% 
+  mutate(Percentage=round((Total/sum(Total))*100,1)) %>% 
+  arrange(desc(Percentage)) %>% 
+  rename("Operate on savings"=1)
+
+
+knitr::kable(q37) %>% 
+  kable_minimal()
+
 ```
 
 *Q38. Has your group, organization and/or movement ever been in jeopardy of closing due to insecure funding?
 
 ```{r q38, echo=F, message=F, warning=F}
+
+q38<-base %>% 
+  mutate(q38_closing_risk=case_when(
+    q38_closing_risk=="yes" ~ "Yes",
+    q38_closing_risk=="no" ~ "No",
+    q38_closing_risk=="not_sure" ~ "Not sure",
+    TRUE ~ NA)) %>% 
+  filter(!is.na(q38_closing_risk)) %>% 
+  group_by(q38_closing_risk) %>% 
+  summarise(Total=n()) %>% 
+  mutate(Percentage=round((Total/sum(Total))*100,1)) %>% 
+  arrange(desc(Percentage)) %>% 
+  rename("Jeopardy of closing" = q38_closing_risk) %>% 
+  mutate(Etiqueta = paste(`Jeopardy of closing`, "\n", Percentage, "%"))
+
+
+#knitr::kable(q38) %>% 
+#  kable_minimal()
+
+
+ggplot(q38, aes(x = "", y = Percentage, fill = `Jeopardy of closing`)) +
+  geom_bar(width = 1, stat = "identity", color="white") +
+  coord_polar(theta = "y") +
+  theme_void() +
+  labs(title = "Jeopardy of closing") +
+  geom_text(aes(label = Etiqueta), position = position_stack(vjust = 0.5), size = 4) +
+  theme(legend.position = "none") + # Eliminar leyenda
+  theme(plot.title = element_text(hjust = 0.5)) # Centrar título
 
 ```
 
@@ -2759,6 +2811,25 @@ Q39. Is your group, organization and/or movement currently in a position to offe
 
 ```{r q40, echo=F, message=F, warning=F}
 
+q40<-base %>% 
+  mutate(q40_staff_employed=case_when(
+    q40_staff_employed=="voluntary_work" ~ "None, this work is voluntary",
+    q40_staff_employed=="one_person_dedicated" ~ "1 person",
+    q40_staff_employed=="two_to_three_staff" ~ "2-3 staff",
+    q40_staff_employed=="three_to_five_staff" ~ "3-5 staff",
+    q40_staff_employed=="all_staff_work_on_areas" ~ "All our staff",
+    q40_staff_employed=="98" ~ "Other",
+    TRUE ~ NA)) %>%
+  filter(!is.na(q40_staff_employed)) %>% 
+  group_by(q40_staff_employed) %>% 
+  summarise(Total=n()) %>% 
+  mutate(Percentage=round((Total/sum(Total))*100,1)) %>% 
+  rename("Resource mobilization staff" = q40_staff_employed)
+
+
+knitr::kable(q40) %>% 
+  kable_minimal()
+
 ```
 
 
@@ -2770,6 +2841,33 @@ Q41. Between 2021 and 2023, was your group, organization and/or movement’s inc
 
 ```{r q41, echo=F, message=F, warning=F}
 
+
+q41<-base %>% 
+  mutate(q41_sufficient_income=case_when(
+    q41_sufficient_income=="sufficient" ~ "(a) It was sufficient",
+    q41_sufficient_income=="barely_sufficient" ~ "(b) It was barely sufficient",
+    q41_sufficient_income=="not_sufficient" ~ "(c) It was not sufficient",
+    q41_sufficient_income=="98" ~ "(d) Other",
+    TRUE ~ NA)) %>%
+  filter(!is.na(q41_sufficient_income)) %>% 
+  group_by(q41_sufficient_income) %>% 
+  summarise(Total=n()) %>% 
+  mutate(Percentage=round((Total/sum(Total))*100,1))
+  rename("Sufficient income" = q41_sufficient_income)
+
+
+
+ggplot(q41, aes(x = reorder(q41_sufficient_income, Percentage), y = Percentage, fill = q41_sufficient_income)) +
+  geom_bar(stat = "identity") +
+  geom_text(aes(label = sprintf("%.1f%%", Percentage)), hjust = -0.02, vjust = 0.5, size = 3.2) +
+  labs(title = "Income", x = " ", y = "Percentage") +
+  scale_y_continuous(expand = expansion(mult = c(0, 0.15))) +
+  scale_x_discrete(expand = expansion(mult = c(0.1, 0.15))) + # Ajusta la expansión para el eje x
+  theme_minimal() +
+  theme(legend.position = "none",
+        panel.grid.major.x = element_blank(),
+        panel.grid.minor.x = element_blank()) +
+  coord_flip()
 
 
 ```
