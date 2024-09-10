@@ -75,12 +75,7 @@ witm<-witm %>%
 
 
 
-
-
-base<-witm %>% 
-  filter(q0_consent=="yes")
-
-base<- base %>%
+witm<-witm %>%
   mutate(q4_awid_focus=case_when
          (
            (q4_forms_organizing.lesbian_bisexual_queer_rights==1 |
@@ -92,13 +87,13 @@ base<- base %>%
               q4_forms_organizing.anti_militarization==1 |
               q4_forms_organizing.holistic_safety_protection_collective_care==1) ~1, TRUE ~0))  
 
-base<- base %>%
+witm<-witm %>%
   mutate(q4_awid_focus_no=case_when
          (q4_awid_focus!=1 ~ 1, TRUE ~0))  
 
 
 
-base<- base %>%
+witm<-witm %>%
   mutate(q4_grouped_feminist=case_when
          (
            (q4_forms_organizing.womens_rights==1 |
@@ -159,7 +154,7 @@ base<- base %>%
 # 1,000,001+ USD
 
 
-base<- base %>%
+witm<-witm %>%
   mutate(q10_budget_grp_2021=case_when
          (
            (q10_budget_year_2021=="(g) 100001 - 250000"  |
@@ -170,7 +165,7 @@ base<- base %>%
               q10_budget_year_2021=="(l) > 4000001") ~ "(i) 1,000,001 + USD",
            TRUE ~ q10_budget_year_2021))  
 
-base<- base %>%
+witm<-witm %>%
   mutate(q10_budget_grp_2022=case_when
          (
            (q10_budget_year_2022=="(g) 100001 - 250000"  |
@@ -181,7 +176,7 @@ base<- base %>%
               q10_budget_year_2022=="(l) > 4000001") ~ "(i) 1,000,001 + USD",
            TRUE ~ q10_budget_year_2022))  
 
-base<- base %>%
+witm<-witm %>%
   mutate(q10_budget_grp_2023=case_when
          (
            (q10_budget_year_2023=="(g) 100001 - 250000"  |

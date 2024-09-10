@@ -52,9 +52,8 @@ rm(list = ls())
 ```{r upload, echo=F, message=F, warning=F}
 
 # OPEN CSV file
-#witm <- read.csv2("Data/WITM_csv_last.csv")
 
-witm <- read.csv("Data/WITM_final_cleaned_08_sept.csv")
+witm <- read.csv("Data/WITM_FINAL_FORMATED 5 SEPT 2024.csv", sep=";")
 
 source(file="WITM_variables.R") 
 
@@ -97,8 +96,24 @@ q0<-witm %>%
 knitr::kable(q0) %>% 
   kable_minimal()
 
+rm(witm)
+
 ```
 
+
+```{r upload_final, echo=F, message=F, warning=F}
+
+# OPEN CSV file vf
+
+witm <- read.csv("Data/WITM_final_cleaned_10_sept.csv")
+
+source(file="WITM_variables.R") 
+
+base<-witm
+
+rm(witm)
+
+```
 
 **-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-**
 
@@ -111,6 +126,9 @@ knitr::kable(q0) %>%
 Q2. Which of the following statements best describes your group, organization and/or movement?
 
 ```{r info, echo=F, message=F, warning=F}
+
+
+
 q1<-base %>%
   group_by(q1_description) %>% 
   mutate(q1_description=forcats::fct_recode(as_factor(q1_description),
@@ -2210,6 +2228,7 @@ q23_other<-base %>%
   group_by(q23_context_emergency_spc) %>% 
   summarise(n()) %>% 
   select("Specific context"=1)
+
 
 knitr::kable(q23_other) %>% 
   kable_minimal()
