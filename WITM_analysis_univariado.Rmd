@@ -58,12 +58,14 @@ witm <- read.csv("Data/WITM_final_cleaned_08_sept.csv")
 
 source(file="WITM_variables.R") 
 
+
+
 ```
 
 
 
 ```{r date, echo=F, message=F, warning=F}
-answers_by_date<-witm  %>% 
+answers_by_date<-base  %>% 
   group_by(date) %>%  
   summarise(qt=n())
 
@@ -87,8 +89,7 @@ ggplot(answers_by_date, aes(x =  as.POSIXct(date), y=qt)) +
 
 Q1. I consent to take the WITM survey on behalf of my group, organization or movement.
 ```{r consent, echo=F, message=F, warning=F}
-
-q0<-witm %>%
+q0<-base %>%
   group_by(q0_consent) %>% 
   summarise(Count=n()) %>% 
   mutate(Percentage=round((Count/sum(Count))*100,1)) %>% 
@@ -96,8 +97,15 @@ q0<-witm %>%
 
 knitr::kable(q0) %>% 
   kable_minimal()
-
 ```
+
+
+```{r, echo=F, message=F, warning=F}
+
+print(paste("Number of final answers:",q0$Count))
+```
+
+
 
 
 **-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-**
@@ -114,9 +122,9 @@ Q2. Which of the following statements best describes your group, organization an
 q1<-base %>%
   group_by(q1_description) %>% 
   mutate(q1_description=forcats::fct_recode(as_factor(q1_description),
-                                                     "Primary focus of all our work" = "primary_focus",
-                                            "Specific project(s)" = "specific_projects",
-                                            "Other" = "98")) %>%
+                                            "a.Primary focus of all our work" = "primary_focus",
+                                            "b.Specific project(s)" = "specific_projects",
+                                            "c.Other" = "98")) %>%
   summarise(Count=n()) %>% 
   mutate(Percentage=round((Count/sum(Count))*100,1)) %>% 
   arrange(desc(q1_description)) %>% 
@@ -152,7 +160,7 @@ n_temp<-sum(base$q2_name=="")
 print(paste("The number of organizations that did not answer their name is:",n_temp))
 
 ```
-**--Lecture-----------------------------------------------------------------------**
+**--Reading help-----------------------------------------------------------------------**
 
 Very interesting that almost all organizations responded with their name despite the fact that the possibility of not responding is informed and underlined.
 
@@ -283,12 +291,6 @@ ggplot(q4_focus, aes(x = reorder(q4_awid_focus, -Percentage), y = Percentage, fi
 
 ```
 
-**--Lecture-----------------------------------------------------------------------**
-
-
-
-**------------------------------------------------------------------------------------------------**
-
 
 ____
 
@@ -338,11 +340,6 @@ ggplot(q5, aes(x = reorder(Register, -Percentage), y = Percentage, fill=Register
 
 ```
 
-**--Lecture-----------------------------------------------------------------------**
-
-
-
-**------------------------------------------------------------------------------------------------**
 
 ____
 
@@ -391,7 +388,7 @@ ggplot(q6, aes(x = reorder(Scope, -Percentage), y = Percentage, fill=Scope)) +
 
 ```
 
-**--Lecture-----------------------------------------------------------------------**
+**--Reading help-----------------------------------------------------------------------**
 The sample is very interesting because most of the organizations are national or local (80%). 
 
 **------------------------------------------------------------------------------------------------**
@@ -480,12 +477,17 @@ q7_final <- q7_a %>% left_join(q7_b, by = "q7") %>%
 knitr::kable(q7_final) %>% 
   kable_minimal()
 
+
+```
+
+```{r}
+
 #########################################################################################
 
 
 ##crear gráfico
 
-base1<-base %>% 
+base<-base %>% 
   #Convertir campos vacíos de la variable q7 en NA
   mutate(q7_region_one = na_if(q7_region_one, ""),
                   q7_region_multiple = na_if(q7_region_multiple, "")) %>%
@@ -518,7 +520,7 @@ base1<-base %>%
 
 
 # Resumir datos por región
-region_summary <- base1 %>%
+region_summary <- base %>%
   # Contar el número de registros para cada región
   summarise(AFRICA = sum(AFRICA, na.rm = TRUE),
     LATINAMERICA = sum(LATINAMERICA, na.rm = TRUE),
@@ -544,16 +546,9 @@ ggplot(region_summary, aes(x = reorder(Region, -Percentage), y = Percentage, fil
         panel.grid.minor.x = element_blank() # Eliminar líneas de la cuadrícula vertical menores
   )
 
+
+
 ```
-
-**--Lecture-----------------------------------------------------------------------**
-The sample is very interesting because most of the organizations are national or local (80%). 
-
-**------------------------------------------------------------------------------------------------**
-
-
-
-
 
 
 ```{r q6, eval=F, echo=F, message=F, warning=F}
@@ -901,6 +896,10 @@ Q10. What was the annual budget for your group, organization and/or movement in 
 
 ```{r q10, echo=F, message=F, warning=F}
 
+rm(list=setdiff(ls(), "base"))
+
+#names(base)
+
 q10_2021<-base %>% 
   filter(q9_year_formation<2022) %>% 
   group_by(q10_budget_grp_2021) %>% 
@@ -935,13 +934,13 @@ q10_grouped <- q10_grouped %>%
   pivot_wider(names_from = Year, values_from = c(n, Percentage)) %>% 
   select(1,5:7)
 
-
+q10_grouped
 knitr::kable(q10_grouped) %>% 
   kable_minimal() #imprime cuadro
 ```
 
 
-**--Lecture -----------------------------------------------------------------------**
+**--Reading help -----------------------------------------------------------------------**
 
 This grouping maintains interesting proportions respecting the way the question was asked. Only the highest amounts are grouped together.
 
@@ -1709,7 +1708,7 @@ q19_yes<-q19_yes %>%
 
 
 
-**--Lecture -----------------------------------------------------------------------**
+**--Reading help -----------------------------------------------------------------------**
 
 It is noted that `r q19a1`% of organizations reported losing funding from new donors between 2021 and 2023. Among these organizations, the greatest loss came from INGOs, followed by philanthropic donors.
 
@@ -1825,7 +1824,7 @@ q201 <- base %>%
 
 
 
-**--Lecture -----------------------------------------------------------------------**
+**--Reading help -----------------------------------------------------------------------**
 
 The greatest impact of the reduction in funding between 2021 and 2023, as observed among the organizations that responded to the survey, is seen in the decrease in their activities, with a Percentage of `r q201`%, followed by a reduction in staff. It is noteworthy that the loss of funding has not had a significant impact on the discontinuation of programs or projects.
 
@@ -2077,7 +2076,7 @@ knitr::kable(q21_2021_final) %>%
   kable_minimal()
 ```
 
-**--Lecture -----------------------------------------------------------------------**
+**--Reading help -----------------------------------------------------------------------**
 
 
 
