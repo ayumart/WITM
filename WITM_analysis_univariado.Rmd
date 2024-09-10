@@ -2591,6 +2591,186 @@ Q31. In your experience, what are some of the best practices funders have used t
 
 ```{r q31, echo=F, message=F, warning=F}
 
+#Convertir campos vacíos de la variable q31 en NA
+ base <- base %>%
+  mutate(q31_funders_practices = na_if(q31_funders_practices, ""))
+
+
+q31<-base %>%
+  filter(!is.na(q31_funders_practices)) %>%
+  summarise(Total= round(n(),0),
+    simple = sum(q31_funders_practices.funding_application_simplified == 1, na.rm = TRUE),
+    core = sum(q31_funders_practices.core_funding == 1, na.rm = TRUE),
+    multi = sum(q31_funders_practices.multi_year_funding == 1, na.rm = TRUE),
+    flex = sum(q31_funders_practices.flexible_funding == 1, na.rm = TRUE),
+    open = sum(q31_funders_practices.open_communication_on_funding == 1, na.rm = TRUE),
+    meaning = sum(q31_funders_practices.meaningful_funder_consultations == 1, na.rm = TRUE),
+    value = sum(q31_funders_practices.funders_alignment_with_values == 1, na.rm = TRUE),
+    report = sum(q31_funders_practices.simplified_reporting== 1, na.rm = TRUE),
+    parti = sum(q31_funders_practices.participatory_grantmaking== 1, na.rm = TRUE),
+    all = sum(q31_funders_practices.all== 1, na.rm = TRUE),
+    none = sum(q31_funders_practices.none== 1, na.rm = TRUE),
+    other = sum(q31_funders_practices.98== 1, na.rm = TRUE),
+    "Simplified funding application processes" = round(simple / Total * 100, 1),
+    "Core funding" = round(core / Total * 100, 1),
+    "Multi-year funding" = round(multi / Total * 100, 1),
+    "Flexible funding"  = round(flex / Total * 100, 1),
+    "Open communication" = round(open/ Total * 100, 1),
+    "Meaningful consultations to set funders agendas and priorities" = round(meaning / Total * 100, 1),
+    "Funders alignment and trust with grantee partner’s political values and missions"  = round(value / Total * 100, 1),
+    "Simplified reporting processes" = round(report / Total * 100, 1),
+    "Introduction of a participatory grant decision-making process" = round(parti/ Total * 100, 1),
+    "All of the above" = round(all/ Total * 100, 1),
+    "None of the above" = round(none/ Total * 100, 1),
+    Other = round(other / Total * 100, 1)) %>% 
+  select(1,14:25)
+
+q31<-q31%>% 
+  pivot_longer(cols = 2:13,
+               names_to = "Practices",
+               values_to = "Percentage") %>% 
+  select(2:3) %>% 
+  arrange(desc(Percentage))
+
+ggplot(q31, aes(x = reorder(Practices, Percentage), y = Percentage, fill=Practices)) +
+  geom_bar(stat = "identity") +
+  geom_text(aes(label = sprintf("%.1f%%", Percentage)), hjust=-0.02, vjust = 0.5, size = 3.2) +
+  labs(title = "Best funders practices",
+       x = " ",
+       y = "Percentage") +
+  scale_y_continuous(expand = expansion(mult = c(0, 0.1)))+
+  theme_minimal() +
+  theme(legend.position = "none",
+        panel.grid.major.x = element_blank(), # Eliminar líneas de la cuadrícula vertical
+        panel.grid.minor.x = element_blank() # Eliminar líneas de la cuadrícula vertical menores
+  )+
+  coord_flip()
+
+```
+
+Q32. To what extent does your group, organization, and/or movement face the following barriers in accessing external funding?
+
+```{r q32, echo=F, message=F, warning=F}
+
+```
+
+Q33. How can AWID support you with these challenges?
+
+```{r q33, echo=F, message=F, warning=F}
+
+#Convertir campos vacíos de la variable q33 en NA
+ base <- base %>%
+  mutate(q33_awid_support = na_if(q33_awid_support, ""))
+
+
+q33<-base %>%
+  filter(!is.na(q33_awid_support)) %>%
+  summarise(Total= round(n(),0),
+    db = sum(q33_awid_support.fundraising_info_database == 1, na.rm = TRUE),
+    research = sum(q33_awid_support.resourcing_research == 1, na.rm = TRUE),
+    global = sum(q33_awid_support == 1, na.rm = TRUE),
+    open = sum(q33_awid_support.open_dialogue_funders == 1, na.rm = TRUE),
+    advoc = sum(q33_awid_support.advocacy_support_resourcing == 1, na.rm = TRUE),
+    gov = sum(q33_awid_support.advocacy_support_gov_bodies == 1, na.rm = TRUE),
+    share = sum(q33_awid_support.resourcing_skill_sharing == 1, na.rm = TRUE),
+    feminist = sum(q33_awid_support.bridges_feminist_funds== 1, na.rm = TRUE),
+    other = sum(q33_awid_support.98== 1, na.rm = TRUE),
+    "Information on fundraising sources" = round(db / Total * 100, 1),
+    "Research on the resourcing realities of feminist organizing" = round(research / Total * 100, 1),
+    "Facilitate connections and networks with feminist activists globally" = round(global / Total * 100, 1),
+    "Create more open spaces for dialogue with funders"  = round(open / Total * 100, 1),
+    "Support your advocacy with funders for more responsive resourcing" = round(advoc/ Total * 100, 1),
+    "Support your advocacy with national governments and regional bodies"  = round(gov / Total * 100, 1),
+    "Support skills sharing on alternative ways of feminist resourcing" = round(share / Total * 100, 1),
+    "Support  to create better bridges with women's and feminist funds" = round(feminist/ Total * 100, 1),
+    Other = round(other / Total * 100, 1)) %>% 
+  select(1,11:12, 14:19)
+
+q33<-q33%>% 
+  pivot_longer(cols = 2:9,
+               names_to = "Support",
+               values_to = "Percentage") %>% 
+  select(2:3) %>% 
+  arrange(desc(Percentage))
+
+
+ggplot(q33, aes(x = reorder(Support, Percentage), y = Percentage, fill = Support)) +
+  geom_bar(stat = "identity") +
+  geom_text(aes(label = sprintf("%.1f%%", Percentage)), hjust = -0.02, vjust = 0.5, size = 3.2) +
+  labs(title = "AWID Support", x = " ", y = "Percentage") +
+  scale_y_continuous(expand = expansion(mult = c(0, 0.15))) +
+  scale_x_discrete(expand = expansion(mult = c(0.1, 0.15))) + # Ajusta la expansión para el eje x
+  theme_minimal() +
+  theme(legend.position = "none",
+        panel.grid.major.x = element_blank(),
+        panel.grid.minor.x = element_blank()) +
+  coord_flip()
+
+
+```
+
+
+**-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-**
+
+## Section 4: Sustainability 
+
+Q35. Which of the following strategies do you most rely on in raising external funding for your work?  
+
+```{r q35, echo=F, message=F, warning=F}
+
+
+```
+
+
+Q36. In percentage, how much of your group, organization and/or movement's 
+
+```{r q36, echo=F, message=F, warning=F}
+
+
+```
+
+*Q37. If your external funding were to end immediately, how many months could your group, organization and/or movement operate using only savings and reserves?
+
+```{r q37, echo=F, message=F, warning=F}
+
+```
+
+*Q38. Has your group, organization and/or movement ever been in jeopardy of closing due to insecure funding?
+
+```{r q38, echo=F, message=F, warning=F}
+
+```
+
+Q39. Is your group, organization and/or movement currently in a position to offer the following employment conditions and benefits to staff?
+```{r q39, echo=F, message=F, warning=F}
+
+```
+
+
+*Q40. Between 2021 and 2023, how many paid, full-time staff focusing primarily on resource mobilization have been employed by your group, organization and/or movement?
+
+
+```{r q40, echo=F, message=F, warning=F}
+
+```
+
+
+**-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-**
+
+## Section 5: Key Aspirations
+
+Q41. Between 2021 and 2023, was your group, organization and/or movement’s income sufficient to realize your strategic goals?
+
+```{r q41, echo=F, message=F, warning=F}
+
+
+
+```
+
+
+*Q42. How much would your aspirational budget be (in $USD amount)?
+
+```{r q42, echo=F, message=F, warning=F}
 
 ```
 
