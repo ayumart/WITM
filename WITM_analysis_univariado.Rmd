@@ -52,7 +52,9 @@ rm(list = ls())
 ```{r upload, echo=F, message=F, warning=F}
 
 # OPEN CSV file
-witm <- read.csv2("Data/WITM_csv_last.csv")
+#witm <- read.csv2("Data/WITM_csv_last.csv")
+
+witm <- read.csv("Data/WITM_final_cleaned_08_sept.csv")
 
 source(file="WITM_variables.R") 
 
@@ -75,13 +77,7 @@ ggplot(answers_by_date, aes(x =  as.POSIXct(date), y=qt)) +
   geom_text(aes(label = signif(qt)), nudge_y = 3)
 ```
 
-**--Lecture-----------------------------------------------------------------------**
 
-In general the polls always have a high peak on the firsts days, WITM also shows this. Then there is another spike on 27-28 June, probably a strengthening of communication. On the 4th of July it increases again.
-During the days of the sessions, the number of responses also increased significantly.
-
-
-**------------------------------------------------------------------------------------------------**
 
 **-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-**
 

@@ -37,7 +37,8 @@ rm(list = ls())
 
 
 # To upload CSV file
-datos <- read.csv2("Data/WITM_csv_last.csv")
+#datos <- read.csv2("Data/WITM_csv_last.csv")
+datos <- read.csv("Data/WITM_final_cleaned_08_sept.csv")
 
 # To upload xlsx file
 #datos<- read_xlsx("WITM_xls_value2.xlsx", sheet = 1)
