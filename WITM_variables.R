@@ -188,6 +188,19 @@ witm<-witm %>%
            TRUE ~ q10_budget_year_2023))  
 
 
+witm<-witm %>% 
+  mutate(q42_aspirational_budget=case_when(
+  q42_aspirational_budget=="zero_budget" ~  "(a) Zero budget",
+  q42_aspirational_budget=="<5000" ~  "(b) <5,000 USD",
+  q42_aspirational_budget=="<10000" ~  "(c) 5,001-10,000 USD",
+  q42_aspirational_budget=="<30000" ~  "(d) 10,001-30,000 USD",
+  q42_aspirational_budget=="<50000" ~  "(e) 30,001 -50,000 USD",
+  q42_aspirational_budget=="<100000" ~  "(f) 50,001 - 100,000 USD",
+  q42_aspirational_budget=="<250000" | q42_aspirational_budget=="<500000" ~  "(g) 100,001 - 500,000 USD",
+  q42_aspirational_budget=="<1000000" ~ "(h) 500,001 - 1,000,000 USD",
+  q42_aspirational_budget=="between_2m_and_4m_usd" | q42_aspirational_budget=="greater_than_4m_usd" ~ "(i) 1,000,001 + USD",
+  TRUE ~  NA))
+
 # delete this after
 # base<- base %>%
 #   mutate(q10_budget_grp_2021=case_when

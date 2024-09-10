@@ -2853,7 +2853,6 @@ q41<-base %>%
   group_by(q41_sufficient_income) %>% 
   summarise(Total=n()) %>% 
   mutate(Percentage=round((Total/sum(Total))*100,1))
-  rename("Sufficient income" = q41_sufficient_income)
 
 
 
@@ -2877,6 +2876,109 @@ ggplot(q41, aes(x = reorder(q41_sufficient_income, Percentage), y = Percentage, 
 
 ```{r q42, echo=F, message=F, warning=F}
 
+
+q42<-base %>% 
+  filter(!is.na(q42_aspirational_budget)) %>% 
+  group_by(q42_aspirational_budget) %>% 
+  summarise(Total=n()) %>% 
+  mutate(Percentage=round((Total/sum(Total))*100,1)) %>% 
+  rename("Aspirational budget" = q42_aspirational_budget)
+
+
+knitr::kable(q42) %>% 
+  kable_minimal()
+
 ```
 
 
+**-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-**
+
+## Section 6: Next Steps
+
+
+*Q45. Did anyone from your group, organization and/or movement respond to AWID’s Where is the Money survey in 2008 or 2011? 
+
+```{r q45, echo=F, message=F, warning=F}
+
+q45<-base %>% 
+  mutate(q45_previous_response=case_when(
+    q45_previous_response=="yes" ~ "Yes",
+    q45_previous_response=="no" ~ "No",
+    q45_previous_response=="99" ~ "Don't know",
+    TRUE ~ NA)) %>% 
+  filter(!is.na(q45_previous_response)) %>% 
+  group_by(q45_previous_response) %>% 
+  summarise(Total=n()) %>% 
+  mutate(Percentage=round((Total/sum(Total))*100,1)) %>% 
+  arrange(desc(Percentage)) %>% 
+  rename("Previous response" = q45_previous_response) %>% 
+  mutate(Etiqueta = paste(`Previous response`, "\n", Percentage,"%"))
+
+
+#knitr::kable(q38) %>% 
+#  kable_minimal()
+
+
+ggplot(q45, aes(x = "", y = Percentage, fill = `Previous response`)) +
+  geom_bar(width = 1, stat = "identity", color="white") +
+  coord_polar(theta = "y") +
+  theme_void() +
+  labs(title = "Previous response") +
+  geom_text(aes(label = Etiqueta), position = position_stack(vjust = 0.5), size = 4) +
+  theme(legend.position = "none") + # Eliminar leyenda
+  theme(plot.title = element_text(hjust = 0.5)) # Centrar título
+
+```
+
+
+Q46. In which language did you answer the survey?
+
+```{r q46, echo=F, message=F, warning=F}
+
+unique(base$q46_language)
+
+q46<-base %>% 
+  mutate(q46_language=case_when(
+    q46_language=="arabic" ~ "Arabic",
+    q46_language=="english" ~ "English",
+    q46_language=="french" ~ "French",
+    q46_language=="portuguese" ~ "Portuguese",
+    q46_language=="russian" ~ "Russian",
+    q46_language=="spanish" ~ "Spanish",
+    TRUE ~ NA)) %>% 
+  filter(!is.na(q46_language)) %>% 
+  group_by(q46_language) %>% 
+  summarise(Total=n()) %>% 
+  mutate(Percentage=round((Total/sum(Total))*100,1)) %>% 
+  arrange(desc(Percentage)) %>% 
+  rename("Language" = q46_language)
+
+
+knitr::kable(q46) %>% 
+  kable_minimal()
+
+```
+
+*Q47. Would you be open to AWID contacting you about next steps in the WITM research, including the interview?
+
+```{r q47, echo=F, message=F, warning=F}
+
+q47<-base %>% 
+  mutate(Q47_Would_you_be_op_in_the_WITM_research=case_when(
+    Q47_Would_you_be_op_in_the_WITM_research=="yes" ~ "Yes",
+    Q47_Would_you_be_op_in_the_WITM_research=="no" ~ "No",
+    Q47_Would_you_be_op_in_the_WITM_research=="don_t_know" ~ "Don't know",
+    TRUE ~ NA)) %>% 
+  filter(!is.na(Q47_Would_you_be_op_in_the_WITM_research)) %>% 
+  group_by(Q47_Would_you_be_op_in_the_WITM_research) %>% 
+  summarise(Total=n()) %>% 
+  mutate(Percentage=round((Total/sum(Total))*100,1)) %>% 
+  arrange(desc(Q47_Would_you_be_op_in_the_WITM_research)) %>% 
+  rename("Open to be contacted" = Q47_Would_you_be_op_in_the_WITM_research)
+
+
+knitr::kable(q47) %>% 
+  kable_minimal()
+
+
+```
