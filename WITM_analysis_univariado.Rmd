@@ -113,6 +113,9 @@ base<-witm
 
 rm(witm)
 
+
+
+
 ```
 
 **-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-**
@@ -149,9 +152,9 @@ ggplot(q1, aes(x = reorder(Description, -Percentage), y = Percentage, fill=Descr
        y = "Percentage") +
   theme_minimal() +
   theme(legend.position = "none",
-        panel.grid.major.x = element_blank(), # Eliminar líneas de la cuadrícula vertical
-        panel.grid.minor.x = element_blank() # Eliminar líneas de la cuadrícula vertical menores
-  )
+        axis.text.x = element_text(),  # Mantiene las etiquetas del eje x y ajusta la rotación
+        panel.grid.major = element_blank(),  # Elimina la cuadrícula mayor
+        panel.grid.minor = element_blank())
 
 ```
 
@@ -249,7 +252,7 @@ knitr::kable(q4) %>%
 _____
 
 
-**Type of organization - grouped (q4_grouped)**
+**Type of organization grouped**
 
 This variable is constructed by recognizing the organizations that work on one of AWID's focus topics and those that do not, are placed as "other subjects (not focus)".
 
@@ -288,16 +291,16 @@ ggplot(q4_focus, aes(x = reorder(q4_awid_focus, -Percentage), y = Percentage, fi
        y = "Percentage") +
   theme_minimal() +
   theme(legend.position = "none",
-        panel.grid.major.x = element_blank(), # Eliminar líneas de la cuadrícula vertical
-        panel.grid.minor.x = element_blank() # Eliminar líneas de la cuadrícula vertical menores
-  )
+        axis.text.x = element_text(),  # Mantiene las etiquetas del eje x y ajusta la rotación
+        panel.grid.major = element_blank(),  # Elimina la cuadrícula mayor
+        panel.grid.minor = element_blank())
 
 ```
 
 _____
 
 
-**Spotlight themes/groups**
+** Forms by organizing grouped by spotlight themes/groups**
 
 ```{r type_grouped2, echo=F, message=F, warning=F}
 q4_agrup<-base %>%
@@ -337,9 +340,9 @@ ggplot(q4_agrup, aes(x = reorder(Types, Percentage), y = Percentage, fill=Types)
   scale_y_continuous(expand = expansion(mult = c(0, 0.1)))+
   theme_minimal() +
   theme(legend.position = "none",
-        panel.grid.major.x = element_blank(), # Eliminar líneas de la cuadrícula vertical
-        panel.grid.minor.x = element_blank() # Eliminar líneas de la cuadrícula vertical menores
-  )+
+        axis.text.x = element_text(),  # Mantiene las etiquetas del eje x y ajusta la rotación
+        panel.grid.major = element_blank(),  # Elimina la cuadrícula mayor
+        panel.grid.minor = element_blank())+
   coord_flip()
 
 
@@ -373,22 +376,22 @@ q5<-base %>%
   rename("Register"=q5_registered)
 
 #Crear tabla
-#knitr::kable(q5) %>% 
-#  kable_minimal()
+knitr::kable(q5) %>% 
+  kable_minimal()
 
 
 #Crear el gráfico
-ggplot(q5, aes(x = reorder(Register, -Percentage), y = Percentage, fill=Register)) +
-  geom_bar(stat = "identity") +
-  geom_text(aes(label = sprintf("%.1f%%", Percentage)), vjust = -0.5, size = 3.5) +
-  labs(title = "Distribution by registration",
-       x = " ",
-       y = "Percentage") +
-  theme_minimal() +
-  theme(legend.position = "none",
-        panel.grid.major.x = element_blank(), # Eliminar líneas de la cuadrícula vertical
-        panel.grid.minor.x = element_blank() # Eliminar líneas de la cuadrícula vertical menores
-  )
+#ggplot(q5, aes(x = reorder(Register, -Percentage), y = Percentage, fill=Register)) +
+#  geom_bar(stat = "identity") +
+#  geom_text(aes(label = sprintf("%.1f%%", Percentage)), vjust = -0.5, size = 3.5) +
+#  labs(title = "Distribution by registration",
+#       x = " ",
+#       y = "Percentage") +
+#  theme_minimal() +
+#  theme(legend.position = "none",
+#        axis.text.x = element_text(),  # Mantiene las etiquetas del eje x y ajusta la rotación
+#        panel.grid.major = element_blank(),  # Elimina la cuadrícula mayor
+#        panel.grid.minor = element_blank())
 
 
 
@@ -434,9 +437,9 @@ ggplot(q6, aes(x = reorder(Scope, -Percentage), y = Percentage, fill=Scope)) +
        y = "Percentage") +
   theme_minimal() +
   theme(legend.position = "none",
-        panel.grid.major.x = element_blank(), # Eliminar líneas de la cuadrícula vertical
-        panel.grid.minor.x = element_blank() # Eliminar líneas de la cuadrícula vertical menores
-  )
+        axis.text.x = element_text(),  # Mantiene las etiquetas del eje x y ajusta la rotación
+        panel.grid.major = element_blank(),  # Elimina la cuadrícula mayor
+        panel.grid.minor = element_blank())
 
 
 ```
@@ -454,10 +457,6 @@ Organizations working locally, regionally or globally were consolidated.*
 
 
 ```{r region, echo=F, message=F, warning=F}
-
-
-
-
 q7_a<-base %>% 
   filter(q6_geo_scope=="locally_focused" | q6_geo_scope=="nationally_focused") %>% 
   group_by(q7_region_one) %>%
@@ -527,8 +526,12 @@ knitr::kable(q7_final) %>%
   kable_minimal()
 
 #########################################################################################
+```
+
+____
 
 
+```{r region2, echo=F, message=F, warning=F}
 ##crear gráfico
 
 base1<-base %>% 
@@ -586,9 +589,9 @@ ggplot(region_summary, aes(x = reorder(Region, -Percentage), y = Percentage, fil
        y = "Percentage") +
   theme_minimal() +
   theme(legend.position = "none",
-        panel.grid.major.x = element_blank(), # Eliminar líneas de la cuadrícula vertical
-        panel.grid.minor.x = element_blank() # Eliminar líneas de la cuadrícula vertical menores
-  )
+        axis.text.x = element_text(),  # Mantiene las etiquetas del eje x y ajusta la rotación
+        panel.grid.major = element_blank(),  # Elimina la cuadrícula mayor
+        panel.grid.minor = element_blank())
 
 ```
 
@@ -902,23 +905,24 @@ q9<-base %>%
   group_by(q9_year_formation_agrup) %>% 
   summarise(total=n()) %>% 
   mutate(Percentage=round((total/sum(total))*100,1)) %>% 
-  arrange(q9_year_formation_agrup) 
+  arrange(q9_year_formation_agrup) %>% 
+  rename("Year of formation"=1)
 
 
 knitr::kable(q9) %>% 
   kable_minimal()
 
-ggplot(q9, aes(x = q9_year_formation_agrup, y = Percentage, fill = q9_year_formation_agrup)) +
-  geom_bar(stat = "identity") +
-  geom_text(aes(label = sprintf("%.1f%%", Percentage)), vjust = -0.5, size = 3.5) +
-  labs(title = "Year of formation",
-       x = "Year",
-       y = "Percentage") +
-  theme_minimal() +
-  theme(legend.position = "none",
-        panel.grid.major.x = element_blank(), # Eliminar líneas de la cuadrícula vertical
-        panel.grid.minor.x = element_blank() # Eliminar líneas de la cuadrícula vertical menores
-  )
+#ggplot(q9, aes(x = q9_year_formation_agrup, y = Percentage, fill = q9_year_formation_agrup)) +
+#  geom_bar(stat = "identity") +
+#  geom_text(aes(label = sprintf("%.1f%%", Percentage)), vjust = -0.5, size = 3.5) +
+#  labs(title = "Year of formation",
+#       x = "Year",
+#       y = "Percentage") +
+#  theme_minimal() +
+#  theme(legend.position = "none",
+#        panel.grid.major.x = element_blank(), # Eliminar líneas de la cuadrícula vertical
+#        panel.grid.minor.x = element_blank() # Eliminar líneas de la cuadrícula vertical menores
+#  )
 
 
 
@@ -1057,9 +1061,9 @@ ggplot(q13, aes(x = q13_ext_funding, y = Percentage, fill=q13_ext_funding)) +
        y = "Percentage") +
   theme_minimal() +
   theme(legend.position = "none",
-        panel.grid.major.x = element_blank(), # Eliminar líneas de la cuadrícula vertical
-        panel.grid.minor.x = element_blank() # Eliminar líneas de la cuadrícula vertical menores
-  )
+        axis.text.x = element_text(),  # Mantiene las etiquetas del eje x y ajusta la rotación
+        panel.grid.major = element_blank(),  # Elimina la cuadrícula mayor
+        panel.grid.minor = element_blank())
 ```
 
 
@@ -1138,25 +1142,25 @@ q14_long <- q14_combined %>%
   mutate(Year = factor(Year, levels = c("2021", "2022", "2023")))  # Ordenar los años
 
 # Crear el gráfico
-ggplot(q14_long, aes(x = q14, y = Percentage, fill = Year)) +
-  geom_bar(stat = "identity", position = "dodge") +
-  geom_text(aes(label = Percentage), 
-            position = position_dodge(width = 0.9), 
-            vjust = 0.5,   # Ajusta la posición vertical de las etiquetas dentro de las barras
-            hjust = 0.0,   # Centra horizontalmente las etiquetas
-            size = 3.2) + # Ajusta el tamaño del texto de las etiquetas
-  labs(
-    title = "Percentage of External Funding in Total Annual Budget by Year",
-    x = NULL,  # Elimina el título del eje x
-    y = "Percentage (%)",
-    fill = "Year") +
-  theme_minimal() +
-  theme(
-    axis.text.x = element_text(),  # Mantiene las etiquetas del eje x y ajusta la rotación
-    panel.grid.major = element_blank(),  # Elimina la cuadrícula mayor
-    panel.grid.minor = element_blank()   # Elimina la cuadrícula menor
-  )+
-  coord_flip()
+#ggplot(q14_long, aes(x = q14, y = Percentage, fill = Year)) +
+#  geom_bar(stat = "identity", position = "dodge") +
+#  geom_text(aes(label = Percentage), 
+#            position = position_dodge(width = 0.9), 
+#            vjust = 0.5,   # Ajusta la posición vertical de las etiquetas dentro de las barras
+#            hjust = 0.0,   # Centra horizontalmente las etiquetas
+#            size = 3.2) + # Ajusta el tamaño del texto de las etiquetas
+#  labs(
+#    title = "Percentage of External Funding in Total Annual Budget by Year",
+#    x = NULL,  # Elimina el título del eje x
+#    y = "Percentage (%)",
+#    fill = "Year") +
+#  theme_minimal() +
+#  theme(
+#    axis.text.x = element_text(),  # Mantiene las etiquetas del eje x y ajusta la rotación
+#    panel.grid.major = element_blank(),  # Elimina la cuadrícula mayor
+#    panel.grid.minor = element_blank()   # Elimina la cuadrícula menor
+#  )+
+#  coord_flip()
 
 
 ```
@@ -1165,7 +1169,7 @@ ____
 
 
 
-**SOURCES OF EXTERNAL FUNDING**
+####**SOURCES OF EXTERNAL FUNDING**
 
 **Bilateral Funders**: governments of countries in the Global North and South that provide grants or any other form of financial support to civil society organizations in the world’s majority countries of the Global South (e.g. The Dutch Ministry of Foreign Affairs or The Mexican Agency for International Development Cooperation). For the purpose of this survey, bilateral funding also includes embassies and other government-run agencies (e.g. the British Council or Alliance Francaise). 
 
@@ -1230,8 +1234,8 @@ q15 <- base %>%
                values_to = "Percentage")
 
 
-knitr::kable(q15) %>% 
-  kable_minimal()
+#knitr::kable(q15) %>% 
+#  kable_minimal()
 
 # Crear el gráfico
 ggplot(q15, aes(x = reorder(Source, Percentage), y = Percentage, fill = Source)) +
@@ -1623,8 +1627,6 @@ q18<-q18 %>%
   arrange(desc(Percentage))
 ```
 
-_____
-
 
 *Reception of new funding between 2021 and 2023*
 
@@ -1638,7 +1640,10 @@ ggplot(q18a, aes(x = Source, y = Percentage, fill=Source)) +
        x = " ",
        y = "Percentage") +
   theme_minimal() +
-  theme(legend.position = "none")
+  theme(legend.position = "none",
+        axis.text.x = element_text(),  # Mantiene las etiquetas del eje x y ajusta la rotación
+        panel.grid.major = element_blank(),  # Elimina la cuadrícula mayor
+        panel.grid.minor = element_blank())
 
 ```
 
@@ -1647,8 +1652,8 @@ _____
 
 *Source of new funding*
 ```{r q18_data, echo=F, message=F, warning=F}
-knitr::kable(q18) %>% 
-  kable_minimal()
+#knitr::kable(q18) %>% 
+#  kable_minimal()
 
 # Crear el gráfico
 ggplot(q18, aes(x = reorder(Source, Percentage), y = Percentage, fill = Source)) +
@@ -1748,9 +1753,6 @@ q19_yes<-q19_yes %>%
 
 
 
-
-
-
 ```{r q19, echo=F, message=F, warning=F}
 #knitr::kable(q19_general) %>% 
 #  kable_minimal()
@@ -1765,19 +1767,24 @@ ggplot(q19_general, aes(x = Source, y = Percentage, fill=Source)) +
   scale_y_continuous(expand = expansion(mult = c(0, 0.1)))+
   theme_minimal() +
   theme(legend.position = "none",
-        axis.text.x = element_text(),  # Mantiene las etiquetas del eje x y ajusta la rotación
-        panel.grid.major = element_blank())
+  panel.grid.major.x = element_blank(), # Elimina líneas de la cuadrícula vertical
+    panel.grid.minor.x = element_blank(), # Elimina líneas de la cuadrícula vertical menores
+    panel.grid.major.y = element_blank(), # Elimina líneas de la cuadrícula horizontal
+    panel.grid.minor.y = element_blank())
 
 
 
 ```
 
+____
+
+
 
 *Organizations that Experienced a Decrease in Funding by Source Between 2021 and 2023*
 
 ```{r q19bb, echo=F, message=F, warning=F}
-knitr::kable(q19_yes) %>% 
-  kable_minimal()
+#knitr::kable(q19_yes) %>% 
+#  kable_minimal()
 
 
 # Crear el gráfico
@@ -1794,8 +1801,10 @@ ggplot(q19_yes, aes(x = reorder(Source, Percentage), y = Percentage, fill = Sour
   scale_y_continuous(expand = expansion(mult = c(0, 0.1)))+
   theme_minimal() +
   theme(legend.position = "none",
-        axis.text.x = element_text(),  # Mantiene las etiquetas del eje x y ajusta la rotación
-        panel.grid.major = element_blank()) +  # Elimina la leyenda si no es necesaria
+  panel.grid.major.x = element_blank(), # Elimina líneas de la cuadrícula vertical
+    panel.grid.minor.x = element_blank(), # Elimina líneas de la cuadrícula vertical menores
+    panel.grid.major.y = element_blank(), # Elimina líneas de la cuadrícula horizontal
+    panel.grid.minor.y = element_blank()) +  # Elimina la leyenda si no es necesaria
   coord_flip()  # Opcional: voltear el gráfico si hay muchas categorías para mejorar la legibilidad
 
 
@@ -1863,18 +1872,18 @@ q201 <- base %>%
 knitr::kable(q20) %>% 
   kable_minimal()
 
-ggplot(q20, aes(x = reorder(Source, Percentage), y = Percentage, fill=Source)) +
-  geom_bar(stat = "identity") +
-  geom_text(aes(label = sprintf("%.1f%%", Percentage)), hjust=-0.1, vjust = 0.5, size = 3.2) +
-  labs(title = "Loss of funding impact",
-       x = " ",
-       y = "Percentage") +
-  scale_y_continuous(expand = expansion(mult = c(0, 0.1)))+
-  theme_minimal() +
-  theme(legend.position = "none",
-        axis.text.x = element_text(),  # Mantiene las etiquetas del eje x y ajusta la rotación
-        panel.grid.major = element_blank())+
-  coord_flip()
+#ggplot(q20, aes(x = reorder(Source, Percentage), y = Percentage, fill=Source)) +
+#  geom_bar(stat = "identity") +
+#  geom_text(aes(label = sprintf("%.1f%%", Percentage)), hjust=-0.1, vjust = 0.5, size = 3.2) +
+#  labs(title = "Loss of funding impact",
+#       x = " ",
+#       y = "Percentage") +
+#  scale_y_continuous(expand = expansion(mult = c(0, 0.1)))+
+#  theme_minimal() +
+#  theme(legend.position = "none",
+#        axis.text.x = element_text(),  # Mantiene las etiquetas del eje x y ajusta la rotación
+#        panel.grid.major = element_blank())+
+#  coord_flip()
 
 ```
 
@@ -2153,15 +2162,16 @@ ggplot(q22, aes(x = q22_var, y = Percentage, fill=q22_var)) +
             hjust=-0.1,
             vjust = 0.5, 
             size = 3.2) +
-  labs(title = "Distribution by type of organization",
+  labs(title = "Grants duration",
        x = " ",
        y = "Percentage") +
   scale_y_continuous(expand = expansion(mult = c(0, 0.1)))+
   theme_minimal() +
   theme(legend.position = "none",
-        panel.grid.major.x = element_blank(), # Eliminar líneas de la cuadrícula vertical
-        panel.grid.minor.x = element_blank() # Eliminar líneas de la cuadrícula vertical menores
-  )+
+  panel.grid.major.x = element_blank(), # Elimina líneas de la cuadrícula vertical
+    panel.grid.minor.x = element_blank(), # Elimina líneas de la cuadrícula vertical menores
+    panel.grid.major.y = element_blank(), # Elimina líneas de la cuadrícula horizontal
+    panel.grid.minor.y = element_blank())+
   coord_flip()
 
 
@@ -2278,9 +2288,10 @@ ggplot(q25, aes(x = reorder(q25_recode, -Percentage), y = Percentage, fill=q25_r
        y = "Percentage") +
   theme_minimal() +
   theme(legend.position = "none",
-        panel.grid.major.x = element_blank(), # Eliminar líneas de la cuadrícula vertical
-        panel.grid.minor.x = element_blank() # Eliminar líneas de la cuadrícula vertical menores
-  )
+  panel.grid.major.x = element_blank(), # Elimina líneas de la cuadrícula vertical
+    panel.grid.minor.x = element_blank(), # Elimina líneas de la cuadrícula vertical menores
+    panel.grid.major.y = element_blank(), # Elimina líneas de la cuadrícula horizontal
+    panel.grid.minor.y = element_blank())
 
 
   
@@ -2318,6 +2329,11 @@ q26_general<-q26_general %>%
 knitr::kable(q26_general) %>% 
   kable_minimal()
 ```
+
+
+____
+
+
 
 *Source counter anti-rights and anti-gender trends funding*
 
@@ -2363,9 +2379,10 @@ ggplot(q26_yes, aes(x = reorder(Source, -Percentage), y = Percentage, fill=Sourc
        y = "Percentage") +
   theme_minimal() +
   theme(legend.position = "none",
-        panel.grid.major.x = element_blank(), # Eliminar líneas de la cuadrícula vertical
-        panel.grid.minor.x = element_blank() # Eliminar líneas de la cuadrícula vertical menores
-  )
+  panel.grid.major.x = element_blank(), # Elimina líneas de la cuadrícula vertical
+    panel.grid.minor.x = element_blank(), # Elimina líneas de la cuadrícula vertical menores
+    panel.grid.major.y = element_blank(), # Elimina líneas de la cuadrícula horizontal
+    panel.grid.minor.y = element_blank())
 
 
 ```
@@ -2425,9 +2442,10 @@ ggplot(q27, aes(x = reorder(Source, Percentage), y = Percentage, fill=Source)) +
   scale_y_continuous(expand = expansion(mult = c(0, 0.1)))+
   theme_minimal() +
   theme(legend.position = "none",
-        panel.grid.major.x = element_blank(), # Eliminar líneas de la cuadrícula vertical
-        panel.grid.minor.x = element_blank() # Eliminar líneas de la cuadrícula vertical menores
-  )+
+  panel.grid.major.x = element_blank(), # Elimina líneas de la cuadrícula vertical
+    panel.grid.minor.x = element_blank(), # Elimina líneas de la cuadrícula vertical menores
+    panel.grid.major.y = element_blank(), # Elimina líneas de la cuadrícula horizontal
+    panel.grid.minor.y = element_blank())+
   coord_flip()
 
 
@@ -2497,9 +2515,10 @@ ggplot(q28, aes(x = reorder(Source, Percentage), y = Percentage, fill=Source)) +
   scale_y_continuous(expand = expansion(mult = c(0, 0.1)))+
   theme_minimal() +
   theme(legend.position = "none",
-        panel.grid.major.x = element_blank(), # Eliminar líneas de la cuadrícula vertical
-        panel.grid.minor.x = element_blank() # Eliminar líneas de la cuadrícula vertical menores
-  )+
+  panel.grid.major.x = element_blank(), # Elimina líneas de la cuadrícula vertical
+    panel.grid.minor.x = element_blank(), # Elimina líneas de la cuadrícula vertical menores
+    panel.grid.major.y = element_blank(), # Elimina líneas de la cuadrícula horizontal
+    panel.grid.minor.y = element_blank())+
   coord_flip()
 
 
@@ -2575,10 +2594,10 @@ ggplot(q30, aes(x = reorder(q30_shift_priorities, -Percentage), y = Percentage, 
        y = "Percentage") +
   theme_minimal() +
   theme(legend.position = "none",
-        panel.grid.major.x = element_blank(), # Eliminar líneas de la cuadrícula vertical
-        panel.grid.minor.x = element_blank() # Eliminar líneas de la cuadrícula vertical menores
-  )
-
+  panel.grid.major.x = element_blank(), # Elimina líneas de la cuadrícula vertical
+    panel.grid.minor.x = element_blank(), # Elimina líneas de la cuadrícula vertical menores
+    panel.grid.major.y = element_blank(), # Elimina líneas de la cuadrícula horizontal
+    panel.grid.minor.y = element_blank())
 
 ```
 
@@ -2640,9 +2659,10 @@ ggplot(q31, aes(x = reorder(Practices, Percentage), y = Percentage, fill=Practic
   scale_y_continuous(expand = expansion(mult = c(0, 0.1)))+
   theme_minimal() +
   theme(legend.position = "none",
-        panel.grid.major.x = element_blank(), # Eliminar líneas de la cuadrícula vertical
-        panel.grid.minor.x = element_blank() # Eliminar líneas de la cuadrícula vertical menores
-  )+
+  panel.grid.major.x = element_blank(), # Elimina líneas de la cuadrícula vertical
+    panel.grid.minor.x = element_blank(), # Elimina líneas de la cuadrícula vertical menores
+    panel.grid.major.y = element_blank(), # Elimina líneas de la cuadrícula horizontal
+    panel.grid.minor.y = element_blank())+
   coord_flip()
 
 ```
@@ -2858,8 +2878,10 @@ ggplot(q33, aes(x = reorder(Support, Percentage), y = Percentage, fill = Support
   scale_x_discrete(expand = expansion(mult = c(0.1, 0.15))) + # Ajusta la expansión para el eje x
   theme_minimal() +
   theme(legend.position = "none",
-        panel.grid.major.x = element_blank(),
-        panel.grid.minor.x = element_blank()) +
+  panel.grid.major.x = element_blank(), # Elimina líneas de la cuadrícula vertical
+    panel.grid.minor.x = element_blank(), # Elimina líneas de la cuadrícula vertical menores
+    panel.grid.major.y = element_blank(), # Elimina líneas de la cuadrícula horizontal
+    panel.grid.minor.y = element_blank()) +
   coord_flip()
 
 
@@ -2943,7 +2965,10 @@ ggplot(q36_long, aes(x = q36, y = Percentage, fill = Year)) +
   coord_flip()
 
 ```
+
+
 _____
+
 
 
 *Q37. If your external funding were to end immediately, how many months could your group, organization and/or movement operate using only savings and reserves?
@@ -3047,6 +3072,11 @@ knitr::kable(q39_general) %>%
 ```
 
 
+____
+
+
+
+
 ```{r q39a, echo=F, message=F, warning=F}
 
 q39<-base %>%
@@ -3088,8 +3118,10 @@ ggplot(q39, aes(x = reorder(Benefits, Percentage), y = Percentage, fill = Benefi
   scale_x_discrete(expand = expansion(mult = c(0.1, 0.15))) + # Ajusta la expansión para el eje x
   theme_minimal() +
   theme(legend.position = "none",
-        panel.grid.major.x = element_blank(),
-        panel.grid.minor.x = element_blank()) +
+  panel.grid.major.x = element_blank(), # Elimina líneas de la cuadrícula vertical
+    panel.grid.minor.x = element_blank(), # Elimina líneas de la cuadrícula vertical menores
+    panel.grid.major.y = element_blank(), # Elimina líneas de la cuadrícula horizontal
+    panel.grid.minor.y = element_blank()) + # Elimina líneas de la cuadrícula horizontal menores 
   coord_flip()
 
 
@@ -3156,10 +3188,10 @@ ggplot(q41, aes(x = reorder(q41_sufficient_income, Percentage), y = Percentage, 
   scale_x_discrete(expand = expansion(mult = c(0.1, 0.15))) + # Ajusta la expansión para el eje x
   theme_minimal() +
   theme(legend.position = "none",
-        panel.grid.major.x = element_blank(),
-        panel.grid.minor.x = element_blank()) +
-  coord_flip()
-
+  panel.grid.major.x = element_blank(), # Elimina líneas de la cuadrícula vertical
+    panel.grid.minor.x = element_blank(), # Elimina líneas de la cuadrícula vertical menores
+    panel.grid.major.y = element_blank(), # Elimina líneas de la cuadrícula horizontal
+    panel.grid.minor.y = element_blank())
 
 ```
 
