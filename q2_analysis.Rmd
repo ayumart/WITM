@@ -1,10 +1,22 @@
 ---
-title: "Where is the Money for Feminist Organizing? Survey for feminist, women’s rights and gender justice movements, groups and organizations"
+title: "WITM-Analisys Q2"
 date: "`r Sys.Date()`"
 output: html_document
 ---
 
-#WITM follow up
+#WITM Q2 analysis
+
+*Q2. Which of the following statements best describes your group, organization and/or movement?
+Hint: by “intersecting identities,” we refer to multiple and overlapping factors, including but not limited to gender identity, race, ethnicity, class, migration status, religious beliefs, sexual expression and identity, etc.
+
+
+a)	We promote the rights of women or girls or trans or gender diverse people with intersecting identities, and this is the “primary focus of all our work”.
+
+b)	We promote the rights of women or girls or trans or gender diverse people with intersecting identities “through specific project(s)”, but not as the primary focus of our work.
+
+c) Other (please briefly share to what extent the rights of women, girls, trans or gender diverse people are a priority for your work)
+
+
 
 ```{r setup, include=FALSE, echo=F}
 knitr::opts_chunk$set(echo = FALSE)
@@ -27,21 +39,21 @@ library(knitr)
 library(kableExtra)
 
 library(readr)
-library(xlsx)
+
 
 rm(list = ls())
-
 ```
 
 
-**Database upload**
 
-```{r upload, echo=T, message=F, warning=F}
+```{r upload, echo=F, message=F, warning=F}
 
 # OPEN CSV file
-witm <- read.csv2("Data/WITM_csv_last.csv")
 
-source(file="WITM_variables.R") 
+witm <- read.csv("Data/WITM_cleaned_20240912.csv")
+
+##source(file="WITM_variables.R") 
+
 ```
 ___
 
@@ -52,374 +64,108 @@ ___
 Q2. Which of the following statements best describes your group, organization and/or movement?
 
 ```{r info, echo=F, message=F, warning=F}
-q1<-base %>%
-  group_by(q1_description) %>% 
-  mutate(q1_description=forcats::fct_recode(as_factor(q1_description),
-                                                     "We promote the rights of women or girls or trans or gender diverse people in all their intersecting identities and this is the 'primary focus of all our work'" = "primary_focus",
-                                            "We promote the rights of women or girls or trans or gender diverse people with intersecting identities 'through specific project(s)', but not as the primary focus of our work" = "specific_projects",
-                                            "Other" = "98")) %>%
+q2<-witm %>%
+  group_by(q2_description) %>% 
+  mutate(q2_description=forcats::fct_recode(as_factor(q2_description),
+                                                     "a) Feministe organizations (primary focus)" = "primary_focus",
+                                            "b) Organizations that promote the rights of women or girls through specific project(s) (specific_projects)" = "specific_projects",
+                                            "c) Other" = "98")) %>%
   summarise(n=n()) %>% 
   mutate(porcentaje=round((n/sum(n))*100,1)) %>% 
-  arrange(desc(q1_description)) %>% 
-  rename("Description"=q1_description)
+  rename("Description"=q2_description) %>% 
+  arrange(desc(porcentaje)) 
 
 
 
-knitr::kable(q1) %>% 
-  kable_minimal()
-```
-
-
-```{r info_other, echo=F, message=F, warning=F}
-#Other responses
-
-q1_otro<-base %>%
-  filter(q1_description==98) %>% 
-  group_by(q1_description_group) %>% 
-  summarise(n=n()) %>% 
-  select("Other"=q1_description_group)
-
-knitr::kable(q1_otro) %>% 
-  kable_minimal()
-
-```
-**--Analysis notes-----------------------------------------------------------------------**
-
-
-
-**------------------------------------------------------------------------------------------------**
-
-___
-
-**-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-**
-
-**Organization names:**
-
-Q3. The name organizations that answered Q2-B (specific project)
-
-
-```{r name, echo=F, message=F, warning=F}
-q2<-base %>%
-  filter(!is.na(q2_name) & !q1_description=='specific_projects') %>% 
-  group_by(q2_name) %>% 
-  select("Organization names"=q2_name) 
-  
 knitr::kable(q2) %>% 
   kable_minimal()
-
 ```
 
-___
+
+-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-
+
+Most of the organizations are feminist (primary focus). The 7% can be reduced by cleaning and some can also be reassigned from group b) to a).
 
 
-**q2 croostab with q4 grouped on AWID focus subjects**
+-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-
 
+
+**q2 croostab with q4 grouped on AWID Spotlight themes/groups**
+
+```{r, echo=F, message=F, warning=F}
+
+#q2xq4
+
+qry<-witm %>%
+  filter(!is.na(q4_forms_organizing) & q4_forms_organizing!="98") %>%
+  group_by(q2_description,q4_awid_focus)%>%
+  mutate(q4_awid_focus=forcats::fct_recode(as_factor(q4_awid_focus),
+                                                     "Spotlight" = "1",
+                                            "Other subjects" = "0")) %>%
+  mutate(q2_description=forcats::fct_recode(as_factor(q2_description),
+                                                     "a. Primary focus"  = "primary_focus",
+                                            "b. Specific project(s)" = "specific_projects",
+                                            "c. Other" = "98")) %>%
+  summarise(n=n()) %>%
+  mutate(percentage=round((n/sum(n))*100,1)) %>%
+  arrange(q2_description)
+
+#qry
+
+qry_w<-qry %>% select (q4_awid_focus,q2_description,percentage) %>% pivot_wider(names_from = q2_description, values_from = percentage) 
+
+knitr::kable(qry_w) %>% 
+  kable_minimal()
+
+
+```
 
 
 ```{r, echo=F, message=F, warning=F}
 
-
- # "Anti-caste"="q4_forms_organizing.anti_caste",
- #                                "Anti-militarization and peace"="q4_forms_organizing.anti_militarization",
- #                                "Climate and environmental justice"="q4_forms_organizing.climate_justice",
- #                                "Countering anti-gender and anti-rights"="q4_forms_organizing.countering_anti_gender",
- #                                 "Holistic safety, protection and collective care"="q4_forms_organizing.holistic_safety_protection_collective_care",
- #                                "Lesbian, Bisexual and queer rights"="q4_forms_organizing.lesbian_bisexual_queer_rights",
- #                                "Sex workers rights"="q4_forms_organizing.sex_workers_rights",
- #                                "Trans and non-binary rights"="q4_forms_organizing.trans_non_binary_rights",
- #                                "Other feminists subjects (not AWID focus)"="q4_awid_focus_no"
-
-
-## Anti-caste 
-q1q2_anti_caste<-base %>%
-  filter(!is.na(q1_description) & q1_description!="98") %>%
-  group_by(q4_forms_organizing.anti_caste,q1_description)%>%
-  summarise(n=n()) %>%
-  mutate(percentage=round((n/sum(n))*100,1))%>%
-  arrange(desc(n)) %>% 
-  select(q1_description,q4_grouped=q4_forms_organizing.anti_caste,percentage) %>%
-  mutate(q4_grouped=recode(q4_grouped,"1"="Anti Caste","0"="Other subjects")
-         )
-
-## Anti-militarization and peace
-q1q2_peace<-base %>%
-  filter(!is.na(q1_description) & q1_description!="98") %>%
-  group_by(q4_forms_organizing.anti_militarization,q1_description)%>%
-  summarise(n=n()) %>%
-  mutate(percentage=round((n/sum(n))*100,1))%>%
-  arrange(desc(n)) %>% 
-  select(q1_description,q4_grouped=q4_forms_organizing.anti_militarization,percentage) %>%
-  mutate(q4_grouped=recode(q4_grouped,"1"="Anti-militarization and peace","0"="Other subjects")
-         )
-
-## Climate and environmental justice 
-q1q2_climate<-base %>%
-  filter(!is.na(q1_description) & q1_description!="98") %>%
-  group_by(q4_forms_organizing.climate_justice,q1_description)%>%
-  summarise(n=n()) %>%
-  mutate(percentage=round((n/sum(n))*100,1))%>%
-  arrange(desc(n)) %>% 
-  select(q1_description,q4_grouped=q4_forms_organizing.climate_justice,percentage) %>%
-  mutate(q4_grouped=recode(q4_grouped,"1"="Climate and environmental justice","0"="Other subjects")
-         )
-
-## Countering anti-gender and anti-rights
-q1q2_anti_rights<-base %>%
-  filter(!is.na(q1_description) & q1_description!="98") %>%
-  group_by(q4_forms_organizing.countering_anti_gender,q1_description)%>%
-  summarise(n=n()) %>%
-  mutate(percentage=round((n/sum(n))*100,1))%>%
-  arrange(desc(n)) %>% 
-  select(q1_description,q4_grouped=q4_forms_organizing.countering_anti_gender,percentage) %>%
-  mutate(q4_grouped=recode(q4_grouped,"1"="Countering anti-gender and anti-rights","0"="Other subjects")
-         )
-
-
-## Holistic safety, protection and collective care
-q1q2_care<-base %>%
-  filter(!is.na(q1_description) & q1_description!="98") %>%
-  group_by(q4_forms_organizing.holistic_safety_protection_collective_care,q1_description)%>%
-  summarise(n=n()) %>%
-  mutate(percentage=round((n/sum(n))*100,1))%>%
-  arrange(desc(n)) %>% 
-  select(q1_description,q4_grouped=q4_forms_organizing.holistic_safety_protection_collective_care,percentage) %>%
-  mutate(q4_grouped=recode(q4_grouped,"1"="Holistic safety, protection and collective care","0"="Other subjects")
-         )
-
-## Lesbian, Bisexual and queer rights
-q1q2_lesbian<-base %>%
-  filter(!is.na(q1_description) & q1_description!="98") %>%
-  group_by(q4_forms_organizing.lesbian_bisexual_queer_rights,q1_description)%>%
-  summarise(n=n()) %>%
-  mutate(percentage=round((n/sum(n))*100,1))%>%
-  arrange(desc(n)) %>% 
-  select(q1_description,q4_grouped=q4_forms_organizing.lesbian_bisexual_queer_rights,percentage) %>%
-  mutate(q4_grouped=recode(q4_grouped,"1"="Lesbian, Bisexual and queer rights","0"="Other subjects")
-         )
-
-## Sex workers rights
-q1q2_sex_workers<-base %>%
-  filter(!is.na(q1_description) & q1_description!="98") %>%
-  group_by(q4_forms_organizing.sex_workers_rights,q1_description)%>%
-  summarise(n=n()) %>%
-  mutate(percentage=round((n/sum(n))*100,1))%>%
-  arrange(desc(n)) %>% 
-  select(q1_description,q4_grouped=q4_forms_organizing.sex_workers_rights,percentage) %>%
-  mutate(q4_grouped=recode(q4_grouped,"1"="Sex workers rights","0"="Other subjects")
-         )
-
-
-##Trans and non-binary rights
-q1q2_trans<-base %>%
-  filter(!is.na(q1_description) & q1_description!="98") %>%
-  group_by(q4_forms_organizing.trans_non_binary_rights,q1_description)%>%
-  summarise(n=n()) %>%
-  mutate(percentage=round((n/sum(n))*100,1))%>%
-  arrange(desc(n)) %>% 
-  select(q1_description,q4_grouped=q4_forms_organizing.trans_non_binary_rights,percentage) %>%
-  mutate(q4_grouped=recode(q4_grouped,"1"="Trans and non-binary rights","0"="Other subjects")
-         )
-
-##Other feminists subjects (not AWID focus)
-q1q2_others<-base %>%
-  filter(!is.na(q1_description) & q1_description!="98") %>%
-  group_by(q4_awid_focus_no,q1_description)%>%
-  summarise(n=n()) %>%
-  mutate(percentage=round((n/sum(n))*100,1))%>%
-  arrange(desc(n)) %>% 
-  select(q1_description,q4_grouped=q4_awid_focus_no,percentage) %>%
-  mutate(q4_grouped=recode(q4_grouped,"1"="Other feminists subjects (not AWID focus)","0"="Other subjects")
-         )
-
-q1q2_all<-bind_rows(q1q2_anti_caste,q1q2_peace,q1q2_climate,q1q2_anti_rights,q1q2_care,q1q2_lesbian,q1q2_sex_workers,q1q2_trans,q1q2_others)
-
-q1q2_all <-q1q2_all %>% filter(q4_grouped!="Other subjects") %>% select(q4_grouped,q1_description,percentage)
-
-
-qry_w<-q1q2_all %>% pivot_wider(names_from = q1_description, values_from = percentage) 
-
-knitr::kable(qry_w) %>% 
-  kable_minimal()
-
-
-
-```
-
-
-
-
-**--Analysis notes-----------------------------------------------------------------------**
-
-This crosstabulation shows the information upside down. It indicates that: among the organizations that indicated that they work on some of the main issues of the feminist agenda, 78.3% indicated that they work with a focus on that agenda and 15% through projects. The distribution is very stable among all the issues.
-
-
-**------------------------------------------------------------------------------------------------**
-
-
-```{r}
-q2q4
-
-qry_graph<-q2q4 %>% pivot_longer(cols=c("Specific feminist subjects","General HR Subjects","Intersectionality (minority groups)","Sexual and reproductive health & rights"), names_to = "q4_grouped", values_to = "percentage")
-
-qry_graph<-qry_graph %>% filter(Description=="Primary focus" | Description=="Specific projects" )
-qry_graph
-
-ggplot(qry_graph, aes(x = q4_grouped, y=percentage, fill=Description)) +                      
+ggplot(qry, aes(x = q2_description, y=percentage, fill=q4_awid_focus)) +                      
    geom_bar(position="dodge", stat="identity") +
-  scale_colour_distiller(palette = "Red-Green") +
   labs(x="Subjects",y= "%") +                 
-  ggtitle("Subjects grouped by type of organization (%)") +                
-  theme_light()+
+  ggtitle("Q2 by Q4-grouped") +                
+  theme_minimal() +
   geom_text(aes(label = sprintf("%0.1f", round(percentage, digits = 1))),position=position_dodge(width=0.9),
-            vjust=-0.2, size=3) 
-
-```
-
-
-**--Analysis notes-----------------------------------------------------------------------**
-It reads as follows: Among the organizations that work on the basis of specific projects, 62.9% indicated working on some of the main themes of feminism, while 48.8% indicated working in relation to groups in situation of vulnerability. They may have chosen more than one option (they overlap).
-
-
-**------------------------------------------------------------------------------------------------**
-
-
-**Organisation type & subjetcs - grouped**
-
-Option 2 
-
-```{r q2_q4, echo=F, message=F, warning=F}
-
-
-
-
- #fem=sum(q4_grouped_feminist==1),
- #       hr=sum(q4_grouped_hr==1),
-  #     min=sum(q4_grouped_minorities==1),
-  #      srhr=sum(q4_grouped_srhr==1),
-       
-
-#q1_description
-
-## FEMINIST FOCUS 
-q1q2_feminist<-base %>%
-  filter(!is.na(q1_description) & q1_description!="" & q4_grouped_feminist!="98") %>%
-  group_by(q4_grouped_feminist,q1_description)%>%
-  summarise(n=n()) %>%
-  mutate(percentage=round((n/sum(n))*100,1))%>%
-  arrange(desc(n)) %>% 
-  select(q1_description,q4_grouped=q4_grouped_feminist,percentage) %>%
-  mutate(q4_grouped=recode(q4_grouped,"1"="Specific feminist subjects (A)","0"="Other subjects")
-         )
-##HR GENERAL SUBJECT 
-q1q2_HR<-base %>%
-  filter(!is.na(q1_description) & q1_description!="" & q4_grouped_hr!="98") %>%
-  group_by(q4_grouped_hr,q1_description)%>%
-  summarise(n=n()) %>%
-  mutate(percentage=round((n/sum(n))*100,1))%>%
-  arrange(desc(n)) %>% 
-  select(q1_description,q4_grouped=q4_grouped_hr,percentage)%>%
-   mutate(q4_grouped=recode(q4_grouped,"1"="HR general subjects (B)","0"="Other subjects")
-         )  
-
-
-##Intersectionality
-q1q2_minorities<-base %>%
-  filter(!is.na(q1_description) & q1_description!="" & q4_grouped_minorities!="98") %>%
-  group_by(q4_grouped_minorities,q1_description)%>%
-  summarise(n=n()) %>%
-  mutate(percentage=round((n/sum(n))*100,1))%>%
-  arrange(desc(n)) %>% 
-   mutate(q4_grouped_minorities=recode(q4_grouped_minorities,"1"=" Intersectionality subjects (C) ","0"="Other subjects")
-         )  %>%
-  select(q1_description,q4_grouped=q4_grouped_minorities,percentage)
-
-
-##Sexual and reproductive health & rights
-q1q2_srhr<-base %>%
-  filter(!is.na(q1_description) & q1_description!="" & q4_grouped_srhr!="98") %>%
-  group_by(q4_grouped_srhr,q1_description)%>%
-  summarise(n=n()) %>%
-  mutate(percentage=round((n/sum(n))*100,1))%>%
-  arrange(desc(n)) %>% 
-   mutate(q4_grouped_srhr=recode(q4_grouped_srhr,"1"=" Sexual and reproductive health & rights (D) ","0"="Other subjects")
-         )  %>%
-  select(q1_description,q4_grouped=q4_grouped_srhr,percentage)
-
-q1q2_all<-bind_rows(q1q2_feminist,q1q2_HR,q1q2_minorities,q1q2_srhr)
-
-q1q2_all <-q1q2_all %>% filter(q4_grouped!="Other subjects") %>% select(q4_grouped,q1_description,percentage)
-
-
-qry_w<-q1q2_all %>% pivot_wider(names_from = q4_grouped, values_from = percentage) %>%
- mutate(q1_description=recode(q1_description,  "98"="Other", "primary_focus"="Primary focus", "specific_projects"="Specific projects"))
-         
-
-knitr::kable(qry_w) %>% 
-  kable_minimal()
-
-
+            vjust=0.5, hjust=1,size=3) 
 
 ```
 
 
 
+-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-
 
-**--Analysis notes-----------------------------------------------------------------------**
+The data show that primary focus organizations work proportionally more on AWID's priority issues than "per project" organizations. Even so, the difference (81.5 vs. 76.4) is not very significant (around 5%).
 
-This crosstabulation shows the information upside down. It indicates that: among the organizations that indicated that they work on some of the main issues of the feminist agenda, 78.3% indicated that they work with a focus on that agenda and 15% through projects. The distribution is very stable among all the issues.
+-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-
 
 
-**------------------------------------------------------------------------------------------------**
+**q2 croostab with q5 registration**
 
-___
+```{r, echo=F, message=F, warning=F}
 
-**-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-**
+#q2xq4
 
-**Register**
-
-Q5. Is your group, organization and/or movement registered?
-
-```{r registered, echo=F, message=F, warning=F}
-
-q5<-base %>%
-  group_by(q5_registered) %>% 
-  mutate(q5_registered= case_when(
+qry<-witm %>%
+  filter(!is.na(q5_registered) & q5_registered!="98") %>%
+  group_by(q2_description,q5_registered)%>%
+   mutate(q5_registered= case_when(
     q5_registered=="y_registered" ~ "Yes",
     q5_registered=="n_registered" ~ "No",
     q5_registered==98 ~ "Other",
     TRUE ~ NA)) %>%  
-  summarise(n=n()) %>% 
-  mutate(porcentaje=round((n/sum(n))*100,1)) %>% 
-  arrange(desc(n)) %>% 
-  rename("Register"=q5_registered)
-
-knitr::kable(q5) %>% 
-  kable_minimal()
-
-```
-
-___
-
-**-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-**
-
-**Register by type of organisation**
-
-A crosstabulation (bivariate) of the combination of organization type and registration is shown.
-
-```{r q5_q1, echo=F, message=F, warning=F}
-
-q5q2<-base %>%
-  filter(!is.na(q5_registered) & q5_registered!="" & !is.na(q1_description)) %>%
-  group_by(q1_description,q5_registered)%>%
+   mutate(q2_description=forcats::fct_recode(as_factor(q2_description),
+                                                     "a. Primary focus" = "primary_focus",
+                                            "b. Specific project(s)" = "specific_projects",
+                                            "c. Other" = "98")) %>%
   summarise(n=n()) %>%
-  mutate(percentage=round((n/sum(n))*100,1))%>%
-  arrange(desc(n)) %>% 
-  mutate(Registered=recode(q5_registered, "98"="Other", "n_registered"="No registered", "y_registered"="Registered")
-         , q1_description=recode(q1_description,"98"="Other","primary_focus"="Primary focus","specific_projects"="Specific Projects")
-         ) %>%
-  select(q1_description,Registered,percentage)
+  mutate(percentage=round((n/sum(n))*100,1)) 
 
-qry_w<-q5q2 %>% pivot_wider(names_from = q1_description, values_from = percentage)
+#qry
+
+qry_w<-qry %>% select (q5_registered,q2_description,percentage) %>% pivot_wider(names_from = q2_description, values_from = percentage) 
 
 knitr::kable(qry_w) %>% 
   kable_minimal()
@@ -428,182 +174,49 @@ knitr::kable(qry_w) %>%
 ```
 
 
+
 ```{r}
-#q5q2
 
-  qry_graph<-q5q2 %>% filter((q1_description=="Primary focus" | q1_description=="Specific Projects") & (Registered=="Registered"  | Registered=="No registered"))
-#qry_graph
-
-ggplot(qry_graph, aes(x = q1_description, y=percentage, fill=Registered)) +                      
+ggplot(qry, aes(x = q2_description, y=percentage, fill=q5_registered)) +                      
    geom_bar(position="dodge", stat="identity") +
   scale_colour_distiller() +
-  labs(x="Subjects",y= "%") +                 
-  ggtitle("Type of organization by registration (%)") +                
+  labs(x="Q2",y= "%") +                 
+  ggtitle("Q2 by Registration (%)") +                
   theme_light()+
-  geom_text(aes(label = sprintf("%0.1f", round(percentage, digits = 1))),position=position_dodge(width=0.9),
-            vjust=-0.2, size=3) 
+ geom_text(aes(label = sprintf("%0.1f", round(percentage, digits = 1))),position=position_dodge(width=0.9),
+            vjust=0.5, hjust=1,size=3) 
 
 ```
 
-**--Analysis notes-----------------------------------------------------------------------**
 
-The behavior between "primary focus" and "specific projects" organizations is similar in terms of registration. There are slightly more unregistered primary focus organizations, but this is not a relevant difference.
+-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-
 
-**------------------------------------------------------------------------------------------------**
-
-
-___
-
-**-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-**
-
-**Register by subject - grouped**
-A crosstabulation (bivariate) of the combination of registration and subject of the organisation 
+There is no significant difference in registration between Primary focus organizations and project organizations.
 
 
-```{r q4xq5, echo=F, message=F, warning=F}
-
- #fem=sum(q4_grouped_feminist==1),
- #       hr=sum(q4_grouped_hr==1),
-  #     min=sum(q4_grouped_minorities==1),
-  #      srhr=sum(q4_grouped_srhr==1),
-       
+-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-
 
 
-## FEMINIST FOCUS 
-q5q2_feminist<-base %>%
-  filter(!is.na(q5_registered) & q5_registered!="" & q4_grouped_feminist!="98") %>%
-  group_by(q4_grouped_feminist,q5_registered)%>%
+
+**q2 croostab with q6 Scope**
+
+```{r, echo=F, message=F, warning=F}
+
+#q2xq4
+
+qry<-witm %>%
+  filter(!is.na(q6_geo_scope) & q6_geo_scope!="98") %>%
+  group_by(q2_description,q6_geo_scope)%>%
+  mutate(q2_description=forcats::fct_recode(as_factor(q2_description),
+                                                     "a. Primary focus" = "primary_focus",
+                                            "b. Specific project(s)" = "specific_projects",
+                                            "c. Other" = "98")) %>%
   summarise(n=n()) %>%
-  mutate(percentage=round((n/sum(n))*100,1))%>%
-  arrange(desc(n)) %>% 
-  select(q5_registered,q4_grouped=q4_grouped_feminist,percentage) %>%
-  mutate(q4_grouped=recode(q4_grouped,"1"="Specific feminist subjects (A)","0"="Other subjects")
-         )
-##HR GENERAL SUBJECT 
-q5q2_HR<-base %>%
-  filter(!is.na(q5_registered) & q5_registered!="" & q4_grouped_hr!="98") %>%
-  group_by(q4_grouped_hr,q5_registered)%>%
-  summarise(n=n()) %>%
-  mutate(percentage=round((n/sum(n))*100,1))%>%
-  arrange(desc(n)) %>% 
-  select(q5_registered,q4_grouped=q4_grouped_hr,percentage)%>%
-   mutate(q4_grouped=recode(q4_grouped,"1"="HR general subjects (B)","0"="Other subjects")
-         )  
+  mutate(percentage=round((n/sum(n))*100,1)) 
 
+#qry
 
-##Intersectionality
-q5q2_minorities<-base %>%
-  filter(!is.na(q5_registered) & q5_registered!="" & q4_grouped_minorities!="98") %>%
-  group_by(q4_grouped_minorities,q5_registered)%>%
-  summarise(n=n()) %>%
-  mutate(percentage=round((n/sum(n))*100,1))%>%
-  arrange(desc(n)) %>% 
-   mutate(q4_grouped_minorities=recode(q4_grouped_minorities,"1"=" Intersectionality subjects (C) ","0"="Other subjects")
-         )  %>%
-  select(q5_registered,q4_grouped=q4_grouped_minorities,percentage)
-
-
-##Sexual and reproductive health & rights
-q5q2_srhr<-base %>%
-  filter(!is.na(q5_registered) & q5_registered!="" & q4_grouped_srhr!="98") %>%
-  group_by(q4_grouped_srhr,q5_registered)%>%
-  summarise(n=n()) %>%
-  mutate(percentage=round((n/sum(n))*100,1))%>%
-  arrange(desc(n)) %>% 
-   mutate(q4_grouped_srhr=recode(q4_grouped_srhr,"1"=" Sexual and reproductive health & rights (D) ","0"="Other subjects")
-         )  %>%
-  select(q5_registered,q4_grouped=q4_grouped_srhr,percentage)
-
-q5q2_all<-bind_rows(q5q2_feminist,q5q2_HR,q5q2_minorities,q5q2_srhr)
-
-q5q2_all <-q5q2_all %>% filter(q4_grouped!="Other subjects") %>% select(q4_grouped,q5_registered,percentage)
-
-
-qry_w<-q5q2_all %>% pivot_wider(names_from = q4_grouped, values_from = percentage) %>%
- mutate(q5_registered=recode(q5_registered, "98"="Other", "n_registered"="No registered", "y_registered"="Registered"))
-         
-knitr::kable(qry_w) %>% 
-  kable_minimal()
-
-
-
-```
-
-**--Analysis notes-----------------------------------------------------------------------**
-
-This cross-tabulation allows for comparison according to the issues they address and whether or not the organizations are registered. Reading: among those working mainly on specific feminist issues, 80% are registered, while among those working on general human rights issues, this value rises to 83%.
-
-
-**------------------------------------------------------------------------------------------------**
-
-
-___
-
-**-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-**
-
-**Scope:**
-
-Q6. What is the geographical scope of your work?
-
-```{r scope, echo=F, message=F, warning=F}
-
-q6<-base %>% 
-  group_by(q6_geo_scope) %>% 
-  mutate(q6_geo_scope=forcats::fct_recode(as_factor(q6_geo_scope),
-                                                     "Locally" = "locally_focused",
-                                            "Nationally" = "nationally_focused",
-                                          "Work from diaspora, refuge and/or exile" = "diaspora_and_or_exile",
-                                          "Regionally" = "regionally_focused",
-                                          "Transnationally" = "transnationally_focused",
-                                          "Global" = "globally_focused")) %>% 
-  summarise(n=n()) %>% 
-  mutate(porcentaje=round((n/sum(n))*100,1)) %>% 
-  arrange(q6_geo_scope) %>% 
-  rename("Geo scope"=q6_geo_scope)
-
-
-knitr::kable(q6) %>% 
-  kable_minimal()
-```
-
-**--Analysis notes-----------------------------------------------------------------------**
-The sample is very interesting because most of the organizations are national or local (80%). 
-
-
-**------------------------------------------------------------------------------------------------**
-___
-
-**-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-**
-
-**Scope by type of organisation**
-
-
-A crosstabulation (bivariate) of the combination of type of organization type and scope
-
-```{r q5_q2, echo=F, message=F, warning=F}
-
-##borrar las variables para evitar problemas
-#rm(list=setdiff(ls(), "base"))
-
-q6q2<-base %>%
-  filter(!is.na(q6_geo_scope) & q6_geo_scope!="" & !is.na(q1_description)) %>%
-  group_by(q6_geo_scope,q1_description)%>%
-  summarise(n=n()) %>%
-  mutate(percentage=round((n/sum(n))*100,1))%>%
-  arrange(desc(n)) %>% 
-  mutate(q6_geo_scope=recode(q6_geo_scope,
-         "locally_focused"="Locally",
-         "nationally_focused"="Nationally" ,
-         "diaspora_and_or_exile"="Work from diaspora, refuge and/or exile",
-         "regionally_focused"= "Regionally",
-          "transnationally_focused"="Transnationally",
-         "globally_focused"="Global"
-         ) ) %>%
-  select(q1_description,Scope=q6_geo_scope,percentage)
-
-
-qry_w<-q6q2 %>% pivot_wider(names_from = Scope, values_from = percentage)
-
+qry_w<-qry %>% select (q6_geo_scope,q2_description,percentage) %>% pivot_wider(names_from = q2_description, values_from = percentage) 
 
 knitr::kable(qry_w) %>% 
   kable_minimal()
@@ -611,60 +224,34 @@ knitr::kable(qry_w) %>%
 
 ```
 
-```{r}
-q6q2
 
-  qry_graph<-q6q2 %>% filter((q1_description=="primary_focus" | q1_description=="specific_projects") & (Scope=="Nationally"  | Scope=="Locally" | Scope=="Regionally"))
-#qry_graph
-
-ggplot(qry_graph, aes(x = Scope, y=percentage, fill=q1_description)) +                      
-   geom_bar(position="dodge", stat="identity") +
-  scale_colour_distiller() +
-  labs(x="Subjects",y= "%") +                 
-  ggtitle("Type of organization by Geographic scope (%)") +                
-  theme_light()+
-  geom_text(aes(label = sprintf("%0.1f", round(percentage, digits = 1))),position=position_dodge(width=0.9),
-            vjust=-0.2, size=3) 
-
-```
-
-**--Analysis notes-----------------------------------------------------------------------**
-
-So far, due to the size of the sample, it is only convenient to analyze this crossover for the 3 most numerous groups: national, local and regional. In these 3 cases, the distribution is homogeneous, and there is a slight tendency to work on feminism and gender issues through projects for regional organizations.
-
-**------------------------------------------------------------------------------------------------**
-
-**-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-**
-
-**Scope by registration**
+-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-
 
 
-A crosstabulation (bivariate) of the combination of registered and scope
+There is also no difference in how the geographic scope is distributed between the two types of organizations. If they were very different types of organizations, one would have expected the project organizations to be more global or regional, but this is not observed in the data.
 
-```{r q6_q2, echo=F, message=F, warning=F}
 
-##borrar las variables para evitar problemas
-rm(list=setdiff(ls(), "base"))
+-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-
 
-q5q2<-base %>%
-  filter(!is.na(q6_geo_scope) & q6_geo_scope!="" & !is.na(q5_registered)) %>%
-  group_by(q6_geo_scope,q5_registered)%>%
+**q2 by year of formation**
+
+```{r, echo=F, message=F, warning=F}
+
+#q2xq4
+
+qry<-witm %>%
+  filter(!is.na(q9_year_formation_agrup)) %>%
+  group_by(q2_description,q9_year_formation_agrup)%>%
+  mutate(q2_description=forcats::fct_recode(as_factor(q2_description),
+                                                     "a. Primary focus" = "primary_focus",
+                                            "b. Specific project(s)" = "specific_projects",
+                                            "c. Other" = "98")) %>%
   summarise(n=n()) %>%
-  mutate(percentage=round((n/sum(n))*100,1))%>%
-  arrange(desc(n)) %>% 
-  mutate(q6_geo_scope=recode(q6_geo_scope,
-          "locally_focused"="Locally",
-         "nationally_focused"="Nationally" ,
-         "diaspora_and_or_exile"="Work from diaspora, refuge and/or exile",
-         "regionally_focused"= "Regionally",
-          "transnationally_focused"="Transnationally",
-         "globally_focused"="Global"
-         ) ) %>%
-  select(q5_registered,Scope=q6_geo_scope,percentage)
+  mutate(percentage=round((n/sum(n))*100,1)) 
 
-#q5q2
-qry_w<-q5q2 %>% pivot_wider(names_from = Scope, values_from = percentage) %>%
- mutate(q5_registered=recode(q5_registered, "98"="Other", "n_registered"="No registered", "y_registered"="Registered"))
+#qry
+
+qry_w<-qry %>% select (q9_year_formation_agrup,q2_description,percentage) %>% pivot_wider(names_from = q2_description, values_from = percentage) 
 
 knitr::kable(qry_w) %>% 
   kable_minimal()
@@ -672,810 +259,291 @@ knitr::kable(qry_w) %>%
 
 ```
 
-```{r}
-#q5q2
-
-  qry_graph<-q5q2 %>% filter((q5_registered=="y_registered" | q5_registered=="n_registered") & (Scope=="Nationally"  | Scope=="Locally" | Scope=="Regionally"))
-#qry_graph
-
-ggplot(qry_graph, aes(x = Scope, y=percentage, fill=q5_registered)) +                      
-   geom_bar(position="dodge", stat="identity") +
-  scale_colour_distiller() +
-  labs(x="Subjects",y= "%") +                 
-  ggtitle("Registration by Geographic scope (%)") +                
-  theme_light()+
-  geom_text(aes(label = sprintf("%0.1f", round(percentage, digits = 1))),position=position_dodge(width=0.9),
-            vjust=-0.2, size=3) 
-
-```
-**--Analysis notes-----------------------------------------------------------------------**
-The same analysis as before shows that there is a greater tendency for local organizations to be unregistered.
-
-**------------------------------------------------------------------------------------------------**
-
-**-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-**
-
-**Scope & subjetcs - grouped**
-
-Option 1
-
-```{r}
-
-scope_filter=c("locally_focused","nationally_focused","regionally_focused")
-
-q6q4<-base %>%
-  filter(!is.na(q6_geo_scope) & !is.na(q4_grouped_feminist) & (q6_geo_scope %in% scope_filter)) %>%
-  group_by(q6_geo_scope) %>%
-  summarise(total=n(),
-        fem=sum(q4_grouped_feminist==1),
-        hr=sum(q4_grouped_hr==1),
-        min=sum(q4_grouped_minorities==1),
-        srhr=sum(q4_grouped_srhr==1),
-        'Specific feminist subjects'=round(fem/total*100,2),
-        'General HR Subjects'=round(hr/total*100,2),
-        'Intersectionality (minority groups)'=round(min/total*100,2),
-        'Sexual and reproductive health & rights'=round(srhr/total*100,2)) %>%
-  mutate(q6_geo_scope=recode(q6_geo_scope,
-          "locally_focused"="Locally",
-         "nationally_focused"="Nationally" ,
-         "diaspora_and_or_exile"="Work from diaspora, refuge and/or exile",
-         "regionally_focused"= "Regionally",
-          "transnationally_focused"="Transnationally",
-         "globally_focused"="Global"
-         )) %>%
-  select("Scope"="q6_geo_scope",7:10)  
-
-q6q4
-
-qry_w<-t(q6q4)
-        
-
-knitr::kable(qry_w) %>% 
-  kable_minimal()
-```
-
-**--Analysis notes-----------------------------------------------------------------------**
-
-Regional organizations work more often on specifically feminist issues than on group issues, at least in relation to local and national organizations.
-
-**------------------------------------------------------------------------------------------------**
-
-**-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-**
-
-**Scope & subjetcs - grouped**
-
-Option 2: how is distributed inside each subject the scope
-Absolutes numbers
 
 
-```{r q6_q4, echo=F, message=F, warning=F}
+
+-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-
 
 
-rm(list=setdiff(ls(), "base"))
+There is also no difference in how the geographic scope is distributed between the two types of organizations. If they were very different types of organizations, one would have expected the project organizations to be more global or regional, but this is not observed in the data.
 
- #fem=sum(q4_grouped_feminist==1),
- #       hr=sum(q4_grouped_hr==1),
-  #     min=sum(q4_grouped_minorities==1),
-  #      srhr=sum(q4_grouped_srhr==1),
-       
 
-#q1_description
+-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-
 
-## FEMINIST FOCUS 
-q6q4_feminist<-base %>%
-  filter(!is.na(q6_geo_scope)  & q4_grouped_feminist!="98") %>%
-  group_by(q4_grouped_feminist,q6_geo_scope)%>%
+
+
+
+**q2 by budget**
+
+Only the year 2023 is taken as a reference for the analysis.
+
+
+```{r, echo=F, message=F, warning=F}
+
+#q2xq4
+
+qry<-witm %>%
+  filter(!is.na(q10_budget_grp_2021)) %>%
+  group_by(q2_description,q10_budget_grp_2021)%>%
+  mutate(q2_description=forcats::fct_recode(as_factor(q2_description),
+                                                     "a. Primary focus" = "primary_focus",
+                                            "b. Specific project(s)" = "specific_projects",
+                                            "c. Other" = "98")) %>%
   summarise(n=n()) %>%
-  mutate(percentage=round((n/sum(n))*100,1))%>%
-  arrange(desc(n)) %>% 
-  select(q6_geo_scope,q4_grouped=q4_grouped_feminist,n) %>%
-  mutate(q4_grouped=recode(q4_grouped,"1"="Specific feminist subjects (A)","0"="Other subjects")
-         )
+  mutate(percentage=round((n/sum(n))*100,1)) 
 
-##HR GENERAL SUBJECT 
-q6q4_HR<-base %>%
- filter(!is.na(q6_geo_scope)  & q4_grouped_hr!="98") %>%
-  group_by(q4_grouped_hr,q6_geo_scope)%>%
-  summarise(n=n()) %>%
-  mutate(percentage=round((n/sum(n))*100,1))%>%
-  arrange(desc(n)) %>% 
-  select(q6_geo_scope,q4_grouped=q4_grouped_hr,n)%>%
-   mutate(q4_grouped=recode(q4_grouped,"1"="HR general subjects (B)","0"="Other subjects")
-         )  
+#qry
 
-
-##Intersectionality
-q6q4_minorities<-base %>%
-   filter(!is.na(q6_geo_scope)  & q4_grouped_minorities!="98") %>%
-  group_by(q4_grouped_minorities,q6_geo_scope)%>%
-  summarise(n=n()) %>%
-  mutate(percentage=round((n/sum(n))*100,1))%>%
-  arrange(desc(n)) %>% 
-   mutate(q4_grouped_minorities=recode(q4_grouped_minorities,"1"=" Intersectionality subjects (C) ","0"="Other subjects")
-         )  %>%
-  select(q6_geo_scope,q4_grouped=q4_grouped_minorities,n)
-
-
-##Sexual and reproductive health & rights
-q6q4_srhr<-base %>%
-   filter(!is.na(q6_geo_scope)  & q4_grouped_srhr!="98") %>%
-  group_by(q4_grouped_srhr,q6_geo_scope)%>%
-  summarise(n=n()) %>%
-  mutate(percentage=round((n/sum(n))*100,1))%>%
-  arrange(desc(n)) %>% 
-   mutate(q4_grouped_srhr=recode(q4_grouped_srhr,"1"=" Sexual and reproductive health & rights (D) ","0"="Other subjects")
-         )  %>%
-  select(q6_geo_scope,q4_grouped=q4_grouped_srhr,n)
-
-q6q4_all<-bind_rows(q6q4_feminist,q6q4_HR,q6q4_minorities,q6q4_srhr)
-
-q6q4_all <-q6q4_all %>% filter(q4_grouped!="Other subjects") %>% select(q4_grouped,q6_geo_scope,n)
-
-
-qry_w<-q6q4_all %>% pivot_wider(names_from = q4_grouped, values_from = n) %>%
- mutate(q6_geo_scope=recode(q6_geo_scope,
-          "locally_focused"="Locally",
-         "nationally_focused"="Nationally" ,
-         "diaspora_and_or_exile"="Work from diaspora, refuge and/or exile",
-         "regionally_focused"= "Regionally",
-          "transnationally_focused"="Transnationally",
-         "globally_focused"="Global"))
-         
+qry_w<-qry %>% select (q10_budget_grp_2021,q2_description,percentage) %>% pivot_wider(names_from = q2_description, values_from = percentage) 
 
 knitr::kable(qry_w) %>% 
   kable_minimal()
 
 
+```
+
+
+
+-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-
+
+
+In relation to the budget, as can be seen, the distribution of the budget ranges are similar between the primary focus group and specific projects, especially the most important was to analyze the extremes (zero budgeted) and the highest ranges. In neither of these groups is there any distinctive trend between the two groups.
+
+
+-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-
+
+
+
+**Q2 by Q13 external funding**  
+
+
+```{r, echo=F, message=F, warning=F}
+
+#q2xq4
+
+qry<-witm %>%
+  filter(!is.na(q13_ext_funding)) %>%
+  group_by(q2_description,q13_ext_funding)%>%
+  mutate(q2_description=forcats::fct_recode(as_factor(q2_description),
+                                                     "a. Primary focus" = "primary_focus",
+                                            "b. Specific project(s)" = "specific_projects",
+                                            "c. Other" = "98")) %>%
+  summarise(n=n()) %>%
+  mutate(percentage=round((n/sum(n))*100,1)) 
+
+#qry
+
+qry_w<-qry %>% select (q13_ext_funding,q2_description,percentage) %>% pivot_wider(names_from = q2_description, values_from = percentage) 
+
+knitr::kable(qry_w) %>% 
+  kable_minimal()
+
 
 ```
 
-**--Analysis notes-----------------------------------------------------------------------**
 
-These data allow us to see how many organizations of each type indicated working on each of the topics. This crosswalk is useful during implementation, then it should be replaced by the percentage.
-
-**------------------------------------------------------------------------------------------------**
-
-**-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-**
-
-**Region:**
-
-Q7. Indicate in which region(s) your group, organization and/or movement works
-
-*Reading: 22% of the organizations work in South Asia.
-Organizations working locally, regionally or globally were consolidated.*
+-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-
 
 
-```{r region, echo=F, message=F, warning=F}
+This is the first variable that shows a more significant difference, but with the opposite result to the expected: organizations working on a project basis are less likely to rely on external funding (64%) than targeted organizations (72.9).
+
+-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-
+
+
+```{r, echo=F, message=F, warning=F}
+
+#Convertir campos vacíos de la variable q15 en NA
+ base <- witm %>%
+  mutate(q15_key_sources = na_if(q15_key_sources, ""))
+
+#Total valid responses for calculating Percentage
+
+total<-witm %>%
+  count(q15_key_sources) %>% 
+  summarise(sum(n))
+
+total<-total$n
+
+q15 <- witm %>%
+  filter( !is.na(q15_key_sources)) %>%
+  group_by(q2_description)%>%
+  mutate(q2_description=forcats::fct_recode(as_factor(q2_description),
+                                                     "a. Primary focus" = "primary_focus",
+                                            "b. Specific project(s)" = "specific_projects",
+                                            "c. Other" = "98")) %>%
+  summarise(Total = n(),
+    multirateral = sum(q15_key_sources.multilateral_funders == 1),
+    bilateral = sum(q15_key_sources.bilateral_funders == 1),
+    philanthropic = sum(q15_key_sources.philanthropic_foundations == 1),
+    womens = sum(q15_key_sources.womens_feminist_funds == 1),
+    private = sum(q15_key_sources.private_sector == 1),
+    ingos = sum(q15_key_sources.ingos == 1),
+    individual = sum(q15_key_sources.individual_donors == 1),
+    gov = sum(q15_key_sources.national_local_goverment_or_bodies == 1),
+    other = sum(q15_key_sources.98 == 1),
+    Multirateral = round(multirateral / Total*100, 1),
+    Bilateral = round(bilateral / Total*100, 1),
+    Philanthropic = round(philanthropic / Total*100, 1),
+    Feminist = round(womens / Total*100, 1),
+    Private = round(private / Total*100, 1),
+    INGOS = round(ingos / Total*100, 1),
+    Individual = round(individual / Total*100, 1),
+    Government = round(gov / Total*100, 1),
+    Other = round(other / Total*100, 1)) %>% 
+    select("Description"="q2_description",12:20) 
+
+q15=t(q15)
+
+knitr::kable(q15) %>% 
+  kable_minimal()
+
+
+```
 
 
 
-q7_a<-base %>% 
-  filter(q6_geo_scope=="locally_focused" | q6_geo_scope=="nationally_focused") %>% 
-  group_by(q7_region_one) %>%
-    mutate(q7_region_one=forcats::fct_recode(as_factor(q7_region_one),
-                                                     "South America" = "samerica",
-                                            "Central America & Mexico" = "camerica",
-                                    "North America" = "namerica",
-                                    "Caribbean" = "caribbean",
-                                    "South Asia" = "sasia",
-                                    "Southeast Asia" = "seasia",
-                                    "East Asia" = "easia",
-                                    "The Pacific" = "pacific",
-                                    "South West Asia/Middle East" = "swasiamiddleeast",
-                                    "Central Asia & Caucasus" = "casia",
-                                    "Eastern Europe, Southeast Europe and Central Europe" = "caucasuseurope",
-                                    "Western Europe" = "weurope",
-                                    "West Africa"="wafrica",
-                                    "East Africa"="eafrica",
-                                    "Southern Africa"="safrica",
-                                    "Central Africa"="cafrica",
-                                    "North Africa"="nafrica")) %>%   summarise(n=n())%>% 
-  rename(q7=q7_region_one) %>% 
-  arrange(q7)
 
-q7_select<-base %>% 
-  select(starts_with("q7_region_multiple.")) %>% 
-  filter(!is.na(q7_region_multiple.samerica))
+-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-
 
 
-q7_b<-q7_select%>% 
-  summarize_all(sum) %>% 
-  gather(q7, n) %>% 
-  mutate(q7= str_replace(q7, "q7_region_multiple.", "")) %>% 
-  mutate(q7=forcats::fct_recode(as_factor(q7),
-                                 "South America" = "samerica",
-                                 "Central America & Mexico" = "camerica",
-                                    "North America" = "namerica",
-                                    "Caribbean" = "caribbean",
-                                    "South Asia" = "sasia",
-                                    "Southeast Asia" = "seasia",
-                                    "East Asia" = "easia",
-                                    "The Pacific" = "pacific",
-                                    "South West Asia/Middle East" = "swasiamiddleeast",
-                                    "Central Asia & Caucasus" = "casia",
-                                    "Eastern Europe, Southeast Europe and Central Europe" = "caucasuseurope",
-                                    "Western Europe" = "weurope",
-                                    "West Africa"="wafrica",
-                                    "East Africa"="eafrica",
-                                    "Southern Africa"="safrica",
-                                    "Central Africa"="cafrica",
-                                    "North Africa"="nafrica"))
+Regarding the sources of funding, there are some differences: primary focus organizations have a higher proportion of feminist funding (58.6% vs. 47.7%) and less funding from governments (15 vs. 20).
+
+The overall distribution is however similar.
+
+-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-
+
+**Q2 by Q21**
 
 
-q7_final <- q7_a %>% left_join(q7_b, by = "q7") %>% 
-  mutate(n=n.x+n.y) %>% 
-  select(-n.x,-n.y, "Region"=q7) %>%
-  mutate(porcentaje=round((n/153)*100,1)) %>% 
-  arrange(desc(porcentaje)) 
+**core funding**
+
+```{r, echo=F, message=F, warning=F}
+
+#q2xq4
+
+qry<-witm %>%
+  filter(!is.na(q21_types_funding_2023_core)) %>%
+   mutate(q21_core_2023=case_when(
+   q21_types_funding_2023_core<26 ~"1 Up to 25%",
+    q21_types_funding_2023_core>25 & q21_types_funding_2023_core<51 ~ "2 Between 26%-50%",
+    q21_types_funding_2023_core>50 & q21_types_funding_2023_core<76 ~ "3 Between 51%-75%",
+    is.na(q21_types_funding_2023_core) ~ NA,
+    TRUE ~ "4 Over 75%")) %>% 
+  group_by(q2_description,q21_core_2023)%>%
+  mutate(q2_description=forcats::fct_recode(as_factor(q2_description),
+                                                     "a. Primary focus" = "primary_focus",
+                                            "b. Specific project(s)" = "specific_projects",
+                                            "c. Other" = "98")) %>%
   
-knitr::kable(q7_final) %>% 
-  kable_minimal()
-
-```
-
-**-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-**
-
-**Region by register**
-
-This is made now only for Locally and National organisations
-
-```{r region_q5, echo=F, message=F, warning=F}
-
-rm(list=setdiff(ls(), "base"))
-
-q5q7<-base %>% 
-  filter(q6_geo_scope=="locally_focused" | q6_geo_scope=="nationally_focused") %>% 
-  group_by(q7_region_one,q5_registered) %>%
   summarise(n=n()) %>%
-  mutate(percentage=round((n/sum(n))*100,1))%>%
-  arrange(desc(n)) %>% 
-  mutate(q7_region_one=forcats::fct_recode(as_factor(q7_region_one),
-                                    "South America" = "samerica",
-                                    "Central America & Mexico" = "camerica",
-                                    "North America" = "namerica",
-                                    "Caribbean" = "caribbean",
-                                    "South Asia" = "sasia",
-                                    "Southeast Asia" = "seasia",
-                                    "East Asia" = "easia",
-                                    "The Pacific" = "pacific",
-                                    "South West Asia/Middle East" = "swasiamiddleeast",
-                                    "Central Asia & Caucasus" = "casia",
-                                    "Eastern Europe, Southeast Europe and Central Europe" = "caucasuseurope",
-                                    "Western Europe" = "weurope",
-                                    "West Africa"="wafrica",
-                                    "East Africa"="eafrica",
-                                    "Southern Africa"="safrica",
-                                    "Central Africa"="cafrica",
-                                    "North Africa"="nafrica")) %>%
-  select(q5_registered,Region=q7_region_one,percentage)
+  mutate(percentage=round((n/sum(n))*100,1)) 
 
-qry_w<-q5q7 %>% pivot_wider(names_from = Region, values_from = percentage) %>%
- mutate(q5_registered=recode(q5_registered, "98"="Other", "n_registered"="No registered", "y_registered"="Registered"))
+#qry
 
-
-knitr::kable(t(qry_w)) %>% 
-  kable_minimal()
-
-```
-
-**--Analysis notes-----------------------------------------------------------------------**
-
-Between local and national organizations there is a big difference in how many are unregistered in the different regions. The region with the highest proportion of unregistered is North Africa followed by North America.
-
-**------------------------------------------------------------------------------------------------**
-
-___
-
-**-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-**
-
-**Country:**
-
-Q8. Which countries are you working in?
-
-
-
-```{r q6, recho=F, message=F, warning=F}
-
-#Convertir campos vacíos de la variable country en NA
- base <- base %>%
-  mutate(q8_country = na_if(q8_country, ""))
-
-base<-base %>% 
-  filter(q6_geo_scope=="locally_focused"| q6_geo_scope=="nationally_focused") %>% 
-  mutate(q7_region_one=forcats::fct_recode(as_factor(q7_region_one),
-                                                     "South America" = "samerica",
-                                            "Central America & Mexico" = "camerica",
-                                    "North America" = "namerica",
-                                    "Caribbean" = "caribbean",
-                                    "South Asia" = "sasia",
-                                    "Southeast Asia" = "seasia",
-                                    "East Asia" = "easia",
-                                    "The Pacific" = "pacific",
-                                    "South West Asia/Middle East" = "swasiamiddleeast",
-                                    "Central Asia & Caucasus" = "casia",
-                                    "Eastern Europe, Southeast Europe and Central Europe" = "caucasuseurope",
-                                    "Western Europe" = "weurope",
-                                    "West Africa"="wafrica",
-                                    "East Africa"="eafrica",
-                                    "Southern Africa"="safrica",
-                                    "Central Africa"="cafrica",
-                                    "North Africa"="nafrica")) %>%
-  mutate(q8_country=forcats::fct_recode(as_factor(q8_country),
-                                      "Afghanistan"="afghanistan",
-                                      "Albania"="albania",
-                                      "Algeria"="algeria",
-                                      "American Samoa"="american_samoa",
-                                      "Andorra"="andorra",
-                                      "Angola"="angola",
-                                      "Anguilla"="anguilla",
-                                      "Antigua and Barbuda"="antigua_and_barbuda",
-                                      "Argentina"="argentina",
-                                      "Armenia"="armenia",
-                                      "Aruba"="aruba",
-                                      "Australia"="australia",
-                                      "Austria"="austria",
-                                      "Azerbaijan"="azerbaijan",
-                                      "Bahamas"="bahamas",
-                                      "Bahrain"="bahrain",
-                                      "Bangladesh"="bangladesh",
-                                      "Barbados"="barbados",
-                                      "Belarus"="belarus",
-                                      "Belgium"="belgium",
-                                      "Belize"="belize",
-                                      "Benin"="benin",
-                                      "Bhutan"="bhutan",
-                                      "Bolivia"="bolivia",
-                                      "Bonaire, Sint Eustatius and Saba"="bonaire_sint_eustatius_saba",
-                                      "Bosnia and Herzegovina"="bosnia_and_herzegovina",
-                                      "Botswana"="botswana",
-                                      "Brazil"="brazil",
-                                      "British Virgin Islands"="british_virgin_islands",
-                                      "Brunei Darussalam"="brunei_darussalam",
-                                      "Bulgaria"="bulgaria",
-                                      "Burkina Faso"="burkina_faso",
-                                      "Burundi"="burundi",
-                                      "Cabo Verde"="cabo_verde",
-                                      "Cambodia"="cambodia",
-                                      "Cameroon"="cameroon",
-                                      "Canada"="canada",
-                                      "Cayman Islands"="cayman_islands",
-                                      "Central African Republic"="cafrican_republic",
-                                      "Chad"="chad",
-                                      "Chile"="chile",
-                                      "China"="china",
-                                      "Colombia"="colombia",
-                                      "Comoros"="comoros",
-                                      "Congo"="congo",
-                                      "Cook Islands"="cook_islands",
-                                      "Costa Rica"="costa_rica",
-                                      "Côte d'Ivoire"="côte_divoire",
-                                      "Croatia"="croatia",
-                                      "Cuba"="cuba",
-                                      "Curaçao"="curaçao",
-                                      "Cyprus"="cyprus",
-                                      "Czech Republic"="czech_republic",
-                                      "Dem. People's Republic of Korea"="dem_peoples_rep_of_korea",
-                                      "Democratic Republic of the Congo"="democratic_republic_of_the_congo",
-                                      "Denmark"="denmark",
-                                      "Djibouti"="djibouti",
-                                      "Dominica"="dominica",
-                                      "Dominican Republic"="dominican_republic",
-                                      "Ecuador"="ecuador",
-                                      "Egypt"="egypt",
-                                      "El Salvador"="el_salvador",
-                                      "Equatorial Guinea"="equatorial_guinea",
-                                      "Eritrea"="eritrea",
-                                      "Estonia"="estonia",
-                                      "Eswatini"="eswatini",
-                                      "Ethiopia"="ethiopia",
-                                      "Fiji"="fiji",
-                                      "Finland"="finland",
-                                      "France"="france",
-                                      "French Guiana"="french_guiana",
-                                      "French Polynesia"="french_polynesia",
-                                      "Gabon"="gabon",
-                                      "Gambia"="gambia",
-                                      "Georgia"="georgia",
-                                      "Germany"="germany",
-                                      "Ghana"="ghana",
-                                      "Greece"="greece",
-                                      "Greenland"="greenland",
-                                      "Grenada"="grenada",
-                                      "Guadeloupe"="guadeloupe",
-                                      "Guam"="guam",
-                                      "Guatemala"="guatemala",
-                                      "Guinea"="guinea",
-                                  "Guinea-Bissau"="guinea_bissau",
-                                      "Guyana"="guyana",
-                                      "Haiti"="haiti",
-                                      "Honduras"="honduras",
-                                      "Hong Kong"="hong_kong",
-                                      "Hungary"="hungary",
-                                      "Iceland"="iceland",
-                                      "India"="india",
-                                      "Indonesia"="indonesia",
-                                      "Iran"="iran",
-                                      "Iraq"="iraq",
-                                      "Ireland"="ireland",
-                                      "Israel"="israel",
-                                      "Italy"="italy",
-                                      "Jamaica"="jamaica",
-                                      "Japan"="japan",
-                                      "Jordan"="jordan",  
-                                      "Kazakhstan"="kazakhstan",
-                                  "Kenya"="kenya",
-                                  "Kiribati"="kiribati",
-                                  "Kuwait"="kuwait",
-                                  "Kyrgyzstan"="kyrgyzstan",
-                                  "Lao People's Democratic Republic"="lao_peoples_democratic_republic",
-                                  "Latvia"="latvia",
-                                  "Lebanon"="lebanon",
-                                  "Lesotho"="lesotho",
-                                  "Liberia"="liberia",
-                                  "Libya"="libya",
-                                  "Liechtenstein"="liechtenstein",
-                                  "Lithuania"="lithuania",
-                                  "Luxembourg"="luxembourg",
-                                  "Macao"="macao",
-                                  "Madagascar"="madagascar",
-                                  "Malawi"="malawi",
-                                  "Malaysia"="malaysia",
-                                  "Maldives"="maldives",
-                                  "Mali"="mali",
-                                  "Malta"="malta",
-                                  "Marshall
-                                  Islands"="marshall_islands",
-                                  "Martinique"="martinique",
-                                  "Mauritania"="mauritania",
-                                  "Mauritius"="mauritius",
-                                  "Mayotte"="mayotte",
-                                  "Mexico"="mexico",
-                                  "Micronesia (Fed. States of)"="micronesia_fed_states_of",
-                                  "Monaco"="monaco",
-                                  "Mongolia"="mongolia",
-                                  "Montenegro"="montenegro",
-                                  "Montserrat"="montserrat",
-                                  "Morocco"="morocco",
-                                  "Mozambique"="mozambique",
-                                  "Myanmar"="myanmar",
-                                  "Namibia"="namibia",
-                                  "Nauru"="nauru",
-                                  "Nepal"="nepal",
-                                  "Netherlands"="netherlands",
-                                  "New Caledonia"="new_caledonia",
-                                  "New Zealand"="new_zealand",
-                                  "Nicaragua"="nicaragua",
-                                  "Niger"="niger",
-                                  "Nigeria"="nigeria",
-                                "Niue"="niue",
-                                "North Macedonia"="north_macedonia",
-                                "Northern Mariana Islands"="northern_mariana_islands",
-                                "Norway"="norway",
-                                "Oman"="oman",
-                                "Pakistan"="pakistan",
-                                "Palau"="palau",
-                                "Palestine"="palestine",
-                                "Panama"="panama",
-                                "Papua New Guinea"="papua_new_guinea",
-                                "Paraguay"="paraguay",
-                                "Peru"="peru",
-                                "Philippines"="philippines",
-                                "Poland"="poland",
-                                "Portugal"="portugal",
-                                "Puerto Rico"="puerto_rico",
-                                "Qatar"="qatar",
-                                "Republic of Korea"="republic_of_korea",
-                                "Republic of Moldova"="republic_of_moldova",
-                                "Réunion"="reunion",
-                                "Romania"="romania",
-                                "Russia"="russia",
-                                "Rwanda"="rwanda",
-                                "Saint Barthélemy"="saint_barthelemy",
-                                "Saint Helena"="saint_helena",
-                                "Saint Kitts and Nevis"="saint_kitts_and_nevis",
-                                "Saint Lucia"="saint_lucia",
-                                "Saint Martin (French part)"="saint_martin_french_part",
-                                "Saint Vincent and the Grenadines"="saint_vincent_and_the_grenadines",
-                                "Samoa"="samoa",
-                                "San Marino"="san_marino",
-                                "Sao Tome and Principe"="sao_tome_and_principe",
-                                "Saudi Arabia"="saudi_arabia",
-                                "Senegal"="senegal",
-                                "Serbia"="serbia",
-                                "Seychelles"="seychelles",
-                                "Sierra Leone"="sierra_leone",
-                                "Singapore"="singapore",
-                                "Sint Maarten (Dutch part)"="sint_maarten_dutch_part",
-                                "Slovakia"="slovakia",
-                                "Slovenia"="slovenia",
-                                "Solomon Islands"="solomon_islands",
-                                "Somalia"="somalia",
-                                "South Africa"="south_africa",
-                                "South Sudan"="south_sudan",
-                                "Spain"="spain",
-                                "Sri Lanka"="sri_lanka",
-                                "Sudan"="sudan",
-                                "Suriname"="suriname",
-                                "Sweden"="sweden",
-                                "Switzerland"="switzerland",
-                                "Syrian Arab Republic"="syrian_arab_republic",
-                                "Taiwan"="taiwan",
-                                "Tajikistan"="tajikistan",
-                                "Tanzania"="tanzania",
-                                "Thailand"="thailand",
-                                "Timor-Leste"="timor_leste",
-                                "Togo"="togo",
-                                "Tokelau"="tokelau",
-                                "Tonga"="tonga",
-                                "Trinidad and Tobago"="trinidad_and_tobago",
-                                "Tunisia"="tunisia",
-                                "Turkey"="turkey",
-                                "Turkmenistan"="turkmenistan",
-                                "Turks and Caicos Islands"="turks_and_caicos_islands",
-                                "Tuvalu"="tuvalu",
-                                "Uganda"="uganda",
-                                "Ukraine"="ukraine",
-                                "United Arab Emirates"="united_arab_emirates",
-                                "United Kingdom"="united_kingdom",
-                                "United States of America"="united_states_of_america",
-                                "Uruguay"="uruguay",
-                                "Uzbekistan"="uzbekistan",
-                                "Vanuatu"="vanuatu",
-                                "Venezuela (Bolivarian Republic of)"="venezuela_bolivarian_republic_of",
-                                "Viet Nam"="viet_nam",
-                                "Wallis and Futuna Islands"="wallis_and_futuna_islands",
-                                "Western Sahara"="western_sahara",
-                                "Yemen"="yemen",
-                                "Zambia"="zambia",
-                                "Zimbabwe"="zimbabwe",
-                                "Other South America"="country_other1",
-                                "Other Central America & Mexico"="country_other2",
-                                "Other North America"="country_other3",
-                                "Other Caribbean"="country_other4",
-                                "Other South Asia"="country_other5",
-                                "Other Southeast Asia"="country_other6",
-                                "Other East Asia"="country_other7",
-                                "Other The Pacific"="country_other8",
-                                "Other South West Asia/Middle East"="country_other9",
-                                "Other Central Asia & Caucasus"="country_other10",
-                                "Other Eastern Europe, Southeast Europe and Central Europe"="country_other11",
-                                "Other Western Europe"="country_other13",
-
-                              "Other West Africa"="country_other14",
-                              "Other East Africa"="country_other15",
-                              "Other Southern Africa"="country_other16",
-                              "Other Central Africa"="country_other17",
-                              "Other North Africa"="country_other18"))
-
-
-q8<-base %>% 
-  filter(q6_geo_scope=="locally_focused"| q6_geo_scope=="nationally_focused") %>% 
-  group_by(q7_region_one, q8_country) %>% 
-  summarise(n=n()) %>% 
-  mutate(Percentage=round((n/sum(n))*100,1))
-
-knitr::kable(q8) %>% 
-  kable_minimal()
-
-```
-
-**--Analysis notes-----------------------------------------------------------------------**
-
-This is the detailed list that allows you to see in which countries the answers were obtained, not those that did not have a response
-
-**------------------------------------------------------------------------------------------------**
-
-**-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-**
-
-**Year of formation:**
-
-Q9. What year was your group, organization and/ or movement formed?
-
-*Reading: 36% of the respondent organizations were formed between the years 2015 and 2020, while around 13% were formed from the year 2021 onwards*
-
-
-```{r year, echo=F, message=F, warning=F}
-
-
-    
-
-q9<-base %>% 
-  filter(!is.na(q9_year_formation_agrup)) %>% 
-  group_by(q9_year_formation_agrup) %>% 
-  summarise(total=n()) %>% 
-  mutate(porcentaje=round((total/sum(total))*100,1)) %>% 
-  arrange(q9_year_formation_agrup) %>% 
-  rename("Year formation"=q9_year_formation_agrup)
-
-
-knitr::kable(q9) %>% 
-  kable_minimal()
-
-
-```
-
-___
-
-**-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-**
-
-**Year of formation & Register**
-
-
-
-```{r year_register, echo=F, message=F, warning=F}
-
-
-
-q8<-base %>% 
-  filter(!is.na(q9_year_formation_agrup)) %>% 
-  group_by(q9_year_formation_agrup,q5_registered) %>% 
-  summarise(n=n()) %>% 
-  mutate(percentage=round((n/sum(n))*100,1)) %>%
-  select(q9_year_formation_agrup,q5_registered,percentage)
-
-
-qry_w<-q8 %>% pivot_wider(names_from = q9_year_formation_agrup, values_from = percentage) %>%
- mutate(q5_registered=recode(q5_registered, "98"="Other", "n_registered"="No registered", "y_registered"="Registered"))
-
+qry_w<-qry %>% select (q21_core_2023,q2_description,percentage) %>% pivot_wider(names_from = q2_description, values_from = percentage) 
 
 knitr::kable(qry_w) %>% 
   kable_minimal()
 
 
-
 ```
 
 
-```{r}
-#q8
+**Proyect funding**
 
-  qry_graph<-q8 %>% filter((q5_registered=="y_registered" | q5_registered=="n_registered"))
-#qry_graph
+```{r, echo=F, message=F, warning=F}
 
-ggplot(qry_graph, aes(x = q9_year_formation_agrup, y=percentage, fill=q5_registered)) +                      
-   geom_bar(position="dodge", stat="identity") +
-  scale_colour_distiller() +
-  labs(x="Year",y= "%") +                 
-  ggtitle("Year of statup by Registration (%)") +                
-  theme_light()+
-  geom_text(aes(label = sprintf("%0.1f", round(percentage, digits = 1))),position=position_dodge(width=0.9),
-            vjust=-0.2, size=3) 
+#q2xq4
 
-```
-
-
-**--Analysis notes-----------------------------------------------------------------------**
-
-Organizations starting in the last 3 years have a high proportion of non-registration. It decreases as the start-up time passes.
-
-
-**------------------------------------------------------------------------------------------------**
-
-**-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-**
-
-**Year by type of organisation**
-
-
-```{r year_q9, echo=F, message=F, warning=F}
-
-q8<-base %>% 
-  filter(!is.na(q9_year_formation_agrup) & !is.na(q1_description)) %>% 
-  group_by(q9_year_formation_agrup,q1_description) %>% 
-  summarise(n=n()) %>% 
-  mutate(percentage=round((n/sum(n))*100,1)) %>%
-  select(q9_year_formation_agrup,q1_description,percentage)
-
-qry_w<-q8 %>% pivot_wider(names_from = q9_year_formation_agrup, values_from = percentage)%>%
- mutate(q1_description=recode(q1_description,"98"="Other","primary_focus"="Primary focus","specific_projects"="Specific Projects")
- )
-
-
-knitr::kable(qry_w) %>% 
-  kable_minimal()
-
-
-
-```
-
-
-**--Analysis notes-----------------------------------------------------------------------**
-
-Organizations starting in the last 3 years have a high proportion of non-registration. It decreases as the start-up time passes.
-
-
-**------------------------------------------------------------------------------------------------**
-
-**-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-**
-
-**Year by Gegraphically Scope**
-
-Option 1
-
-```{r year_q6, echo=F, message=F, warning=F}
-
-#rm(list=setdiff(ls(), "base"))
-
-qry<-base %>%
-    group_by(q6_geo_scope) %>%
-  summarise(n=n())
-
-qry
-
-q8<-base %>% 
-  filter(!is.na(q9_year_formation_agrup) & !is.na(q6_geo_scope)) %>% 
-  group_by(q9_year_formation_agrup,q6_geo_scope) %>% 
-  summarise(n=n()) %>% 
-  mutate(percentage=round((n/sum(n))*100,1)) %>%
-  mutate(q6_geo_scope=recode(q6_geo_scope,
-     "locally_focused"="Locally",
-         "nationally_focused"="Nationally" ,
-         "diaspora_and_or_exile"="Work from diaspora, refuge and/or exile",
-         "regionally_focused"= "Regionally",
-         "transnationally_focused"="Transnationally",
-         "globally_focused"="Global")) %>%
-  select(q9_year_formation_agrup,q6_geo_scope,percentage)
-
-
-qry_w<-q8 %>% pivot_wider(names_from = q9_year_formation_agrup, values_from = percentage)
-       
- 
-
-
-knitr::kable(qry_w) %>% 
-  kable_minimal()
-
-
-
-```
-
-```{r}
-#rm(list=setdiff(ls(), "base"))
-
-scope_filter=c("Locally","Nationally","Regionally","Global")
-
-q8 <- q8 %>% filter(q6_geo_scope %in% scope_filter)
-
-ggplot(q8, aes(x = q9_year_formation_agrup, y=percentage, fill=q6_geo_scope)) +                      
-   geom_bar(position="dodge", stat="identity") +
-  scale_fill_brewer(palette = "Set3") +
-  labs(x="Year",y= "%") +                 
-  ggtitle("Geographical scope by year(%)") +                
-  theme_bw(base_size = 12)+
-  geom_text(aes(label = sprintf("%0.1f", round(percentage, digits = 1))),position=position_dodge(width=0.9),
-            vjust=-0.2, size=3) 
+qry<-witm %>%
+  filter(!is.na(q21_types_funding_2023_project)) %>%
+   mutate(q21_project_2023=case_when(
+   q21_types_funding_2023_project<26 ~"1 Up to 25%",
+    q21_types_funding_2023_project>25 & q21_types_funding_2023_project<51 ~ "2 Between 26%-50%",
+    q21_types_funding_2023_project>50 & q21_types_funding_2023_project<76 ~ "3 Between 51%-75%",
+    is.na(q21_types_funding_2023_project) ~ NA,
+    TRUE ~ "4 Over 75%")) %>% 
+  group_by(q2_description,q21_project_2023)%>%
+  mutate(q2_description=forcats::fct_recode(as_factor(q2_description),
+                                                     "a. Primary focus" = "primary_focus",
+                                            "b. Specific project(s)" = "specific_projects",
+                                            "c. Other" = "98")) %>%
   
+  summarise(n=n()) %>%
+  mutate(percentage=round((n/sum(n))*100,1)) 
 
-```
+#qry
 
+qry_w<-qry %>% select (q21_project_2023,q2_description,percentage) %>% pivot_wider(names_from = q2_description, values_from = percentage) 
 
-**--Analysis notes-----------------------------------------------------------------------**
-
-The distribution is quite similar in all periods.
-
-
-**------------------------------------------------------------------------------------------------**
-
-**-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-**
-SECTION : EXTERNAL FOUNDING
-**-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-**
-
-**External founding:**
-
-Q13. Between 2021 and 2023, has your group, organization and/or movement received any external funding?
-
-
-```{r ef, echo=F, message=F, warning=F}
-q13<-base %>%
-  group_by(q13_ext_funding) %>% 
-  summarise(n=n()) %>% 
-  mutate(porcentaje=round((n/sum(n))*100,1)) %>% 
-  rename("External funding"=q13_ext_funding)
- 
-
-knitr::kable(q13) %>% 
+knitr::kable(qry_w) %>% 
   kable_minimal()
+
+
 ```
-___
+
+**Emergency funding**
+
+```{r, echo=F, message=F, warning=F}
+
+#q2xq4
+
+qry<-witm %>%
+  filter(!is.na(q21_types_funding_2023_emergency)) %>%
+   mutate(q21_emergency_2023=case_when(
+   q21_types_funding_2023_emergency<26 ~"1 Up to 25%",
+    q21_types_funding_2023_emergency>25 & q21_types_funding_2023_emergency<51 ~ "2 Between 26%-50%",
+    q21_types_funding_2023_emergency>50 & q21_types_funding_2023_emergency<76 ~ "3 Between 51%-75%",
+    is.na(q21_types_funding_2023_project) ~ NA,
+    TRUE ~ "4 Over 75%")) %>% 
+  group_by(q2_description,q21_emergency_2023)%>%
+  mutate(q2_description=forcats::fct_recode(as_factor(q2_description),
+                                                     "a. Primary focus" = "primary_focus",
+                                            "b. Specific project(s)" = "specific_projects",
+                                            "c. Other" = "98")) %>%
+  
+  summarise(n=n()) %>%
+  mutate(percentage=round((n/sum(n))*100,1)) 
+
+#qry
+
+qry_w<-qry %>% select (q21_emergency_2023,q2_description,percentage) %>% pivot_wider(names_from = q2_description, values_from = percentage) 
+
+knitr::kable(qry_w) %>% 
+  kable_minimal()
+
+
+```
 
 
 
+-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-
+
+
+In relation to the types of funding (core, project and emergency) there are some minor differences. The main difference is seen in the proportion of core funding that the organizations have: 59.8% of the primary focus organizations have less than 25% of external funding of this type while this is the case for 68.9% of the organizations that work by project. That is, feminist organizations seem to have a higher proportion of core funding than the others.
+
+-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-
+
+-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-
+-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-
+
+
+**CONCLUSION**
+
+Only 23% are organizations that declared themselves NOT FEMINIST but work by project on gender and diversity issues.
+
+The latter (by project) work less frequently on AWID's priority issues (5% difference less, very little) and are registered in the same proportion as feminists (focus).
+
+The geographical scope is also equivalent, for example, some are not more global and others more local, and they behave in the same way in relation to the year of training.
+
+Up to this point, there are NO significant differences in any aspect.
+
+Moving on to the analysis in relation to budget and funding, there are also minor differences in relation to budget, with only a slight tendency that project-based organizations seem to have lower budgets than feminist ones (slightly).
+
+The only variable that shows a moderately significant difference is the existence or not of external funding: t basis are less likely to rely on external funding (64%) than targeted organizations (72.9).
+
+Along the same lines, another slightly different variable indicates that feminist organizations have a higher proportion of core funding than those working on a project basis.
+
+
+-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-
+-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-
