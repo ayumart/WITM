@@ -95,8 +95,8 @@ q0<-base %>%
   mutate(Percentage=round((Count/sum(Count))*100,1)) %>% 
   rename("Consent"=q0_consent)
 
-knitr::kable(q0) %>% 
-  kable_minimal()
+#knitr::kable(q0) %>% 
+#  kable_minimal()
 ```
 
 
@@ -295,6 +295,59 @@ ggplot(q4_focus, aes(x = reorder(q4_awid_focus, -Percentage), y = Percentage, fi
 ____
 
 
+
+** Forms by organizing grouped by spotlight themes/groups**
+
+```{r type_grouped2, echo=F, message=F, warning=F}
+q4_agrup<-base %>%
+  filter(!is.na(q4_forms_organizing)) %>%
+  summarise(Total= round(n(),0),
+    lgbtiq = sum(q4_awid_LGBTIQ == 1, na.rm = TRUE),
+    young = sum(q4_awid_young == 1, na.rm = TRUE),
+    sex = sum(q4_awid_sex == 1, na.rm = TRUE),
+    nin = sum(q4_awid_nin == 1, na.rm = TRUE),
+    climate = sum(q4_awid_climate == 1, na.rm = TRUE),
+    antig = sum(q4_awid_antig == 1, na.rm = TRUE),
+    crisis = sum(q4_awid_crisis == 1, na.rm = TRUE),
+    harm = sum(q4_awid_harm == 1, na.rm = TRUE),
+    "LBQTI+" = round(lgbtiq/ Total * 100, 1),
+    "Young feminist and Girl's movements" = round(young / Total * 100, 1),
+    "Sex workers rights" = round(sex / Total * 100, 1),
+    "Religious & ethnic minority rights + anti-caste"  = round(nin / Total * 100, 1),
+    "Climate and environmental justice " = round(climate/ Total * 100, 1),
+    "Countering anti-gender & anti-rights " = round(antig / Total * 100, 1),
+    "Anti-militarization and peace + crisis response"  = round(crisis / Total * 100, 1),
+    "Harm reduction + resisting the war on drugs" = round(harm / Total * 100, 1)) %>% 
+  select(1,11:17)
+
+q4_agrup<-q4_agrup%>% 
+  pivot_longer(cols = 2:8,
+               names_to = "Types",
+               values_to = "Percentage") %>% 
+  select(2:3) %>% 
+  arrange(desc(Percentage))
+
+ggplot(q4_agrup, aes(x = reorder(Types, Percentage), y = Percentage, fill=Types)) +
+  geom_bar(stat = "identity") +
+  geom_text(aes(label = sprintf("%.1f%%", Percentage)), hjust=-0.02, vjust = 0.5, size = 3.2) +
+  labs(title = "Forms of organizing",
+       x = " ",
+       y = "Percentage") +
+  scale_y_continuous(expand = expansion(mult = c(0, 0.1)))+
+  theme_minimal() +
+  theme(legend.position = "none",
+        axis.text.x = element_text(),  # Mantiene las etiquetas del eje x y ajusta la rotación
+        panel.grid.major = element_blank(),  # Elimina la cuadrícula mayor
+        panel.grid.minor = element_blank())+
+  coord_flip()
+
+
+```
+
+
+____
+
+
 **Registration**
 
 Q5. Is your group, organization and/or movement registered?
@@ -389,6 +442,7 @@ ggplot(q6, aes(x = reorder(Scope, -Percentage), y = Percentage, fill=Scope)) +
 ```
 
 **--Reading help-----------------------------------------------------------------------**
+
 The sample is very interesting because most of the organizations are national or local (80%). 
 
 **------------------------------------------------------------------------------------------------**
@@ -400,8 +454,6 @@ ____
 
 Q7. Indicate in which region(s) your group, organization and/or movement works
 
-*Reading: 35.7% of the organizations work in África.
-Organizations working locally, regionally or globally were consolidated.*
 
 
 ```{r region, echo=F, message=F, warning=F}
@@ -480,7 +532,7 @@ knitr::kable(q7_final) %>%
 
 ```
 
-```{r}
+```{r region2, echo=F, message=F, warning=F}
 
 #########################################################################################
 
@@ -848,7 +900,6 @@ ____
 
 Q9. What year was your group, organization and/ or movement formed?
 
-*Reading: 33.7% of the respondent organizations were formed between the years 2015 and 2020, while around 15.6% were formed from the year 2021 onwards*
 
 ```{r year, echo=F, message=F, warning=F}
 
@@ -934,13 +985,14 @@ q10_grouped <- q10_grouped %>%
   pivot_wider(names_from = Year, values_from = c(n, Percentage)) %>% 
   select(1,5:7)
 
-q10_grouped
+
 knitr::kable(q10_grouped) %>% 
   kable_minimal() #imprime cuadro
 ```
 
 
 **--Reading help -----------------------------------------------------------------------**
+
 
 This grouping maintains interesting proportions respecting the way the question was asked. Only the highest amounts are grouped together.
 
@@ -2266,4 +2318,1012 @@ ggplot(q25, aes(x = reorder(q25_recode, -Percentage), y = Percentage, fill=q25_r
 ____
 
 
+
 Q26. Did this funding come from a funder who had not supported your group, organization and/or movement before 2021? If yes, please select which type of funder
+
+```{r q26, echo=F, message=F, warning=F}
+#Convertir campos vacíos de la variable q23 en NA
+ base <- base %>%
+  mutate(q26_new_counter_funder = na_if(q26_new_counter_funder, ""))
+ 
+
+q26_general <- base %>%
+  filter(q25_counter_anti=="yes" & !is.na(q26_new_counter_funder)) %>%
+  summarise(
+    Total = n(),
+    no=sum((q26_new_counter_funder.no==1 | q26_new_counter_funder.99==1), na.rm=TRUE),
+    yes=sum((q26_new_counter_funder.no!=1 & q26_new_counter_funder.99!=1), na.rm=TRUE),
+    "No or not sure"= round(no/Total*100,1),
+    "Yes"= round(yes/Total*100,1)) %>% 
+  select(1,4:5)
+ 
+
+q26_general<-q26_general %>% 
+  pivot_longer(cols = 2:3,
+               names_to = "Source",
+               values_to = "Percentage") %>% 
+  select(2:3)
+
+knitr::kable(q26_general) %>% 
+  kable_minimal()
+```
+
+
+____
+
+
+
+*Source counter anti-rights and anti-gender trends funding*
+
+```{r q26b, echo=F, message=F, warning=F}
+q26_yes<-base %>%
+  filter(q26_new_counter_funder.no!=1 & q26_new_counter_funder.99!=1) %>%
+  summarise(Total= round(n(),0),
+    multilateral = sum(q26_new_counter_funder.multilateral_funders == 1, na.rm = TRUE),
+    bilateral = sum(q26_new_counter_funder.bilateral_funders == 1, na.rm = TRUE),
+    philanthropic = sum(q26_new_counter_funder.philanthropic_foundations == 1, na.rm = TRUE),
+    womens = sum(q26_new_counter_funder.womens_feminist_funds == 1, na.rm = TRUE),
+    private = sum(q26_new_counter_funder.private_sector == 1, na.rm = TRUE),
+    ingos = sum(q26_new_counter_funder.INGOs == 1, na.rm = TRUE),
+    individual = sum(q26_new_counter_funder.individual_donors == 1, na.rm = TRUE),
+    gov = sum(q26_new_counter_funder.national_local_goverment_or_bodies== 1, na.rm = TRUE),
+    other = sum(q26_new_counter_funder.98== 1, na.rm = TRUE),
+    Multilateral = round(multilateral / Total * 100, 1),
+    Bilateral = round(bilateral / Total * 100, 1),
+    Philanthropic = round(philanthropic / Total * 100, 1),
+    Feminist = round(womens / Total * 100, 1),
+    Private = round(private / Total * 100, 1),
+    INGOS = round(ingos / Total * 100, 1),
+    Individual = round(individual / Total * 100, 1),
+    Government = round(gov / Total * 100, 1),
+    Other = round(other / Total * 100, 1)) %>% 
+  select(1,11:19)
+
+
+
+q26_yes<-q26_yes %>% 
+  pivot_longer(cols = 2:10,
+               names_to = "Source",
+               values_to = "Percentage") %>% 
+  select(2:3) %>% 
+  arrange(desc(Percentage))
+
+
+ggplot(q26_yes, aes(x = reorder(Source, -Percentage), y = Percentage, fill=Source)) +
+  geom_bar(stat = "identity") +
+  geom_text(aes(label = sprintf("%.1f%%", Percentage)), vjust = -0.5, size = 3.5) +
+  labs(title = "New funder source",
+       x = " ",
+       y = "Percentage") +
+  theme_minimal() +
+  theme(legend.position = "none",
+  panel.grid.major.x = element_blank(), # Elimina líneas de la cuadrícula vertical
+    panel.grid.minor.x = element_blank(), # Elimina líneas de la cuadrícula vertical menores
+    panel.grid.major.y = element_blank(), # Elimina líneas de la cuadrícula horizontal
+    panel.grid.minor.y = element_blank())
+
+
+```
+
+____
+
+Q27. What kind of work did you undertake with this funding?
+
+```{r q27, echo=F, message=F, warning=F}
+
+#Convertir campos vacíos de la variable q27 en NA
+ base <- base %>%
+  mutate(q27_work_to_counter = na_if(q27_work_to_counter, ""))
+
+
+q27<-base %>%
+  filter(q25_counter_anti=="yes" & !is.na(q27_work_to_counter)) %>%
+  summarise(Total= round(n(),0),
+    mov = sum(q27_work_to_counter.movement_building == 1, na.rm = TRUE),
+    narr = sum(q27_work_to_counter.narrative_work == 1, na.rm = TRUE),
+    legal = sum(q27_work_to_counter.legal_action_reform == 1, na.rm = TRUE),
+    res = sum(q27_work_to_counter.research_knowledge_building == 1, na.rm = TRUE),
+    civic = sum(q27_work_to_counter.civic_crackdown_response == 1, na.rm = TRUE),
+    adv = sum(q27_work_to_counter.advocacy_campaigns == 1, na.rm = TRUE),
+    prot = sum(q27_work_to_counter.protests_mobilization == 1, na.rm = TRUE),
+    cross = sum(q27_work_to_counter.cross_movement_alliance_building== 1, na.rm = TRUE),
+    safe = sum(q27_work_to_counter.safety_protection_activists== 1, na.rm = TRUE),
+    #mon = sum(q27_work_to_counter.monitoring_research_knowledge_building== 1, na.rm = TRUE),
+    other = sum(q27_work_to_counter.98== 1, na.rm = TRUE),
+    "Movement building" = round(mov / Total * 100, 1),
+    "Narrative work" = round(narr / Total * 100, 1),
+    "Legal action and reform" = round(legal / Total * 100, 1),
+    "Research & knowledge building" = round(res / Total * 100, 1),
+    "Responding to civic space crackdown/ urgent response work" = round(civic / Total * 100, 1),
+    "Advocacy & campaigns" = round(adv / Total * 100, 1),
+    "Protests & public mobilization" = round(prot / Total * 100, 1),
+    "Cross-movement mobilizing and alliance building" = round(cross / Total * 100, 1),
+    "Holistic safety and protection of activists at risk" = round(safe / Total * 100, 1),
+    Other = round(other / Total * 100, 1)) %>% 
+  select(1,12:21)
+
+
+q27<-q27%>% 
+  pivot_longer(cols = 2:11,
+               names_to = "Source",
+               values_to = "Percentage") %>% 
+  select(2:3) %>% 
+  arrange(desc(Percentage))
+
+
+ggplot(q27, aes(x = reorder(Source, Percentage), y = Percentage, fill=Source)) +
+  geom_bar(stat = "identity") +
+  geom_text(aes(label = sprintf("%.1f%%", Percentage)), hjust=-0.02, vjust = 0.5, size = 3.2) +
+  labs(title = "Type of work performed",
+       x = " ",
+       y = "Percentage") +
+  scale_y_continuous(expand = expansion(mult = c(0, 0.1)))+
+  theme_minimal() +
+  theme(legend.position = "none",
+  panel.grid.major.x = element_blank(), # Elimina líneas de la cuadrícula vertical
+    panel.grid.minor.x = element_blank(), # Elimina líneas de la cuadrícula vertical menores
+    panel.grid.major.y = element_blank(), # Elimina líneas de la cuadrícula horizontal
+    panel.grid.minor.y = element_blank())+
+  coord_flip()
+
+
+
+```
+
+
+
+**-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-**
+
+### Sub-section 2.3: Funding to counter anti-rights and anti-gender trends
+
+
+**Resources generated autonomously** are the financial, human or material resources that your group, organization and/or movement generates independent from external funders.
+
+*To learn more about the power of autonomous self-generated resourcing, see:* [https://our-resource.com/about/] (https://our-resource.com/about/)
+
+Q28. Between 2021 and 2023, did your group, organization and/or movement rely on any of the following forms of autonomous resourcing to generate income and fund your work? 
+
+```{r q28, echo=F, message=F, warning=F}
+
+#Convertir campos vacíos de la variable q28 en NA
+ base <- base %>%
+  mutate(q28_autonomous_resourcing = na_if(q28_autonomous_resourcing, ""))
+
+
+q28<-base %>%
+  filter(!is.na(q28_autonomous_resourcing)) %>%
+  summarise(Total= round(n(),0),
+    none = sum(q28_autonomous_resourcing.none == 1, na.rm = TRUE),
+    volun = sum(q28_autonomous_resourcing.volunteering == 1, na.rm = TRUE),
+    member = sum(q28_autonomous_resourcing.membership_fees == 1, na.rm = TRUE),
+    product = sum(q28_autonomous_resourcing.product_sales == 1, na.rm = TRUE),
+    service = sum(q28_autonomous_resourcing.service_sales == 1, na.rm = TRUE),
+    property = sum(q28_autonomous_resourcing.property_rent_or_lease == 1, na.rm = TRUE),
+    donation = sum(q28_autonomous_resourcing.donations == 1, na.rm = TRUE),
+    crowd = sum(q28_autonomous_resourcing.crowdfunding== 1, na.rm = TRUE),
+    in_kind = sum(q28_autonomous_resourcing.in_kind_contributions== 1, na.rm = TRUE),
+    aid = sum(q28_autonomous_resourcing.mutual_aid== 1, na.rm = TRUE),
+    other = sum(q28_autonomous_resourcing.98== 1, na.rm = TRUE),
+    None = round(none / Total * 100, 1),
+    Volunteering = round(volun/ Total * 100, 1),
+    "Membership fees" = round(member / Total * 100, 1),
+    "Sale of products" = round(product / Total * 100, 1),
+    "Sale of services" = round(service / Total * 100, 1),
+    "Rent or lease of property"  = round(property / Total * 100, 1),
+    Donations = round(donation / Total * 100, 1),
+    Crowdfunding = round(crowd / Total * 100, 1),
+    "In-kind contributions"  = round(in_kind / Total * 100, 1),
+    "Mutual aid" = round(aid / Total * 100, 1),
+    Other = round(other / Total * 100, 1)) %>% 
+  select(1,13:23)
+
+q28<-q28%>% 
+  pivot_longer(cols = 2:12,
+               names_to = "Source",
+               values_to = "Percentage") %>% 
+  select(2:3) %>% 
+  arrange(desc(Percentage))
+
+ggplot(q28, aes(x = reorder(Source, Percentage), y = Percentage, fill=Source)) +
+  geom_bar(stat = "identity") +
+  geom_text(aes(label = sprintf("%.1f%%", Percentage)), hjust=-0.02, vjust = 0.5, size = 3.2) +
+  labs(title = "Autonomous resourcing",
+       x = " ",
+       y = "Percentage") +
+  scale_y_continuous(expand = expansion(mult = c(0, 0.1)))+
+  theme_minimal() +
+  theme(legend.position = "none",
+  panel.grid.major.x = element_blank(), # Elimina líneas de la cuadrícula vertical
+    panel.grid.minor.x = element_blank(), # Elimina líneas de la cuadrícula vertical menores
+    panel.grid.major.y = element_blank(), # Elimina líneas de la cuadrícula horizontal
+    panel.grid.minor.y = element_blank())+
+  coord_flip()
+
+
+```
+
+
+_____
+
+
+Q29. Between 2021 and 2023, how did your group, organization and/or movement’s reliance on autonomous resourcing change?
+
+```{r q29, echo=F, message=F, warning=F}
+
+#Convertir campos vacíos de la variable q13 en NA
+ base <- base %>%
+  mutate(q29_reliance_aut_resoursing = na_if(q29_reliance_aut_resoursing, ""))
+
+
+q29<-base %>%
+  filter(!is.na(q29_reliance_aut_resoursing) & q29_reliance_aut_resoursing!="not_applicable") %>% 
+  mutate(q29_recod= case_when(
+    q29_reliance_aut_resoursing=="grown_substantively" ~ "(a) Grew substantively",
+    q29_reliance_aut_resoursing=="grown_slightly" ~ "(b) Grew slightly",
+    q29_reliance_aut_resoursing=="stayed_same" ~ "(c) Stayed the same",
+    q29_reliance_aut_resoursing=="decreased_slightly" ~ "(d) Decreased slightly",
+    q29_reliance_aut_resoursing=="decreased_substantially" ~ "(e) Decreased substantially",
+    TRUE ~ NA)) %>% 
+  group_by(q29_recod) %>% 
+  summarise(Count=n()) %>% 
+  mutate(Percentage=round((Count/sum(Count))*100,1)) %>% 
+  arrange(q29_recod) %>%   
+  rename("Change"=q29_recod)
+
+
+#Crear tabla
+knitr::kable(q29) %>% 
+  kable_minimal()
+
+```
+
+
+**-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-**
+
+## Section 3: Shifting Power
+
+Q30. Has your group, organization and/or movement ever had to shift its priorities, strategies or ways of working to be eligible for and/or increase the chances of receiving external funding?
+
+```{r q30, echo=F, message=F, warning=F}
+
+q30<-base %>% 
+  filter(!is.na(q30_shift_priorities)) %>% 
+  mutate(q30_shift_priorities=case_when(
+    q30_shift_priorities=="no_not_at_all" ~ "No, not at all",
+    q30_shift_priorities=="yes_sometimes" ~ "Yes, sometimes",
+    q30_shift_priorities=="yes_frequently" ~ "Yes, frequently",
+    q30_shift_priorities=="yes_always" ~ "Yes, always",
+    q30_shift_priorities=="99" ~ "Don't know",
+    TRUE ~ NA)) %>% 
+  group_by(q30_shift_priorities) %>% 
+  summarise(Total=n()) %>% 
+  mutate(Percentage=round((Total/sum(Total))*100,1)) %>% 
+  arrange(desc(Percentage))
+
+
+#knitr::kable(q30) %>% 
+#  kable_minimal()
+
+ggplot(q30, aes(x = reorder(q30_shift_priorities, -Percentage), y = Percentage, fill = q30_shift_priorities)) +
+  geom_bar(stat = "identity") +
+  geom_text(aes(label = sprintf("%.1f%%", Percentage)), vjust = -0.5, size = 3.5) +
+  labs(title = "Shifting Power",
+       x= NULL,
+       y = "Percentage") +
+  theme_minimal() +
+  theme(legend.position = "none",
+  panel.grid.major.x = element_blank(), # Elimina líneas de la cuadrícula vertical
+    panel.grid.minor.x = element_blank(), # Elimina líneas de la cuadrícula vertical menores
+    panel.grid.major.y = element_blank(), # Elimina líneas de la cuadrícula horizontal
+    panel.grid.minor.y = element_blank())
+
+```
+
+
+_____
+
+
+Q31. In your experience, what are some of the best practices funders have used to share their power with your group, organization, and/or movement?
+
+```{r q31, echo=F, message=F, warning=F}
+
+#Convertir campos vacíos de la variable q31 en NA
+ base <- base %>%
+  mutate(q31_funders_practices = na_if(q31_funders_practices, ""))
+
+
+q31<-base %>%
+  filter(!is.na(q31_funders_practices)) %>%
+  summarise(Total= round(n(),0),
+    simple = sum(q31_funders_practices.funding_application_simplified == 1, na.rm = TRUE),
+    core = sum(q31_funders_practices.core_funding == 1, na.rm = TRUE),
+    multi = sum(q31_funders_practices.multi_year_funding == 1, na.rm = TRUE),
+    flex = sum(q31_funders_practices.flexible_funding == 1, na.rm = TRUE),
+    open = sum(q31_funders_practices.open_communication_on_funding == 1, na.rm = TRUE),
+    meaning = sum(q31_funders_practices.meaningful_funder_consultations == 1, na.rm = TRUE),
+    value = sum(q31_funders_practices.funders_alignment_with_values == 1, na.rm = TRUE),
+    report = sum(q31_funders_practices.simplified_reporting== 1, na.rm = TRUE),
+    parti = sum(q31_funders_practices.participatory_grantmaking== 1, na.rm = TRUE),
+    all = sum(q31_funders_practices.all== 1, na.rm = TRUE),
+    none = sum(q31_funders_practices.none== 1, na.rm = TRUE),
+    other = sum(q31_funders_practices.98== 1, na.rm = TRUE),
+    "Simplified funding application processes" = round(simple / Total * 100, 1),
+    "Core funding" = round(core / Total * 100, 1),
+    "Multi-year funding" = round(multi / Total * 100, 1),
+    "Flexible funding"  = round(flex / Total * 100, 1),
+    "Open communication" = round(open/ Total * 100, 1),
+    "Meaningful consultations to set funders agendas and priorities" = round(meaning / Total * 100, 1),
+    "Funders alignment and trust with grantee partner’s political values and missions"  = round(value / Total * 100, 1),
+    "Simplified reporting processes" = round(report / Total * 100, 1),
+    "Introduction of a participatory grant decision-making process" = round(parti/ Total * 100, 1),
+    "All of the above" = round(all/ Total * 100, 1),
+    "None of the above" = round(none/ Total * 100, 1),
+    Other = round(other / Total * 100, 1)) %>% 
+  select(1,14:25)
+
+q31<-q31%>% 
+  pivot_longer(cols = 2:13,
+               names_to = "Practices",
+               values_to = "Percentage") %>% 
+  select(2:3) %>% 
+  arrange(desc(Percentage))
+
+ggplot(q31, aes(x = reorder(Practices, Percentage), y = Percentage, fill=Practices)) +
+  geom_bar(stat = "identity") +
+  geom_text(aes(label = sprintf("%.1f%%", Percentage)), hjust=-0.02, vjust = 0.5, size = 3.2) +
+  labs(title = "Best funders practices",
+       x = " ",
+       y = "Percentage") +
+  scale_y_continuous(expand = expansion(mult = c(0, 0.1)))+
+  theme_minimal() +
+  theme(legend.position = "none",
+  panel.grid.major.x = element_blank(), # Elimina líneas de la cuadrícula vertical
+    panel.grid.minor.x = element_blank(), # Elimina líneas de la cuadrícula vertical menores
+    panel.grid.major.y = element_blank(), # Elimina líneas de la cuadrícula horizontal
+    panel.grid.minor.y = element_blank())+
+  coord_flip()
+
+```
+
+
+_____
+
+Q32. To what extent does your group, organization, and/or movement face the following barriers in accessing external funding?
+
+```{r q32, echo=F, message=F, warning=F}
+
+q32a<-base %>% 
+  filter(!is.na(q32_barriers_few)) %>% 
+  mutate(q32_barriers_few=case_when(
+    q32_barriers_few=="no_agree" ~ "No agreement",
+    q32_barriers_few=="somewhat_agree" ~ "Somewhat agree",
+    q32_barriers_few=="strongly_agree" ~ "Strongly agree",
+    TRUE ~ NA)) %>% 
+  group_by(q32_barriers_few) %>% 
+  summarise(Total=n()) %>% 
+  mutate(Percentage=round((Total/sum(Total))*100,1)) %>% 
+  select("q32"=1, "We are skilled in resource mobilization and face relatively few difficulties to resource our work"=3)
+
+q32b<-base %>% 
+  filter(!is.na(q32_barriers_lack_information)) %>% 
+  mutate(q32_barriers_lack_information=case_when(
+    q32_barriers_lack_information=="no_agree" ~ "No agreement",
+    q32_barriers_lack_information=="somewhat_agree" ~ "Somewhat agree",
+    q32_barriers_lack_information=="strongly_agree" ~ "Strongly agree",
+    TRUE ~ NA)) %>% 
+  group_by(q32_barriers_lack_information) %>% 
+  summarise(Total=n()) %>% 
+  mutate(Percentage=round((Total/sum(Total))*100,1)) %>% 
+  select("q32"=1, "We don’t have enough information on where, from whom and what funding is actually available"=3)
+
+q32c<-base %>% 
+  filter(!is.na(q32_barriers_capacity)) %>% 
+  mutate(q32_barriers_capacity=case_when(
+    q32_barriers_capacity=="no_agree" ~ "No agreement",
+    q32_barriers_capacity=="somewhat_agree" ~ "Somewhat agree",
+    q32_barriers_capacity=="strongly_agree" ~ "Strongly agree",
+    TRUE ~ NA)) %>% 
+  group_by(q32_barriers_capacity) %>% 
+  summarise(Total=n()) %>% 
+  mutate(Percentage=round((Total/sum(Total))*100,1)) %>% 
+  select("q32"=1, "We don't have the staff capacity and/or experience to apply for funding"=3)
+
+q32d<-base %>% 
+  filter(!is.na(q32_barriers_complexity)) %>% 
+  mutate(q32_barriers_complexity=case_when(
+    q32_barriers_complexity=="no_agree" ~ "No agreement",
+    q32_barriers_complexity=="somewhat_agree" ~ "Somewhat agree",
+    q32_barriers_complexity=="strongly_agree" ~ "Strongly agree",
+    TRUE ~ NA)) %>% 
+  group_by(q32_barriers_complexity) %>% 
+  summarise(Total=n()) %>% 
+  mutate(Percentage=round((Total/sum(Total))*100,1)) %>% 
+  select("q32"=1, "Funding processes are complex, inaccessible and unrealistic"=3)
+
+q32e<-base %>% 
+  filter(!is.na(q32_barriers_unattainable)) %>% 
+  mutate(q32_barriers_unattainable=case_when(
+    q32_barriers_unattainable=="no_agree" ~ "No agreement",
+    q32_barriers_unattainable=="somewhat_agree" ~ "Somewhat agree",
+    q32_barriers_unattainable=="strongly_agree" ~ "Strongly agree",
+    TRUE ~ NA)) %>% 
+  group_by(q32_barriers_unattainable) %>% 
+  summarise(Total=n()) %>% 
+  mutate(Percentage=round((Total/sum(Total))*100,1)) %>% 
+  select("q32"=1, "Monitoring and evaluation processes are extremely technical and far from the reality of feminist organizing"=3)
+
+q32f<-base %>% 
+  filter(!is.na(q32_barriers_legal)) %>% 
+  mutate(q32_barriers_legal=case_when(
+    q32_barriers_legal=="no_agree" ~ "No agreement",
+    q32_barriers_legal=="somewhat_agree" ~ "Somewhat agree",
+    q32_barriers_legal=="strongly_agree" ~ "Strongly agree",
+    TRUE ~ NA)) %>% 
+  group_by(q32_barriers_legal) %>% 
+  summarise(Total=n()) %>% 
+  mutate(Percentage=round((Total/sum(Total))*100,1)) %>% 
+  select("q32"=1, "We often don't meet funders’ legal, judicial and/or administrative requirements to be eligible for funding"=3)
+
+q32g<-base %>% 
+  filter(!is.na(q32_barriers_political)) %>% 
+  mutate(q32_barriers_political=case_when(
+    q32_barriers_political=="no_agree" ~ "No agreement",
+    q32_barriers_political=="somewhat_agree" ~ "Somewhat agree",
+    q32_barriers_political=="strongly_agree" ~ "Strongly agree",
+    TRUE ~ NA)) %>% 
+  group_by(q32_barriers_political) %>% 
+  summarise(Total=n()) %>% 
+  mutate(Percentage=round((Total/sum(Total))*100,1)) %>% 
+  select("q32"=1, "We work in regions and/or on issues that are criminalized by our governments and face restrictions and/or threats to receiving foreign funding"=3)
+
+q32h<-base %>% 
+  filter(!is.na(q32_barriers_different_strategies)) %>% 
+  mutate(q32_barriers_different_strategies=case_when(
+    q32_barriers_different_strategies=="no_agree" ~ "No agreement",
+    q32_barriers_different_strategies=="somewhat_agree" ~ "Somewhat agree",
+    q32_barriers_different_strategies=="strongly_agree" ~ "Strongly agree",
+    TRUE ~ NA)) %>% 
+  group_by(q32_barriers_different_strategies) %>% 
+  summarise(Total=n()) %>% 
+  mutate(Percentage=round((Total/sum(Total))*100,1)) %>% 
+  select("q32"=1, "We are under pressure to comply with funders political strategies, including not engaging with certain agendas and/or in certain regions"=3)
+
+q32i<-base %>% 
+  filter(!is.na(q32_barriers_unavailable)) %>% 
+  mutate(q32_barriers_unavailable=case_when(
+    q32_barriers_unavailable=="no_agree" ~ "No agreement",
+    q32_barriers_unavailable=="somewhat_agree" ~ "Somewhat agree",
+    q32_barriers_unavailable=="strongly_agree" ~ "Strongly agree",
+    TRUE ~ NA)) %>% 
+  group_by(q32_barriers_unavailable) %>% 
+  summarise(Total=n()) %>% 
+  mutate(Percentage=round((Total/sum(Total))*100,1)) %>% 
+  select("q32"=1, "There is very little funding available for the movements, agendas and/ or countries & regions we  work with"=3)
+
+q32j<-base %>% 
+  filter(!is.na(q32_barriers_little_transparency)) %>% 
+  mutate(q32_barriers_little_transparency=case_when(
+    q32_barriers_little_transparency=="no_agree" ~ "No agreement",
+    q32_barriers_little_transparency=="somewhat_agree" ~ "Somewhat agree",
+    q32_barriers_little_transparency=="strongly_agree" ~ "Strongly agree",
+    TRUE ~ NA)) %>% 
+  group_by(q32_barriers_little_transparency) %>% 
+  summarise(Total=n()) %>% 
+  mutate(Percentage=round((Total/sum(Total))*100,1)) %>% 
+  select("q32"=1, "There is very little transparency about funders’ priorities, assessment criteria and who receives funding in the end"=3)
+
+
+#Unir los dataframes
+q32_combined <- q32a %>%
+  full_join(q32b, by = "q32") %>% 
+  full_join(q32c, by = "q32") %>% 
+  full_join(q32d, by = "q32") %>% 
+  full_join(q32e, by = "q32") %>% 
+  full_join(q32f, by = "q32") %>% 
+  full_join(q32g, by = "q32") %>% 
+  full_join(q32h, by = "q32") %>% 
+  full_join(q32i, by = "q32") %>% 
+  full_join(q32j, by = "q32")
+
+
+
+
+# Transformar los datos a formato largo
+q32_long <- q32_combined %>%
+  pivot_longer(cols = -q32, names_to = "Response", values_to = "Percentage")
+
+q32_wide <- q32_long %>%
+  pivot_wider(
+    names_from = q32,  # Usa las categorías de 'Response' como nombres de las columnas
+    values_from = Percentage # Usa los valores de 'Percentage' para llenar las columnas
+  )
+
+
+
+knitr::kable(q32_wide) %>% 
+  kable_minimal()
+
+```
+
+
+_____
+
+Q33. How can AWID support you with these challenges?
+
+```{r q33, echo=F, message=F, warning=F}
+
+#Convertir campos vacíos de la variable q33 en NA
+ base <- base %>%
+  mutate(q33_awid_support = na_if(q33_awid_support, ""))
+
+
+q33<-base %>%
+  filter(!is.na(q33_awid_support)) %>%
+  summarise(Total= round(n(),0),
+    db = sum(q33_awid_support.fundraising_info_database == 1, na.rm = TRUE),
+    research = sum(q33_awid_support.resourcing_research == 1, na.rm = TRUE),
+    global = sum(q33_awid_support == 1, na.rm = TRUE),
+    open = sum(q33_awid_support.open_dialogue_funders == 1, na.rm = TRUE),
+    advoc = sum(q33_awid_support.advocacy_support_resourcing == 1, na.rm = TRUE),
+    gov = sum(q33_awid_support.advocacy_support_gov_bodies == 1, na.rm = TRUE),
+    share = sum(q33_awid_support.resourcing_skill_sharing == 1, na.rm = TRUE),
+    feminist = sum(q33_awid_support.bridges_feminist_funds== 1, na.rm = TRUE),
+    other = sum(q33_awid_support.98== 1, na.rm = TRUE),
+    "Information on fundraising sources" = round(db / Total * 100, 1),
+    "Research on the resourcing realities of feminist organizing" = round(research / Total * 100, 1),
+    "Facilitate connections and networks with feminist activists globally" = round(global / Total * 100, 1),
+    "Create more open spaces for dialogue with funders"  = round(open / Total * 100, 1),
+    "Support your advocacy with funders for more responsive resourcing" = round(advoc/ Total * 100, 1),
+    "Support your advocacy with national governments and regional bodies"  = round(gov / Total * 100, 1),
+    "Support skills sharing on alternative ways of feminist resourcing" = round(share / Total * 100, 1),
+    "Support  to create better bridges with women's and feminist funds" = round(feminist/ Total * 100, 1),
+    Other = round(other / Total * 100, 1)) %>% 
+  select(1,11:12, 14:19)
+
+q33<-q33%>% 
+  pivot_longer(cols = 2:9,
+               names_to = "Support",
+               values_to = "Percentage") %>% 
+  select(2:3) %>% 
+  arrange(desc(Percentage))
+
+
+ggplot(q33, aes(x = reorder(Support, Percentage), y = Percentage, fill = Support)) +
+  geom_bar(stat = "identity") +
+  geom_text(aes(label = sprintf("%.1f%%", Percentage)), hjust = -0.02, vjust = 0.5, size = 3.2) +
+  labs(title = "AWID Support", x = " ", y = "Percentage") +
+  scale_y_continuous(expand = expansion(mult = c(0, 0.15))) +
+  scale_x_discrete(expand = expansion(mult = c(0.1, 0.15))) + # Ajusta la expansión para el eje x
+  theme_minimal() +
+  theme(legend.position = "none",
+  panel.grid.major.x = element_blank(), # Elimina líneas de la cuadrícula vertical
+    panel.grid.minor.x = element_blank(), # Elimina líneas de la cuadrícula vertical menores
+    panel.grid.major.y = element_blank(), # Elimina líneas de la cuadrícula horizontal
+    panel.grid.minor.y = element_blank()) +
+  coord_flip()
+
+
+```
+
+
+**-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-**
+
+## Section 4: Sustainability 
+
+Q36. In percentage, how much of your group, organization and/or movement's budget has been secured for the following years?
+
+```{r q36, echo=F, message=F, warning=F}
+
+q36_2025 <- base %>%
+  mutate(q36_2025=case_when(
+    q36_budget_security_2025=="0" ~ "0 Zero",
+    q36_budget_security_2025=="10" | q36_budget_security_2025=="20"  ~ "1 Lower than 30%",
+    q36_budget_security_2025=="30" | q36_budget_security_2025=="40" ~ "2 Between 30% and 40%",
+    q36_budget_security_2025=="50" | q36_budget_security_2025=="60" ~ "3 Between 50% and 60%",
+    q36_budget_security_2025=="70" | q36_budget_security_2025=="80" ~ "4 Between 70% and 80%",
+    q36_budget_security_2025=="90" | q36_budget_security_2025=="100"~ "5 Higher than 80%",
+    TRUE ~ NA)) %>% 
+  group_by(q36_2025) %>% 
+  summarise(Count = n()) %>%
+  mutate(Total = sum(Count),  # Calcula el total de conteos
+         "2025" = round((Count / Total) * 100, 1)) %>%   # Calcula el porcentaje
+  select("q36"=1, 4)   # Elimina la columna total_count si no es necesaria
+
+q36_2026 <- base %>%
+  mutate(q36_2026=case_when(
+    q36_budget_security_2026=="0" ~ "0 Zero",
+    q36_budget_security_2026=="10" | q36_budget_security_2026=="20"  ~ "1 Lower than 30%",
+    q36_budget_security_2026=="30" | q36_budget_security_2026=="40" ~ "2 Between 30% and 40%",
+    q36_budget_security_2026=="50" | q36_budget_security_2026=="60" ~ "3 Between 50% and 60%",
+    q36_budget_security_2026=="70" | q36_budget_security_2026=="80" ~ "4 Between 70% and 80%",
+    q36_budget_security_2026=="90" | q36_budget_security_2026=="100"~ "5 Higher than 80%",
+    TRUE ~ NA)) %>% 
+  group_by(q36_2026) %>% 
+  summarise(Count = n()) %>%
+  mutate(Total = sum(Count),  # Calcula el total de conteos
+         "2026" = round((Count / Total) * 100, 1)) %>%   # Calcula el porcentaje
+  select("q36"=1, 4)   # Elimina la columna total_count si no es necesaria
+
+
+#Unir los dataframes
+q36_combined <- q36_2025 %>%
+  full_join(q36_2026, by = "q36")
+
+q36_grouped<-q36_combined %>% 
+  rename("Percentage of budget secured for the following years"=q36)
+
+
+knitr::kable(q36_grouped) %>% 
+    kable_minimal() #imprime cuadro
+
+# Transformar los datos a formato largo
+q36_long <- q36_combined %>%
+  pivot_longer(cols = starts_with("20"), names_to = "Year", values_to = "Percentage") %>%
+  mutate(Year = factor(Year, levels = c("2025", "2026")))  # Ordenar los años
+
+# Crear el gráfico
+ggplot(q36_long, aes(x = q36, y = Percentage, fill = Year)) +
+  geom_bar(stat = "identity", position = "dodge") +
+  geom_text(aes(label = sprintf("%.1f%%", Percentage)), 
+            position = position_dodge(width = 0.9), 
+            vjust = 0.5,   # Ajusta la posición vertical de las etiquetas dentro de las barras
+            hjust = 0.0,   # Centra horizontalmente las etiquetas
+            size = 3.2) + # Ajusta el tamaño del texto de las etiquetas
+  labs(
+    title = "Percentage of budget secured for the following years",
+    x = NULL,  # Elimina el título del eje x
+    y = "Percentage (%)",
+    fill = "Year") +
+  theme_minimal() +
+  theme(
+    panel.grid.major = element_blank(),  # Elimina la cuadrícula mayor
+    panel.grid.minor = element_blank()   # Elimina la cuadrícula menor
+  ) +
+  scale_y_continuous(limits = c(0, 50)) +
+  coord_flip()
+
+```
+
+
+_____
+
+
+
+*Q37. If your external funding were to end immediately, how many months could your group, organization and/or movement operate using only savings and reserves?
+
+```{r q37, echo=F, message=F, warning=F}
+
+#Convertir campos vacíos de la variable q37 en NA
+ base <- base %>%
+  mutate(q37_operate_savings = na_if(q37_operate_savings, ""))
+
+q37<-base %>% 
+  mutate(q37_operate_savings=case_when(
+    q37_operate_savings=="no_saving_reserves" ~ "We have no savings or reserves",
+    q37_operate_savings=="0_3_months" ~ "Up to 3 months",
+    q37_operate_savings=="3_6_months" ~ "3-6 months",
+    q37_operate_savings=="6_12_months" ~ "6-12 months",
+    q37_operate_savings=="12_24_months" ~ "12-24 months",
+    q37_operate_savings=="over_24_months" ~ "Over 24 months",
+    TRUE ~ NA)) %>% 
+  filter(!is.na(q37_operate_savings)) %>% 
+  group_by(q37_operate_savings) %>% 
+  summarise(Total=n()) %>% 
+  mutate(Percentage=round((Total/sum(Total))*100,1)) %>% 
+  arrange(desc(Percentage)) %>% 
+  rename("Operate on savings"=1)
+
+
+knitr::kable(q37) %>% 
+  kable_minimal()
+
+```
+
+
+_____
+
+
+*Q38. Has your group, organization and/or movement ever been in jeopardy of closing due to insecure funding?
+
+```{r q38, echo=F, message=F, warning=F}
+
+q38<-base %>% 
+  mutate(q38_closing_risk=case_when(
+    q38_closing_risk=="yes" ~ "Yes",
+    q38_closing_risk=="no" ~ "No",
+    q38_closing_risk=="not_sure" ~ "Not sure",
+    TRUE ~ NA)) %>% 
+  filter(!is.na(q38_closing_risk)) %>% 
+  group_by(q38_closing_risk) %>% 
+  summarise(Total=n()) %>% 
+  mutate(Percentage=round((Total/sum(Total))*100,1)) %>% 
+  arrange(desc(Percentage)) %>% 
+  rename("Jeopardy of closing" = q38_closing_risk) %>% 
+  mutate(Etiqueta = paste(`Jeopardy of closing`, "\n", Percentage, "%"))
+
+
+#knitr::kable(q38) %>% 
+#  kable_minimal()
+
+
+ggplot(q38, aes(x = "", y = Percentage, fill = `Jeopardy of closing`)) +
+  geom_bar(width = 1, stat = "identity", color="white") +
+  coord_polar(theta = "y") +
+  theme_void() +
+  labs(title = "Jeopardy of closing") +
+  geom_text(aes(label = Etiqueta), position = position_stack(vjust = 0.5), size = 4) +
+  theme(legend.position = "none") + # Eliminar leyenda
+  theme(plot.title = element_text(hjust = 0.5)) # Centrar título
+
+```
+
+_____
+
+
+Q39. Is your group, organization and/or movement currently in a position to offer the following employment conditions and benefits to staff?
+```{r q39, echo=F, message=F, warning=F}
+#Convertir campos vacíos de la variable q39 en NA
+ base <- base %>%
+  mutate(q39_employment_conditions = na_if(q39_employment_conditions, ""))
+ 
+
+q39_general <- base %>%
+  filter(!is.na(q39_employment_conditions)) %>%
+  summarise(
+    Total = n(),
+    no=sum((q39_employment_conditions.none==1), na.rm=TRUE),
+    yes=sum((q39_employment_conditions.none!=1), na.rm=TRUE),
+    "No"= round(no/Total*100,1),
+    "Yes"= round(yes/Total*100,1)) %>% 
+  select(1,4:5)
+ 
+
+q39_general<-q39_general %>% 
+  pivot_longer(cols = 2:3,
+               names_to = "Staff benefits",
+               values_to = "Percentage") %>% 
+  select(2:3)
+
+knitr::kable(q39_general) %>% 
+  kable_minimal()
+
+```
+
+
+____
+
+
+
+
+```{r q39a, echo=F, message=F, warning=F}
+
+q39<-base %>%
+  filter(!is.na(q39_employment_conditions) & q39_employment_conditions.none!=1) %>%
+  summarise(Total= round(n(),0),
+    perm = sum(q39_employment_conditions.permanent_long_term_contracts == 1, na.rm = TRUE),
+    competitive = sum(q39_employment_conditions.competitive_salary == 1, na.rm = TRUE),
+    leave = sum(q39_employment_conditions.paid_leave == 1, na.rm = TRUE),
+    life = sum(q39_employment_conditions.life_insurance == 1, na.rm = TRUE),
+    pension = sum(q39_employment_conditions.pension_gratuity == 1, na.rm = TRUE),
+    health = sum(q39_employment_conditions.health_insurance == 1, na.rm = TRUE),
+    flex = sum(q39_employment_conditions.flexible_work_arrangements == 1, na.rm = TRUE),
+    adm = sum(q39_employment_conditions.administrative_support== 1, na.rm = TRUE),
+    other = sum(q39_employment_conditions.98== 1, na.rm = TRUE),
+    "Permanent and/or longer term contracts (12 months +)" = round(perm / Total * 100, 1),
+    "Competitive salary" = round(competitive / Total * 100, 1),
+    "Paid leave" = round(leave / Total * 100, 1),
+    "Life insurance"  = round(life / Total * 100, 1),
+    "Pension or gratuity" = round(pension/ Total * 100, 1),
+    "Health insurance"  = round(health/ Total * 100, 1),
+    "Flexible work arrangements" = round(flex/ Total * 100, 1),
+    "Administrative support " = round(adm/ Total * 100, 1),
+    Other = round(other / Total * 100, 1)) %>% 
+  select(1,11:12, 14:19)
+
+q39<-q39%>% 
+  pivot_longer(cols = 2:9,
+               names_to = "Benefits",
+               values_to = "Percentage") %>% 
+  select(2:3) %>% 
+  arrange(desc(Percentage))
+
+
+ggplot(q39, aes(x = reorder(Benefits, Percentage), y = Percentage, fill = Benefits)) +
+  geom_bar(stat = "identity") +
+  geom_text(aes(label = sprintf("%.1f%%", Percentage)), hjust = -0.02, vjust = 0.5, size = 3.2) +
+  labs(title = "Conditions and benefits for staff", x = " ", y = "Percentage") +
+  scale_y_continuous(expand = expansion(mult = c(0, 0.15))) +
+  scale_x_discrete(expand = expansion(mult = c(0.1, 0.15))) + # Ajusta la expansión para el eje x
+  theme_minimal() +
+  theme(legend.position = "none",
+  panel.grid.major.x = element_blank(), # Elimina líneas de la cuadrícula vertical
+    panel.grid.minor.x = element_blank(), # Elimina líneas de la cuadrícula vertical menores
+    panel.grid.major.y = element_blank(), # Elimina líneas de la cuadrícula horizontal
+    panel.grid.minor.y = element_blank()) + # Elimina líneas de la cuadrícula horizontal menores 
+  coord_flip()
+
+
+```
+
+_____
+
+
+*Q40. Between 2021 and 2023, how many paid, full-time staff focusing primarily on resource mobilization have been employed by your group, organization and/or movement?
+
+
+```{r q40, echo=F, message=F, warning=F}
+
+q40<-base %>% 
+  mutate(q40_staff_employed=case_when(
+    q40_staff_employed=="voluntary_work" ~ "None, this work is voluntary",
+    q40_staff_employed=="one_person_dedicated" ~ "1 person",
+    q40_staff_employed=="two_to_three_staff" ~ "2-3 staff",
+    q40_staff_employed=="three_to_five_staff" ~ "3-5 staff",
+    q40_staff_employed=="all_staff_work_on_areas" ~ "All our staff",
+    q40_staff_employed=="98" ~ "Other",
+    TRUE ~ NA)) %>%
+  filter(!is.na(q40_staff_employed)) %>% 
+  group_by(q40_staff_employed) %>% 
+  summarise(Total=n()) %>% 
+  mutate(Percentage=round((Total/sum(Total))*100,1)) %>% 
+  rename("Resource mobilization staff" = q40_staff_employed)
+
+
+knitr::kable(q40) %>% 
+  kable_minimal()
+
+```
+
+
+**-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-**
+
+## Section 5: Key Aspirations
+
+Q41. Between 2021 and 2023, was your group, organization and/or movement’s income sufficient to realize your strategic goals?
+
+```{r q41, echo=F, message=F, warning=F}
+
+
+q41<-base %>% 
+  mutate(q41_sufficient_income=case_when(
+    q41_sufficient_income=="sufficient" ~ "(a) It was sufficient",
+    q41_sufficient_income=="barely_sufficient" ~ "(b) It was barely sufficient",
+    q41_sufficient_income=="not_sufficient" ~ "(c) It was not sufficient",
+    q41_sufficient_income=="98" ~ "(d) Other",
+    TRUE ~ NA)) %>%
+  filter(!is.na(q41_sufficient_income)) %>% 
+  group_by(q41_sufficient_income) %>% 
+  summarise(Total=n()) %>% 
+  mutate(Percentage=round((Total/sum(Total))*100,1))
+
+
+
+ggplot(q41, aes(x = reorder(q41_sufficient_income, Percentage), y = Percentage, fill = q41_sufficient_income)) +
+  geom_bar(stat = "identity") +
+  geom_text(aes(label = sprintf("%.1f%%", Percentage)), hjust = -0.02, vjust = 0.5, size = 3.2) +
+  labs(title = "Income", x = " ", y = "Percentage") +
+  scale_y_continuous(expand = expansion(mult = c(0, 0.15))) +
+  scale_x_discrete(expand = expansion(mult = c(0.1, 0.15))) + # Ajusta la expansión para el eje x
+  theme_minimal() +
+  theme(legend.position = "none",
+  panel.grid.major.x = element_blank(), # Elimina líneas de la cuadrícula vertical
+    panel.grid.minor.x = element_blank(), # Elimina líneas de la cuadrícula vertical menores
+    panel.grid.major.y = element_blank(), # Elimina líneas de la cuadrícula horizontal
+    panel.grid.minor.y = element_blank())
+
+```
+
+_____
+
+
+*Q42. How much would your aspirational budget be (in $USD amount)?
+
+```{r q42, echo=F, message=F, warning=F}
+
+
+q42<-base %>% 
+  filter(!is.na(q42_aspirational_budget)) %>% 
+  group_by(q42_aspirational_budget) %>% 
+  summarise(Total=n()) %>% 
+  mutate(Percentage=round((Total/sum(Total))*100,1)) %>% 
+  rename("Aspirational budget" = q42_aspirational_budget)
+
+
+knitr::kable(q42) %>% 
+  kable_minimal()
+
+```
+
+
+**-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-**
+
+## Section 6: Next Steps
+
+
+*Q45. Did anyone from your group, organization and/or movement respond to AWID’s Where is the Money survey in 2008 or 2011? 
+
+```{r q45, echo=F, message=F, warning=F}
+
+q45<-base %>% 
+  mutate(q45_previous_response=case_when(
+    q45_previous_response=="yes" ~ "Yes",
+    q45_previous_response=="no" ~ "No",
+    q45_previous_response=="99" ~ "Don't know",
+    TRUE ~ NA)) %>% 
+  filter(!is.na(q45_previous_response)) %>% 
+  group_by(q45_previous_response) %>% 
+  summarise(Total=n()) %>% 
+  mutate(Percentage=round((Total/sum(Total))*100,1)) %>% 
+  arrange(desc(Percentage)) %>% 
+  rename("Previous response" = q45_previous_response) %>% 
+  mutate(Etiqueta = paste(`Previous response`, "\n", Percentage,"%"))
+
+
+#knitr::kable(q38) %>% 
+#  kable_minimal()
+
+
+ggplot(q45, aes(x = "", y = Percentage, fill = `Previous response`)) +
+  geom_bar(width = 1, stat = "identity", color="white") +
+  coord_polar(theta = "y") +
+  theme_void() +
+  labs(title = "Previous response") +
+  geom_text(aes(label = Etiqueta), position = position_stack(vjust = 0.5), size = 4) +
+  theme(legend.position = "none") + # Eliminar leyenda
+  theme(plot.title = element_text(hjust = 0.5)) # Centrar título
+
+```
+_____
+
+Q46. In which language did you answer the survey?
+
+```{r q46, echo=F, message=F, warning=F}
+
+q46<-base %>% 
+  mutate(q46_language=case_when(
+    q46_language=="arabic" ~ "Arabic",
+    q46_language=="english" ~ "English",
+    q46_language=="french" ~ "French",
+    q46_language=="portuguese" ~ "Portuguese",
+    q46_language=="russian" ~ "Russian",
+    q46_language=="spanish" ~ "Spanish",
+    TRUE ~ NA)) %>% 
+  filter(!is.na(q46_language)) %>% 
+  group_by(q46_language) %>% 
+  summarise(Total=n()) %>% 
+  mutate(Percentage=round((Total/sum(Total))*100,1)) %>% 
+  arrange(desc(Percentage)) %>% 
+  rename("Language" = q46_language)
+
+
+knitr::kable(q46) %>% 
+  kable_minimal()
+
+```
+
+
+_____
+
+*Q47. Would you be open to AWID contacting you about next steps in the WITM research, including the interview?
+
+```{r q47, echo=F, message=F, warning=F}
+
+q47<-base %>% 
+  mutate(Q47_Would_you_be_op_in_the_WITM_research=case_when(
+    Q47_Would_you_be_op_in_the_WITM_research=="yes" ~ "Yes",
+    Q47_Would_you_be_op_in_the_WITM_research=="no" ~ "No",
+    Q47_Would_you_be_op_in_the_WITM_research=="don_t_know" ~ "Don't know",
+    TRUE ~ NA)) %>% 
+  filter(!is.na(Q47_Would_you_be_op_in_the_WITM_research)) %>% 
+  group_by(Q47_Would_you_be_op_in_the_WITM_research) %>% 
+  summarise(Total=n()) %>% 
+  mutate(Percentage=round((Total/sum(Total))*100,1)) %>% 
+  arrange(desc(Q47_Would_you_be_op_in_the_WITM_research)) %>% 
+  rename("Open to be contacted" = Q47_Would_you_be_op_in_the_WITM_research)
+
+
+knitr::kable(q47) %>% 
+  kable_minimal()
+
+
+```
