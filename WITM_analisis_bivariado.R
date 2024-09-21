@@ -1114,6 +1114,526 @@ addWorksheet(q15, sheetName = "q15_q10_media")
 writeData(q15, sheet = "q15_q10_media", x = final_means_q15)
 saveWorkbook(q15, archivo, overwrite = TRUE)
 
+############################################################################
+
+#ANÁLISIS DE LA Q16
+
+archivo <- "cuadros/q16_percentage.xlsx"
+
+#Convertir campos vacíos de la variable q13 en NA
+datos <- base %>%
+  mutate(q13_ext_funding = na_if(q13_ext_funding, ""))
+
+#MULTIRATERAL
+q16_multirateral_2023<- datos %>% 
+  filter(q13_ext_funding == "yes" & q15_key_sources.multilateral_funders==1) %>% 
+  group_by(q16_funding_source_2023_multilateral) %>% 
+  summarise(n = n()) %>%
+  rename_with(~ "2023", 1) %>% 
+  mutate(Type="Multirateral")
+
+q16_multirateral_2022<- datos %>% 
+  filter(q13_ext_funding == "yes" & q15_key_sources.multilateral_funders==1) %>% 
+  group_by(q16_funding_source_2022_multilateral) %>% 
+  summarise(n = n()) %>% 
+  rename_with(~ "2022", 1) %>% 
+  mutate(Type="Multirateral")
+
+q16_multirateral_2021<- datos %>% 
+  filter(q13_ext_funding == "yes" & q15_key_sources.multilateral_funders==1) %>% 
+  group_by(q16_funding_source_2021_multilateral) %>% 
+  summarise(n = n()) %>% 
+  rename_with(~ "2021", 1)%>% 
+  mutate(Type="Multirateral")
+
+#BILATERAL
+q16_bilateral_2023<- datos %>% 
+  filter(q13_ext_funding == "yes" & q15_key_sources.bilateral_funders==1) %>% 
+  group_by(q16_funding_source_2023_bilateral) %>% 
+  summarise(n = n()) %>% 
+  rename_with(~ "2023", 1) %>% 
+  mutate(Type="Bilateral")
+
+q16_bilateral_2022<- datos %>% 
+  filter(q13_ext_funding == "yes" & q15_key_sources.bilateral_funders==1) %>% 
+  group_by(q16_funding_source_2022_bilateral) %>% 
+  summarise(n = n()) %>% 
+  rename_with(~ "2022", 1) %>% 
+  mutate(Type="Bilateral")
+
+q16_bilateral_2021<- datos %>% 
+  filter(q13_ext_funding == "yes" & q15_key_sources.bilateral_funders==1) %>% 
+  group_by(q16_funding_source_2021_bilateral) %>% 
+  summarise(n = n()) %>% 
+  rename_with(~ "2021", 1) %>% 
+  mutate(Type="Bilateral")
+
+#PHILANTHROPIC
+q16_philanthropic_2023<- datos %>% 
+  filter(q13_ext_funding == "yes" & q15_key_sources.philanthropic_foundations==1) %>% 
+  group_by(q16_funding_source_2023_philanthropic) %>% 
+  summarise(n = n()) %>% 
+  rename_with(~ "2023", 1) %>% 
+  mutate(Type="Philanthropic")
+
+q16_philanthropic_2022<- datos %>% 
+  filter(q13_ext_funding == "yes" & q15_key_sources.philanthropic_foundations==1) %>% 
+  group_by(q16_funding_source_2022_philanthropic) %>% 
+  summarise(n = n()) %>% 
+  rename_with(~ "2022", 1) %>% 
+  mutate(Type="Philanthropic")
+
+q16_philanthropic_2021<- datos %>% 
+  filter(q13_ext_funding == "yes" & q15_key_sources.philanthropic_foundations==1) %>% 
+  group_by(q16_funding_source_2021_philanthropic) %>% 
+  summarise(n = n()) %>% 
+  rename_with(~ "2021", 1) %>% 
+  mutate(Type="Philanthropic")
+
+#FEMINIST
+q16_feminist_2023<- datos %>% 
+  filter(q13_ext_funding == "yes" & q15_key_sources.womens_feminist_funds ==1) %>% 
+  group_by(q16_funding_source_2023_feminist) %>% 
+  summarise(n = n()) %>% 
+  rename_with(~ "2023", 1) %>% 
+  mutate(Type="Feminist")
+
+q16_feminist_2022<- datos %>% 
+  filter(q13_ext_funding == "yes" & q15_key_sources.womens_feminist_funds ==1) %>% 
+  group_by(q16_funding_source_2022_feminist) %>% 
+  summarise(n = n()) %>% 
+  rename_with(~ "2022", 1) %>% 
+  mutate(Type="Feminist")
+
+
+q16_feminist_2021<- datos %>% 
+  filter(q13_ext_funding == "yes" & q15_key_sources.womens_feminist_funds ==1) %>% 
+  group_by(q16_funding_source_2021_feminist) %>% 
+  summarise(n = n()) %>% 
+  rename_with(~ "2021", 1) %>% 
+  mutate(Type="Feminist")
+
+
+#PRIVATE
+q16_private_2023<- datos %>% 
+  filter(q13_ext_funding == "yes" & q15_key_sources.private_sector ==1) %>% 
+  group_by(q16_funding_source_2023_private) %>% 
+  summarise(n = n()) %>% 
+  rename_with(~ "2023", 1) %>% 
+  mutate(Type="Private")
+
+
+q16_private_2022<- datos %>% 
+  filter(q13_ext_funding == "yes" & q15_key_sources.private_sector ==1) %>% 
+  group_by(q16_funding_source_2022_private) %>% 
+  summarise(n = n()) %>% 
+  rename_with(~ "2022", 1) %>% 
+  mutate(Type="Private")
+
+q16_private_2021<- datos %>% 
+  filter(q13_ext_funding == "yes" & q15_key_sources.private_sector ==1) %>% 
+  group_by(q16_funding_source_2021_private) %>% 
+  summarise(n = n()) %>% 
+  rename_with(~ "2021", 1) %>% 
+  mutate(Type="Private")
+
+#INGOS
+q16_ingos_2023<- datos %>% 
+  filter(q13_ext_funding == "yes" & q15_key_sources.ingos==1) %>% 
+  group_by(q16_funding_source_2023_ingos) %>% 
+  summarise(n = n()) %>% 
+  rename_with(~ "2023", 1) %>% 
+  mutate(Type="INGOS")
+
+q16_ingos_2022<- datos %>% 
+  filter(q13_ext_funding == "yes" & q15_key_sources.ingos==1) %>% 
+  group_by(q16_funding_source_2022_ingos) %>% 
+  summarise(n = n()) %>% 
+  rename_with(~ "2022", 1) %>% 
+  mutate(Type="INGOS")
+
+q16_ingos_2021<- datos %>% 
+  filter(q13_ext_funding == "yes" & q15_key_sources.ingos==1) %>% 
+  group_by(q16_funding_source_2021_ingos) %>% 
+  summarise(n = n()) %>% 
+  rename_with(~ "2021", 1) %>% 
+  mutate(Type="INGOS")
+
+#INDIVIDUAL
+q16_individual_2023<- datos %>% 
+  filter(q13_ext_funding == "yes" & q15_key_sources.individual_donors==1) %>% 
+  group_by(q16_funding_source_2023_individual) %>% 
+  summarise(n = n()) %>% 
+  rename_with(~ "2023", 1) %>% 
+  mutate(Type="Individual")
+
+q16_individual_2022<- datos %>% 
+  filter(q13_ext_funding == "yes" & q15_key_sources.individual_donors==1) %>% 
+  group_by(q16_funding_source_2022_individual) %>% 
+  summarise(n = n()) %>% 
+  rename_with(~ "2022", 1) %>% 
+  mutate(Type="Individual")
+
+q16_individual_2021<- datos %>% 
+  filter(q13_ext_funding == "yes" & q15_key_sources.individual_donors==1) %>% 
+  group_by(q16_funding_source_2021_individual) %>% 
+  summarise(n = n()) %>% 
+  rename_with(~ "2021", 1) %>% 
+  mutate(Type="Individual")
+
+#GOVERMENT
+q16_goverment_2023<- datos %>% 
+  filter(q13_ext_funding == "yes" & q15_key_sources.national_local_goverment_or_bodies ==1) %>% 
+  group_by(q16_funding_source_2023_goverment) %>% 
+  summarise(n = n()) %>% 
+  rename_with(~ "2023", 1) %>% 
+  mutate(Type="Goverment")
+
+q16_goverment_2022<- datos %>% 
+  filter(q13_ext_funding == "yes" & q15_key_sources.national_local_goverment_or_bodies ==1) %>% 
+  group_by(q16_funding_source_2022_goverment) %>% 
+  summarise(n = n()) %>% 
+  rename_with(~ "2022", 1) %>% 
+  mutate(Type="Goverment")
+
+q16_goverment_2021<- datos %>% 
+  filter(q13_ext_funding == "yes" & q15_key_sources.national_local_goverment_or_bodies ==1) %>% 
+  group_by(q16_funding_source_2021_goverment) %>% 
+  summarise(n = n()) %>% 
+  rename_with(~ "2021", 1) %>% 
+  mutate(Type="Goverment")
+
+#OTHER
+q16_other_2023<- datos %>% 
+  filter(q13_ext_funding == "yes" & q15_key_sources.98==1) %>% 
+  group_by(q16_funding_source_2023_other) %>% 
+  summarise(n = n()) %>% 
+  rename_with(~ "2023", 1) %>% 
+  mutate(Type="Other")
+
+q16_other_2022<- datos %>% 
+  filter(q13_ext_funding == "yes" & q15_key_sources.98==1) %>% 
+  group_by(q16_funding_source_2022_other) %>% 
+  summarise(n = n()) %>% 
+  rename_with(~ "2022", 1) %>% 
+  mutate(Type="Other")
+
+q16_other_2021<- datos %>% 
+  filter(q13_ext_funding == "yes" & q15_key_sources.98==1) %>% 
+  group_by(q16_funding_source_2021_other) %>% 
+  summarise(n = n()) %>% 
+  rename_with(~ "2021", 1) %>% 
+  mutate(Type="Other")
+
+
+
+#2023
+# Unir los dataframes
+ext_2023 <- bind_rows(q16_bilateral_2023,q16_feminist_2023, q16_goverment_2023, q16_individual_2023, q16_ingos_2023, q16_multirateral_2023, q16_other_2023, q16_philanthropic_2023, q16_private_2023)
+
+# Crear un nuevo data frame con los resultados
+q16_2023 <- ext_2023 %>%
+  pivot_wider(names_from = Type, values_from = n) %>% 
+  rename("Range"=1) %>% 
+  mutate(Year="2023")
+
+#2022
+# Unir los dataframes
+ext_2022 <- bind_rows(q16_bilateral_2022,q16_feminist_2022, q16_goverment_2022, q16_individual_2022, q16_ingos_2022, q16_multirateral_2022, q16_other_2022, q16_philanthropic_2022, q16_private_2022)
+
+# Crear un nuevo data frame con los resultados
+q16_2022 <- ext_2022 %>%
+  pivot_wider(names_from = Type, values_from = c(n)) %>% 
+  rename("Range"=1) %>% 
+  mutate(Year="2022")
+
+#2021
+# Unir los dataframes
+ext_2021 <- bind_rows(q16_bilateral_2021,q16_feminist_2021, q16_goverment_2021, q16_individual_2021, q16_ingos_2021, q16_multirateral_2021, q16_other_2021, q16_philanthropic_2021, q16_private_2021)
+
+# Crear un nuevo data frame con los resultados
+q16_2021 <- ext_2021 %>%
+  pivot_wider(names_from = Type, values_from = c(n)) %>% 
+  rename("Range"=1) %>% 
+  mutate(Year="2021")
+
+# Unir los dataframes
+q16_grouped <- bind_rows(q16_2021, q16_2022, q16_2023)
+
+# Calcular la media entre los años para cada categoría de q15, agrupando por las categorías de q10
+final_means_q16 <- q16_grouped %>%
+  group_by(Range) %>%  # Agrupando por la categoría de q10
+  summarise(
+    Multirateral = round(mean(Multirateral, na.rm = TRUE),0),
+    Bilateral = round(mean(Bilateral, na.rm = TRUE),0),
+    Philanthropic = round(mean(Philanthropic, na.rm = TRUE),0),
+    Womens = round(mean(Feminist, na.rm = TRUE),0),
+    Private = round(mean(Private, na.rm = TRUE),0),
+    Ingos = round(mean(INGOS, na.rm = TRUE),0),
+    Individual = round(mean(Individual, na.rm = TRUE),0),
+    Governments = round(mean(Goverment, na.rm = TRUE),0),
+    Other = round(mean(Other, na.rm = TRUE),0))
+
+
+write.xlsx(final_means_q16, file = archivo, sheetName="q16_media")
+
+q16 <- loadWorkbook(archivo)
+addWorksheet(q16, sheetName = "q16")
+# Escribir las tablas en la misma hoja
+writeData(q16, "q16", "Table for 2021", startRow = 1, startCol = 1)
+writeData(q16, "q6", q16_2021, startRow = 2, startCol = 1, withFilter = TRUE)
+# Agregar un espacio entre tablas
+writeData(q16, "q16", "Table for 2022", startRow = nrow(q16_2021) + 4, startCol = 1)
+writeData(q16, "q16", q16_2022, startRow = nrow(q16_2021) + 5, startCol = 1, withFilter = TRUE)
+# Agregar otro espacio
+writeData(q16, "q16", "Table for 2023", startRow = nrow(q16_2021) + nrow(q16_2021) + 8, startCol = 1)
+writeData(q16, "q16", q16_2023, startRow = nrow(q16_2022) + nrow(q16_2022) + 9, startCol = 1, withFilter = TRUE)
+saveWorkbook(q16, archivo, overwrite = TRUE)
+
+#####
+
+#Cruce por q5
+
+names(base)
+
+############################################################################
+
+#ANÁLISIS DE LA Q18
+
+archivo <- "cuadros/q18_new_funder.xlsx"
+
+
+#Convertir campos vacíos de la variable q18 en NA
+base <- base %>%
+  mutate(q18_new_funders = na_if(q18_new_funders, ""))
+
+q18 <- base %>%
+  filter(!is.na(q18_new_funders)) %>%
+  summarise(
+    Total = (round(n(),0)),
+    Multilateral = sum(q18_new_funders.multilateral_funders == 1, na.rm = TRUE),
+    Bilateral = sum(q18_new_funders.bilateral_funders == 1, na.rm = TRUE),
+    Philanthropic = sum(q18_new_funders.philanthropic_foundations == 1, na.rm = TRUE),
+    Womens = sum(q18_new_funders.womens_feminist_funds == 1, na.rm = TRUE),
+    Private = sum(q18_new_funders.private_sector == 1, na.rm = TRUE),
+    Ingos = sum(q18_new_funders.ingos == 1, na.rm = TRUE),
+    Individual = sum(q18_new_funders.individual_donors == 1, na.rm = TRUE),
+    Goverment = sum(q18_new_funders.national_goverment == 1, na.rm = TRUE),
+    Other = sum(q18_new_funders.98 == 1, na.rm = TRUE),
+    No_new_funder = sum(q18_new_funders.not_new_funders == 1, na.rm = TRUE)) %>% 
+  pivot_longer(cols = everything(),
+               names_to = "Source",
+               values_to = "N")
+
+
+write.xlsx(q18, file = archivo, sheetName="q18")
+
+#####
+
+#cruce por q5
+
+q18_q5 <- base %>%
+    mutate(q5 = case_when(
+      q5_registered == "n_registered" ~ "No",
+      q5_registered == "y_registered" ~ "Yes",
+      q5_registered == "98" ~ "Other",
+      is.na(q5_registered) ~ "No information",
+      TRUE ~ NA_character_)) %>% 
+  filter(!is.na(q18_new_funders)) %>%
+  group_by(q5) %>% 
+  summarise(
+    Total = (round(n(),0)),
+    Multilateral = sum(q18_new_funders.multilateral_funders == 1, na.rm = TRUE),
+    Bilateral = sum(q18_new_funders.bilateral_funders == 1, na.rm = TRUE),
+    Philanthropic = sum(q18_new_funders.philanthropic_foundations == 1, na.rm = TRUE),
+    Womens = sum(q18_new_funders.womens_feminist_funds == 1, na.rm = TRUE),
+    Private = sum(q18_new_funders.private_sector == 1, na.rm = TRUE),
+    Ingos = sum(q18_new_funders.ingos == 1, na.rm = TRUE),
+    Individual = sum(q18_new_funders.individual_donors == 1, na.rm = TRUE),
+    Goverment = sum(q18_new_funders.national_goverment == 1, na.rm = TRUE),
+    Other = sum(q18_new_funders.98 == 1, na.rm = TRUE),
+    No_new_funder = sum(q18_new_funders.not_new_funders == 1, na.rm = TRUE))
+
+
+q18 <- loadWorkbook(archivo)
+addWorksheet(q18, sheetName = "q18_q5")
+writeData(q18, sheet = "q18_q5", x = q18_q5)
+saveWorkbook(q18, archivo, overwrite = TRUE)
+
+###
+
+#cruce por q6
+
+
+q18_q6 <- base %>%
+  mutate(q6 = case_when(
+    q6_geo_scope=="globally_focused" ~ "Global",
+    q6_geo_scope=="transnationally_focused" ~ "Transnational",
+    q6_geo_scope=="regionally_focused" ~ "Regional",
+    q6_geo_scope=="diaspora_and_or_exile" ~ "Diaspora or exile",
+    q6_geo_scope=="nationally_focused" ~ "National",
+    q6_geo_scope=="locally_focused" ~ "Local",
+    is.na(q6_geo_scope) ~ "No information",
+    TRUE ~ NA_character_
+  )) %>% 
+  filter(!is.na(q18_new_funders)) %>%
+  group_by(q6) %>% 
+  summarise(
+    Total = (round(n(),0)),
+    Multilateral = sum(q18_new_funders.multilateral_funders == 1, na.rm = TRUE),
+    Bilateral = sum(q18_new_funders.bilateral_funders == 1, na.rm = TRUE),
+    Philanthropic = sum(q18_new_funders.philanthropic_foundations == 1, na.rm = TRUE),
+    Womens = sum(q18_new_funders.womens_feminist_funds == 1, na.rm = TRUE),
+    Private = sum(q18_new_funders.private_sector == 1, na.rm = TRUE),
+    Ingos = sum(q18_new_funders.ingos == 1, na.rm = TRUE),
+    Individual = sum(q18_new_funders.individual_donors == 1, na.rm = TRUE),
+    Goverment = sum(q18_new_funders.national_goverment == 1, na.rm = TRUE),
+    Other = sum(q18_new_funders.98 == 1, na.rm = TRUE),
+    No_new_funder = sum(q18_new_funders.not_new_funders == 1, na.rm = TRUE))
+
+
+q18 <- loadWorkbook(archivo)
+addWorksheet(q18, sheetName = "q18_q6")
+writeData(q18, sheet = "q18_q6", x = q18_q6)
+saveWorkbook(q18, archivo, overwrite = TRUE)
+
+###
+
+
+#cruce por q9
+
+
+q18_q9 <- base %>%
+  filter(!is.na(q18_new_funders)) %>%
+  group_by(q9_year_formation_agrup) %>% 
+  summarise(
+    Total = (round(n(),0)),
+    Multilateral = sum(q18_new_funders.multilateral_funders == 1, na.rm = TRUE),
+    Bilateral = sum(q18_new_funders.bilateral_funders == 1, na.rm = TRUE),
+    Philanthropic = sum(q18_new_funders.philanthropic_foundations == 1, na.rm = TRUE),
+    Womens = sum(q18_new_funders.womens_feminist_funds == 1, na.rm = TRUE),
+    Private = sum(q18_new_funders.private_sector == 1, na.rm = TRUE),
+    Ingos = sum(q18_new_funders.ingos == 1, na.rm = TRUE),
+    Individual = sum(q18_new_funders.individual_donors == 1, na.rm = TRUE),
+    Goverment = sum(q18_new_funders.national_goverment == 1, na.rm = TRUE),
+    Other = sum(q18_new_funders.98 == 1, na.rm = TRUE),
+    No_new_funder = sum(q18_new_funders.not_new_funders == 1, na.rm = TRUE))
+
+
+q18 <- loadWorkbook(archivo)
+addWorksheet(q18, sheetName = "q18_q9")
+writeData(q18, sheet = "q18_q9", x = q18_q9)
+saveWorkbook(q18, archivo, overwrite = TRUE)
+
+
+####
+
+
+
+#CRUCE POR q10
+
+# Crear q10_2021_q18
+q10_2021_q18 <- base %>% 
+  filter(q9_year_formation < 2022 & !is.na(q18_new_funders)) %>% 
+  group_by(q10_budget_grp_2021) %>% 
+  summarise(
+    Total = (round(n(),0)),
+    Multilateral = sum(q18_new_funders.multilateral_funders == 1, na.rm = TRUE),
+    Bilateral = sum(q18_new_funders.bilateral_funders == 1, na.rm = TRUE),
+    Philanthropic = sum(q18_new_funders.philanthropic_foundations == 1, na.rm = TRUE),
+    Womens = sum(q18_new_funders.womens_feminist_funds == 1, na.rm = TRUE),
+    Private = sum(q18_new_funders.private_sector == 1, na.rm = TRUE),
+    Ingos = sum(q18_new_funders.ingos == 1, na.rm = TRUE),
+    Individual = sum(q18_new_funders.individual_donors == 1, na.rm = TRUE),
+    Goverment = sum(q18_new_funders.national_goverment == 1, na.rm = TRUE),
+    Other = sum(q18_new_funders.98 == 1, na.rm = TRUE),
+    No_new_funder = sum(q18_new_funders.not_new_funders == 1, na.rm = TRUE)) %>%  
+  rename(Annual_budget = q10_budget_grp_2021) %>% 
+  mutate(Year = 2021)
+
+# Crear q10_2022_q18
+q10_2022_q18 <- base %>% 
+  filter(q9_year_formation < 2023 & !is.na(q18_new_funders)) %>% 
+  group_by(q10_budget_grp_2022) %>% 
+  summarise(
+    Total = (round(n(),0)),
+    Multilateral = sum(q18_new_funders.multilateral_funders == 1, na.rm = TRUE),
+    Bilateral = sum(q18_new_funders.bilateral_funders == 1, na.rm = TRUE),
+    Philanthropic = sum(q18_new_funders.philanthropic_foundations == 1, na.rm = TRUE),
+    Womens = sum(q18_new_funders.womens_feminist_funds == 1, na.rm = TRUE),
+    Private = sum(q18_new_funders.private_sector == 1, na.rm = TRUE),
+    Ingos = sum(q18_new_funders.ingos == 1, na.rm = TRUE),
+    Individual = sum(q18_new_funders.individual_donors == 1, na.rm = TRUE),
+    Goverment = sum(q18_new_funders.national_goverment == 1, na.rm = TRUE),
+    Other = sum(q18_new_funders.98 == 1, na.rm = TRUE),
+    No_new_funder = sum(q18_new_funders.not_new_funders == 1, na.rm = TRUE)) %>%  
+  rename(Annual_budget = q10_budget_grp_2022) %>% 
+  mutate(Year = 2022)
+
+# Crear q10_2023_q18
+q10_2023_q18 <- base %>% 
+  filter(!is.na(q10_budget_year_2023) & !is.na(q18_new_funders)) %>%
+  group_by(q10_budget_grp_2023) %>% 
+  summarise(
+    Total = (round(n(),0)),
+    Multilateral = sum(q18_new_funders.multilateral_funders == 1, na.rm = TRUE),
+    Bilateral = sum(q18_new_funders.bilateral_funders == 1, na.rm = TRUE),
+    Philanthropic = sum(q18_new_funders.philanthropic_foundations == 1, na.rm = TRUE),
+    Womens = sum(q18_new_funders.womens_feminist_funds == 1, na.rm = TRUE),
+    Private = sum(q18_new_funders.private_sector == 1, na.rm = TRUE),
+    Ingos = sum(q18_new_funders.ingos == 1, na.rm = TRUE),
+    Individual = sum(q18_new_funders.individual_donors == 1, na.rm = TRUE),
+    Goverment = sum(q18_new_funders.national_goverment == 1, na.rm = TRUE),
+    Other = sum(q18_new_funders.98 == 1, na.rm = TRUE),
+    No_new_funder = sum(q18_new_funders.not_new_funders == 1, na.rm = TRUE)) %>%  
+  rename(Annual_budget = q10_budget_grp_2023) %>% 
+  mutate(Year = 2023)
+
+
+
+
+# Unir los dataframes
+q10_grouped_q18 <- bind_rows(q10_2021_q18, q10_2022_q18, q10_2023_q18)
+
+# Calcular la media entre los años para cada categoría de q15, agrupando por las categorías de q10
+final_means_q18 <- q10_grouped_q18 %>%
+  group_by(Annual_budget) %>%  # Agrupando por la categoría de q10
+  summarise(
+    Total=round(mean(Total, na.rm=TRUE),0),
+    Multilateral = round(mean(Multilateral, na.rm = TRUE),0),
+    Bilateral = round(mean(Bilateral, na.rm = TRUE),0),
+    Philanthropic = round(mean(Philanthropic, na.rm = TRUE),0),
+    Womens = round(mean(Womens, na.rm = TRUE),0),
+    Private = round(mean(Private, na.rm = TRUE),0),
+    Ingos = round(mean(Ingos, na.rm = TRUE),0),
+    Individual = round(mean(Individual, na.rm = TRUE),0),
+    Governments = round(mean(Goverment, na.rm = TRUE),0),
+    Other = round(mean(Other, na.rm = TRUE),0))
+
+
+
+
+q18 <- loadWorkbook(archivo)
+addWorksheet(q18, sheetName = "q18_q10")
+# Escribir las tablas en la misma hoja
+writeData(q18, "q18_q10", "Table for 2021", startRow = 1, startCol = 1)
+writeData(q18, "q18_q10", q10_2021_q18, startRow = 2, startCol = 1, withFilter = TRUE)
+# Agregar un espacio entre tablas
+writeData(q18, "q18_q10", "Table for 2022", startRow = nrow(q10_2021_q18) + 4, startCol = 1)
+writeData(q18, "q18_q10", q10_2022_q18, startRow = nrow(q10_2021_q18) + 5, startCol = 1, withFilter = TRUE)
+# Agregar otro espacio
+writeData(q18, "q18_q10", "Table for 2023", startRow = nrow(q10_2021_q18) + nrow(q10_2022_q18) + 8, startCol = 1)
+writeData(q18, "q18_q10", q10_2023_q18, startRow = nrow(q10_2021_q18) + nrow(q10_2022_q18) + 9, startCol = 1, withFilter = TRUE)
+saveWorkbook(q18, archivo, overwrite = TRUE)
+
+
+q18 <- loadWorkbook(archivo)
+addWorksheet(q18, sheetName = "q18_q10_media")
+writeData(q18, sheet = "q18_q10_media", x = final_means_q18)
+saveWorkbook(q18, archivo, overwrite = TRUE)
+
+
+
 
 #############################################################################
 #ANÁLISIS DE LA q25

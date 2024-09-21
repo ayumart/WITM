@@ -195,14 +195,14 @@ base<-base %>%
 
 
 
-Lesbian, bisexual and queer rights + trans and non-binary rights + intersex rights = LBQTI+ -> We will still also look at trans rights separately too!
-  Young feminist + girls’ movements
-Sex workers’ rights
-Anti-caste (CHANGE –> we will only focus on anti-caste, not merge with religious and ethnic minorities)
-Climate and environmental justice
-Countering anti-gender & anti-rights
-Harm reduction + resisting the war on drugs
-Disability rights (-> CHANGE – this has been added)
+#Lesbian, bisexual and queer rights + trans and non-binary rights + intersex rights = LBQTI+ -> We will still also look at trans rights separately too!
+#  Young feminist + girls’ movements
+#Sex workers’ rights
+#Anti-caste (CHANGE –> we will only focus on anti-caste, not merge with religious and ethnic minorities)
+#Climate and environmental justice
+#Countering anti-gender & anti-rights
+#Harm reduction + resisting the war on drugs
+#Disability rights (-> CHANGE – this has been added)
 
 
 ##we will use this ranges
