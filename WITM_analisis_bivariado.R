@@ -2003,12 +2003,246 @@ saveWorkbook(q25, archivo, overwrite = TRUE)
 
 ################################################################################
 
+#ANÁLISIS DE LA Q28
+
+
+archivo <- "cuadros/q28_autonomus_resourcing.xlsx"
+
+
+#Convertir campos vacíos de la variable q28 en NA
+base <- base %>%
+  mutate(q28_autonomous_resourcing = na_if(q28_autonomous_resourcing, ""))
+
+
+q28<-base %>%
+  filter(!is.na(q28_autonomous_resourcing)) %>%
+  summarise(Total= round(n(),0),
+            None = sum(q28_autonomous_resourcing.none == 1, na.rm = TRUE),
+            Volunteering = sum(q28_autonomous_resourcing.volunteering == 1, na.rm = TRUE),
+            Membership_fees = sum(q28_autonomous_resourcing.membership_fees == 1, na.rm = TRUE),
+            Product_sales = sum(q28_autonomous_resourcing.product_sales == 1, na.rm = TRUE),
+            Service_sales = sum(q28_autonomous_resourcing.service_sales == 1, na.rm = TRUE),
+            Property_rent = sum(q28_autonomous_resourcing.property_rent_or_lease == 1, na.rm = TRUE),
+            Donations = sum(q28_autonomous_resourcing.donations == 1, na.rm = TRUE),
+            crowdfunding = sum(q28_autonomous_resourcing.crowdfunding== 1, na.rm = TRUE),
+            In_kind = sum(q28_autonomous_resourcing.in_kind_contributions== 1, na.rm = TRUE),
+            Mutual_aid = sum(q28_autonomous_resourcing.mutual_aid== 1, na.rm = TRUE),
+            Other = sum(q28_autonomous_resourcing.98== 1, na.rm = TRUE)) %>% 
+  pivot_longer(cols = everything(),
+             names_to = "Source",
+             values_to = "N")
+
+write.xlsx(q28, file = archivo, sheetName="q28")
+
+###
+
+#Cruce por q5
+
+q28_q5<-base %>%
+  mutate(q5 = case_when(
+    q5_registered == "n_registered" ~ "No",
+    q5_registered == "y_registered" ~ "Yes",
+    q5_registered == "98" ~ "Other",
+    is.na(q5_registered) ~ "No information",
+    TRUE ~ NA_character_
+  )) %>% 
+  filter(!is.na(q28_autonomous_resourcing)) %>%
+  group_by(q5) %>% 
+  summarise(Total= round(n(),0),
+            None = sum(q28_autonomous_resourcing.none == 1, na.rm = TRUE),
+            Volunteering = sum(q28_autonomous_resourcing.volunteering == 1, na.rm = TRUE),
+            Membership_fees = sum(q28_autonomous_resourcing.membership_fees == 1, na.rm = TRUE),
+            Product_sales = sum(q28_autonomous_resourcing.product_sales == 1, na.rm = TRUE),
+            Service_sales = sum(q28_autonomous_resourcing.service_sales == 1, na.rm = TRUE),
+            Property_rent = sum(q28_autonomous_resourcing.property_rent_or_lease == 1, na.rm = TRUE),
+            Donations = sum(q28_autonomous_resourcing.donations == 1, na.rm = TRUE),
+            crowdfunding = sum(q28_autonomous_resourcing.crowdfunding== 1, na.rm = TRUE),
+            In_kind = sum(q28_autonomous_resourcing.in_kind_contributions== 1, na.rm = TRUE),
+            Mutual_aid = sum(q28_autonomous_resourcing.mutual_aid== 1, na.rm = TRUE),
+            Other = sum(q28_autonomous_resourcing.98== 1, na.rm = TRUE)) 
+
+
+q28<- loadWorkbook(archivo)
+addWorksheet(q28, sheetName = "q28_q5")
+writeData(q28, sheet = "q28_q5", x = q28_q5)
+saveWorkbook(q28, archivo, overwrite = TRUE)
+
+###
+
+#Cruce por q6
+
+q28_q6<-base %>%
+  mutate(q6 = case_when(
+    q6_geo_scope=="globally_focused" ~ "Global",
+    q6_geo_scope=="transnationally_focused" ~ "Transnational",
+    q6_geo_scope=="regionally_focused" ~ "Regional",
+    q6_geo_scope=="diaspora_and_or_exile" ~ "Diaspora or exile",
+    q6_geo_scope=="nationally_focused" ~ "National",
+    q6_geo_scope=="locally_focused" ~ "Local",
+    is.na(q6_geo_scope) ~ "No information",
+    TRUE ~ NA_character_
+  )) %>% 
+  filter(!is.na(q28_autonomous_resourcing)) %>%
+  group_by(q6) %>% 
+  summarise(Total= round(n(),0),
+            None = sum(q28_autonomous_resourcing.none == 1, na.rm = TRUE),
+            Volunteering = sum(q28_autonomous_resourcing.volunteering == 1, na.rm = TRUE),
+            Membership_fees = sum(q28_autonomous_resourcing.membership_fees == 1, na.rm = TRUE),
+            Product_sales = sum(q28_autonomous_resourcing.product_sales == 1, na.rm = TRUE),
+            Service_sales = sum(q28_autonomous_resourcing.service_sales == 1, na.rm = TRUE),
+            Property_rent = sum(q28_autonomous_resourcing.property_rent_or_lease == 1, na.rm = TRUE),
+            Donations = sum(q28_autonomous_resourcing.donations == 1, na.rm = TRUE),
+            crowdfunding = sum(q28_autonomous_resourcing.crowdfunding== 1, na.rm = TRUE),
+            In_kind = sum(q28_autonomous_resourcing.in_kind_contributions== 1, na.rm = TRUE),
+            Mutual_aid = sum(q28_autonomous_resourcing.mutual_aid== 1, na.rm = TRUE),
+            Other = sum(q28_autonomous_resourcing.98== 1, na.rm = TRUE)) 
+
+
+q28<- loadWorkbook(archivo)
+addWorksheet(q28, sheetName = "q28_q6")
+writeData(q28, sheet = "q28_q6", x = q28_q6)
+saveWorkbook(q28, archivo, overwrite = TRUE)
+
+###
+
+#Cruce por q9
+
+q28_q9<-base %>% 
+  filter(!is.na(q28_autonomous_resourcing)) %>%
+  group_by(q9_year_formation_agrup) %>% 
+  summarise(Total= round(n(),0),
+            None = sum(q28_autonomous_resourcing.none == 1, na.rm = TRUE),
+            Volunteering = sum(q28_autonomous_resourcing.volunteering == 1, na.rm = TRUE),
+            Membership_fees = sum(q28_autonomous_resourcing.membership_fees == 1, na.rm = TRUE),
+            Product_sales = sum(q28_autonomous_resourcing.product_sales == 1, na.rm = TRUE),
+            Service_sales = sum(q28_autonomous_resourcing.service_sales == 1, na.rm = TRUE),
+            Property_rent = sum(q28_autonomous_resourcing.property_rent_or_lease == 1, na.rm = TRUE),
+            Donations = sum(q28_autonomous_resourcing.donations == 1, na.rm = TRUE),
+            crowdfunding = sum(q28_autonomous_resourcing.crowdfunding== 1, na.rm = TRUE),
+            In_kind = sum(q28_autonomous_resourcing.in_kind_contributions== 1, na.rm = TRUE),
+            Mutual_aid = sum(q28_autonomous_resourcing.mutual_aid== 1, na.rm = TRUE),
+            Other = sum(q28_autonomous_resourcing.98== 1, na.rm = TRUE)) 
+
+
+q28<- loadWorkbook(archivo)
+addWorksheet(q28, sheetName = "q28_q9")
+writeData(q28, sheet = "q28_q9", x = q28_q9)
+saveWorkbook(q28, archivo, overwrite = TRUE)
+
+
+###
+
+
+#Cruce por q10
+
+# Crear q10_2021_q28
+q10_2021_q28 <- base %>% 
+  filter(q9_year_formation < 2022 & !is.na(q28_autonomous_resourcing)) %>% 
+  group_by(q10_budget_grp_2021) %>% 
+  summarise(Total= round(n(),0),
+            None = sum(q28_autonomous_resourcing.none == 1, na.rm = TRUE),
+            Volunteering = sum(q28_autonomous_resourcing.volunteering == 1, na.rm = TRUE),
+            Membership_fees = sum(q28_autonomous_resourcing.membership_fees == 1, na.rm = TRUE),
+            Product_sales = sum(q28_autonomous_resourcing.product_sales == 1, na.rm = TRUE),
+            Service_sales = sum(q28_autonomous_resourcing.service_sales == 1, na.rm = TRUE),
+            Property_rent = sum(q28_autonomous_resourcing.property_rent_or_lease == 1, na.rm = TRUE),
+            Donations = sum(q28_autonomous_resourcing.donations == 1, na.rm = TRUE),
+            crowdfunding = sum(q28_autonomous_resourcing.crowdfunding== 1, na.rm = TRUE),
+            In_kind = sum(q28_autonomous_resourcing.in_kind_contributions== 1, na.rm = TRUE),
+            Mutual_aid = sum(q28_autonomous_resourcing.mutual_aid== 1, na.rm = TRUE),
+            Other = sum(q28_autonomous_resourcing.98== 1, na.rm = TRUE)) %>% 
+  rename(Annual_budget = q10_budget_grp_2021) %>% 
+  mutate(Year = 2021)
+
+# Crear q10_2022_q28
+q10_2022_q28 <- base %>% 
+  filter(q9_year_formation < 2023 & !is.na(q28_autonomous_resourcing)) %>% 
+  group_by(q10_budget_grp_2022) %>% 
+  summarise(Total= round(n(),0),
+            None = sum(q28_autonomous_resourcing.none == 1, na.rm = TRUE),
+            Volunteering = sum(q28_autonomous_resourcing.volunteering == 1, na.rm = TRUE),
+            Membership_fees = sum(q28_autonomous_resourcing.membership_fees == 1, na.rm = TRUE),
+            Product_sales = sum(q28_autonomous_resourcing.product_sales == 1, na.rm = TRUE),
+            Service_sales = sum(q28_autonomous_resourcing.service_sales == 1, na.rm = TRUE),
+            Property_rent = sum(q28_autonomous_resourcing.property_rent_or_lease == 1, na.rm = TRUE),
+            Donations = sum(q28_autonomous_resourcing.donations == 1, na.rm = TRUE),
+            crowdfunding = sum(q28_autonomous_resourcing.crowdfunding== 1, na.rm = TRUE),
+            In_kind = sum(q28_autonomous_resourcing.in_kind_contributions== 1, na.rm = TRUE),
+            Mutual_aid = sum(q28_autonomous_resourcing.mutual_aid== 1, na.rm = TRUE),
+            Other = sum(q28_autonomous_resourcing.98== 1, na.rm = TRUE)) %>%   
+  rename(Annual_budget = q10_budget_grp_2022) %>% 
+  mutate(Year = 2022)
+
+# Crear q10_2023_q28
+q10_2023_q28 <- base %>% 
+  filter(!is.na(q10_budget_year_2023) & !is.na(q28_autonomous_resourcing)) %>%
+  group_by(q10_budget_grp_2023) %>% 
+  summarise(Total= round(n(),0),
+            None = sum(q28_autonomous_resourcing.none == 1, na.rm = TRUE),
+            Volunteering = sum(q28_autonomous_resourcing.volunteering == 1, na.rm = TRUE),
+            Membership_fees = sum(q28_autonomous_resourcing.membership_fees == 1, na.rm = TRUE),
+            Product_sales = sum(q28_autonomous_resourcing.product_sales == 1, na.rm = TRUE),
+            Service_sales = sum(q28_autonomous_resourcing.service_sales == 1, na.rm = TRUE),
+            Property_rent = sum(q28_autonomous_resourcing.property_rent_or_lease == 1, na.rm = TRUE),
+            Donations = sum(q28_autonomous_resourcing.donations == 1, na.rm = TRUE),
+            crowdfunding = sum(q28_autonomous_resourcing.crowdfunding== 1, na.rm = TRUE),
+            In_kind = sum(q28_autonomous_resourcing.in_kind_contributions== 1, na.rm = TRUE),
+            Mutual_aid = sum(q28_autonomous_resourcing.mutual_aid== 1, na.rm = TRUE),
+            Other = sum(q28_autonomous_resourcing.98== 1, na.rm = TRUE)) %>%  
+  rename(Annual_budget = q10_budget_grp_2023) %>% 
+  mutate(Year = 2023)
+
+
+
+
+# Unir los dataframes
+q10_grouped_q28 <- bind_rows(q10_2021_q28, q10_2022_q28, q10_2023_q28)
+
+# Calcular la media entre los años para cada categoría de q15, agrupando por las categorías de q10
+final_means_q28 <- q10_grouped_q28 %>%
+  group_by(Annual_budget) %>%  # Agrupando por la categoría de q10
+  summarise(Total= round(mean(Total, na.rm=TRUE),0),
+          None = round(mean(None, na.rm=TRUE),0),
+          Volunteering = round(mean(Volunteering, na.rm=TRUE),0),
+          Membership_fees = round(mean(Membership_fees, na.rm=TRUE),0),
+          Product_sales = round(mean(Product_sales, na.rm=TRUE),0),
+          Service_sales = round(mean(Service_sales, na.rm=TRUE),0),
+          Property_rent = round(mean(Property_rent, na.rm=TRUE),0),
+          Donations = round(mean(Donations, na.rm=TRUE),0),
+          Crowdfunding = round(mean(crowdfunding, na.rm=TRUE),0),
+          In_kind = round(mean(In_kind, na.rm=TRUE),0),
+          Mutual_aid = round(mean(Mutual_aid, na.rm=TRUE),0),
+          Other = round(mean(Other, na.rm=TRUE),0))
+
+
+
+q28 <- loadWorkbook(archivo)
+addWorksheet(q28, sheetName = "q28_q10")
+# Escribir las tablas en la misma hoja
+writeData(q28, "q28_q10", "Table for 2021", startRow = 1, startCol = 1)
+writeData(q28, "q28_q10", q10_2021_q28, startRow = 2, startCol = 1, withFilter = TRUE)
+# Agregar un espacio entre tablas
+writeData(q28, "q28_q10", "Table for 2022", startRow = nrow(q10_2021_q28) + 4, startCol = 1)
+writeData(q28, "q28_q10", q10_2022_q28, startRow = nrow(q10_2021_q28) + 5, startCol = 1, withFilter = TRUE)
+# Agregar otro espacio
+writeData(q28, "q28_q10", "Table for 2023", startRow = nrow(q10_2021_q28) + nrow(q10_2022_q28) + 8, startCol = 1)
+writeData(q28, "q28_q10", q10_2023_q28, startRow = nrow(q10_2021_q28) + nrow(q10_2022_q28) + 9, startCol = 1, withFilter = TRUE)
+saveWorkbook(q28, archivo, overwrite = TRUE)
+
+
+q28 <- loadWorkbook(archivo)
+addWorksheet(q28, sheetName = "q28_q10_media")
+writeData(q28, sheet = "q28_q10_media", x = final_means_q28)
+saveWorkbook(q28, archivo, overwrite = TRUE)
+
+
+
+################################################################################
 
 #ANÁLISIS DE LA q30
 
 archivo <- "cuadros/q30_shifting_power.xlsx"
 
-unique(base$q30_shift_priorities)
 
 q30<-base %>%
   filter(!is.na(q30_shift_priorities)) %>% 
