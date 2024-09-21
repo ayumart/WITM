@@ -1087,6 +1087,34 @@ write.xlsx(q15, file = archivo, sheetName="q15")
 
 ###
 
+
+#cruce por q4
+
+
+q15_q4agrup <- base %>%
+  mutate(q4_awid_focus=recode(q4_awid_focus,"1"="Specific AWID subjects","0"="Other subjects")) %>%
+  filter( !is.na(q15_key_sources)) %>%
+  group_by(q4_awid_focus) %>% 
+  summarise(Total = n(),
+            Multilateral = sum(q15_key_sources.multilateral_funders == 1),
+            Bilateral = sum(q15_key_sources.bilateral_funders == 1),
+            Philanthropic = sum(q15_key_sources.philanthropic_foundations == 1),
+            Womens = sum(q15_key_sources.womens_feminist_funds == 1),
+            Private = sum(q15_key_sources.private_sector == 1),
+            Ingos = sum(q15_key_sources.ingos == 1),
+            Individual = sum(q15_key_sources.individual_donors == 1),
+            Governments = sum(q15_key_sources.national_local_goverment_or_bodies == 1),
+            Other = sum(q15_key_sources.98 == 1)) 
+
+
+q15 <- loadWorkbook(archivo)
+addWorksheet(q15, sheetName = "q15_q4agrup")
+writeData(q15, sheet = "q15_q4agrup", x = q15_q4agrup)
+saveWorkbook(q15, archivo, overwrite = TRUE)
+
+ 
+  
+  
 #cruce por q5
 
 
@@ -1592,6 +1620,32 @@ q18 <- base %>%
 write.xlsx(q18, file = archivo, sheetName="q18")
 
 #####
+
+#cruce por q4
+
+q18_q4agrup <- base %>%
+  mutate(q4_awid_focus=recode(q4_awid_focus,"1"="Specific AWID subjects","0"="Other subjects")) %>%
+  filter(!is.na(q18_new_funders)) %>%
+  group_by(q4_awid_focus) %>% 
+  summarise(
+    Total = (round(n(),0)),
+    Multilateral = sum(q18_new_funders.multilateral_funders == 1, na.rm = TRUE),
+    Bilateral = sum(q18_new_funders.bilateral_funders == 1, na.rm = TRUE),
+    Philanthropic = sum(q18_new_funders.philanthropic_foundations == 1, na.rm = TRUE),
+    Womens = sum(q18_new_funders.womens_feminist_funds == 1, na.rm = TRUE),
+    Private = sum(q18_new_funders.private_sector == 1, na.rm = TRUE),
+    Ingos = sum(q18_new_funders.ingos == 1, na.rm = TRUE),
+    Individual = sum(q18_new_funders.individual_donors == 1, na.rm = TRUE),
+    Goverment = sum(q18_new_funders.national_goverment == 1, na.rm = TRUE),
+    Other = sum(q18_new_funders.98 == 1, na.rm = TRUE),
+    No_new_funder = sum(q18_new_funders.not_new_funders == 1, na.rm = TRUE))
+
+
+q18 <- loadWorkbook(archivo)
+addWorksheet(q18, sheetName = "q18_q4agrup")
+writeData(q18, sheet = "q18_q4agrup", x = q18_q4agrup)
+saveWorkbook(q18, archivo, overwrite = TRUE)
+
 
 #cruce por q5
 
