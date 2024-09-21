@@ -1023,8 +1023,153 @@ writeData(q15, sheet = "q15_q4agrup", x = q15_q4agrup)
 saveWorkbook(q15, archivo, overwrite = TRUE)
 
  
+#Cruce por q4
+
+
+q15_q4a <- base %>%
+  filter( !is.na(q15_key_sources) & q4_awid_LGBTIQ==1) %>%
+  summarise(Total = n(),
+            Multirateral = sum(q15_key_sources.multilateral_funders == 1),
+            Bilateral = sum(q15_key_sources.bilateral_funders == 1),
+            Philanthropic = sum(q15_key_sources.philanthropic_foundations == 1),
+            Womens = sum(q15_key_sources.womens_feminist_funds == 1),
+            Private = sum(q15_key_sources.private_sector == 1),
+            Ingos = sum(q15_key_sources.ingos == 1),
+            Individual = sum(q15_key_sources.individual_donors == 1),
+            Goverments = sum(q15_key_sources.national_local_goverment_or_bodies == 1),
+            Other = sum(q15_key_sources.98 == 1)) %>% 
+  pivot_longer(cols = everything(),
+               names_to = "Source",
+               values_to = "LGBTIQ")
+
+q15_q4b <- base %>%
+  filter( !is.na(q15_key_sources) & q4_awid_young==1) %>%
+  summarise(Total = n(),
+            Multirateral = sum(q15_key_sources.multilateral_funders == 1),
+            Bilateral = sum(q15_key_sources.bilateral_funders == 1),
+            Philanthropic = sum(q15_key_sources.philanthropic_foundations == 1),
+            Womens = sum(q15_key_sources.womens_feminist_funds == 1),
+            Private = sum(q15_key_sources.private_sector == 1),
+            Ingos = sum(q15_key_sources.ingos == 1),
+            Individual = sum(q15_key_sources.individual_donors == 1),
+            Goverments = sum(q15_key_sources.national_local_goverment_or_bodies == 1),
+            Other = sum(q15_key_sources.98 == 1)) %>% 
+  pivot_longer(cols = everything(),
+               names_to = "Source",
+               values_to = "Young")
+
+q15_q4c <- base %>%
+  filter( !is.na(q15_key_sources) & q4_awid_sex==1) %>%
+  summarise(Total = n(),
+            Multirateral = sum(q15_key_sources.multilateral_funders == 1),
+            Bilateral = sum(q15_key_sources.bilateral_funders == 1),
+            Philanthropic = sum(q15_key_sources.philanthropic_foundations == 1),
+            Womens = sum(q15_key_sources.womens_feminist_funds == 1),
+            Private = sum(q15_key_sources.private_sector == 1),
+            Ingos = sum(q15_key_sources.ingos == 1),
+            Individual = sum(q15_key_sources.individual_donors == 1),
+            Goverments = sum(q15_key_sources.national_local_goverment_or_bodies == 1),
+            Other = sum(q15_key_sources.98 == 1)) %>% 
+  pivot_longer(cols = everything(),
+               names_to = "Source",
+               values_to = "Sex workers")
+
+q15_q4d <- base %>%
+  filter( !is.na(q15_key_sources) & q4_awid_anticaste==1) %>%
+  summarise(Total = n(),
+            Multirateral = sum(q15_key_sources.multilateral_funders == 1),
+            Bilateral = sum(q15_key_sources.bilateral_funders == 1),
+            Philanthropic = sum(q15_key_sources.philanthropic_foundations == 1),
+            Womens = sum(q15_key_sources.womens_feminist_funds == 1),
+            Private = sum(q15_key_sources.private_sector == 1),
+            Ingos = sum(q15_key_sources.ingos == 1),
+            Individual = sum(q15_key_sources.individual_donors == 1),
+            Goverments = sum(q15_key_sources.national_local_goverment_or_bodies == 1),
+            Other = sum(q15_key_sources.98 == 1)) %>% 
+  pivot_longer(cols = everything(),
+               names_to = "Source",
+               values_to = "Anticaste")
+
+q15_q4e <- base %>%
+  filter( !is.na(q15_key_sources) & q4_awid_climate==1) %>%
+  summarise(Total = n(),
+            Multirateral = sum(q15_key_sources.multilateral_funders == 1),
+            Bilateral = sum(q15_key_sources.bilateral_funders == 1),
+            Philanthropic = sum(q15_key_sources.philanthropic_foundations == 1),
+            Womens = sum(q15_key_sources.womens_feminist_funds == 1),
+            Private = sum(q15_key_sources.private_sector == 1),
+            Ingos = sum(q15_key_sources.ingos == 1),
+            Individual = sum(q15_key_sources.individual_donors == 1),
+            Goverments = sum(q15_key_sources.national_local_goverment_or_bodies == 1),
+            Other = sum(q15_key_sources.98 == 1)) %>% 
+  pivot_longer(cols = everything(),
+               names_to = "Source",
+               values_to = "Climate")
+
+q15_q4f <- base %>%
+  filter( !is.na(q15_key_sources) & q4_awid_antigender==1) %>%
+  summarise(Total = n(),
+            Multirateral = sum(q15_key_sources.multilateral_funders == 1),
+            Bilateral = sum(q15_key_sources.bilateral_funders == 1),
+            Philanthropic = sum(q15_key_sources.philanthropic_foundations == 1),
+            Womens = sum(q15_key_sources.womens_feminist_funds == 1),
+            Private = sum(q15_key_sources.private_sector == 1),
+            Ingos = sum(q15_key_sources.ingos == 1),
+            Individual = sum(q15_key_sources.individual_donors == 1),
+            Goverments = sum(q15_key_sources.national_local_goverment_or_bodies == 1),
+            Other = sum(q15_key_sources.98 == 1)) %>% 
+  pivot_longer(cols = everything(),
+               names_to = "Source",
+               values_to = "Countering anti-gender & anti-rights")
+
+q15_q4g <- base %>%
+  filter( !is.na(q15_key_sources) & q4_awid_harm==1) %>%
+  summarise(Total = n(),
+            Multirateral = sum(q15_key_sources.multilateral_funders == 1),
+            Bilateral = sum(q15_key_sources.bilateral_funders == 1),
+            Philanthropic = sum(q15_key_sources.philanthropic_foundations == 1),
+            Womens = sum(q15_key_sources.womens_feminist_funds == 1),
+            Private = sum(q15_key_sources.private_sector == 1),
+            Ingos = sum(q15_key_sources.ingos == 1),
+            Individual = sum(q15_key_sources.individual_donors == 1),
+            Goverments = sum(q15_key_sources.national_local_goverment_or_bodies == 1),
+            Other = sum(q15_key_sources.98 == 1)) %>% 
+  pivot_longer(cols = everything(),
+               names_to = "Source",
+               values_to = "Harm reduction")
   
-  
+q15_q4h <- base %>%
+  filter( !is.na(q15_key_sources) & q4_awid_disability==1) %>%
+  summarise(Total = n(),
+            Multirateral = sum(q15_key_sources.multilateral_funders == 1),
+            Bilateral = sum(q15_key_sources.bilateral_funders == 1),
+            Philanthropic = sum(q15_key_sources.philanthropic_foundations == 1),
+            Womens = sum(q15_key_sources.womens_feminist_funds == 1),
+            Private = sum(q15_key_sources.private_sector == 1),
+            Ingos = sum(q15_key_sources.ingos == 1),
+            Individual = sum(q15_key_sources.individual_donors == 1),
+            Goverments = sum(q15_key_sources.national_local_goverment_or_bodies == 1),
+            Other = sum(q15_key_sources.98 == 1)) %>% 
+  pivot_longer(cols = everything(),
+               names_to = "Source",
+               values_to = "Disability rights")
+
+q15_q4_total <- q15_q4a %>%
+  left_join(q15_q4b, by = "Source") %>%
+  left_join(q15_q4c, by = "Source") %>%
+  left_join(q15_q4d, by = "Source") %>%
+  left_join(q15_q4e, by = "Source") %>%
+  left_join(q15_q4f, by = "Source") %>%
+  left_join(q15_q4g, by = "Source") %>%
+  left_join(q15_q4h, by = "Source")
+
+
+
+q15 <- loadWorkbook(archivo)
+addWorksheet(q15, sheetName = "q15_q4_total")
+writeData(q15, sheet = "q15_q4_total", x = q15_q4_total)
+saveWorkbook(q15, archivo, overwrite = TRUE)
+
 #cruce por q5
 
 
@@ -1539,6 +1684,170 @@ addWorksheet(q18, sheetName = "q18_q4agrup")
 writeData(q18, sheet = "q18_q4agrup", x = q18_q4agrup)
 saveWorkbook(q18, archivo, overwrite = TRUE)
 
+##
+
+#Cruce por q4
+
+
+q18_q4a <- base %>%
+  filter( !is.na(q18_new_funders) & q4_awid_LGBTIQ==1) %>%
+  summarise(
+    Total = (round(n(),0)),
+    Multilateral = sum(q18_new_funders.multilateral_funders == 1, na.rm = TRUE),
+    Bilateral = sum(q18_new_funders.bilateral_funders == 1, na.rm = TRUE),
+    Philanthropic = sum(q18_new_funders.philanthropic_foundations == 1, na.rm = TRUE),
+    Womens = sum(q18_new_funders.womens_feminist_funds == 1, na.rm = TRUE),
+    Private = sum(q18_new_funders.private_sector == 1, na.rm = TRUE),
+    Ingos = sum(q18_new_funders.ingos == 1, na.rm = TRUE),
+    Individual = sum(q18_new_funders.individual_donors == 1, na.rm = TRUE),
+    Goverment = sum(q18_new_funders.national_goverment == 1, na.rm = TRUE),
+    Other = sum(q18_new_funders.98 == 1, na.rm = TRUE),
+    No_new_funder = sum(q18_new_funders.not_new_funders == 1, na.rm = TRUE)) %>% 
+  pivot_longer(cols = everything(),
+               names_to = "Source",
+               values_to = "LGBTIQ")
+
+q18_q4b <- base %>%
+  filter( !is.na(q18_new_funders) & q4_awid_young==1) %>%
+  summarise(
+    Total = (round(n(),0)),
+    Multilateral = sum(q18_new_funders.multilateral_funders == 1, na.rm = TRUE),
+    Bilateral = sum(q18_new_funders.bilateral_funders == 1, na.rm = TRUE),
+    Philanthropic = sum(q18_new_funders.philanthropic_foundations == 1, na.rm = TRUE),
+    Womens = sum(q18_new_funders.womens_feminist_funds == 1, na.rm = TRUE),
+    Private = sum(q18_new_funders.private_sector == 1, na.rm = TRUE),
+    Ingos = sum(q18_new_funders.ingos == 1, na.rm = TRUE),
+    Individual = sum(q18_new_funders.individual_donors == 1, na.rm = TRUE),
+    Goverment = sum(q18_new_funders.national_goverment == 1, na.rm = TRUE),
+    Other = sum(q18_new_funders.98 == 1, na.rm = TRUE),
+    No_new_funder = sum(q18_new_funders.not_new_funders == 1, na.rm = TRUE)) %>% 
+  pivot_longer(cols = everything(),
+               names_to = "Source",
+               values_to = "Young")
+
+q18_q4c <- base %>%
+  filter( !is.na(q18_new_funders) & q4_awid_sex==1) %>%
+  summarise(
+    Total = (round(n(),0)),
+    Multilateral = sum(q18_new_funders.multilateral_funders == 1, na.rm = TRUE),
+    Bilateral = sum(q18_new_funders.bilateral_funders == 1, na.rm = TRUE),
+    Philanthropic = sum(q18_new_funders.philanthropic_foundations == 1, na.rm = TRUE),
+    Womens = sum(q18_new_funders.womens_feminist_funds == 1, na.rm = TRUE),
+    Private = sum(q18_new_funders.private_sector == 1, na.rm = TRUE),
+    Ingos = sum(q18_new_funders.ingos == 1, na.rm = TRUE),
+    Individual = sum(q18_new_funders.individual_donors == 1, na.rm = TRUE),
+    Goverment = sum(q18_new_funders.national_goverment == 1, na.rm = TRUE),
+    Other = sum(q18_new_funders.98 == 1, na.rm = TRUE),
+    No_new_funder = sum(q18_new_funders.not_new_funders == 1, na.rm = TRUE)) %>% 
+  pivot_longer(cols = everything(),
+               names_to = "Source",
+               values_to = "Sex workers")
+
+q18_q4d <- base %>%
+  filter( !is.na(q18_new_funders) & q4_awid_anticaste==1) %>%
+  summarise(
+    Total = (round(n(),0)),
+    Multilateral = sum(q18_new_funders.multilateral_funders == 1, na.rm = TRUE),
+    Bilateral = sum(q18_new_funders.bilateral_funders == 1, na.rm = TRUE),
+    Philanthropic = sum(q18_new_funders.philanthropic_foundations == 1, na.rm = TRUE),
+    Womens = sum(q18_new_funders.womens_feminist_funds == 1, na.rm = TRUE),
+    Private = sum(q18_new_funders.private_sector == 1, na.rm = TRUE),
+    Ingos = sum(q18_new_funders.ingos == 1, na.rm = TRUE),
+    Individual = sum(q18_new_funders.individual_donors == 1, na.rm = TRUE),
+    Goverment = sum(q18_new_funders.national_goverment == 1, na.rm = TRUE),
+    Other = sum(q18_new_funders.98 == 1, na.rm = TRUE),
+    No_new_funder = sum(q18_new_funders.not_new_funders == 1, na.rm = TRUE)) %>% 
+  pivot_longer(cols = everything(),
+               names_to = "Source",
+               values_to = "Anticaste")
+
+q18_q4e <- base %>%
+  filter( !is.na(q18_new_funders) & q4_awid_climate==1) %>%
+  summarise(
+    Total = (round(n(),0)),
+    Multilateral = sum(q18_new_funders.multilateral_funders == 1, na.rm = TRUE),
+    Bilateral = sum(q18_new_funders.bilateral_funders == 1, na.rm = TRUE),
+    Philanthropic = sum(q18_new_funders.philanthropic_foundations == 1, na.rm = TRUE),
+    Womens = sum(q18_new_funders.womens_feminist_funds == 1, na.rm = TRUE),
+    Private = sum(q18_new_funders.private_sector == 1, na.rm = TRUE),
+    Ingos = sum(q18_new_funders.ingos == 1, na.rm = TRUE),
+    Individual = sum(q18_new_funders.individual_donors == 1, na.rm = TRUE),
+    Goverment = sum(q18_new_funders.national_goverment == 1, na.rm = TRUE),
+    Other = sum(q18_new_funders.98 == 1, na.rm = TRUE),
+    No_new_funder = sum(q18_new_funders.not_new_funders == 1, na.rm = TRUE)) %>%
+  pivot_longer(cols = everything(),
+               names_to = "Source",
+               values_to = "Climate")
+
+q18_q4f <- base %>%
+  filter( !is.na(q18_new_funders) & q4_awid_antigender==1) %>%
+  summarise(
+    Total = (round(n(),0)),
+    Multilateral = sum(q18_new_funders.multilateral_funders == 1, na.rm = TRUE),
+    Bilateral = sum(q18_new_funders.bilateral_funders == 1, na.rm = TRUE),
+    Philanthropic = sum(q18_new_funders.philanthropic_foundations == 1, na.rm = TRUE),
+    Womens = sum(q18_new_funders.womens_feminist_funds == 1, na.rm = TRUE),
+    Private = sum(q18_new_funders.private_sector == 1, na.rm = TRUE),
+    Ingos = sum(q18_new_funders.ingos == 1, na.rm = TRUE),
+    Individual = sum(q18_new_funders.individual_donors == 1, na.rm = TRUE),
+    Goverment = sum(q18_new_funders.national_goverment == 1, na.rm = TRUE),
+    Other = sum(q18_new_funders.98 == 1, na.rm = TRUE),
+    No_new_funder = sum(q18_new_funders.not_new_funders == 1, na.rm = TRUE)) %>%
+  pivot_longer(cols = everything(),
+               names_to = "Source",
+               values_to = "Countering anti-gender & anti-rights")
+
+q18_q4g <- base %>%
+  filter( !is.na(q18_new_funders) & q4_awid_harm==1) %>%
+  summarise(
+    Total = (round(n(),0)),
+    Multilateral = sum(q18_new_funders.multilateral_funders == 1, na.rm = TRUE),
+    Bilateral = sum(q18_new_funders.bilateral_funders == 1, na.rm = TRUE),
+    Philanthropic = sum(q18_new_funders.philanthropic_foundations == 1, na.rm = TRUE),
+    Womens = sum(q18_new_funders.womens_feminist_funds == 1, na.rm = TRUE),
+    Private = sum(q18_new_funders.private_sector == 1, na.rm = TRUE),
+    Ingos = sum(q18_new_funders.ingos == 1, na.rm = TRUE),
+    Individual = sum(q18_new_funders.individual_donors == 1, na.rm = TRUE),
+    Goverment = sum(q18_new_funders.national_goverment == 1, na.rm = TRUE),
+    Other = sum(q18_new_funders.98 == 1, na.rm = TRUE),
+    No_new_funder = sum(q18_new_funders.not_new_funders == 1, na.rm = TRUE)) %>%
+  pivot_longer(cols = everything(),
+               names_to = "Source",
+               values_to = "Harm reduction")
+
+q18_q4h <- base %>%
+  filter( !is.na(q18_new_funders) & q4_awid_disability==1) %>%
+  summarise(
+    Total = (round(n(),0)),
+    Multilateral = sum(q18_new_funders.multilateral_funders == 1, na.rm = TRUE),
+    Bilateral = sum(q18_new_funders.bilateral_funders == 1, na.rm = TRUE),
+    Philanthropic = sum(q18_new_funders.philanthropic_foundations == 1, na.rm = TRUE),
+    Womens = sum(q18_new_funders.womens_feminist_funds == 1, na.rm = TRUE),
+    Private = sum(q18_new_funders.private_sector == 1, na.rm = TRUE),
+    Ingos = sum(q18_new_funders.ingos == 1, na.rm = TRUE),
+    Individual = sum(q18_new_funders.individual_donors == 1, na.rm = TRUE),
+    Goverment = sum(q18_new_funders.national_goverment == 1, na.rm = TRUE),
+    Other = sum(q18_new_funders.98 == 1, na.rm = TRUE),
+    No_new_funder = sum(q18_new_funders.not_new_funders == 1, na.rm = TRUE)) %>%
+  pivot_longer(cols = everything(),
+               names_to = "Source",
+               values_to = "Disability rights")
+
+q18_q4_total <- q18_q4a %>%
+  left_join(q18_q4b, by = "Source") %>%
+  left_join(q18_q4c, by = "Source") %>%
+  left_join(q18_q4d, by = "Source") %>%
+  left_join(q18_q4e, by = "Source") %>%
+  left_join(q18_q4f, by = "Source") %>%
+  left_join(q18_q4g, by = "Source") %>%
+  left_join(q18_q4h, by = "Source")
+
+
+
+q18 <- loadWorkbook(archivo)
+addWorksheet(q18, sheetName = "q18_q4_total")
+writeData(q18, sheet = "q18_q4_total", x = q18_q4_total)
+saveWorkbook(q18, archivo, overwrite = TRUE)
 
 #cruce por q5
 
@@ -1785,7 +2094,164 @@ q19 <- loadWorkbook(archivo)
 addWorksheet(q19, sheetName = "q19_q4agrup")
 writeData(q19, sheet = "q19_q4agrup", x = q19_q4agrup)
 saveWorkbook(q19, archivo, overwrite = TRUE)
-  
+
+
+#Cruce por q4
+
+
+q19_q4a <- base %>%
+  filter( !is.na(q19_lose_funding) & q4_awid_LGBTIQ==1) %>%
+  summarise(Total= round(n(),0),
+            No=sum(q19_lose_funding.no==1, na.rm=TRUE),
+            Multilateral = sum(q19_lose_funding.y_multilateral_funders == 1, na.rm = TRUE),
+            Bilateral = sum(q19_lose_funding.y_bilateral_funders == 1, na.rm = TRUE),
+            Philanthropic = sum(q19_lose_funding.y_philanthropic_foundations == 1, na.rm = TRUE),
+            Womens = sum(q19_lose_funding.y_womens_feminist_funds == 1, na.rm = TRUE),
+            Private = sum(q19_lose_funding.y_private_sector == 1, na.rm = TRUE),
+            Ingos = sum(q19_lose_funding.y_ingos == 1, na.rm = TRUE),
+            Individual = sum(q19_lose_funding.y_individual_donors == 1, na.rm = TRUE),
+            Goverments = sum(q19_lose_funding.y_national_goverment== 1, na.rm = TRUE),
+            Other = sum(q19_lose_funding.y_other == 1, na.rm = TRUE)) %>% 
+  pivot_longer(cols = everything(),
+               names_to = "Source",
+               values_to = "LGBTIQ")
+
+q19_q4b <- base %>%
+  filter( !is.na(q19_lose_funding) & q4_awid_young==1) %>%
+  summarise(Total= round(n(),0),
+            No=sum(q19_lose_funding.no==1, na.rm=TRUE),
+            Multilateral = sum(q19_lose_funding.y_multilateral_funders == 1, na.rm = TRUE),
+            Bilateral = sum(q19_lose_funding.y_bilateral_funders == 1, na.rm = TRUE),
+            Philanthropic = sum(q19_lose_funding.y_philanthropic_foundations == 1, na.rm = TRUE),
+            Womens = sum(q19_lose_funding.y_womens_feminist_funds == 1, na.rm = TRUE),
+            Private = sum(q19_lose_funding.y_private_sector == 1, na.rm = TRUE),
+            Ingos = sum(q19_lose_funding.y_ingos == 1, na.rm = TRUE),
+            Individual = sum(q19_lose_funding.y_individual_donors == 1, na.rm = TRUE),
+            Goverments = sum(q19_lose_funding.y_national_goverment== 1, na.rm = TRUE),
+            Other = sum(q19_lose_funding.y_other == 1, na.rm = TRUE)) %>% 
+  pivot_longer(cols = everything(),
+               names_to = "Source",
+               values_to = "Young")
+
+q19_q4c <- base %>%
+  filter( !is.na(q19_lose_funding) & q4_awid_sex==1) %>%
+  summarise(Total= round(n(),0),
+            No=sum(q19_lose_funding.no==1, na.rm=TRUE),
+            Multilateral = sum(q19_lose_funding.y_multilateral_funders == 1, na.rm = TRUE),
+            Bilateral = sum(q19_lose_funding.y_bilateral_funders == 1, na.rm = TRUE),
+            Philanthropic = sum(q19_lose_funding.y_philanthropic_foundations == 1, na.rm = TRUE),
+            Womens = sum(q19_lose_funding.y_womens_feminist_funds == 1, na.rm = TRUE),
+            Private = sum(q19_lose_funding.y_private_sector == 1, na.rm = TRUE),
+            Ingos = sum(q19_lose_funding.y_ingos == 1, na.rm = TRUE),
+            Individual = sum(q19_lose_funding.y_individual_donors == 1, na.rm = TRUE),
+            Goverments = sum(q19_lose_funding.y_national_goverment== 1, na.rm = TRUE),
+            Other = sum(q19_lose_funding.y_other == 1, na.rm = TRUE)) %>% 
+  pivot_longer(cols = everything(),
+               names_to = "Source",
+               values_to = "Sex workers")
+
+q19_q4d <- base %>%
+  filter( !is.na(q19_lose_funding) & q4_awid_anticaste==1) %>%
+  summarise(Total= round(n(),0),
+            No=sum(q19_lose_funding.no==1, na.rm=TRUE),
+            Multilateral = sum(q19_lose_funding.y_multilateral_funders == 1, na.rm = TRUE),
+            Bilateral = sum(q19_lose_funding.y_bilateral_funders == 1, na.rm = TRUE),
+            Philanthropic = sum(q19_lose_funding.y_philanthropic_foundations == 1, na.rm = TRUE),
+            Womens = sum(q19_lose_funding.y_womens_feminist_funds == 1, na.rm = TRUE),
+            Private = sum(q19_lose_funding.y_private_sector == 1, na.rm = TRUE),
+            Ingos = sum(q19_lose_funding.y_ingos == 1, na.rm = TRUE),
+            Individual = sum(q19_lose_funding.y_individual_donors == 1, na.rm = TRUE),
+            Goverments = sum(q19_lose_funding.y_national_goverment== 1, na.rm = TRUE),
+            Other = sum(q19_lose_funding.y_other == 1, na.rm = TRUE)) %>%  
+  pivot_longer(cols = everything(),
+               names_to = "Source",
+               values_to = "Anticaste")
+
+q19_q4e <- base %>%
+  filter( !is.na(q19_lose_funding) & q4_awid_climate==1) %>%
+  summarise(Total= round(n(),0),
+            No=sum(q19_lose_funding.no==1, na.rm=TRUE),
+            Multilateral = sum(q19_lose_funding.y_multilateral_funders == 1, na.rm = TRUE),
+            Bilateral = sum(q19_lose_funding.y_bilateral_funders == 1, na.rm = TRUE),
+            Philanthropic = sum(q19_lose_funding.y_philanthropic_foundations == 1, na.rm = TRUE),
+            Womens = sum(q19_lose_funding.y_womens_feminist_funds == 1, na.rm = TRUE),
+            Private = sum(q19_lose_funding.y_private_sector == 1, na.rm = TRUE),
+            Ingos = sum(q19_lose_funding.y_ingos == 1, na.rm = TRUE),
+            Individual = sum(q19_lose_funding.y_individual_donors == 1, na.rm = TRUE),
+            Goverments = sum(q19_lose_funding.y_national_goverment== 1, na.rm = TRUE),
+            Other = sum(q19_lose_funding.y_other == 1, na.rm = TRUE)) %>% 
+  pivot_longer(cols = everything(),
+               names_to = "Source",
+               values_to = "Climate")
+
+q19_q4f <- base %>%
+  filter( !is.na(q19_lose_funding) & q4_awid_antigender==1) %>%
+  summarise(Total= round(n(),0),
+            No=sum(q19_lose_funding.no==1, na.rm=TRUE),
+            Multilateral = sum(q19_lose_funding.y_multilateral_funders == 1, na.rm = TRUE),
+            Bilateral = sum(q19_lose_funding.y_bilateral_funders == 1, na.rm = TRUE),
+            Philanthropic = sum(q19_lose_funding.y_philanthropic_foundations == 1, na.rm = TRUE),
+            Womens = sum(q19_lose_funding.y_womens_feminist_funds == 1, na.rm = TRUE),
+            Private = sum(q19_lose_funding.y_private_sector == 1, na.rm = TRUE),
+            Ingos = sum(q19_lose_funding.y_ingos == 1, na.rm = TRUE),
+            Individual = sum(q19_lose_funding.y_individual_donors == 1, na.rm = TRUE),
+            Goverments = sum(q19_lose_funding.y_national_goverment== 1, na.rm = TRUE),
+            Other = sum(q19_lose_funding.y_other == 1, na.rm = TRUE)) %>% 
+  pivot_longer(cols = everything(),
+               names_to = "Source",
+               values_to = "Countering anti-gender & anti-rights")
+
+q19_q4g <- base %>%
+  filter( !is.na(q19_lose_funding) & q4_awid_harm==1) %>%
+  summarise(Total= round(n(),0),
+            No=sum(q19_lose_funding.no==1, na.rm=TRUE),
+            Multilateral = sum(q19_lose_funding.y_multilateral_funders == 1, na.rm = TRUE),
+            Bilateral = sum(q19_lose_funding.y_bilateral_funders == 1, na.rm = TRUE),
+            Philanthropic = sum(q19_lose_funding.y_philanthropic_foundations == 1, na.rm = TRUE),
+            Womens = sum(q19_lose_funding.y_womens_feminist_funds == 1, na.rm = TRUE),
+            Private = sum(q19_lose_funding.y_private_sector == 1, na.rm = TRUE),
+            Ingos = sum(q19_lose_funding.y_ingos == 1, na.rm = TRUE),
+            Individual = sum(q19_lose_funding.y_individual_donors == 1, na.rm = TRUE),
+            Goverments = sum(q19_lose_funding.y_national_goverment== 1, na.rm = TRUE),
+            Other = sum(q19_lose_funding.y_other == 1, na.rm = TRUE)) %>% 
+  pivot_longer(cols = everything(),
+               names_to = "Source",
+               values_to = "Harm reduction")
+
+q19_q4h <- base %>%
+  filter( !is.na(q19_lose_funding) & q4_awid_disability==1) %>%
+  summarise(Total= round(n(),0),
+            No=sum(q19_lose_funding.no==1, na.rm=TRUE),
+            Multilateral = sum(q19_lose_funding.y_multilateral_funders == 1, na.rm = TRUE),
+            Bilateral = sum(q19_lose_funding.y_bilateral_funders == 1, na.rm = TRUE),
+            Philanthropic = sum(q19_lose_funding.y_philanthropic_foundations == 1, na.rm = TRUE),
+            Womens = sum(q19_lose_funding.y_womens_feminist_funds == 1, na.rm = TRUE),
+            Private = sum(q19_lose_funding.y_private_sector == 1, na.rm = TRUE),
+            Ingos = sum(q19_lose_funding.y_ingos == 1, na.rm = TRUE),
+            Individual = sum(q19_lose_funding.y_individual_donors == 1, na.rm = TRUE),
+            Goverments = sum(q19_lose_funding.y_national_goverment== 1, na.rm = TRUE),
+            Other = sum(q19_lose_funding.y_other == 1, na.rm = TRUE)) %>% 
+  pivot_longer(cols = everything(),
+               names_to = "Source",
+               values_to = "Disability rights")
+
+q19_q4_total <- q19_q4a %>%
+  left_join(q19_q4b, by = "Source") %>%
+  left_join(q19_q4c, by = "Source") %>%
+  left_join(q19_q4d, by = "Source") %>%
+  left_join(q19_q4e, by = "Source") %>%
+  left_join(q19_q4f, by = "Source") %>%
+  left_join(q19_q4g, by = "Source") %>%
+  left_join(q19_q4h, by = "Source")
+
+
+
+q19 <- loadWorkbook(archivo)
+addWorksheet(q19, sheetName = "q19_q4_total")
+writeData(q19, sheet = "q19_q4_total", x = q19_q4_total)
+saveWorkbook(q19, archivo, overwrite = TRUE)
+
+
 #Cruce por la q5
 
 
@@ -2348,6 +2814,195 @@ addWorksheet(q28, sheetName = "q28_q4agrup")
 writeData(q28, sheet = "q28_q4agrup", x = q28_q4agrup)
 saveWorkbook(q28, archivo, overwrite = TRUE)
 
+
+#Cruce por q4
+
+q19_q4agrup <-base %>%
+  mutate(q4_awid_focus=recode(q4_awid_focus,"1"="Specific AWID subjects","0"="Other subjects")) %>% 
+  filter(!is.na(q19_lose_funding)) %>% 
+  group_by(q4_awid_focus) %>% 
+  summarise(Total= round(n(),0),
+            No=sum(q19_lose_funding.no==1, na.rm=TRUE),
+            Multilateral = sum(q19_lose_funding.y_multilateral_funders == 1, na.rm = TRUE),
+            Bilateral = sum(q19_lose_funding.y_bilateral_funders == 1, na.rm = TRUE),
+            Philanthropic = sum(q19_lose_funding.y_philanthropic_foundations == 1, na.rm = TRUE),
+            Womens = sum(q19_lose_funding.y_womens_feminist_funds == 1, na.rm = TRUE),
+            Private = sum(q19_lose_funding.y_private_sector == 1, na.rm = TRUE),
+            Ingos = sum(q19_lose_funding.y_ingos == 1, na.rm = TRUE),
+            Individual = sum(q19_lose_funding.y_individual_donors == 1, na.rm = TRUE),
+            Goverments = sum(q19_lose_funding.y_national_goverment== 1, na.rm = TRUE),
+            Other = sum(q19_lose_funding.y_other == 1, na.rm = TRUE))
+
+
+
+q19 <- loadWorkbook(archivo)
+addWorksheet(q19, sheetName = "q19_q4agrup")
+writeData(q19, sheet = "q19_q4agrup", x = q19_q4agrup)
+saveWorkbook(q19, archivo, overwrite = TRUE)
+
+
+#Cruce por q4
+
+
+q28_q4a <- base %>%
+  filter( !is.na(q28_autonomous_resourcing) & q4_awid_LGBTIQ==1) %>%
+  summarise(Total= round(n(),0),
+            None = sum(q28_autonomous_resourcing.none == 1, na.rm = TRUE),
+            Volunteering = sum(q28_autonomous_resourcing.volunteering == 1, na.rm = TRUE),
+            Membership_fees = sum(q28_autonomous_resourcing.membership_fees == 1, na.rm = TRUE),
+            Product_sales = sum(q28_autonomous_resourcing.product_sales == 1, na.rm = TRUE),
+            Service_sales = sum(q28_autonomous_resourcing.service_sales == 1, na.rm = TRUE),
+            Property_rent = sum(q28_autonomous_resourcing.property_rent_or_lease == 1, na.rm = TRUE),
+            Donations = sum(q28_autonomous_resourcing.donations == 1, na.rm = TRUE),
+            crowdfunding = sum(q28_autonomous_resourcing.crowdfunding== 1, na.rm = TRUE),
+            In_kind = sum(q28_autonomous_resourcing.in_kind_contributions== 1, na.rm = TRUE),
+            Mutual_aid = sum(q28_autonomous_resourcing.mutual_aid== 1, na.rm = TRUE),
+            Other = sum(q28_autonomous_resourcing.98== 1, na.rm = TRUE)) %>% 
+  pivot_longer(cols = everything(),
+               names_to = "Source",
+               values_to = "LGBTIQ")
+
+q28_q4b <- base %>%
+  filter( !is.na(q28_autonomous_resourcing) & q4_awid_young==1) %>%
+  summarise(Total= round(n(),0),
+            None = sum(q28_autonomous_resourcing.none == 1, na.rm = TRUE),
+            Volunteering = sum(q28_autonomous_resourcing.volunteering == 1, na.rm = TRUE),
+            Membership_fees = sum(q28_autonomous_resourcing.membership_fees == 1, na.rm = TRUE),
+            Product_sales = sum(q28_autonomous_resourcing.product_sales == 1, na.rm = TRUE),
+            Service_sales = sum(q28_autonomous_resourcing.service_sales == 1, na.rm = TRUE),
+            Property_rent = sum(q28_autonomous_resourcing.property_rent_or_lease == 1, na.rm = TRUE),
+            Donations = sum(q28_autonomous_resourcing.donations == 1, na.rm = TRUE),
+            crowdfunding = sum(q28_autonomous_resourcing.crowdfunding== 1, na.rm = TRUE),
+            In_kind = sum(q28_autonomous_resourcing.in_kind_contributions== 1, na.rm = TRUE),
+            Mutual_aid = sum(q28_autonomous_resourcing.mutual_aid== 1, na.rm = TRUE),
+            Other = sum(q28_autonomous_resourcing.98== 1, na.rm = TRUE)) %>% 
+  pivot_longer(cols = everything(),
+               names_to = "Source",
+               values_to = "Young")
+
+q28_q4c <- base %>%
+  filter( !is.na(q28_autonomous_resourcing) & q4_awid_sex==1) %>%
+  summarise(Total= round(n(),0),
+            None = sum(q28_autonomous_resourcing.none == 1, na.rm = TRUE),
+            Volunteering = sum(q28_autonomous_resourcing.volunteering == 1, na.rm = TRUE),
+            Membership_fees = sum(q28_autonomous_resourcing.membership_fees == 1, na.rm = TRUE),
+            Product_sales = sum(q28_autonomous_resourcing.product_sales == 1, na.rm = TRUE),
+            Service_sales = sum(q28_autonomous_resourcing.service_sales == 1, na.rm = TRUE),
+            Property_rent = sum(q28_autonomous_resourcing.property_rent_or_lease == 1, na.rm = TRUE),
+            Donations = sum(q28_autonomous_resourcing.donations == 1, na.rm = TRUE),
+            crowdfunding = sum(q28_autonomous_resourcing.crowdfunding== 1, na.rm = TRUE),
+            In_kind = sum(q28_autonomous_resourcing.in_kind_contributions== 1, na.rm = TRUE),
+            Mutual_aid = sum(q28_autonomous_resourcing.mutual_aid== 1, na.rm = TRUE),
+            Other = sum(q28_autonomous_resourcing.98== 1, na.rm = TRUE)) %>% 
+  pivot_longer(cols = everything(),
+               names_to = "Source",
+               values_to = "Sex workers")
+
+q28_q4d <- base %>%
+  filter( !is.na(q28_autonomous_resourcing) & q4_awid_anticaste==1) %>%
+  summarise(Total= round(n(),0),
+            None = sum(q28_autonomous_resourcing.none == 1, na.rm = TRUE),
+            Volunteering = sum(q28_autonomous_resourcing.volunteering == 1, na.rm = TRUE),
+            Membership_fees = sum(q28_autonomous_resourcing.membership_fees == 1, na.rm = TRUE),
+            Product_sales = sum(q28_autonomous_resourcing.product_sales == 1, na.rm = TRUE),
+            Service_sales = sum(q28_autonomous_resourcing.service_sales == 1, na.rm = TRUE),
+            Property_rent = sum(q28_autonomous_resourcing.property_rent_or_lease == 1, na.rm = TRUE),
+            Donations = sum(q28_autonomous_resourcing.donations == 1, na.rm = TRUE),
+            crowdfunding = sum(q28_autonomous_resourcing.crowdfunding== 1, na.rm = TRUE),
+            In_kind = sum(q28_autonomous_resourcing.in_kind_contributions== 1, na.rm = TRUE),
+            Mutual_aid = sum(q28_autonomous_resourcing.mutual_aid== 1, na.rm = TRUE),
+            Other = sum(q28_autonomous_resourcing.98== 1, na.rm = TRUE)) %>%   
+  pivot_longer(cols = everything(),
+               names_to = "Source",
+               values_to = "Anticaste")
+
+q28_q4e <- base %>%
+  filter( !is.na(q28_autonomous_resourcing) & q4_awid_climate==1) %>%
+  summarise(Total= round(n(),0),
+            None = sum(q28_autonomous_resourcing.none == 1, na.rm = TRUE),
+            Volunteering = sum(q28_autonomous_resourcing.volunteering == 1, na.rm = TRUE),
+            Membership_fees = sum(q28_autonomous_resourcing.membership_fees == 1, na.rm = TRUE),
+            Product_sales = sum(q28_autonomous_resourcing.product_sales == 1, na.rm = TRUE),
+            Service_sales = sum(q28_autonomous_resourcing.service_sales == 1, na.rm = TRUE),
+            Property_rent = sum(q28_autonomous_resourcing.property_rent_or_lease == 1, na.rm = TRUE),
+            Donations = sum(q28_autonomous_resourcing.donations == 1, na.rm = TRUE),
+            crowdfunding = sum(q28_autonomous_resourcing.crowdfunding== 1, na.rm = TRUE),
+            In_kind = sum(q28_autonomous_resourcing.in_kind_contributions== 1, na.rm = TRUE),
+            Mutual_aid = sum(q28_autonomous_resourcing.mutual_aid== 1, na.rm = TRUE),
+            Other = sum(q28_autonomous_resourcing.98== 1, na.rm = TRUE)) %>%  
+  pivot_longer(cols = everything(),
+               names_to = "Source",
+               values_to = "Climate")
+
+q28_q4f <- base %>%
+  filter( !is.na(q28_autonomous_resourcing) & q4_awid_antigender==1) %>%
+  summarise(Total= round(n(),0),
+            None = sum(q28_autonomous_resourcing.none == 1, na.rm = TRUE),
+            Volunteering = sum(q28_autonomous_resourcing.volunteering == 1, na.rm = TRUE),
+            Membership_fees = sum(q28_autonomous_resourcing.membership_fees == 1, na.rm = TRUE),
+            Product_sales = sum(q28_autonomous_resourcing.product_sales == 1, na.rm = TRUE),
+            Service_sales = sum(q28_autonomous_resourcing.service_sales == 1, na.rm = TRUE),
+            Property_rent = sum(q28_autonomous_resourcing.property_rent_or_lease == 1, na.rm = TRUE),
+            Donations = sum(q28_autonomous_resourcing.donations == 1, na.rm = TRUE),
+            crowdfunding = sum(q28_autonomous_resourcing.crowdfunding== 1, na.rm = TRUE),
+            In_kind = sum(q28_autonomous_resourcing.in_kind_contributions== 1, na.rm = TRUE),
+            Mutual_aid = sum(q28_autonomous_resourcing.mutual_aid== 1, na.rm = TRUE),
+            Other = sum(q28_autonomous_resourcing.98== 1, na.rm = TRUE)) %>%  
+  pivot_longer(cols = everything(),
+               names_to = "Source",
+               values_to = "Countering anti-gender & anti-rights")
+
+q28_q4g <- base %>%
+  filter( !is.na(q28_autonomous_resourcing) & q4_awid_harm==1) %>%
+  summarise(Total= round(n(),0),
+            None = sum(q28_autonomous_resourcing.none == 1, na.rm = TRUE),
+            Volunteering = sum(q28_autonomous_resourcing.volunteering == 1, na.rm = TRUE),
+            Membership_fees = sum(q28_autonomous_resourcing.membership_fees == 1, na.rm = TRUE),
+            Product_sales = sum(q28_autonomous_resourcing.product_sales == 1, na.rm = TRUE),
+            Service_sales = sum(q28_autonomous_resourcing.service_sales == 1, na.rm = TRUE),
+            Property_rent = sum(q28_autonomous_resourcing.property_rent_or_lease == 1, na.rm = TRUE),
+            Donations = sum(q28_autonomous_resourcing.donations == 1, na.rm = TRUE),
+            crowdfunding = sum(q28_autonomous_resourcing.crowdfunding== 1, na.rm = TRUE),
+            In_kind = sum(q28_autonomous_resourcing.in_kind_contributions== 1, na.rm = TRUE),
+            Mutual_aid = sum(q28_autonomous_resourcing.mutual_aid== 1, na.rm = TRUE),
+            Other = sum(q28_autonomous_resourcing.98== 1, na.rm = TRUE)) %>%
+  pivot_longer(cols = everything(),
+               names_to = "Source",
+               values_to = "Harm reduction")
+
+q28_q4h <- base %>%
+  filter( !is.na(q28_autonomous_resourcing) & q4_awid_disability==1) %>%
+  summarise(Total= round(n(),0),
+            None = sum(q28_autonomous_resourcing.none == 1, na.rm = TRUE),
+            Volunteering = sum(q28_autonomous_resourcing.volunteering == 1, na.rm = TRUE),
+            Membership_fees = sum(q28_autonomous_resourcing.membership_fees == 1, na.rm = TRUE),
+            Product_sales = sum(q28_autonomous_resourcing.product_sales == 1, na.rm = TRUE),
+            Service_sales = sum(q28_autonomous_resourcing.service_sales == 1, na.rm = TRUE),
+            Property_rent = sum(q28_autonomous_resourcing.property_rent_or_lease == 1, na.rm = TRUE),
+            Donations = sum(q28_autonomous_resourcing.donations == 1, na.rm = TRUE),
+            crowdfunding = sum(q28_autonomous_resourcing.crowdfunding== 1, na.rm = TRUE),
+            In_kind = sum(q28_autonomous_resourcing.in_kind_contributions== 1, na.rm = TRUE),
+            Mutual_aid = sum(q28_autonomous_resourcing.mutual_aid== 1, na.rm = TRUE),
+            Other = sum(q28_autonomous_resourcing.98== 1, na.rm = TRUE)) %>%
+  pivot_longer(cols = everything(),
+               names_to = "Source",
+               values_to = "Disability rights")
+
+q28_q4_total <- q28_q4a %>%
+  left_join(q28_q4b, by = "Source") %>%
+  left_join(q28_q4c, by = "Source") %>%
+  left_join(q28_q4d, by = "Source") %>%
+  left_join(q28_q4e, by = "Source") %>%
+  left_join(q28_q4f, by = "Source") %>%
+  left_join(q28_q4g, by = "Source") %>%
+  left_join(q28_q4h, by = "Source")
+
+
+
+q28 <- loadWorkbook(archivo)
+addWorksheet(q28, sheetName = "q28_q4_total")
+writeData(q28, sheet = "q28_q4_total", x = q28_q4_total)
+saveWorkbook(q28, archivo, overwrite = TRUE)
 
 
 #Cruce por q5

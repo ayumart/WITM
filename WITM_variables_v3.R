@@ -131,8 +131,7 @@ base<-base %>%
   mutate(q4_awid_anticaste=case_when(q4_forms_organizing.anti_caste==1~1, TRUE ~0)) %>%
   mutate(q4_awid_climate=case_when(q4_forms_organizing.climate_justice ==1 ~1, TRUE ~0)) %>%
   mutate(q4_awid_antigender=case_when(q4_forms_organizing.countering_anti_gender==1 ~1, TRUE ~0)) %>%
-  mutate(q4_awid_resisting=case_when(q4_forms_organizing.harm_reduction==1 | q4_forms_organizing.resisting_war_on_drugs==1 ~1, TRUE ~0 )) %>% 
-  mutate(q4_awid_harm=case_when(q4_forms_organizing.harm_reduction==1 |q4_forms_organizing.resisting_war_on_drugs==1  ~1, TRUE ~0)) %>% 
+  mutate(q4_awid_harm=case_when(q4_forms_organizing.harm_reduction==1 | q4_forms_organizing.resisting_war_on_drugs==1 ~1, TRUE ~0 )) %>% 
   mutate(q4_awid_disability=case_when(q4_forms_organizing.disability_rights== 1 ~1, TRUE ~0))
 
 #revisión q5
