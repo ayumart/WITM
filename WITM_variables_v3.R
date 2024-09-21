@@ -202,3 +202,45 @@ base<- base %>%
               q10_budget_year_2023=="(l) > 4000001") ~ "(i) 1,000,001 + USD",
            TRUE ~ q10_budget_year_2023))  
 
+#agrupación regiones q7
+
+
+base<-base %>% 
+  #Convertir campos vacíos de la variable q7 en NA
+  mutate(q7_region_one = na_if(q7_region_one, ""),
+         q7_region_multiple = na_if(q7_region_multiple, "")) %>% 
+  #Unifico REGIÓN en variables únicas
+  mutate(samerica= ifelse(q7_region_one=="samerica"| q7_region_multiple.samerica==1, 1, 0),
+         camerica= ifelse(q7_region_one=="camerica"| q7_region_multiple.camerica==1, 1, 0),
+         namerica=ifelse(q7_region_one=="namerica"| q7_region_multiple.namerica==1, 1, 0),
+         caribbean=ifelse(q7_region_one=="caribbean"| q7_region_multiple.caribbean==1, 1, 0),
+         sasia=ifelse(q7_region_one=="sasia"| q7_region_multiple.sasia==1, 1, 0),
+         seasia=ifelse(q7_region_one=="seasia"| q7_region_multiple.seasia==1, 1, 0),
+         pacific=ifelse(q7_region_one=="pacific"| q7_region_multiple.pacific==1, 1, 0),
+         easia=ifelse(q7_region_one=="easia"| q7_region_multiple.easia==1, 1, 0),
+         casia=ifelse(q7_region_one=="casia"| q7_region_multiple.casia==1, 1, 0),
+         swasiamiddleeast=ifelse(q7_region_one=="swasiamiddleeast"| q7_region_multiple.swasiamiddleeast==1, 1, 0),
+         caucasuseurope=ifelse(q7_region_one=="caucasuseurope"| q7_region_multiple.caucasuseurope==1, 1, 0),
+         weurope=ifelse(q7_region_one=="weurope"| q7_region_multiple.weurope==1, 1, 0),
+         eafrica=ifelse(q7_region_one=="eafrica"| q7_region_multiple.eafrica==1, 1, 0),
+         wafrica=ifelse(q7_region_one=="wafrica"| q7_region_multiple.wafrica==1, 1, 0),
+         safrica=ifelse(q7_region_one=="safrica"| q7_region_multiple.safrica==1, 1, 0),
+         cafrica=ifelse(q7_region_one=="cafrica"| q7_region_multiple.cafrica==1, 1, 0),
+         nafrica=ifelse(q7_region_one=="nafrica"| q7_region_multiple.nafrica==1, 1, 0)) %>% 
+  #agrupo según pedido
+  mutate(region_1= case_when(samerica==1 | camerica==1 | caribbean==1 ~1,
+                             TRUE ~ 0)) %>% 
+  mutate(region_2=case_when(namerica==1 | weurope==1 ~1,
+                            TRUE ~ 0)) %>%
+  mutate(region_3=case_when(caucasuseurope==1 ~1,
+                             TRUE ~ 0)) %>%
+  mutate(region_4=case_when(cafrica==1 | eafrica==1 | wafrica==1 | safrica==1 ~1,
+                            TRUE ~ 0)) %>%
+  mutate(region_5=case_when(sasia==1 | seasia==1 | easia==1 | pacific==1 ~1,
+                            TRUE ~ 0)) %>%
+  mutate(region_6=case_when(casia==1 ~ 1,
+                           TRUE ~ 0)) %>%
+  mutate(region_7=case_when(swasiamiddleeast==1 | nafrica==1 ~1,
+                            TRUE ~ 0))
+
+

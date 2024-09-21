@@ -450,6 +450,33 @@ addWorksheet(q13, sheetName = "q13_q6")
 writeData(q13, sheet = "q13_q6", x = q13_q6)
 saveWorkbook(q13, archivo, overwrite = TRUE)
 
+
+#####
+
+
+#cruce por región: q7
+
+q13_region<-base %>% 
+  filter(!is.na(q13_ext_funding)) %>% 
+  group_by(q13_ext_funding) %>% 
+  summarise(Total= n(),
+            "1. Latin America & the Caribbean"=sum(region_1==1),
+            "2. Western Europe & North America"=sum(region_2==1),
+            "3. Eastern, Southeast and Central Europe"=sum(region_3==1),
+            "4. Africa"= sum(region_4==1),
+            "5. Asia & the Pacific"=sum(region_5==1),
+            "6. Central Asia & Caucasus"=sum(region_6==1),
+            "7. South West Asia/Middle East & North Africa"=sum(region_7==1))
+
+
+
+q13 <- loadWorkbook(archivo)
+addWorksheet(q13, sheetName = "q13_region")
+writeData(q13, sheet = "q13_region", x = q13_region)
+saveWorkbook(q13, archivo, overwrite = TRUE)
+
+
+
 #####
 
 #CRUCE POR q9
@@ -673,6 +700,100 @@ addWorksheet(q14, sheetName = "q14_q4agrup")
 writeData(q14, sheet = "q14_q4agrup", x = q14_table)
 saveWorkbook(q14, archivo, overwrite = TRUE)
 
+####
+
+
+#cruce por q4
+
+
+q14_2023_q4 <- base %>%
+  filter(q13_ext_funding == "yes") %>%
+  mutate(q14_funding_annual_budget_2023=case_when(
+    q14_funding_annual_budget_2023=="0" ~ "0 Zero",
+    q14_funding_annual_budget_2023=="10" | q14_funding_annual_budget_2023=="20"  ~ "1 Lower than 30%",
+    q14_funding_annual_budget_2023=="30" | q14_funding_annual_budget_2023=="40" ~ "2 Between 30% and 40%",
+    q14_funding_annual_budget_2023=="50" | q14_funding_annual_budget_2023=="60" ~ "3 Between 50% and 60%",
+    q14_funding_annual_budget_2023=="70" | q14_funding_annual_budget_2023=="80" ~ "4 Between 70% and 80%",
+    q14_funding_annual_budget_2023=="90" | q14_funding_annual_budget_2023=="100"~ "5 Higher than 80%",
+    TRUE ~ NA)) %>% 
+  group_by(q14_funding_annual_budget_2023) %>% 
+  summarise(Total = n(),
+            LGTBIQ= sum(q4_awid_LGBTIQ==1),
+            Young= sum(q4_awid_young==1),
+            Sex_workers=sum(q4_awid_sex==1),
+            Anti_caste=sum(q4_awid_anticaste==1),
+            Climate=sum(q4_awid_climate==1),
+            Countering_anti=sum(q4_awid_antigender==1),
+            Harm_reduction=sum(q4_awid_resisting==1),
+            Disability_rights=sum(q4_awid_disability==1)) %>% 
+  rename("q14"=1) %>% 
+  mutate(Year=2023)
+
+
+q14_2022_q4 <- base %>%
+  filter(q13_ext_funding == "yes" & q9_year_formation<2023) %>%
+  mutate(q14_funding_annual_budget_2022=case_when(
+    q14_funding_annual_budget_2022=="0" ~ "0 Zero",
+    q14_funding_annual_budget_2022=="10" | q14_funding_annual_budget_2022=="20"  ~ "1 Lower than 30%",
+    q14_funding_annual_budget_2022=="30" | q14_funding_annual_budget_2022=="40" ~ "2 Between 30% and 40%",
+    q14_funding_annual_budget_2022=="50" | q14_funding_annual_budget_2022=="60" ~ "3 Between 50% and 60%",
+    q14_funding_annual_budget_2022=="70" | q14_funding_annual_budget_2022=="80" ~ "4 Between 70% and 80%",
+    q14_funding_annual_budget_2022=="90" | q14_funding_annual_budget_2022=="100"~ "5 Higher than 80%",
+    TRUE ~ NA)) %>% 
+  group_by(q14_funding_annual_budget_2022) %>% 
+  summarise(Total = n(),
+            LGTBIQ= sum(q4_awid_LGBTIQ==1),
+            Young= sum(q4_awid_young==1),
+            Sex_workers=sum(q4_awid_sex==1),
+            Anti_caste=sum(q4_awid_anticaste==1),
+            Climate=sum(q4_awid_climate==1),
+            Countering_anti=sum(q4_awid_antigender==1),
+            Harm_reduction=sum(q4_awid_resisting==1),
+            Disability_rights=sum(q4_awid_disability==1)) %>% 
+  rename("q14"=1) %>% 
+  mutate(Year=2022)
+
+
+
+q14_2021_q4 <- base %>%
+  filter(q13_ext_funding == "yes" & q9_year_formation<2022) %>%
+  mutate(q14_funding_annual_budget_2021=case_when(
+    q14_funding_annual_budget_2021=="0" ~ "0 Zero",
+    q14_funding_annual_budget_2021=="10" | q14_funding_annual_budget_2021=="20"  ~ "1 Lower than 30%",
+    q14_funding_annual_budget_2021=="30" | q14_funding_annual_budget_2021=="40" ~ "2 Between 30% and 40%",
+    q14_funding_annual_budget_2021=="50" | q14_funding_annual_budget_2021=="60" ~ "3 Between 50% and 60%",
+    q14_funding_annual_budget_2021=="70" | q14_funding_annual_budget_2021=="80" ~ "4 Between 70% and 80%",
+    q14_funding_annual_budget_2021=="90" | q14_funding_annual_budget_2021=="100"~ "5 Higher than 80%",
+    TRUE ~ NA)) %>% 
+  group_by(q14_funding_annual_budget_2021) %>% 
+  summarise(Total = n(),
+            LGTBIQ= sum(q4_awid_LGBTIQ==1),
+            Young= sum(q4_awid_young==1),
+            Sex_workers=sum(q4_awid_sex==1),
+            Anti_caste=sum(q4_awid_anticaste==1),
+            Climate=sum(q4_awid_climate==1),
+            Countering_anti=sum(q4_awid_antigender==1),
+            Harm_reduction=sum(q4_awid_resisting==1),
+            Disability_rights=sum(q4_awid_disability==1)) %>% 
+  rename("q14"=1) %>% 
+  mutate(Year=2021)
+
+q14_unificada<-bind_rows(q14_2021_q4, q14_2022_q4, q14_2023_q4)
+
+
+
+q14 <- loadWorkbook(archivo)
+addWorksheet(q14, sheetName = "q14_q4")
+# Escribir las tablas en la misma hoja
+writeData(q14, "q14_q4", "Table for 2021", startRow = 1, startCol = 1)
+writeData(q14, "q14_q4", q14_2021_q4, startRow = 2, startCol = 1, withFilter = TRUE)
+# Agregar un espacio entre tablas
+writeData(q14, "q14_q4", "Table for 2022", startRow = nrow(q14_2021_q4) + 4, startCol = 1)
+writeData(q14, "q14_q4", q14_2022_q4, startRow = nrow(q14_2021_q4) + 5, startCol = 1, withFilter = TRUE)
+# Agregar otro espacio
+writeData(q14, "q14_q4", "Table for 2023", startRow = nrow(q14_2021_q4) + nrow(q14_2022_q4) + 8, startCol = 1)
+writeData(q14, "q14_q4", q14_2023_q4, startRow = nrow(q14_2021_q4) + nrow(q14_2022_q4) + 9, startCol = 1, withFilter = TRUE)
+saveWorkbook(q14, archivo, overwrite = TRUE)
 
 
 ###
@@ -724,6 +845,8 @@ q14_2021_q5 <- base %>%
   summarise(n = n(), .groups = 'drop') %>% 
   rename("q14"=1) %>% 
   mutate(Year = 2021)
+
+
 
 
 # Unir los dataframes
@@ -2670,6 +2793,34 @@ saveWorkbook(q25, archivo, overwrite = TRUE)
 
 #####
 
+
+#cruce por región: q7
+
+q25_region<-base %>% 
+  filter(!is.na(q25_counter_anti)) %>% 
+  group_by(q25_counter_anti) %>% 
+  summarise(Total= n(),
+            "1. Latin America & the Caribbean"=sum(region_1==1),
+            "2. Western Europe & North America"=sum(region_2==1),
+            "3. Eastern, Southeast and Central Europe"=sum(region_3==1),
+            "4. Africa"= sum(region_4==1),
+            "5. Asia & the Pacific"=sum(region_5==1),
+            "6. Central Asia & Caucasus"=sum(region_6==1),
+            "7. South West Asia/Middle East & North Africa"=sum(region_7==1))
+
+
+
+q25 <- loadWorkbook(archivo)
+addWorksheet(q25, sheetName = "q25_region")
+writeData(q25, sheet = "q25_region", x = q25_region)
+saveWorkbook(q25, archivo, overwrite = TRUE)
+
+####
+
+
+
+#####
+
 #CRUCE POR q9
 
 q25_q9 <- base %>% 
@@ -3057,6 +3208,8 @@ saveWorkbook(q28, archivo, overwrite = TRUE)
 
 ###
 
+
+
 #Cruce por q9
 
 q28_q9<-base %>% 
@@ -3290,7 +3443,30 @@ q30 <- loadWorkbook(archivo)
 addWorksheet(q30, sheetName = "q30_q6")
 writeData(q30, sheet = "q30_q6", x = q30_q6)
 saveWorkbook(q30, archivo, overwrite = TRUE)
+###
 
+
+#cruce por región: q7
+
+q30_region<-base %>% 
+  filter(!is.na(q30_shift_priorities)) %>% 
+  group_by(q30_shift_priorities) %>% 
+  summarise(Total= n(),
+            "1. Latin America & the Caribbean"=sum(region_1==1),
+            "2. Western Europe & North America"=sum(region_2==1),
+            "3. Eastern, Southeast and Central Europe"=sum(region_3==1),
+            "4. Africa"= sum(region_4==1),
+            "5. Asia & the Pacific"=sum(region_5==1),
+            "6. Central Asia & Caucasus"=sum(region_6==1),
+            "7. South West Asia/Middle East & North Africa"=sum(region_7==1))
+  
+
+
+q30 <- loadWorkbook(archivo)
+addWorksheet(q30, sheetName = "q30_region")
+writeData(q30, sheet = "q30_region", x = q30_region)
+saveWorkbook(q30, archivo, overwrite = TRUE)
+  
 #####
 
 #CRUCE POR q9
