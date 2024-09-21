@@ -20,7 +20,7 @@ rm(list = ls())
 
 witm <- read.csv("Data/WITM_final_cleaned_08_sept.csv")
 
-source(file="WITM_variables_v2.R") 
+source(file="WITM_variables_v3.R") 
 
 
 
@@ -142,18 +142,17 @@ saveWorkbook(q10, archivo, overwrite = TRUE)
 
 ###
 
+
+#cruce por q4
+
+
+####
+
 #cruce por q5 registrados
 
 
 # Crear q10_2021_q5
-q10_2021_q5 <- base %>% 
-  mutate(q5 = case_when(
-    q5_registered == "n_registered" ~ "No",
-    q5_registered == "y_registered" ~ "Yes",
-    q5_registered == "98" ~ "Other",
-    is.na(q5_registered) ~ "No information",
-    TRUE ~ NA_character_
-  )) %>% 
+q10_2021_q5 <- base %>%
   filter(q9_year_formation < 2022) %>% 
   group_by(q10_budget_grp_2021, q5) %>% 
   summarise(n = n(), .groups = 'drop') %>% 
@@ -162,13 +161,6 @@ q10_2021_q5 <- base %>%
 
 # Crear q10_2022_q5
 q10_2022_q5 <- base %>% 
-  mutate(q5 = case_when(
-    q5_registered == "n_registered" ~ "No",
-    q5_registered == "y_registered" ~ "Yes",
-    q5_registered == "98" ~ "Other",
-    is.na(q5_registered) ~ "No information",
-    TRUE ~ NA_character_
-  )) %>% 
   filter(q9_year_formation < 2023) %>% 
   group_by(q10_budget_grp_2022, q5) %>% 
   summarise(n = n(), .groups = 'drop') %>% 
@@ -177,13 +169,6 @@ q10_2022_q5 <- base %>%
 
 # Crear q10_2023_q5
 q10_2023_q5 <- base %>% 
-  mutate(q5 = case_when(
-    q5_registered == "n_registered" ~ "No",
-    q5_registered == "y_registered" ~ "Yes",
-    q5_registered == "98" ~ "Other",
-    is.na(q5_registered) ~ "No information",
-    TRUE ~ NA_character_
-  )) %>% 
   filter(!is.na(q10_budget_year_2023)) %>% 
   group_by(q10_budget_grp_2023, q5) %>% 
   summarise(n = n(), .groups = 'drop') %>% 
@@ -234,16 +219,6 @@ saveWorkbook(q10, archivo, overwrite = TRUE)
 
 # Crear q10_2021_q6
 q10_2021_q6 <- base %>% 
-  mutate(q6 = case_when(
-    q6_geo_scope=="globally_focused" ~ "Global",
-    q6_geo_scope=="transnationally_focused" ~ "Transnational",
-    q6_geo_scope=="regionally_focused" ~ "Regional",
-    q6_geo_scope=="diaspora_and_or_exile" ~ "Diaspora or exile",
-    q6_geo_scope=="nationally_focused" ~ "National",
-    q6_geo_scope=="locally_focused" ~ "Local",
-    is.na(q6_geo_scope) ~ "No information",
-    TRUE ~ NA_character_
-  )) %>% 
   filter(q9_year_formation < 2022) %>% 
   group_by(q10_budget_grp_2021, q6) %>% 
   summarise(n = n(), .groups = 'drop') %>% 
@@ -252,16 +227,6 @@ q10_2021_q6 <- base %>%
 
 # Crear q10_2022_q6
 q10_2022_q6 <- base %>% 
-  mutate(q6 = case_when(
-    q6_geo_scope=="globally_focused" ~ "Global",
-    q6_geo_scope=="transnationally_focused" ~ "Transnational",
-    q6_geo_scope=="regionally_focused" ~ "Regional",
-    q6_geo_scope=="diaspora_and_or_exile" ~ "Diaspora or exile",
-    q6_geo_scope=="nationally_focused" ~ "National",
-    q6_geo_scope=="locally_focused" ~ "Local",
-    is.na(q6_geo_scope) ~ "No information",
-    TRUE ~ NA_character_
-  )) %>% 
   filter(q9_year_formation < 2023) %>% 
   group_by(q10_budget_grp_2022, q6) %>% 
   summarise(n = n(), .groups = 'drop') %>% 
@@ -270,16 +235,6 @@ q10_2022_q6 <- base %>%
 
 # Crear q10_2023_q6
 q10_2023_q6 <- base %>% 
-  mutate(q6 = case_when(
-    q6_geo_scope=="globally_focused" ~ "Global",
-    q6_geo_scope=="transnationally_focused" ~ "Transnational",
-    q6_geo_scope=="regionally_focused" ~ "Regional",
-    q6_geo_scope=="diaspora_and_or_exile" ~ "Diaspora or exile",
-    q6_geo_scope=="nationally_focused" ~ "National",
-    q6_geo_scope=="locally_focused" ~ "Local",
-    is.na(q6_geo_scope) ~ "No information",
-    TRUE ~ NA_character_
-  )) %>% 
   filter(!is.na(q10_budget_year_2023)) %>%
   group_by(q10_budget_grp_2023, q6) %>% 
   summarise(n = n(), .groups = 'drop') %>% 
@@ -412,7 +367,6 @@ write.xlsx(q13, file = archivo, sheetName="q13")
 # Crear q13_q4agrup
 q13_q4agrup <- base %>%
   mutate(q4_awid_focus=recode(q4_awid_focus,"1"="Specific AWID subjects","0"="Other subjects")) %>% 
-  filter(q9_year_formation < 2022) %>% 
   filter(!is.na(q13_ext_funding)) %>% 
   group_by(q13_ext_funding, q4_awid_focus) %>% 
   summarise(n = n(), .groups = 'drop') %>% 
@@ -429,19 +383,36 @@ writeData(q13, sheet = "q13_q4agrup", x = q13_q4agrup)
 saveWorkbook(q13, archivo, overwrite = TRUE)
 
 
+#cruce por q4
+
+
+q13_q4 <- base %>%
+  filter( !is.na(q13_ext_funding) & !is.na(q4_forms_organizing)) %>%
+  group_by(q13_ext_funding ) %>% 
+  summarise(Total = n(),
+            LGTBIQ= sum(q4_awid_LGBTIQ==1),
+            Young= sum(q4_awid_young==1),
+            Sex_workers=sum(q4_awid_sex==1),
+            Anti_caste=sum(q4_awid_anticaste==1),
+            Climate=sum(q4_awid_climate==1),
+            Countering_anti=sum(q4_awid_antigender==1),
+            Harm_reduction=sum(q4_awid_resisting==1),
+            Disability_rights=sum(q4_awid_disability==1))  
+
+
+q13 <- loadWorkbook(archivo)
+addWorksheet(q13, sheetName = "q13_q4")
+writeData(q13, sheet = "q13_q4", x = q13_q4)
+saveWorkbook(q13, archivo, overwrite = TRUE)
+
+
+
 ## CRUCE POR Q5
 
 
 
 # Crear q13_q5
 q13_q5 <- base %>% 
-  mutate(q5 = case_when(
-    q5_registered == "n_registered" ~ "No",
-    q5_registered == "y_registered" ~ "Yes",
-    q5_registered == "98" ~ "Other",
-    is.na(q5_registered) ~ "No information",
-    TRUE ~ NA_character_
-  )) %>% 
   filter(!is.na(q13_ext_funding)) %>% 
   group_by(q13_ext_funding, q5) %>% 
   summarise(n = n(), .groups = 'drop') %>% 
@@ -465,16 +436,6 @@ saveWorkbook(q13, archivo, overwrite = TRUE)
 #CRUCE POR Q6
 
 q13_q6 <- base %>% 
-  mutate(q6 = case_when(
-    q6_geo_scope=="globally_focused" ~ "Global",
-    q6_geo_scope=="transnationally_focused" ~ "Transnational",
-    q6_geo_scope=="regionally_focused" ~ "Regional",
-    q6_geo_scope=="diaspora_and_or_exile" ~ "Diaspora or exile",
-    q6_geo_scope=="nationally_focused" ~ "National",
-    q6_geo_scope=="locally_focused" ~ "Local",
-    is.na(q6_geo_scope) ~ "No information",
-    TRUE ~ NA_character_
-  )) %>% 
   filter(!is.na(q13_ext_funding)) %>% 
   group_by(q13_ext_funding, q6) %>% 
   summarise(n = n(), .groups = 'drop') %>% 
@@ -728,13 +689,6 @@ q14_2023_q5 <- base %>%
     q14_funding_annual_budget_2023=="70" | q14_funding_annual_budget_2023=="80" ~ "4 Between 70% and 80%",
     q14_funding_annual_budget_2023=="90" | q14_funding_annual_budget_2023=="100"~ "5 Higher than 80%",
     TRUE ~ NA)) %>% 
-  mutate(q5 = case_when(
-    q5_registered == "n_registered" ~ "No",
-    q5_registered == "y_registered" ~ "Yes",
-    q5_registered == "98" ~ "Other",
-    is.na(q5_registered) ~ "No information",
-    TRUE ~ NA_character_
-  )) %>%
   group_by(q14_funding_annual_budget_2023, q5) %>% 
   summarise(n = n(), .groups = 'drop') %>% 
   rename("q14"=1) %>% 
@@ -750,13 +704,6 @@ q14_2022_q5 <- base %>%
     q14_funding_annual_budget_2022=="70" | q14_funding_annual_budget_2022=="80" ~ "4 Between 70% and 80%",
     q14_funding_annual_budget_2022=="90" | q14_funding_annual_budget_2022=="100"~ "5 Higher than 80%",
     TRUE ~ NA)) %>% 
-  mutate(q5 = case_when(
-    q5_registered == "n_registered" ~ "No",
-    q5_registered == "y_registered" ~ "Yes",
-    q5_registered == "98" ~ "Other",
-    is.na(q5_registered) ~ "No information",
-    TRUE ~ NA_character_
-  )) %>%
   group_by(q14_funding_annual_budget_2022, q5) %>% 
   summarise(n = n(), .groups = 'drop') %>% 
   rename("q14"=1) %>% 
@@ -773,13 +720,6 @@ q14_2021_q5 <- base %>%
     q14_funding_annual_budget_2021=="70" | q14_funding_annual_budget_2021=="80" ~ "4 Between 70% and 80%",
     q14_funding_annual_budget_2021=="90" | q14_funding_annual_budget_2021=="100"~ "5 Higher than 80%",
     TRUE ~ NA)) %>% 
-  mutate(q5 = case_when(
-    q5_registered == "n_registered" ~ "No",
-    q5_registered == "y_registered" ~ "Yes",
-    q5_registered == "98" ~ "Other",
-    is.na(q5_registered) ~ "No information",
-    TRUE ~ NA_character_
-  )) %>%
   group_by(q14_funding_annual_budget_2021, q5) %>% 
   summarise(n = n(), .groups = 'drop') %>% 
   rename("q14"=1) %>% 
@@ -823,16 +763,6 @@ q14_2023_q6 <- base %>%
     q14_funding_annual_budget_2023=="70" | q14_funding_annual_budget_2023=="80" ~ "4 Between 70% and 80%",
     q14_funding_annual_budget_2023=="90" | q14_funding_annual_budget_2023=="100"~ "5 Higher than 80%",
     TRUE ~ NA)) %>% 
-  mutate(q6 = case_when(
-    q6_geo_scope=="globally_focused" ~ "Global",
-    q6_geo_scope=="transnationally_focused" ~ "Transnational",
-    q6_geo_scope=="regionally_focused" ~ "Regional",
-    q6_geo_scope=="diaspora_and_or_exile" ~ "Diaspora or exile",
-    q6_geo_scope=="nationally_focused" ~ "National",
-    q6_geo_scope=="locally_focused" ~ "Local",
-    is.na(q6_geo_scope) ~ "No information",
-    TRUE ~ NA_character_
-  )) %>% 
   group_by(q14_funding_annual_budget_2023, q6) %>% 
   summarise(n = n(), .groups = 'drop') %>% 
   rename("q14"=1) %>% 
@@ -848,16 +778,6 @@ q14_2022_q6 <- base %>%
     q14_funding_annual_budget_2022=="70" | q14_funding_annual_budget_2022=="80" ~ "4 Between 70% and 80%",
     q14_funding_annual_budget_2022=="90" | q14_funding_annual_budget_2022=="100"~ "5 Higher than 80%",
     TRUE ~ NA)) %>% 
-  mutate(q6 = case_when(
-    q6_geo_scope=="globally_focused" ~ "Global",
-    q6_geo_scope=="transnationally_focused" ~ "Transnational",
-    q6_geo_scope=="regionally_focused" ~ "Regional",
-    q6_geo_scope=="diaspora_and_or_exile" ~ "Diaspora or exile",
-    q6_geo_scope=="nationally_focused" ~ "National",
-    q6_geo_scope=="locally_focused" ~ "Local",
-    is.na(q6_geo_scope) ~ "No information",
-    TRUE ~ NA_character_
-  )) %>% 
   group_by(q14_funding_annual_budget_2022, q6) %>% 
   summarise(n = n(), .groups = 'drop') %>% 
   rename("q14"=1) %>% 
@@ -874,16 +794,6 @@ q14_2021_q6 <- base %>%
     q14_funding_annual_budget_2021=="70" | q14_funding_annual_budget_2021=="80" ~ "4 Between 70% and 80%",
     q14_funding_annual_budget_2021=="90" | q14_funding_annual_budget_2021=="100"~ "5 Higher than 80%",
     TRUE ~ NA)) %>% 
-  mutate(q6 = case_when(
-    q6_geo_scope=="globally_focused" ~ "Global",
-    q6_geo_scope=="transnationally_focused" ~ "Transnational",
-    q6_geo_scope=="regionally_focused" ~ "Regional",
-    q6_geo_scope=="diaspora_and_or_exile" ~ "Diaspora or exile",
-    q6_geo_scope=="nationally_focused" ~ "National",
-    q6_geo_scope=="locally_focused" ~ "Local",
-    is.na(q6_geo_scope) ~ "No information",
-    TRUE ~ NA_character_
-  )) %>% 
   group_by(q14_funding_annual_budget_2021, q6) %>% 
   summarise(n = n(), .groups = 'drop') %>% 
   rename("q14"=1) %>% 
@@ -1119,13 +1029,6 @@ saveWorkbook(q15, archivo, overwrite = TRUE)
 
 
 q15_q5 <- base %>%
-  mutate(q5 = case_when(
-    q5_registered == "n_registered" ~ "No",
-    q5_registered == "y_registered" ~ "Yes",
-    q5_registered == "98" ~ "Other",
-    is.na(q5_registered) ~ "No information",
-    TRUE ~ NA_character_
-  )) %>% 
   filter( !is.na(q15_key_sources)) %>%
   group_by(q5) %>% 
   summarise(Total = n(),
@@ -1151,16 +1054,6 @@ saveWorkbook(q15, archivo, overwrite = TRUE)
 
 
 q15_q6 <- base %>% 
-  mutate(q6 = case_when(
-    q6_geo_scope=="globally_focused" ~ "Global",
-    q6_geo_scope=="transnationally_focused" ~ "Transnational",
-    q6_geo_scope=="regionally_focused" ~ "Regional",
-    q6_geo_scope=="diaspora_and_or_exile" ~ "Diaspora or exile",
-    q6_geo_scope=="nationally_focused" ~ "National",
-    q6_geo_scope=="locally_focused" ~ "Local",
-    is.na(q6_geo_scope) ~ "No information",
-    TRUE ~ NA_character_
-  )) %>% 
   filter( !is.na(q15_key_sources)) %>%
   group_by(q6) %>% 
   summarise(Total = n(),
@@ -1228,7 +1121,7 @@ q10_2021_q15 <- base %>%
   rename(Annual_budget = q10_budget_grp_2021) %>% 
   mutate(Year = 2021)
 
-# Crear q10_2022_q13
+# Crear q10_2022_q15
 q10_2022_q15 <- base %>% 
   filter(q9_year_formation < 2023 & !is.na(q15_key_sources)) %>% 
   group_by(q10_budget_grp_2022) %>% 
@@ -1245,7 +1138,7 @@ q10_2022_q15 <- base %>%
   rename(Annual_budget = q10_budget_grp_2022) %>% 
   mutate(Year = 2022)
 
-# Crear q10_2023_q13
+# Crear q10_2023_q15
 q10_2023_q15 <- base %>% 
   filter(!is.na(q10_budget_year_2023) & !is.na(q15_key_sources)) %>%
   group_by(q10_budget_grp_2023) %>% 
@@ -1650,12 +1543,6 @@ saveWorkbook(q18, archivo, overwrite = TRUE)
 #cruce por q5
 
 q18_q5 <- base %>%
-    mutate(q5 = case_when(
-      q5_registered == "n_registered" ~ "No",
-      q5_registered == "y_registered" ~ "Yes",
-      q5_registered == "98" ~ "Other",
-      is.na(q5_registered) ~ "No information",
-      TRUE ~ NA_character_)) %>% 
   filter(!is.na(q18_new_funders)) %>%
   group_by(q5) %>% 
   summarise(
@@ -1683,16 +1570,6 @@ saveWorkbook(q18, archivo, overwrite = TRUE)
 
 
 q18_q6 <- base %>%
-  mutate(q6 = case_when(
-    q6_geo_scope=="globally_focused" ~ "Global",
-    q6_geo_scope=="transnationally_focused" ~ "Transnational",
-    q6_geo_scope=="regionally_focused" ~ "Regional",
-    q6_geo_scope=="diaspora_and_or_exile" ~ "Diaspora or exile",
-    q6_geo_scope=="nationally_focused" ~ "National",
-    q6_geo_scope=="locally_focused" ~ "Local",
-    is.na(q6_geo_scope) ~ "No information",
-    TRUE ~ NA_character_
-  )) %>% 
   filter(!is.na(q18_new_funders)) %>%
   group_by(q6) %>% 
   summarise(
@@ -1914,12 +1791,6 @@ saveWorkbook(q19, archivo, overwrite = TRUE)
 
 
 q19_q5 <-base %>%
-  mutate(q5 = case_when(
-    q5_registered == "n_registered" ~ "No",
-    q5_registered == "y_registered" ~ "Yes",
-    q5_registered == "98" ~ "Other",
-    is.na(q5_registered) ~ "No information",
-    TRUE ~ NA_character_)) %>% 
   filter(!is.na(q19_lose_funding)) %>% 
   group_by(q5) %>% 
   summarise(Total= round(n(),0),
@@ -1947,16 +1818,6 @@ saveWorkbook(q19, archivo, overwrite = TRUE)
 
 
 q19_q6 <-base %>% 
-  mutate(q6 = case_when(
-    q6_geo_scope=="globally_focused" ~ "Global",
-    q6_geo_scope=="transnationally_focused" ~ "Transnational",
-    q6_geo_scope=="regionally_focused" ~ "Regional",
-    q6_geo_scope=="diaspora_and_or_exile" ~ "Diaspora or exile",
-    q6_geo_scope=="nationally_focused" ~ "National",
-    q6_geo_scope=="locally_focused" ~ "Local",
-    is.na(q6_geo_scope) ~ "No information",
-    TRUE ~ NA_character_
-  )) %>% 
   filter(!is.na(q19_lose_funding)) %>% 
   group_by(q6) %>% 
   summarise(Total= round(n(),0),
@@ -2256,9 +2117,6 @@ write.xlsx(q25, file = archivo, sheetName="q25")
 
 #Cruce por q4
 
-
-
-# Crear q25_q4agrup
 q25_q4agrup <- base %>% 
   mutate(q4_awid_focus=recode(q4_awid_focus,"1"="Specific AWID subjects","0"="Other subjects")) %>% 
   filter(!is.na(q25_counter_anti)) %>% 
@@ -2277,6 +2135,27 @@ writeData(q25, sheet = "q25_q4agrup", x = q25_q4agrup)
 saveWorkbook(q25, archivo, overwrite = TRUE)
 
 
+#cruce por q4
+
+
+q25_q4 <- base %>%
+  filter( !is.na(q25_counter_anti) & !is.na(q4_forms_organizing)) %>%
+  group_by(q25_counter_anti ) %>% 
+  summarise(Total = n(),
+            LGTBIQ= sum(q4_awid_LGBTIQ==1),
+            Young= sum(q4_awid_young==1),
+            Sex_workers=sum(q4_awid_sex==1),
+            Anti_caste=sum(q4_awid_anticaste==1),
+            Climate=sum(q4_awid_climate==1),
+            Countering_anti=sum(q4_awid_antigender==1),
+            Harm_reduction=sum(q4_awid_resisting==1),
+            Disability_rights=sum(q4_awid_disability==1))  
+
+
+q25 <- loadWorkbook(archivo)
+addWorksheet(q25, sheetName = "q25_q4")
+writeData(q25, sheet = "q25_q4", x = q25_q4)
+saveWorkbook(q25, archivo, overwrite = TRUE)
 
   
   
@@ -2286,13 +2165,6 @@ saveWorkbook(q25, archivo, overwrite = TRUE)
 
 # Crear q25_q5
 q25_q5 <- base %>% 
-  mutate(q5 = case_when(
-    q5_registered == "n_registered" ~ "No",
-    q5_registered == "y_registered" ~ "Yes",
-    q5_registered == "98" ~ "Other",
-    is.na(q5_registered) ~ "No information",
-    TRUE ~ NA_character_
-  )) %>% 
   filter(!is.na(q25_counter_anti)) %>% 
   group_by(q25_counter_anti, q5) %>% 
   summarise(n = n(), .groups = 'drop') %>% 
@@ -2315,16 +2187,6 @@ saveWorkbook(q25, archivo, overwrite = TRUE)
 #CRUCE POR q6
 
 q25_q6 <- base %>% 
-  mutate(q6 = case_when(
-    q6_geo_scope=="globally_focused" ~ "Global",
-    q6_geo_scope=="transnationally_focused" ~ "Transnational",
-    q6_geo_scope=="regionally_focused" ~ "Regional",
-    q6_geo_scope=="diaspora_and_or_exile" ~ "Diaspora or exile",
-    q6_geo_scope=="nationally_focused" ~ "National",
-    q6_geo_scope=="locally_focused" ~ "Local",
-    is.na(q6_geo_scope) ~ "No information",
-    TRUE ~ NA_character_
-  )) %>% 
   filter(!is.na(q25_counter_anti)) %>% 
   group_by(q25_counter_anti, q6) %>% 
   summarise(n = n(), .groups = 'drop') %>% 
@@ -2491,13 +2353,6 @@ saveWorkbook(q28, archivo, overwrite = TRUE)
 #Cruce por q5
 
 q28_q5<-base %>%
-  mutate(q5 = case_when(
-    q5_registered == "n_registered" ~ "No",
-    q5_registered == "y_registered" ~ "Yes",
-    q5_registered == "98" ~ "Other",
-    is.na(q5_registered) ~ "No information",
-    TRUE ~ NA_character_
-  )) %>% 
   filter(!is.na(q28_autonomous_resourcing)) %>%
   group_by(q5) %>% 
   summarise(Total= round(n(),0),
@@ -2524,16 +2379,6 @@ saveWorkbook(q28, archivo, overwrite = TRUE)
 #Cruce por q6
 
 q28_q6<-base %>%
-  mutate(q6 = case_when(
-    q6_geo_scope=="globally_focused" ~ "Global",
-    q6_geo_scope=="transnationally_focused" ~ "Transnational",
-    q6_geo_scope=="regionally_focused" ~ "Regional",
-    q6_geo_scope=="diaspora_and_or_exile" ~ "Diaspora or exile",
-    q6_geo_scope=="nationally_focused" ~ "National",
-    q6_geo_scope=="locally_focused" ~ "Local",
-    is.na(q6_geo_scope) ~ "No information",
-    TRUE ~ NA_character_
-  )) %>% 
   filter(!is.na(q28_autonomous_resourcing)) %>%
   group_by(q6) %>% 
   summarise(Total= round(n(),0),
@@ -2720,24 +2565,40 @@ q30_q4agrup <- q30_q4agrup %>%
 
 
 q30 <- loadWorkbook(archivo)
-addWorksheet(q30, sheetName = "q30_q4agrup")
+addWorksheet(q30, sheetName = "q30_q4agrup") 
 writeData(q30, sheet = "q30_q4agrup", x = q30_q4agrup)
 saveWorkbook(q30, archivo, overwrite = TRUE)
+
+
+
+#cruce por q4
+
+
+q30_q4 <- base %>%
+  filter( !is.na(q30_shift_priorities) & !is.na(q4_forms_organizing)) %>%
+  group_by(q30_shift_priorities) %>% 
+  summarise(Total = n(),
+            LGTBIQ= sum(q4_awid_LGBTIQ==1),
+            Young= sum(q4_awid_young==1),
+            Sex_workers=sum(q4_awid_sex==1),
+            Anti_caste=sum(q4_awid_anticaste==1),
+            Climate=sum(q4_awid_climate==1),
+            Countering_anti=sum(q4_awid_antigender==1),
+            Harm_reduction=sum(q4_awid_resisting==1),
+            Disability_rights=sum(q4_awid_disability==1))  
+
+
+q30 <- loadWorkbook(archivo)
+addWorksheet(q30, sheetName = "q30_q4")
+writeData(q30, sheet = "q30_q4", x = q30_q4)
+saveWorkbook(q30, archivo, overwrite = TRUE)
+
 
 
 #CRUCE POR q5
 
 
-
-# Crear q30_q5
 q30_q5 <- base %>% 
-  mutate(q5 = case_when(
-    q5_registered == "n_registered" ~ "No",
-    q5_registered == "y_registered" ~ "Yes",
-    q5_registered == "98" ~ "Other",
-    is.na(q5_registered) ~ "No information",
-    TRUE ~ NA_character_
-  )) %>% 
   filter(!is.na(q30_shift_priorities)) %>% 
   group_by(q30_shift_priorities, q5) %>% 
   summarise(n = n(), .groups = 'drop') %>% 
@@ -2760,16 +2621,6 @@ saveWorkbook(q30, archivo, overwrite = TRUE)
 #CRUCE POR q6
 
 q30_q6 <- base %>% 
-  mutate(q6 = case_when(
-    q6_geo_scope=="globally_focused" ~ "Global",
-    q6_geo_scope=="transnationally_focused" ~ "Transnational",
-    q6_geo_scope=="regionally_focused" ~ "Regional",
-    q6_geo_scope=="diaspora_and_or_exile" ~ "Diaspora or exile",
-    q6_geo_scope=="nationally_focused" ~ "National",
-    q6_geo_scope=="locally_focused" ~ "Local",
-    is.na(q6_geo_scope) ~ "No information",
-    TRUE ~ NA_character_
-  )) %>% 
   filter(!is.na(q30_shift_priorities)) %>% 
   group_by(q30_shift_priorities, q6) %>% 
   summarise(n = n(), .groups = 'drop') %>% 
