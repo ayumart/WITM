@@ -1883,6 +1883,32 @@ write.xlsx(q19, file = archivo, sheetName="q19")
 
 
 ###
+
+#Cruce por q4
+
+q19_q4agrup <-base %>%
+  mutate(q4_awid_focus=recode(q4_awid_focus,"1"="Specific AWID subjects","0"="Other subjects")) %>% 
+  filter(!is.na(q19_lose_funding)) %>% 
+  group_by(q4_awid_focus) %>% 
+  summarise(Total= round(n(),0),
+            No=sum(q19_lose_funding.no==1, na.rm=TRUE),
+            Multilateral = sum(q19_lose_funding.y_multilateral_funders == 1, na.rm = TRUE),
+            Bilateral = sum(q19_lose_funding.y_bilateral_funders == 1, na.rm = TRUE),
+            Philanthropic = sum(q19_lose_funding.y_philanthropic_foundations == 1, na.rm = TRUE),
+            Womens = sum(q19_lose_funding.y_womens_feminist_funds == 1, na.rm = TRUE),
+            Private = sum(q19_lose_funding.y_private_sector == 1, na.rm = TRUE),
+            Ingos = sum(q19_lose_funding.y_ingos == 1, na.rm = TRUE),
+            Individual = sum(q19_lose_funding.y_individual_donors == 1, na.rm = TRUE),
+            Goverments = sum(q19_lose_funding.y_national_goverment== 1, na.rm = TRUE),
+            Other = sum(q19_lose_funding.y_other == 1, na.rm = TRUE))
+
+
+
+q19 <- loadWorkbook(archivo)
+addWorksheet(q19, sheetName = "q19_q4agrup")
+writeData(q19, sheet = "q19_q4agrup", x = q19_q4agrup)
+saveWorkbook(q19, archivo, overwrite = TRUE)
+  
 #Cruce por la q5
 
 
@@ -2226,6 +2252,34 @@ write.xlsx(q25, file = archivo, sheetName="q25")
 
 ###
 
+
+
+#Cruce por q4
+
+
+
+# Crear q25_q4agrup
+q25_q4agrup <- base %>% 
+  mutate(q4_awid_focus=recode(q4_awid_focus,"1"="Specific AWID subjects","0"="Other subjects")) %>% 
+  filter(!is.na(q25_counter_anti)) %>% 
+  group_by(q25_counter_anti, q4_awid_focus) %>% 
+  summarise(n = n(), .groups = 'drop') %>% 
+  rename("Funding" = q25_counter_anti)
+
+q25_q4agrup <- q25_q4agrup %>%
+  pivot_wider(names_from = q4_awid_focus, values_from = n, values_fill = list(n = 0)) %>%
+  arrange(`Funding`)
+
+
+q25 <- loadWorkbook(archivo)
+addWorksheet(q25, sheetName = "q25_q4agrup")
+writeData(q25, sheet = "q25_q4agrup", x = q25_q4agrup)
+saveWorkbook(q25, archivo, overwrite = TRUE)
+
+
+
+  
+  
 #CRUCE POR q5
 
 
@@ -2406,6 +2460,33 @@ q28<-base %>%
 write.xlsx(q28, file = archivo, sheetName="q28")
 
 ###
+
+#Cruce por q4
+
+q28_q4agrup<-base %>%
+  mutate(q4_awid_focus=recode(q4_awid_focus,"1"="Specific AWID subjects","0"="Other subjects")) %>%
+  filter(!is.na(q28_autonomous_resourcing)) %>%
+  group_by(q4_awid_focus) %>% 
+  summarise(Total= round(n(),0),
+            None = sum(q28_autonomous_resourcing.none == 1, na.rm = TRUE),
+            Volunteering = sum(q28_autonomous_resourcing.volunteering == 1, na.rm = TRUE),
+            Membership_fees = sum(q28_autonomous_resourcing.membership_fees == 1, na.rm = TRUE),
+            Product_sales = sum(q28_autonomous_resourcing.product_sales == 1, na.rm = TRUE),
+            Service_sales = sum(q28_autonomous_resourcing.service_sales == 1, na.rm = TRUE),
+            Property_rent = sum(q28_autonomous_resourcing.property_rent_or_lease == 1, na.rm = TRUE),
+            Donations = sum(q28_autonomous_resourcing.donations == 1, na.rm = TRUE),
+            crowdfunding = sum(q28_autonomous_resourcing.crowdfunding== 1, na.rm = TRUE),
+            In_kind = sum(q28_autonomous_resourcing.in_kind_contributions== 1, na.rm = TRUE),
+            Mutual_aid = sum(q28_autonomous_resourcing.mutual_aid== 1, na.rm = TRUE),
+            Other = sum(q28_autonomous_resourcing.98== 1, na.rm = TRUE)) 
+
+
+q28<- loadWorkbook(archivo)
+addWorksheet(q28, sheetName = "q28_q4agrup")
+writeData(q28, sheet = "q28_q4agrup", x = q28_q4agrup)
+saveWorkbook(q28, archivo, overwrite = TRUE)
+
+
 
 #Cruce por q5
 
@@ -2623,6 +2704,26 @@ q30<-base %>%
 write.xlsx(q30, file = archivo, sheetName="q30")
 
 ###
+
+
+# Cuce por q4
+q30_q4agrup <- base %>% 
+  mutate(q4_awid_focus=recode(q4_awid_focus,"1"="Specific AWID subjects","0"="Other subjects")) %>%
+  filter(!is.na(q30_shift_priorities)) %>% 
+  group_by(q30_shift_priorities, q4_awid_focus) %>% 
+  summarise(n = n(), .groups = 'drop') %>% 
+  rename("Shift priorities" = q30_shift_priorities)
+
+q30_q4agrup <- q30_q4agrup %>%
+  pivot_wider(names_from = q4_awid_focus, values_from = n, values_fill = list(n = 0)) %>%
+  arrange(`Shift priorities`)
+
+
+q30 <- loadWorkbook(archivo)
+addWorksheet(q30, sheetName = "q30_q4agrup")
+writeData(q30, sheet = "q30_q4agrup", x = q30_q4agrup)
+saveWorkbook(q30, archivo, overwrite = TRUE)
+
 
 #CRUCE POR q5
 
