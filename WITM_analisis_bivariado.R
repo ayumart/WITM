@@ -941,6 +941,117 @@ saveWorkbook(q14, archivo, overwrite = TRUE)
 
 ######
 
+#cruce por región
+
+q30_region<-base %>% 
+  filter(!is.na(q30_shift_priorities)) %>% 
+  group_by(q30_shift_priorities) %>% 
+  summarise(Total= n(),
+            "1. Latin America & the Caribbean"=sum(region_1==1),
+            "2. Western Europe & North America"=sum(region_2==1),
+            "3. Eastern, Southeast and Central Europe"=sum(region_3==1),
+            "4. Africa"= sum(region_4==1),
+            "5. Asia & the Pacific"=sum(region_5==1),
+            "6. Central Asia & Caucasus"=sum(region_6==1),
+            "7. South West Asia/Middle East & North Africa"=sum(region_7==1))
+
+
+
+q30 <- loadWorkbook(archivo)
+addWorksheet(q30, sheetName = "q30_region")
+writeData(q30, sheet = "q30_region", x = q30_region)
+saveWorkbook(q30, archivo, overwrite = TRUE)
+
+
+q14_2023_region <- base %>%
+  filter(q13_ext_funding == "yes") %>%
+  mutate(q14_funding_annual_budget_2023=case_when(
+    q14_funding_annual_budget_2023=="0" ~ "0 Zero",
+    q14_funding_annual_budget_2023=="10" | q14_funding_annual_budget_2023=="20"  ~ "1 Lower than 30%",
+    q14_funding_annual_budget_2023=="30" | q14_funding_annual_budget_2023=="40" ~ "2 Between 30% and 40%",
+    q14_funding_annual_budget_2023=="50" | q14_funding_annual_budget_2023=="60" ~ "3 Between 50% and 60%",
+    q14_funding_annual_budget_2023=="70" | q14_funding_annual_budget_2023=="80" ~ "4 Between 70% and 80%",
+    q14_funding_annual_budget_2023=="90" | q14_funding_annual_budget_2023=="100"~ "5 Higher than 80%",
+    TRUE ~ NA)) %>% 
+  group_by(q14_funding_annual_budget_2023) %>% 
+  summarise(Total= n(),
+            "1. Latin America & the Caribbean"=sum(region_1==1),
+            "2. Western Europe & North America"=sum(region_2==1),
+            "3. Eastern, Southeast and Central Europe"=sum(region_3==1),
+            "4. Africa"= sum(region_4==1),
+            "5. Asia & the Pacific"=sum(region_5==1),
+            "6. Central Asia & Caucasus"=sum(region_6==1),
+            "7. South West Asia/Middle East & North Africa"=sum(region_7==1)) %>% 
+  rename("q14"=1) %>% 
+  mutate(Year=2023)
+
+
+q14_2022_region <- base %>%
+  filter(q13_ext_funding == "yes" & q9_year_formation<2023) %>%
+  mutate(q14_funding_annual_budget_2022=case_when(
+    q14_funding_annual_budget_2022=="0" ~ "0 Zero",
+    q14_funding_annual_budget_2022=="10" | q14_funding_annual_budget_2022=="20"  ~ "1 Lower than 30%",
+    q14_funding_annual_budget_2022=="30" | q14_funding_annual_budget_2022=="40" ~ "2 Between 30% and 40%",
+    q14_funding_annual_budget_2022=="50" | q14_funding_annual_budget_2022=="60" ~ "3 Between 50% and 60%",
+    q14_funding_annual_budget_2022=="70" | q14_funding_annual_budget_2022=="80" ~ "4 Between 70% and 80%",
+    q14_funding_annual_budget_2022=="90" | q14_funding_annual_budget_2022=="100"~ "5 Higher than 80%",
+    TRUE ~ NA)) %>% 
+  group_by(q14_funding_annual_budget_2022) %>% 
+  summarise(Total= n(),
+            "1. Latin America & the Caribbean"=sum(region_1==1),
+            "2. Western Europe & North America"=sum(region_2==1),
+            "3. Eastern, Southeast and Central Europe"=sum(region_3==1),
+            "4. Africa"= sum(region_4==1),
+            "5. Asia & the Pacific"=sum(region_5==1),
+            "6. Central Asia & Caucasus"=sum(region_6==1),
+            "7. South West Asia/Middle East & North Africa"=sum(region_7==1)) %>% 
+  rename("q14"=1) %>% 
+  mutate(Year=2022)
+
+
+
+q14_2021_region <- base %>%
+  filter(q13_ext_funding == "yes" & q9_year_formation<2022) %>%
+  mutate(q14_funding_annual_budget_2021=case_when(
+    q14_funding_annual_budget_2021=="0" ~ "0 Zero",
+    q14_funding_annual_budget_2021=="10" | q14_funding_annual_budget_2021=="20"  ~ "1 Lower than 30%",
+    q14_funding_annual_budget_2021=="30" | q14_funding_annual_budget_2021=="40" ~ "2 Between 30% and 40%",
+    q14_funding_annual_budget_2021=="50" | q14_funding_annual_budget_2021=="60" ~ "3 Between 50% and 60%",
+    q14_funding_annual_budget_2021=="70" | q14_funding_annual_budget_2021=="80" ~ "4 Between 70% and 80%",
+    q14_funding_annual_budget_2021=="90" | q14_funding_annual_budget_2021=="100"~ "5 Higher than 80%",
+    TRUE ~ NA)) %>% 
+  group_by(q14_funding_annual_budget_2021) %>% 
+  summarise(Total= n(),
+            "1. Latin America & the Caribbean"=sum(region_1==1),
+            "2. Western Europe & North America"=sum(region_2==1),
+            "3. Eastern, Southeast and Central Europe"=sum(region_3==1),
+            "4. Africa"= sum(region_4==1),
+            "5. Asia & the Pacific"=sum(region_5==1),
+            "6. Central Asia & Caucasus"=sum(region_6==1),
+            "7. South West Asia/Middle East & North Africa"=sum(region_7==1)) %>% 
+  rename("q14"=1) %>% 
+  mutate(Year=2021)
+
+q14_region_unificada<-bind_rows(q14_2021_region, q14_2022_region, q14_2023_region)
+
+
+
+q14 <- loadWorkbook(archivo)
+addWorksheet(q14, sheetName = "q14_region")
+# Escribir las tablas en la misma hoja
+writeData(q14, "q14_region", "Table for 2021", startRow = 1, startCol = 1)
+writeData(q14, "q14_region", q14_2021_region, startRow = 2, startCol = 1, withFilter = TRUE)
+# Agregar un espacio entre tablas
+writeData(q14, "q14_region", "Table for 2022", startRow = nrow(q14_2021_region) + 4, startCol = 1)
+writeData(q14, "q14_region", q14_2022_region, startRow = nrow(q14_2021_region) + 5, startCol = 1, withFilter = TRUE)
+# Agregar otro espacio
+writeData(q14, "q14_region", "Table for 2023", startRow = nrow(q14_2021_region) + nrow(q14_2022_region) + 8, startCol = 1)
+writeData(q14, "q14_region", q14_2023_region, startRow = nrow(q14_2021_region) + nrow(q14_2022_region) + 9, startCol = 1, withFilter = TRUE)
+saveWorkbook(q14, archivo, overwrite = TRUE)
+
+
+######
+
 #CRUCE POR q9
 
 q14_2023_q9 <- base %>%
@@ -1342,6 +1453,149 @@ writeData(q15, sheet = "q15_q6", x = q15_q6)
 saveWorkbook(q15, archivo, overwrite = TRUE)
 
 ###
+
+#cruce por región: q7
+
+
+
+q15_region_1 <- base %>%
+  filter( !is.na(q15_key_sources) & region_1==1) %>%
+  summarise(Total = n(),
+            Multirateral = sum(q15_key_sources.multilateral_funders == 1),
+            Bilateral = sum(q15_key_sources.bilateral_funders == 1),
+            Philanthropic = sum(q15_key_sources.philanthropic_foundations == 1),
+            Womens = sum(q15_key_sources.womens_feminist_funds == 1),
+            Private = sum(q15_key_sources.private_sector == 1),
+            Ingos = sum(q15_key_sources.ingos == 1),
+            Individual = sum(q15_key_sources.individual_donors == 1),
+            Goverments = sum(q15_key_sources.national_local_goverment_or_bodies == 1),
+            Other = sum(q15_key_sources.98 == 1)) %>% 
+  pivot_longer(cols = everything(),
+               names_to = "Source",
+               values_to = "1. Latin America & the Caribbean")
+
+q15_region_2 <- base %>%
+  filter( !is.na(q15_key_sources) & region_2==1) %>%
+  summarise(Total = n(),
+            Multirateral = sum(q15_key_sources.multilateral_funders == 1),
+            Bilateral = sum(q15_key_sources.bilateral_funders == 1),
+            Philanthropic = sum(q15_key_sources.philanthropic_foundations == 1),
+            Womens = sum(q15_key_sources.womens_feminist_funds == 1),
+            Private = sum(q15_key_sources.private_sector == 1),
+            Ingos = sum(q15_key_sources.ingos == 1),
+            Individual = sum(q15_key_sources.individual_donors == 1),
+            Goverments = sum(q15_key_sources.national_local_goverment_or_bodies == 1),
+            Other = sum(q15_key_sources.98 == 1)) %>% 
+  pivot_longer(cols = everything(),
+               names_to = "Source",
+               values_to = "2. Western Europe & North America")
+
+
+
+
+  
+q15_region_3 <- base %>%
+  filter( !is.na(q15_key_sources) & region_3==1) %>%
+  summarise(Total = n(),
+            Multirateral = sum(q15_key_sources.multilateral_funders == 1),
+            Bilateral = sum(q15_key_sources.bilateral_funders == 1),
+            Philanthropic = sum(q15_key_sources.philanthropic_foundations == 1),
+            Womens = sum(q15_key_sources.womens_feminist_funds == 1),
+            Private = sum(q15_key_sources.private_sector == 1),
+            Ingos = sum(q15_key_sources.ingos == 1),
+            Individual = sum(q15_key_sources.individual_donors == 1),
+            Goverments = sum(q15_key_sources.national_local_goverment_or_bodies == 1),
+            Other = sum(q15_key_sources.98 == 1)) %>% 
+  pivot_longer(cols = everything(),
+               names_to = "Source",
+               values_to = "3. Eastern, Southeast and Central Europe")
+
+q15_region_4 <- base %>%
+  filter( !is.na(q15_key_sources) & region_4==1) %>%
+  summarise(Total = n(),
+            Multirateral = sum(q15_key_sources.multilateral_funders == 1),
+            Bilateral = sum(q15_key_sources.bilateral_funders == 1),
+            Philanthropic = sum(q15_key_sources.philanthropic_foundations == 1),
+            Womens = sum(q15_key_sources.womens_feminist_funds == 1),
+            Private = sum(q15_key_sources.private_sector == 1),
+            Ingos = sum(q15_key_sources.ingos == 1),
+            Individual = sum(q15_key_sources.individual_donors == 1),
+            Goverments = sum(q15_key_sources.national_local_goverment_or_bodies == 1),
+            Other = sum(q15_key_sources.98 == 1)) %>% 
+  pivot_longer(cols = everything(),
+               names_to = "Source",
+               values_to = "4. Africa")
+
+
+q15_region_5 <- base %>%
+  filter( !is.na(q15_key_sources) & region_5==1) %>%
+  summarise(Total = n(),
+            Multirateral = sum(q15_key_sources.multilateral_funders == 1),
+            Bilateral = sum(q15_key_sources.bilateral_funders == 1),
+            Philanthropic = sum(q15_key_sources.philanthropic_foundations == 1),
+            Womens = sum(q15_key_sources.womens_feminist_funds == 1),
+            Private = sum(q15_key_sources.private_sector == 1),
+            Ingos = sum(q15_key_sources.ingos == 1),
+            Individual = sum(q15_key_sources.individual_donors == 1),
+            Goverments = sum(q15_key_sources.national_local_goverment_or_bodies == 1),
+            Other = sum(q15_key_sources.98 == 1)) %>% 
+  pivot_longer(cols = everything(),
+               names_to = "Source",
+               values_to = "5. Asia & the Pacific")
+
+q15_region_6 <- base %>%
+  filter( !is.na(q15_key_sources) & region_6==1) %>%
+  summarise(Total = n(),
+            Multirateral = sum(q15_key_sources.multilateral_funders == 1),
+            Bilateral = sum(q15_key_sources.bilateral_funders == 1),
+            Philanthropic = sum(q15_key_sources.philanthropic_foundations == 1),
+            Womens = sum(q15_key_sources.womens_feminist_funds == 1),
+            Private = sum(q15_key_sources.private_sector == 1),
+            Ingos = sum(q15_key_sources.ingos == 1),
+            Individual = sum(q15_key_sources.individual_donors == 1),
+            Goverments = sum(q15_key_sources.national_local_goverment_or_bodies == 1),
+            Other = sum(q15_key_sources.98 == 1)) %>% 
+  pivot_longer(cols = everything(),
+               names_to = "Source",
+               values_to = "6. Central Asia & Caucasus")
+
+q15_region_7 <- base %>%
+  filter( !is.na(q15_key_sources) & region_7==1) %>%
+  summarise(Total = n(),
+            Multirateral = sum(q15_key_sources.multilateral_funders == 1),
+            Bilateral = sum(q15_key_sources.bilateral_funders == 1),
+            Philanthropic = sum(q15_key_sources.philanthropic_foundations == 1),
+            Womens = sum(q15_key_sources.womens_feminist_funds == 1),
+            Private = sum(q15_key_sources.private_sector == 1),
+            Ingos = sum(q15_key_sources.ingos == 1),
+            Individual = sum(q15_key_sources.individual_donors == 1),
+            Goverments = sum(q15_key_sources.national_local_goverment_or_bodies == 1),
+            Other = sum(q15_key_sources.98 == 1)) %>% 
+  pivot_longer(cols = everything(),
+               names_to = "Source",
+               values_to = "7. South West Asia/Middle East & North Africa")
+
+
+
+q15_region_total <- q15_region_1 %>%
+  left_join(q15_region_2, by = "Source") %>%
+  left_join(q15_region_3, by = "Source") %>%
+  left_join(q15_region_4, by = "Source") %>%
+  left_join(q15_region_5, by = "Source") %>%
+  left_join(q15_region_6, by = "Source") %>%
+  left_join(q15_region_7, by = "Source")
+
+
+
+q15 <- loadWorkbook(archivo)
+addWorksheet(q15, sheetName = "q15_region")
+writeData(q15, sheet = "q15_region", x = q15_region_total)
+saveWorkbook(q15, archivo, overwrite = TRUE)
+
+
+###
+
+
 
 #cruce por q9
 
@@ -2025,6 +2279,162 @@ saveWorkbook(q18, archivo, overwrite = TRUE)
 
 ###
 
+
+#cruce por región: q7
+
+
+
+q18_region_1 <- base %>%
+  filter( !is.na(q18_new_funders) & region_1==1) %>%
+  summarise(
+    Total = (round(n(),0)),
+    Multilateral = sum(q18_new_funders.multilateral_funders == 1, na.rm = TRUE),
+    Bilateral = sum(q18_new_funders.bilateral_funders == 1, na.rm = TRUE),
+    Philanthropic = sum(q18_new_funders.philanthropic_foundations == 1, na.rm = TRUE),
+    Womens = sum(q18_new_funders.womens_feminist_funds == 1, na.rm = TRUE),
+    Private = sum(q18_new_funders.private_sector == 1, na.rm = TRUE),
+    Ingos = sum(q18_new_funders.ingos == 1, na.rm = TRUE),
+    Individual = sum(q18_new_funders.individual_donors == 1, na.rm = TRUE),
+    Goverment = sum(q18_new_funders.national_goverment == 1, na.rm = TRUE),
+    Other = sum(q18_new_funders.98 == 1, na.rm = TRUE),
+    No_new_funder = sum(q18_new_funders.not_new_funders == 1, na.rm = TRUE)) %>% 
+  pivot_longer(cols = everything(),
+               names_to = "Source",
+               values_to = "1. Latin America & the Caribbean")
+
+q18_region_2 <- base %>%
+  filter( !is.na(q18_new_funders) & region_2==1) %>%
+  summarise(
+    Total = (round(n(),0)),
+    Multilateral = sum(q18_new_funders.multilateral_funders == 1, na.rm = TRUE),
+    Bilateral = sum(q18_new_funders.bilateral_funders == 1, na.rm = TRUE),
+    Philanthropic = sum(q18_new_funders.philanthropic_foundations == 1, na.rm = TRUE),
+    Womens = sum(q18_new_funders.womens_feminist_funds == 1, na.rm = TRUE),
+    Private = sum(q18_new_funders.private_sector == 1, na.rm = TRUE),
+    Ingos = sum(q18_new_funders.ingos == 1, na.rm = TRUE),
+    Individual = sum(q18_new_funders.individual_donors == 1, na.rm = TRUE),
+    Goverment = sum(q18_new_funders.national_goverment == 1, na.rm = TRUE),
+    Other = sum(q18_new_funders.98 == 1, na.rm = TRUE),
+    No_new_funder = sum(q18_new_funders.not_new_funders == 1, na.rm = TRUE)) %>% 
+  pivot_longer(cols = everything(),
+               names_to = "Source",
+               values_to = "2. Western Europe & North America")
+
+
+
+
+
+q18_region_3 <- base %>%
+  filter( !is.na(q18_new_funders) & region_3==1) %>%
+  summarise(
+    Total = (round(n(),0)),
+    Multilateral = sum(q18_new_funders.multilateral_funders == 1, na.rm = TRUE),
+    Bilateral = sum(q18_new_funders.bilateral_funders == 1, na.rm = TRUE),
+    Philanthropic = sum(q18_new_funders.philanthropic_foundations == 1, na.rm = TRUE),
+    Womens = sum(q18_new_funders.womens_feminist_funds == 1, na.rm = TRUE),
+    Private = sum(q18_new_funders.private_sector == 1, na.rm = TRUE),
+    Ingos = sum(q18_new_funders.ingos == 1, na.rm = TRUE),
+    Individual = sum(q18_new_funders.individual_donors == 1, na.rm = TRUE),
+    Goverment = sum(q18_new_funders.national_goverment == 1, na.rm = TRUE),
+    Other = sum(q18_new_funders.98 == 1, na.rm = TRUE),
+    No_new_funder = sum(q18_new_funders.not_new_funders == 1, na.rm = TRUE)) %>%  
+  pivot_longer(cols = everything(),
+               names_to = "Source",
+               values_to = "3. Eastern, Southeast and Central Europe")
+
+q18_region_4 <- base %>%
+  filter( !is.na(q18_new_funders) & region_4==1) %>%
+  summarise(
+    Total = (round(n(),0)),
+    Multilateral = sum(q18_new_funders.multilateral_funders == 1, na.rm = TRUE),
+    Bilateral = sum(q18_new_funders.bilateral_funders == 1, na.rm = TRUE),
+    Philanthropic = sum(q18_new_funders.philanthropic_foundations == 1, na.rm = TRUE),
+    Womens = sum(q18_new_funders.womens_feminist_funds == 1, na.rm = TRUE),
+    Private = sum(q18_new_funders.private_sector == 1, na.rm = TRUE),
+    Ingos = sum(q18_new_funders.ingos == 1, na.rm = TRUE),
+    Individual = sum(q18_new_funders.individual_donors == 1, na.rm = TRUE),
+    Goverment = sum(q18_new_funders.national_goverment == 1, na.rm = TRUE),
+    Other = sum(q18_new_funders.98 == 1, na.rm = TRUE),
+    No_new_funder = sum(q18_new_funders.not_new_funders == 1, na.rm = TRUE)) %>% 
+  pivot_longer(cols = everything(),
+               names_to = "Source",
+               values_to = "4. Africa")
+
+
+q18_region_5 <- base %>%
+  filter( !is.na(q18_new_funders) & region_5==1) %>%
+  summarise(
+    Total = (round(n(),0)),
+    Multilateral = sum(q18_new_funders.multilateral_funders == 1, na.rm = TRUE),
+    Bilateral = sum(q18_new_funders.bilateral_funders == 1, na.rm = TRUE),
+    Philanthropic = sum(q18_new_funders.philanthropic_foundations == 1, na.rm = TRUE),
+    Womens = sum(q18_new_funders.womens_feminist_funds == 1, na.rm = TRUE),
+    Private = sum(q18_new_funders.private_sector == 1, na.rm = TRUE),
+    Ingos = sum(q18_new_funders.ingos == 1, na.rm = TRUE),
+    Individual = sum(q18_new_funders.individual_donors == 1, na.rm = TRUE),
+    Goverment = sum(q18_new_funders.national_goverment == 1, na.rm = TRUE),
+    Other = sum(q18_new_funders.98 == 1, na.rm = TRUE),
+    No_new_funder = sum(q18_new_funders.not_new_funders == 1, na.rm = TRUE)) %>% 
+  pivot_longer(cols = everything(),
+               names_to = "Source",
+               values_to = "5. Asia & the Pacific")
+
+
+q18_region_6 <- base %>%
+  filter( !is.na(q18_new_funders) & region_6==1) %>%
+  summarise(
+    Total = (round(n(),0)),
+    Multilateral = sum(q18_new_funders.multilateral_funders == 1, na.rm = TRUE),
+    Bilateral = sum(q18_new_funders.bilateral_funders == 1, na.rm = TRUE),
+    Philanthropic = sum(q18_new_funders.philanthropic_foundations == 1, na.rm = TRUE),
+    Womens = sum(q18_new_funders.womens_feminist_funds == 1, na.rm = TRUE),
+    Private = sum(q18_new_funders.private_sector == 1, na.rm = TRUE),
+    Ingos = sum(q18_new_funders.ingos == 1, na.rm = TRUE),
+    Individual = sum(q18_new_funders.individual_donors == 1, na.rm = TRUE),
+    Goverment = sum(q18_new_funders.national_goverment == 1, na.rm = TRUE),
+    Other = sum(q18_new_funders.98 == 1, na.rm = TRUE),
+    No_new_funder = sum(q18_new_funders.not_new_funders == 1, na.rm = TRUE)) %>% 
+  pivot_longer(cols = everything(),
+               names_to = "Source",
+               values_to = "6. Central Asia & Caucasus")
+
+q18_region_7 <- base %>%
+  filter( !is.na(q18_new_funders) & region_7==1) %>%
+  summarise(
+    Total = (round(n(),0)),
+    Multilateral = sum(q18_new_funders.multilateral_funders == 1, na.rm = TRUE),
+    Bilateral = sum(q18_new_funders.bilateral_funders == 1, na.rm = TRUE),
+    Philanthropic = sum(q18_new_funders.philanthropic_foundations == 1, na.rm = TRUE),
+    Womens = sum(q18_new_funders.womens_feminist_funds == 1, na.rm = TRUE),
+    Private = sum(q18_new_funders.private_sector == 1, na.rm = TRUE),
+    Ingos = sum(q18_new_funders.ingos == 1, na.rm = TRUE),
+    Individual = sum(q18_new_funders.individual_donors == 1, na.rm = TRUE),
+    Goverment = sum(q18_new_funders.national_goverment == 1, na.rm = TRUE),
+    Other = sum(q18_new_funders.98 == 1, na.rm = TRUE),
+    No_new_funder = sum(q18_new_funders.not_new_funders == 1, na.rm = TRUE)) %>% 
+  pivot_longer(cols = everything(),
+               names_to = "Source",
+               values_to = "7. South West Asia/Middle East & North Africa")
+
+
+
+q18_region_total <- q18_region_1 %>%
+  left_join(q18_region_2, by = "Source") %>%
+  left_join(q18_region_3, by = "Source") %>%
+  left_join(q18_region_4, by = "Source") %>%
+  left_join(q18_region_5, by = "Source") %>%
+  left_join(q18_region_6, by = "Source") %>%
+  left_join(q18_region_7, by = "Source")
+
+
+
+q18 <- loadWorkbook(archivo)
+addWorksheet(q18, sheetName = "q18_region")
+writeData(q18, sheet = "q18_region", x = q18_region_total)
+saveWorkbook(q18, archivo, overwrite = TRUE)
+
+
+###
 
 #cruce por q9
 
