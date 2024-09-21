@@ -30,7 +30,7 @@ source(file="WITM_variables_v2.R")
 # ANÁLISIS Q10
 
 archivo <- "cuadros/q10_budget.xlsx"
-write.xlsx(q10_grouped, file = archivo, sheetName="q10")
+
 
 q10_2021<-base %>% 
   filter(q9_year_formation<2022) %>% 
@@ -70,8 +70,68 @@ write.xlsx(q10_grouped, file = archivo, sheetName="q10")
 
 #q4agrup
 
-q10_q4agrup<-base %>% 
-  
+# Crear q10_2021_q4agrup
+q10_2021_q4agrup <- base %>% 
+  mutate(q4_awid_focus=recode(q4_awid_focus,"1"="Specific AWID subjects","0"="Other subjects")) %>% 
+  filter(q9_year_formation < 2022) %>% 
+  group_by(q10_budget_grp_2021, q4_awid_focus) %>% 
+  summarise(n = n(), .groups = 'drop') %>% 
+  rename(Annual_budget = q10_budget_grp_2021) %>% 
+  mutate(Year = 2021)
+
+# Crear q10_2022_q4agrup
+q10_2022_q4agrup <- base %>% 
+  mutate(q4_awid_focus=recode(q4_awid_focus,"1"="Specific AWID subjects","0"="Other subjects")) %>%
+  filter(q9_year_formation < 2023) %>% 
+  group_by(q10_budget_grp_2022, q4_awid_focus) %>% 
+  summarise(n = n(), .groups = 'drop') %>% 
+  rename(Annual_budget = q10_budget_grp_2022) %>% 
+  mutate(Year = 2022)
+
+# Crear q10_2023_q4agrup
+q10_2023_q4agrup <- base %>%  
+  mutate(q4_awid_focus=recode(q4_awid_focus,"1"="Specific AWID subjects","0"="Other subjects")) %>%
+  filter(!is.na(q10_budget_year_2023)) %>% 
+  group_by(q10_budget_grp_2023, q4_awid_focus) %>% 
+  summarise(n = n(), .groups = 'drop') %>% 
+  rename(Annual_budget = q10_budget_grp_2023) %>% 
+  mutate(Year = 2023)
+
+# Unir los dataframes
+q10_grouped_q4agrup <- bind_rows(q10_2021_q4agrup, q10_2022_q4agrup, q10_2023_q4agrup)
+
+
+# Crear la tabla de doble entrada con años como filas
+q10_table <- q10_grouped_q4agrup %>%
+  group_by(Year, Annual_budget, q4_awid_focus) %>%
+  summarise(Total = sum(n), .groups = 'drop') %>%
+  pivot_wider(names_from = q4_awid_focus, values_from = Total, values_fill = list(Total = 0)) %>%
+  arrange(Year, Annual_budget)  # Opcional: ordenar por año y presupuesto
+
+# Crear la tabla de doble entrada
+q10_tableb <- q10_grouped_q4agrup %>%
+  pivot_wider(names_from = Year, values_from = n, values_fill = list(n = 0))
+
+# Calcular la media por cada categoría de Annual_budget
+q10_tableb <- q10_tableb %>%
+  rowwise() %>%
+  mutate(Media = round(mean(c_across(c(`2021`, `2022`, `2023`)), na.rm = TRUE), 0)) %>%
+  ungroup()  # Desagrupar después de la operación
+
+# Seleccionar solo las columnas de interés para la tabla final
+q10_media_table <- q10_tableb %>%
+  select(Annual_budget, q4_awid_focus, Media) %>%
+  pivot_wider(names_from = q4_awid_focus, values_from = Media, values_fill = list(Media = 0))
+
+q10 <- loadWorkbook(archivo)
+addWorksheet(q10, sheetName = "q10_q4agrup")
+writeData(q10, sheet = "q10_q4agrup", x = q10_table)
+saveWorkbook(q10, archivo, overwrite = TRUE)
+
+q10 <- loadWorkbook(archivo)
+addWorksheet(q10, sheetName = "q10_q4agrup_media")
+writeData(q10, sheet = "q10_q4agrup_media", x = q10_media_table)
+saveWorkbook(q10, archivo, overwrite = TRUE)
 
 
 q10 <- loadWorkbook(archivo)
@@ -344,6 +404,30 @@ q13<-base %>%
 
 write.xlsx(q13, file = archivo, sheetName="q13")
 
+#####
+
+#cruce por q4agrup
+
+
+# Crear q13_q4agrup
+q13_q4agrup <- base %>%
+  mutate(q4_awid_focus=recode(q4_awid_focus,"1"="Specific AWID subjects","0"="Other subjects")) %>% 
+  filter(q9_year_formation < 2022) %>% 
+  filter(!is.na(q13_ext_funding)) %>% 
+  group_by(q13_ext_funding, q4_awid_focus) %>% 
+  summarise(n = n(), .groups = 'drop') %>% 
+  rename("External funding" = q13_ext_funding)
+
+q13_q4agrup <- q13_q4agrup %>%
+  pivot_wider(names_from = q4_awid_focus, values_from = n, values_fill = list(n = 0)) %>%
+  arrange(`External funding`)
+
+
+q13 <- loadWorkbook(archivo)
+addWorksheet(q13, sheetName = "q13_q4agrup")
+writeData(q13, sheet = "q13_q4agrup", x = q13_q4agrup)
+saveWorkbook(q13, archivo, overwrite = TRUE)
+
 
 ## CRUCE POR Q5
 
@@ -372,6 +456,7 @@ q13 <- loadWorkbook(archivo)
 addWorksheet(q13, sheetName = "q13_q5")
 writeData(q13, sheet = "q13_q5", x = q13_q5)
 saveWorkbook(q13, archivo, overwrite = TRUE)
+
 
 
 
@@ -549,6 +634,84 @@ q14_grouped<-q14_combined %>%
   rename("Percentage of External Funding in Total Annual Budget"=q14)
 
 write.xlsx(q14_grouped, file = archivo, sheetName="q14")
+
+###
+
+
+#CRUCE POR q4agrup
+
+q14_2023_q4agrup <- base %>%
+  filter(q13_ext_funding == "yes") %>%
+  mutate(q14_funding_annual_budget_2023=case_when(
+    q14_funding_annual_budget_2023=="0" ~ "0 Zero",
+    q14_funding_annual_budget_2023=="10" | q14_funding_annual_budget_2023=="20"  ~ "1 Lower than 30%",
+    q14_funding_annual_budget_2023=="30" | q14_funding_annual_budget_2023=="40" ~ "2 Between 30% and 40%",
+    q14_funding_annual_budget_2023=="50" | q14_funding_annual_budget_2023=="60" ~ "3 Between 50% and 60%",
+    q14_funding_annual_budget_2023=="70" | q14_funding_annual_budget_2023=="80" ~ "4 Between 70% and 80%",
+    q14_funding_annual_budget_2023=="90" | q14_funding_annual_budget_2023=="100"~ "5 Higher than 80%",
+    TRUE ~ NA)) %>% 
+  mutate(q4_awid_focus=recode(q4_awid_focus,"1"="Specific AWID subjects","0"="Other subjects")) %>% 
+  group_by(q14_funding_annual_budget_2023, q4_awid_focus) %>% 
+  summarise(n = n(), .groups = 'drop') %>% 
+  rename("q14"=1) %>% 
+  mutate(Year = 2023)
+
+q14_2022_q4agrup <- base %>%
+  filter(q13_ext_funding == "yes" & q9_year_formation<2023) %>%
+  mutate(q14_funding_annual_budget_2022=case_when(
+    q14_funding_annual_budget_2022=="0" ~ "0 Zero",
+    q14_funding_annual_budget_2022=="10" | q14_funding_annual_budget_2022=="20"  ~ "1 Lower than 30%",
+    q14_funding_annual_budget_2022=="30" | q14_funding_annual_budget_2022=="40" ~ "2 Between 30% and 40%",
+    q14_funding_annual_budget_2022=="50" | q14_funding_annual_budget_2022=="60" ~ "3 Between 50% and 60%",
+    q14_funding_annual_budget_2022=="70" | q14_funding_annual_budget_2022=="80" ~ "4 Between 70% and 80%",
+    q14_funding_annual_budget_2022=="90" | q14_funding_annual_budget_2022=="100"~ "5 Higher than 80%",
+    TRUE ~ NA)) %>% 
+  mutate(q4_awid_focus=recode(q4_awid_focus,"1"="Specific AWID subjects","0"="Other subjects")) %>% 
+  group_by(q14_funding_annual_budget_2022, q4_awid_focus) %>% 
+  summarise(n = n(), .groups = 'drop') %>% 
+  rename("q14"=1) %>% 
+  mutate(Year = 2022)
+
+
+q14_2021_q4agrup <- base %>%
+  filter(q13_ext_funding == "yes" & q9_year_formation<2022) %>%
+  mutate(q14_funding_annual_budget_2021=case_when(
+    q14_funding_annual_budget_2021=="0" ~ "0 Zero",
+    q14_funding_annual_budget_2021=="10" | q14_funding_annual_budget_2021=="20"  ~ "1 Lower than 30%",
+    q14_funding_annual_budget_2021=="30" | q14_funding_annual_budget_2021=="40" ~ "2 Between 30% and 40%",
+    q14_funding_annual_budget_2021=="50" | q14_funding_annual_budget_2021=="60" ~ "3 Between 50% and 60%",
+    q14_funding_annual_budget_2021=="70" | q14_funding_annual_budget_2021=="80" ~ "4 Between 70% and 80%",
+    q14_funding_annual_budget_2021=="90" | q14_funding_annual_budget_2021=="100"~ "5 Higher than 80%",
+    TRUE ~ NA)) %>% 
+  mutate(q4_awid_focus=recode(q4_awid_focus,"1"="Specific AWID subjects","0"="Other subjects")) %>% 
+  group_by(q14_funding_annual_budget_2021, q4_awid_focus) %>% 
+  summarise(n = n(), .groups = 'drop') %>% 
+  rename("q14"=1) %>% 
+  mutate(Year = 2021)
+
+
+# Unir los dataframes
+q14_grouped_q4agrup <- bind_rows(q14_2021_q4agrup, q14_2022_q4agrup, q14_2023_q4agrup)
+
+
+
+# Crear la tabla de doble entrada
+q14_table <- q14_grouped_q4agrup %>%
+  pivot_wider(names_from = Year, values_from = n, values_fill = list(n = 0)) %>%
+  arrange(q14)  # Opcional: ordenar por la columna de "q14"
+
+# Crear la tabla de doble entrada con q14 y q5
+q14_table <- q14_grouped_q4agrup %>%
+  group_by(Year, q14, q4_awid_focus) %>%
+  summarise(n = sum(n), .groups = 'drop') %>%
+  pivot_wider(names_from = q14, values_from = n, values_fill = list(n = 0)) %>%
+  arrange(Year, q4_awid_focus)  # Opcional: ordenar por el año y q5
+
+q14 <- loadWorkbook(archivo)
+addWorksheet(q14, sheetName = "q14_q4agrup")
+writeData(q14, sheet = "q14_q4agrup", x = q14_table)
+saveWorkbook(q14, archivo, overwrite = TRUE)
+
 
 
 ###
@@ -1836,6 +1999,160 @@ q19 <- loadWorkbook(archivo)
 addWorksheet(q19, sheetName = "q19_q10_media")
 writeData(q19, sheet = "q19_q10_media", x = final_means_q19)
 saveWorkbook(q19, archivo, overwrite = TRUE)
+
+#############################################################################
+
+#ANÁLISIS Q21
+
+archivo <- "cuadros/q21_types_funding.xlsx"
+
+###2023
+
+q21_core_2023<-base %>% 
+  mutate(q21_core_2023=case_when(
+    q21_types_funding_2023_core<26 ~"1 Up to 25%",
+    q21_types_funding_2023_core>25 & q21_types_funding_2023_core<51 ~ "2 Between 26%-50%",
+    q21_types_funding_2023_core>50 & q21_types_funding_2023_core<76 ~ "3 Between 51%-75%",
+    is.na(q21_types_funding_2023_core) ~ NA,
+    TRUE ~ "4 Over 75%")) %>% 
+  filter(!is.na(q21_types_funding_2023_core)) %>% 
+  group_by(q21_core_2023) %>% 
+  summarise(total=n()) %>% 
+  rename("2023"=1, "Core"=2)
+
+q21_project_2023<-base %>% 
+  mutate(q21_project_2023=case_when(
+    q21_types_funding_2023_project<26 ~"1 Up to 25%",
+    q21_types_funding_2023_project>25 & q21_types_funding_2023_project<51 ~ "2 Between 26%-50%",
+    q21_types_funding_2023_project>50 & q21_types_funding_2023_project<76 ~ "3 Between 51%-75%",
+    is.na(q21_types_funding_2023_project) ~ NA,
+    TRUE ~ "4 Over 75%")) %>% 
+  filter(!is.na(q21_types_funding_2023_project)) %>% 
+  group_by(q21_project_2023) %>% 
+  summarise(total=n()) %>% 
+  rename("2023"=1, "Project"=2)
+
+q21_emergency_2023<-base %>% 
+  mutate(q21_emergency_2023=case_when(
+    q21_types_funding_2023_emergency<26 ~"1 Up to 25%",
+    q21_types_funding_2023_emergency>25 & q21_types_funding_2023_emergency<51 ~ "2 Between 26%-50%",
+    q21_types_funding_2023_emergency>50 & q21_types_funding_2023_emergency<76 ~ "3 Between 51%-75%",
+    is.na(q21_types_funding_2023_emergency) ~ NA,
+    TRUE ~ "4 Over 75%")) %>% 
+  filter(!is.na(q21_types_funding_2023_emergency)) %>% 
+  group_by(q21_emergency_2023) %>% 
+  summarise(total=n()) %>% 
+  rename("2023"=1, "Emergency"=2)
+
+#Unir los dataframes
+q21_2023 <- q21_core_2023 %>%
+  full_join(q21_project_2023, by = "2023") %>%
+  full_join(q21_emergency_2023, by = "2023")
+
+
+###2022
+
+
+q21_core_2022<-base %>% 
+  mutate(q21_core_2022=case_when(
+    q21_types_funding_2022_core<26 ~"1 Up to 25%",
+    q21_types_funding_2022_core>25 & q21_types_funding_2022_core<51 ~ "2 Between 26%-50%",
+    q21_types_funding_2022_core>50 & q21_types_funding_2022_core<76 ~ "3 Between 51%-75%",
+    is.na(q21_types_funding_2022_core) ~ NA,
+    TRUE ~ "4 Over 75%")) %>% 
+  filter(!is.na(q21_types_funding_2022_core)) %>% 
+  group_by(q21_core_2022) %>% 
+  summarise(total=n()) %>% 
+  rename("2022"=1, "Core"=2)
+
+q21_project_2022<-base %>% 
+  mutate(q21_project_2022=case_when(
+    q21_types_funding_2022_project<26 ~"1 Up to 25%",
+    q21_types_funding_2022_project>25 & q21_types_funding_2022_project<51 ~ "2 Between 26%-50%",
+    q21_types_funding_2022_project>50 & q21_types_funding_2022_project<76 ~ "3 Between 51%-75%",
+    is.na(q21_types_funding_2022_project) ~ NA,
+    TRUE ~ "4 Over 75%")) %>% 
+  filter(!is.na(q21_types_funding_2022_project)) %>% 
+  group_by(q21_project_2022) %>% 
+  summarise(total=n()) %>% 
+  rename("2022"=1, "Project"=2)
+
+q21_emergency_2022<-base %>% 
+  mutate(q21_emergency_2022=case_when(
+    q21_types_funding_2022_emergency<26 ~"1 Up to 25%",
+    q21_types_funding_2022_emergency>25 & q21_types_funding_2022_emergency<51 ~ "2 Between 26%-50%",
+    q21_types_funding_2022_emergency>50 & q21_types_funding_2022_emergency<76 ~ "3 Between 51%-75%",
+    is.na(q21_types_funding_2022_emergency) ~ NA,
+    TRUE ~ "4 Over 75%")) %>% 
+  filter(!is.na(q21_types_funding_2022_emergency)) %>% 
+  group_by(q21_emergency_2022) %>% 
+  summarise(total=n()) %>% 
+  rename("2022"=1, "Emergency"=2)
+
+#Unir los dataframes
+q21_2022 <- q21_core_2022 %>%
+  full_join(q21_project_2022, by = "2022") %>%
+  full_join(q21_emergency_2022, by = "2022")
+
+###2021
+
+q21_core_2021<-base %>% 
+  mutate(q21_core_2021=case_when(
+    q21_types_funding_2021_core<26 ~"1 Up to 25%",
+    q21_types_funding_2021_core>25 & q21_types_funding_2021_core<51 ~ "2 Between 26%-50%",
+    q21_types_funding_2021_core>50 & q21_types_funding_2021_core<76 ~ "3 Between 51%-75%",
+    is.na(q21_types_funding_2021_core) ~ NA,
+    TRUE ~ "4 Over 75%")) %>% 
+  filter(!is.na(q21_types_funding_2021_core)) %>% 
+  group_by(q21_core_2021) %>% 
+  summarise(total=n()) %>% 
+  rename("2021"=1, "Core"=2)
+
+q21_project_2021<-base %>% 
+  mutate(q21_project_2021=case_when(
+    q21_types_funding_2021_project<26 ~"1 Up to 25%",
+    q21_types_funding_2021_project>25 & q21_types_funding_2021_project<51 ~ "2 Between 26%-50%",
+    q21_types_funding_2021_project>50 & q21_types_funding_2021_project<76 ~ "3 Between 51%-75%",
+    is.na(q21_types_funding_2021_project) ~ NA,
+    TRUE ~ "4 Over 75%")) %>% 
+  filter(!is.na(q21_types_funding_2021_project)) %>% 
+  group_by(q21_project_2021) %>% 
+  summarise(total=n()) %>% 
+  rename("2021"=1, "Project"=2)
+
+q21_emergency_2021<-base %>% 
+  mutate(q21_emergency_2021=case_when(
+    q21_types_funding_2021_emergency<26 ~"1 Up to 25%",
+    q21_types_funding_2021_emergency>25 & q21_types_funding_2021_emergency<51 ~ "2 Between 26%-50%",
+    q21_types_funding_2021_emergency>50 & q21_types_funding_2021_emergency<76 ~ "3 Between 51%-75%",
+    is.na(q21_types_funding_2021_emergency) ~ NA,
+    TRUE ~ "4 Over 75%")) %>% 
+  filter(!is.na(q21_types_funding_2021_emergency)) %>% 
+  group_by(q21_emergency_2021) %>% 
+  summarise(total=n()) %>% 
+  rename("2021"=1, "Emergency"=2)
+
+
+# Unir los dataframes de 2021, 2022 y 2023
+q21_total <- q21_core_2021 %>%
+  full_join(q21_core_2022, by = "Core") %>%
+  full_join(q21_core_2023, by = "Core", suffix = c("_2021", "_2022", "_2023")) %>%
+  full_join(q21_project_2021, by = "Project") %>%
+  full_join(q21_project_2022, by = "Project") %>%
+  full_join(q21_project_2023, by = "Project") %>%
+  full_join(q21_emergency_2021, by = "Emergency") %>%
+  full_join(q21_emergency_2022, by = "Emergency") %>%
+  full_join(q21_emergency_2023, by = "Emergency")
+
+# Calcular la media de los totales para cada categoría
+q21_means <- q21_total %>%
+  summarise(
+    Core_mean = mean(c(total_2021, total_2022, total_2023), na.rm = TRUE),
+    Project_mean = mean(c(total_project_2021, total_project_2022, total_project_2023), na.rm = TRUE),
+    Emergency_mean = mean(c(total_emergency_2021, total_emergency_2022, total_emergency_2023), na.rm = TRUE)
+  )
+
+
 
 
 
