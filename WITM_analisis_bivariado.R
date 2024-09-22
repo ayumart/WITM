@@ -3429,11 +3429,16 @@ q21_emergency_2021<-base %>%
   summarise(total=n()) %>% 
   rename("2021"=1, "Emergency"=2)
 
+#Unir los dataframes
+q21_2021 <- q21_core_2021 %>%
+  full_join(q21_project_2021, by = "2021") %>%
+  full_join(q21_emergency_2021, by = "2021")
+
 
 # Unir los dataframes de 2021, 2022 y 2023
 q21_total <- q21_core_2021 %>%
   full_join(q21_core_2022, by = "Core") %>%
-  full_join(q21_core_2023, by = "Core", suffix = c("_2021", "_2022", "_2023")) %>%
+  full_join(q21_core_2023, by = "Core") %>%
   full_join(q21_project_2021, by = "Project") %>%
   full_join(q21_project_2022, by = "Project") %>%
   full_join(q21_project_2023, by = "Project") %>%
