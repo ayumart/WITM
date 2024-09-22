@@ -146,6 +146,97 @@ saveWorkbook(q10, archivo, overwrite = TRUE)
 #cruce por q4
 
 
+
+# Crear q10_2021_q4
+q10_2021_q4 <- base %>%
+  filter(q9_year_formation < 2022) %>% 
+  group_by(q10_budget_grp_2021) %>% 
+  summarise(Total = n(),
+            LGTBIQ= sum(q4_awid_LGBTIQ==1),
+            Young= sum(q4_awid_young==1),
+            Sex_workers=sum(q4_awid_sex==1),
+            Anti_caste=sum(q4_awid_anticaste==1),
+            Climate=sum(q4_awid_climate==1),
+            Countering_anti=sum(q4_awid_antigender==1),
+            Harm_reduction=sum(q4_awid_resisting==1),
+            Disability_rights=sum(q4_awid_disability==1)) %>%  
+  rename(Annual_budget = q10_budget_grp_2021) %>% 
+  mutate(Year = 2021)
+
+# Crear q10_2022_q4
+q10_2022_q4 <- base %>% 
+  filter(q9_year_formation < 2023) %>% 
+  group_by(q10_budget_grp_2022) %>% 
+  summarise(Total = n(),
+            LGTBIQ= sum(q4_awid_LGBTIQ==1),
+            Young= sum(q4_awid_young==1),
+            Sex_workers=sum(q4_awid_sex==1),
+            Anti_caste=sum(q4_awid_anticaste==1),
+            Climate=sum(q4_awid_climate==1),
+            Countering_anti=sum(q4_awid_antigender==1),
+            Harm_reduction=sum(q4_awid_resisting==1),
+            Disability_rights=sum(q4_awid_disability==1)) %>%
+  rename(Annual_budget = q10_budget_grp_2022) %>% 
+  mutate(Year = 2022)
+
+# Crear q10_2023_q4
+q10_2023_q4 <- base %>% 
+  filter(!is.na(q10_budget_year_2023)) %>% 
+  group_by(q10_budget_grp_2023) %>% 
+  summarise(Total = n(),
+            LGTBIQ= sum(q4_awid_LGBTIQ==1),
+            Young= sum(q4_awid_young==1),
+            Sex_workers=sum(q4_awid_sex==1),
+            Anti_caste=sum(q4_awid_anticaste==1),
+            Climate=sum(q4_awid_climate==1),
+            Countering_anti=sum(q4_awid_antigender==1),
+            Harm_reduction=sum(q4_awid_resisting==1),
+            Disability_rights=sum(q4_awid_disability==1)) %>% 
+  rename(Annual_budget = q10_budget_grp_2023) %>% 
+  mutate(Year = 2023)
+
+
+# Unir los dataframes
+q10_grouped_q4 <- bind_rows(q10_2021_q4, q10_2022_q4, q10_2023_q4)
+
+
+# Calcular el promedio para cada categoría de Annual_budget y redondear a 0 decimales
+q10_promedios <- q10_grouped_q4 %>%
+  group_by(Annual_budget) %>%
+  summarise(
+    Promedio_Total = round(mean(Total, na.rm = TRUE), 0),
+    Promedio_LGTBIQ = round(mean(LGTBIQ, na.rm = TRUE), 0),
+    Promedio_Young = round(mean(Young, na.rm = TRUE), 0),
+    Promedio_Sex_workers = round(mean(Sex_workers, na.rm = TRUE), 0),
+    Promedio_Anti_caste = round(mean(Anti_caste, na.rm = TRUE), 0),
+    Promedio_Climate = round(mean(Climate, na.rm = TRUE), 0),
+    Promedio_Countering_anti = round(mean(Countering_anti, na.rm = TRUE), 0),
+    Promedio_Harm_reduction = round(mean(Harm_reduction, na.rm = TRUE), 0),
+    Promedio_Disability_rights = round(mean(Disability_rights, na.rm = TRUE), 0)
+  ) %>%
+  arrange(Annual_budget) 
+
+
+
+q10 <- loadWorkbook(archivo)
+addWorksheet(q10, sheetName = "q10_q4")
+# Escribir las tablas en la misma hoja
+writeData(q10, "q10_q4", "Table for 2021", startRow = 1, startCol = 1)
+writeData(q10, "q10_q4", q10_2021_q4, startRow = 2, startCol = 1, withFilter = TRUE)
+# Agregar un espacio entre tablas
+writeData(q10, "q10_q4", "Table for 2022", startRow = nrow(q10_2021_q4) + 4, startCol = 1)
+writeData(q10, "q10_q4", q10_2022_q4, startRow = nrow(q10_2021_q4) + 5, startCol = 1, withFilter = TRUE)
+# Agregar otro espacio
+writeData(q10, "q10_q4", "Table for 2023", startRow = nrow(q10_2021_q4) + nrow(q10_2022_q4) + 8, startCol = 1)
+writeData(q10, "q10_q4", q10_2023_q4, startRow = nrow(q10_2021_q4) + nrow(q10_2022_q4) + 9, startCol = 1, withFilter = TRUE)
+saveWorkbook(q10, archivo, overwrite = TRUE)
+
+q10 <- loadWorkbook(archivo)
+addWorksheet(q10, sheetName = "q10_q4_media")
+writeData(q10, sheet = "q10_q4_media", x = q10_promedios)
+saveWorkbook(q10, archivo, overwrite = TRUE)
+
+
 ####
 
 #cruce por q5 registrados
@@ -279,6 +370,98 @@ writeData(q10, sheet = "q10_q6_media", x = q10_media_table)
 saveWorkbook(q10, archivo, overwrite = TRUE)
 
 #######
+
+#cruce por región: q7
+
+# Crear q10_2021_q7
+q10_2021_region <- base %>%
+  filter(q9_year_formation < 2022) %>% 
+  group_by(q10_budget_grp_2021) %>% 
+  summarise(Total= n(),
+            "1. Latin America & the Caribbean"=sum(region_1==1),
+            "2. Western Europe & North America"=sum(region_2==1),
+            "3. Eastern, Southeast and Central Europe"=sum(region_3==1),
+            "4. Africa"= sum(region_4==1),
+            "5. Asia & the Pacific"=sum(region_5==1),
+            "6. Central Asia & Caucasus"=sum(region_6==1),
+            "7. South West Asia/Middle East & North Africa"=sum(region_7==1))%>%  
+  rename(Annual_budget = q10_budget_grp_2021) %>% 
+  mutate(Year = 2021)
+
+# Crear q10_2022_q7
+q10_2022_region <- base %>% 
+  filter(q9_year_formation < 2023) %>% 
+  group_by(q10_budget_grp_2022) %>% 
+  summarise(Total= n(),
+            "1. Latin America & the Caribbean"=sum(region_1==1),
+            "2. Western Europe & North America"=sum(region_2==1),
+            "3. Eastern, Southeast and Central Europe"=sum(region_3==1),
+            "4. Africa"= sum(region_4==1),
+            "5. Asia & the Pacific"=sum(region_5==1),
+            "6. Central Asia & Caucasus"=sum(region_6==1),
+            "7. South West Asia/Middle East & North Africa"=sum(region_7==1))%>%
+  rename(Annual_budget = q10_budget_grp_2022) %>% 
+  mutate(Year = 2022)
+
+# Crear q10_2023_q7
+q10_2023_region <- base %>% 
+  filter(!is.na(q10_budget_year_2023)) %>% 
+  group_by(q10_budget_grp_2023) %>% 
+  summarise(Total= n(),
+            "1. Latin America & the Caribbean"=sum(region_1==1),
+            "2. Western Europe & North America"=sum(region_2==1),
+            "3. Eastern, Southeast and Central Europe"=sum(region_3==1),
+            "4. Africa"= sum(region_4==1),
+            "5. Asia & the Pacific"=sum(region_5==1),
+            "6. Central Asia & Caucasus"=sum(region_6==1),
+            "7. South West Asia/Middle East & North Africa"=sum(region_7==1)) %>% 
+  rename(Annual_budget = q10_budget_grp_2023) %>% 
+  mutate(Year = 2023)
+
+
+# Unir los dataframes
+q10_grouped_region <- bind_rows(q10_2021_region, q10_2022_region, q10_2023_region)
+
+
+# Calcular el promedio para cada categoría de Annual_budget y redondear a 0 decimales
+q10_promedios_region <- q10_grouped_region %>%
+  group_by(Annual_budget) %>%
+  summarise(
+    Promedio_Total = round(mean(Total, na.rm = TRUE), 0),
+    Promedio_Latin_America = round(mean(`1. Latin America & the Caribbean`, na.rm = TRUE), 0),
+    Promedio_Western_Europe = round(mean(`2. Western Europe & North America`, na.rm = TRUE), 0),
+    Promedio_Eastern_Europe = round(mean(`3. Eastern, Southeast and Central Europe`, na.rm = TRUE), 0),
+    Promedio_Africa = round(mean(`4. Africa`, na.rm = TRUE), 0),
+    Promedio_Asia_Pacific = round(mean(`5. Asia & the Pacific`, na.rm = TRUE), 0),
+    Promedio_Central_Asia = round(mean(`6. Central Asia & Caucasus`, na.rm = TRUE), 0),
+    Promedio_South_West_Asia = round(mean(`7. South West Asia/Middle East & North Africa`, na.rm = TRUE), 0)
+  ) %>%
+  arrange(Annual_budget)  # Opcional: ordenar por Annual_budget
+
+
+
+q10 <- loadWorkbook(archivo)
+addWorksheet(q10, sheetName = "q10_region")
+# Escribir las tablas en la misma hoja
+writeData(q10, "q10_region", "Table for 2021", startRow = 1, startCol = 1)
+writeData(q10, "q10_region", q10_2021_region, startRow = 2, startCol = 1, withFilter = TRUE)
+# Agregar un espacio entre tablas
+writeData(q10, "q10_region", "Table for 2022", startRow = nrow(q10_2021_region) + 4, startCol = 1)
+writeData(q10, "q10_region", q10_2022_region, startRow = nrow(q10_2021_region) + 5, startCol = 1, withFilter = TRUE)
+# Agregar otro espacio
+writeData(q10, "q10_region", "Table for 2023", startRow = nrow(q10_2021_region) + nrow(q10_2022_region) + 8, startCol = 1)
+writeData(q10, "q10_region", q10_2023_region, startRow = nrow(q10_2021_region) + nrow(q10_2022_region) + 9, startCol = 1, withFilter = TRUE)
+saveWorkbook(q10, archivo, overwrite = TRUE)
+
+q10 <- loadWorkbook(archivo)
+addWorksheet(q10, sheetName = "q10_region_media")
+writeData(q10, sheet = "q10_region_media", x = q10_promedios_region)
+saveWorkbook(q10, archivo, overwrite = TRUE)
+
+
+
+#######
+
 
 ## cruce por q9 year of formation
 
