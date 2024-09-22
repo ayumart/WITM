@@ -2840,6 +2840,180 @@ saveWorkbook(q19, archivo, overwrite = TRUE)
 
 ###
 
+#Cruce por region:q7
+
+
+
+q19_region_1 <- base %>%
+  filter( !is.na(q19_lose_funding) & region_1==1) %>%
+  summarise(Total= round(n(),0),
+            No=sum(q19_lose_funding.no==1, na.rm=TRUE),
+            Multilateral = sum(q19_lose_funding.y_multilateral_funders == 1, na.rm = TRUE),
+            Bilateral = sum(q19_lose_funding.y_bilateral_funders == 1, na.rm = TRUE),
+            Philanthropic = sum(q19_lose_funding.y_philanthropic_foundations == 1, na.rm = TRUE),
+            Womens = sum(q19_lose_funding.y_womens_feminist_funds == 1, na.rm = TRUE),
+            Private = sum(q19_lose_funding.y_private_sector == 1, na.rm = TRUE),
+            Ingos = sum(q19_lose_funding.y_ingos == 1, na.rm = TRUE),
+            Individual = sum(q19_lose_funding.y_individual_donors == 1, na.rm = TRUE),
+            Goverments = sum(q19_lose_funding.y_national_goverment== 1, na.rm = TRUE),
+            Other = sum(q19_lose_funding.y_other == 1, na.rm = TRUE)) %>% 
+  pivot_longer(cols = everything(),
+               names_to = "Source",
+               values_to = "1. Latin America & the Caribbean")
+
+q19_region_2 <- base %>%
+  filter( !is.na(q19_lose_funding) & region_2==1) %>%
+  summarise(Total= round(n(),0),
+            No=sum(q19_lose_funding.no==1, na.rm=TRUE),
+            Multilateral = sum(q19_lose_funding.y_multilateral_funders == 1, na.rm = TRUE),
+            Bilateral = sum(q19_lose_funding.y_bilateral_funders == 1, na.rm = TRUE),
+            Philanthropic = sum(q19_lose_funding.y_philanthropic_foundations == 1, na.rm = TRUE),
+            Womens = sum(q19_lose_funding.y_womens_feminist_funds == 1, na.rm = TRUE),
+            Private = sum(q19_lose_funding.y_private_sector == 1, na.rm = TRUE),
+            Ingos = sum(q19_lose_funding.y_ingos == 1, na.rm = TRUE),
+            Individual = sum(q19_lose_funding.y_individual_donors == 1, na.rm = TRUE),
+            Goverments = sum(q19_lose_funding.y_national_goverment== 1, na.rm = TRUE),
+            Other = sum(q19_lose_funding.y_other == 1, na.rm = TRUE)) %>% 
+  pivot_longer(cols = everything(),
+               names_to = "Source",
+               values_to = "2. Western Europe & North America")
+
+
+
+
+
+q19_region_3 <- base %>%
+  filter( !is.na(q19_lose_funding) & region_3==1) %>%
+  summarise(Total= round(n(),0),
+            No=sum(q19_lose_funding.no==1, na.rm=TRUE),
+            Multilateral = sum(q19_lose_funding.y_multilateral_funders == 1, na.rm = TRUE),
+            Bilateral = sum(q19_lose_funding.y_bilateral_funders == 1, na.rm = TRUE),
+            Philanthropic = sum(q19_lose_funding.y_philanthropic_foundations == 1, na.rm = TRUE),
+            Womens = sum(q19_lose_funding.y_womens_feminist_funds == 1, na.rm = TRUE),
+            Private = sum(q19_lose_funding.y_private_sector == 1, na.rm = TRUE),
+            Ingos = sum(q19_lose_funding.y_ingos == 1, na.rm = TRUE),
+            Individual = sum(q19_lose_funding.y_individual_donors == 1, na.rm = TRUE),
+            Goverments = sum(q19_lose_funding.y_national_goverment== 1, na.rm = TRUE),
+            Other = sum(q19_lose_funding.y_other == 1, na.rm = TRUE)) %>%  
+  pivot_longer(cols = everything(),
+               names_to = "Source",
+               values_to = "3. Eastern, Southeast and Central Europe")
+
+q19_region_4 <- base %>%
+  filter( !is.na(q19_lose_funding) & region_4==1) %>%
+  summarise(Total= round(n(),0),
+            No=sum(q19_lose_funding.no==1, na.rm=TRUE),
+            Multilateral = sum(q19_lose_funding.y_multilateral_funders == 1, na.rm = TRUE),
+            Bilateral = sum(q19_lose_funding.y_bilateral_funders == 1, na.rm = TRUE),
+            Philanthropic = sum(q19_lose_funding.y_philanthropic_foundations == 1, na.rm = TRUE),
+            Womens = sum(q19_lose_funding.y_womens_feminist_funds == 1, na.rm = TRUE),
+            Private = sum(q19_lose_funding.y_private_sector == 1, na.rm = TRUE),
+            Ingos = sum(q19_lose_funding.y_ingos == 1, na.rm = TRUE),
+            Individual = sum(q19_lose_funding.y_individual_donors == 1, na.rm = TRUE),
+            Goverments = sum(q19_lose_funding.y_national_goverment== 1, na.rm = TRUE),
+            Other = sum(q19_lose_funding.y_other == 1, na.rm = TRUE)) %>% 
+  pivot_longer(cols = everything(),
+               names_to = "Source",
+               values_to = "4. Africa")
+
+
+q19_region_5 <- base %>%
+  filter( !is.na(q19_lose_funding) & region_5==1) %>%
+  summarise(Total= round(n(),0),
+            No=sum(q19_lose_funding.no==1, na.rm=TRUE),
+            Multilateral = sum(q19_lose_funding.y_multilateral_funders == 1, na.rm = TRUE),
+            Bilateral = sum(q19_lose_funding.y_bilateral_funders == 1, na.rm = TRUE),
+            Philanthropic = sum(q19_lose_funding.y_philanthropic_foundations == 1, na.rm = TRUE),
+            Womens = sum(q19_lose_funding.y_womens_feminist_funds == 1, na.rm = TRUE),
+            Private = sum(q19_lose_funding.y_private_sector == 1, na.rm = TRUE),
+            Ingos = sum(q19_lose_funding.y_ingos == 1, na.rm = TRUE),
+            Individual = sum(q19_lose_funding.y_individual_donors == 1, na.rm = TRUE),
+            Goverments = sum(q19_lose_funding.y_national_goverment== 1, na.rm = TRUE),
+            Other = sum(q19_lose_funding.y_other == 1, na.rm = TRUE)) %>% 
+  pivot_longer(cols = everything(),
+               names_to = "Source",
+               values_to = "5. Asia & the Pacific")
+
+
+q19_region_6 <- base %>%
+  filter( !is.na(q19_lose_funding) & region_6==1) %>%
+  summarise(Total= round(n(),0),
+            No=sum(q19_lose_funding.no==1, na.rm=TRUE),
+            Multilateral = sum(q19_lose_funding.y_multilateral_funders == 1, na.rm = TRUE),
+            Bilateral = sum(q19_lose_funding.y_bilateral_funders == 1, na.rm = TRUE),
+            Philanthropic = sum(q19_lose_funding.y_philanthropic_foundations == 1, na.rm = TRUE),
+            Womens = sum(q19_lose_funding.y_womens_feminist_funds == 1, na.rm = TRUE),
+            Private = sum(q19_lose_funding.y_private_sector == 1, na.rm = TRUE),
+            Ingos = sum(q19_lose_funding.y_ingos == 1, na.rm = TRUE),
+            Individual = sum(q19_lose_funding.y_individual_donors == 1, na.rm = TRUE),
+            Goverments = sum(q19_lose_funding.y_national_goverment== 1, na.rm = TRUE),
+            Other = sum(q19_lose_funding.y_other == 1, na.rm = TRUE)) %>% 
+  pivot_longer(cols = everything(),
+               names_to = "Source",
+               values_to = "6. Central Asia & Caucasus")
+
+q19_region_7 <- base %>%
+  filter( !is.na(q19_lose_funding) & region_7==1) %>%
+  summarise(Total= round(n(),0),
+            No=sum(q19_lose_funding.no==1, na.rm=TRUE),
+            Multilateral = sum(q19_lose_funding.y_multilateral_funders == 1, na.rm = TRUE),
+            Bilateral = sum(q19_lose_funding.y_bilateral_funders == 1, na.rm = TRUE),
+            Philanthropic = sum(q19_lose_funding.y_philanthropic_foundations == 1, na.rm = TRUE),
+            Womens = sum(q19_lose_funding.y_womens_feminist_funds == 1, na.rm = TRUE),
+            Private = sum(q19_lose_funding.y_private_sector == 1, na.rm = TRUE),
+            Ingos = sum(q19_lose_funding.y_ingos == 1, na.rm = TRUE),
+            Individual = sum(q19_lose_funding.y_individual_donors == 1, na.rm = TRUE),
+            Goverments = sum(q19_lose_funding.y_national_goverment== 1, na.rm = TRUE),
+            Other = sum(q19_lose_funding.y_other == 1, na.rm = TRUE)) %>% 
+  pivot_longer(cols = everything(),
+               names_to = "Source",
+               values_to = "7. South West Asia/Middle East & North Africa")
+
+
+
+q19_region_total <- q19_region_1 %>%
+  left_join(q19_region_2, by = "Source") %>%
+  left_join(q19_region_3, by = "Source") %>%
+  left_join(q19_region_4, by = "Source") %>%
+  left_join(q19_region_5, by = "Source") %>%
+  left_join(q19_region_6, by = "Source") %>%
+  left_join(q19_region_7, by = "Source")
+
+
+
+q19 <- loadWorkbook(archivo)
+addWorksheet(q19, sheetName = "q19_region")
+writeData(q19, sheet = "q19_region", x = q19_region_total)
+saveWorkbook(q19, archivo, overwrite = TRUE)
+
+
+###
+
+#Cruce por q9
+
+q19_q9 <- base %>%
+  filter(!is.na(q19_lose_funding)) %>%
+  group_by(q9_year_formation_agrup) %>% 
+  summarise(Total= round(n(),0),
+            No=sum(q19_lose_funding.no==1, na.rm=TRUE),
+            Multilateral = sum(q19_lose_funding.y_multilateral_funders == 1, na.rm = TRUE),
+            Bilateral = sum(q19_lose_funding.y_bilateral_funders == 1, na.rm = TRUE),
+            Philanthropic = sum(q19_lose_funding.y_philanthropic_foundations == 1, na.rm = TRUE),
+            Womens = sum(q19_lose_funding.y_womens_feminist_funds == 1, na.rm = TRUE),
+            Private = sum(q19_lose_funding.y_private_sector == 1, na.rm = TRUE),
+            Ingos = sum(q19_lose_funding.y_ingos == 1, na.rm = TRUE),
+            Individual = sum(q19_lose_funding.y_individual_donors == 1, na.rm = TRUE),
+            Goverments = sum(q19_lose_funding.y_national_goverment== 1, na.rm = TRUE),
+            Other = sum(q19_lose_funding.y_other == 1, na.rm = TRUE))
+
+
+q19 <- loadWorkbook(archivo)
+addWorksheet(q19, sheetName = "q19_q9")
+writeData(q19, sheet = "q19_q9", x = q19_q9)
+saveWorkbook(q19, archivo, overwrite = TRUE)
+
+###
+
 #Cruce por q10
 
 # Crear q10_2021_q19
@@ -3617,6 +3791,162 @@ writeData(q28, sheet = "q28_q6", x = q28_q6)
 saveWorkbook(q28, archivo, overwrite = TRUE)
 
 ###
+
+
+#Cruce por region:q7
+
+
+
+q28_region_1 <- base %>%
+  filter( !is.na(q28_autonomous_resourcing) & region_1==1) %>%
+  summarise(Total= round(n(),0),
+            None = sum(q28_autonomous_resourcing.none == 1, na.rm = TRUE),
+            Volunteering = sum(q28_autonomous_resourcing.volunteering == 1, na.rm = TRUE),
+            Membership_fees = sum(q28_autonomous_resourcing.membership_fees == 1, na.rm = TRUE),
+            Product_sales = sum(q28_autonomous_resourcing.product_sales == 1, na.rm = TRUE),
+            Service_sales = sum(q28_autonomous_resourcing.service_sales == 1, na.rm = TRUE),
+            Property_rent = sum(q28_autonomous_resourcing.property_rent_or_lease == 1, na.rm = TRUE),
+            Donations = sum(q28_autonomous_resourcing.donations == 1, na.rm = TRUE),
+            crowdfunding = sum(q28_autonomous_resourcing.crowdfunding== 1, na.rm = TRUE),
+            In_kind = sum(q28_autonomous_resourcing.in_kind_contributions== 1, na.rm = TRUE),
+            Mutual_aid = sum(q28_autonomous_resourcing.mutual_aid== 1, na.rm = TRUE),
+            Other = sum(q28_autonomous_resourcing.98== 1, na.rm = TRUE))  %>% 
+  pivot_longer(cols = everything(),
+               names_to = "Source",
+               values_to = "1. Latin America & the Caribbean")
+
+q28_region_2 <- base %>%
+  filter( !is.na(q19_lose_funding) & region_2==1) %>%
+  summarise(Total= round(n(),0),
+            None = sum(q28_autonomous_resourcing.none == 1, na.rm = TRUE),
+            Volunteering = sum(q28_autonomous_resourcing.volunteering == 1, na.rm = TRUE),
+            Membership_fees = sum(q28_autonomous_resourcing.membership_fees == 1, na.rm = TRUE),
+            Product_sales = sum(q28_autonomous_resourcing.product_sales == 1, na.rm = TRUE),
+            Service_sales = sum(q28_autonomous_resourcing.service_sales == 1, na.rm = TRUE),
+            Property_rent = sum(q28_autonomous_resourcing.property_rent_or_lease == 1, na.rm = TRUE),
+            Donations = sum(q28_autonomous_resourcing.donations == 1, na.rm = TRUE),
+            crowdfunding = sum(q28_autonomous_resourcing.crowdfunding== 1, na.rm = TRUE),
+            In_kind = sum(q28_autonomous_resourcing.in_kind_contributions== 1, na.rm = TRUE),
+            Mutual_aid = sum(q28_autonomous_resourcing.mutual_aid== 1, na.rm = TRUE),
+            Other = sum(q28_autonomous_resourcing.98== 1, na.rm = TRUE))  %>% 
+  pivot_longer(cols = everything(),
+               names_to = "Source",
+               values_to = "2. Western Europe & North America")
+
+
+
+
+
+q28_region_3 <- base %>%
+  filter( !is.na(q28_autonomous_resourcing) & region_3==1) %>%
+  summarise(Total= round(n(),0),
+            None = sum(q28_autonomous_resourcing.none == 1, na.rm = TRUE),
+            Volunteering = sum(q28_autonomous_resourcing.volunteering == 1, na.rm = TRUE),
+            Membership_fees = sum(q28_autonomous_resourcing.membership_fees == 1, na.rm = TRUE),
+            Product_sales = sum(q28_autonomous_resourcing.product_sales == 1, na.rm = TRUE),
+            Service_sales = sum(q28_autonomous_resourcing.service_sales == 1, na.rm = TRUE),
+            Property_rent = sum(q28_autonomous_resourcing.property_rent_or_lease == 1, na.rm = TRUE),
+            Donations = sum(q28_autonomous_resourcing.donations == 1, na.rm = TRUE),
+            crowdfunding = sum(q28_autonomous_resourcing.crowdfunding== 1, na.rm = TRUE),
+            In_kind = sum(q28_autonomous_resourcing.in_kind_contributions== 1, na.rm = TRUE),
+            Mutual_aid = sum(q28_autonomous_resourcing.mutual_aid== 1, na.rm = TRUE),
+            Other = sum(q28_autonomous_resourcing.98== 1, na.rm = TRUE))  %>%  
+  pivot_longer(cols = everything(),
+               names_to = "Source",
+               values_to = "3. Eastern, Southeast and Central Europe")
+
+q28_region_4 <- base %>%
+  filter( !is.na(q28_autonomous_resourcing) & region_4==1) %>%
+  summarise(Total= round(n(),0),
+            None = sum(q28_autonomous_resourcing.none == 1, na.rm = TRUE),
+            Volunteering = sum(q28_autonomous_resourcing.volunteering == 1, na.rm = TRUE),
+            Membership_fees = sum(q28_autonomous_resourcing.membership_fees == 1, na.rm = TRUE),
+            Product_sales = sum(q28_autonomous_resourcing.product_sales == 1, na.rm = TRUE),
+            Service_sales = sum(q28_autonomous_resourcing.service_sales == 1, na.rm = TRUE),
+            Property_rent = sum(q28_autonomous_resourcing.property_rent_or_lease == 1, na.rm = TRUE),
+            Donations = sum(q28_autonomous_resourcing.donations == 1, na.rm = TRUE),
+            crowdfunding = sum(q28_autonomous_resourcing.crowdfunding== 1, na.rm = TRUE),
+            In_kind = sum(q28_autonomous_resourcing.in_kind_contributions== 1, na.rm = TRUE),
+            Mutual_aid = sum(q28_autonomous_resourcing.mutual_aid== 1, na.rm = TRUE),
+            Other = sum(q28_autonomous_resourcing.98== 1, na.rm = TRUE))  %>% 
+  pivot_longer(cols = everything(),
+               names_to = "Source",
+               values_to = "4. Africa")
+
+
+q28_region_5 <- base %>%
+  filter( !is.na(q28_autonomous_resourcing) & region_5==1) %>%
+  summarise(Total= round(n(),0),
+            None = sum(q28_autonomous_resourcing.none == 1, na.rm = TRUE),
+            Volunteering = sum(q28_autonomous_resourcing.volunteering == 1, na.rm = TRUE),
+            Membership_fees = sum(q28_autonomous_resourcing.membership_fees == 1, na.rm = TRUE),
+            Product_sales = sum(q28_autonomous_resourcing.product_sales == 1, na.rm = TRUE),
+            Service_sales = sum(q28_autonomous_resourcing.service_sales == 1, na.rm = TRUE),
+            Property_rent = sum(q28_autonomous_resourcing.property_rent_or_lease == 1, na.rm = TRUE),
+            Donations = sum(q28_autonomous_resourcing.donations == 1, na.rm = TRUE),
+            crowdfunding = sum(q28_autonomous_resourcing.crowdfunding== 1, na.rm = TRUE),
+            In_kind = sum(q28_autonomous_resourcing.in_kind_contributions== 1, na.rm = TRUE),
+            Mutual_aid = sum(q28_autonomous_resourcing.mutual_aid== 1, na.rm = TRUE),
+            Other = sum(q28_autonomous_resourcing.98== 1, na.rm = TRUE)) %>% 
+  pivot_longer(cols = everything(),
+               names_to = "Source",
+               values_to = "5. Asia & the Pacific")
+
+
+q28_region_6 <- base %>%
+  filter( !is.na(q28_autonomous_resourcing) & region_6==1) %>%
+  summarise(Total= round(n(),0),
+            None = sum(q28_autonomous_resourcing.none == 1, na.rm = TRUE),
+            Volunteering = sum(q28_autonomous_resourcing.volunteering == 1, na.rm = TRUE),
+            Membership_fees = sum(q28_autonomous_resourcing.membership_fees == 1, na.rm = TRUE),
+            Product_sales = sum(q28_autonomous_resourcing.product_sales == 1, na.rm = TRUE),
+            Service_sales = sum(q28_autonomous_resourcing.service_sales == 1, na.rm = TRUE),
+            Property_rent = sum(q28_autonomous_resourcing.property_rent_or_lease == 1, na.rm = TRUE),
+            Donations = sum(q28_autonomous_resourcing.donations == 1, na.rm = TRUE),
+            crowdfunding = sum(q28_autonomous_resourcing.crowdfunding== 1, na.rm = TRUE),
+            In_kind = sum(q28_autonomous_resourcing.in_kind_contributions== 1, na.rm = TRUE),
+            Mutual_aid = sum(q28_autonomous_resourcing.mutual_aid== 1, na.rm = TRUE),
+            Other = sum(q28_autonomous_resourcing.98== 1, na.rm = TRUE))  %>% 
+  pivot_longer(cols = everything(),
+               names_to = "Source",
+               values_to = "6. Central Asia & Caucasus")
+
+q28_region_7 <- base %>%
+  filter( !is.na(q28_autonomous_resourcing) & region_7==1) %>%
+  summarise(Total= round(n(),0),
+            None = sum(q28_autonomous_resourcing.none == 1, na.rm = TRUE),
+            Volunteering = sum(q28_autonomous_resourcing.volunteering == 1, na.rm = TRUE),
+            Membership_fees = sum(q28_autonomous_resourcing.membership_fees == 1, na.rm = TRUE),
+            Product_sales = sum(q28_autonomous_resourcing.product_sales == 1, na.rm = TRUE),
+            Service_sales = sum(q28_autonomous_resourcing.service_sales == 1, na.rm = TRUE),
+            Property_rent = sum(q28_autonomous_resourcing.property_rent_or_lease == 1, na.rm = TRUE),
+            Donations = sum(q28_autonomous_resourcing.donations == 1, na.rm = TRUE),
+            crowdfunding = sum(q28_autonomous_resourcing.crowdfunding== 1, na.rm = TRUE),
+            In_kind = sum(q28_autonomous_resourcing.in_kind_contributions== 1, na.rm = TRUE),
+            Mutual_aid = sum(q28_autonomous_resourcing.mutual_aid== 1, na.rm = TRUE),
+            Other = sum(q28_autonomous_resourcing.98== 1, na.rm = TRUE))  %>% 
+  pivot_longer(cols = everything(),
+               names_to = "Source",
+               values_to = "7. South West Asia/Middle East & North Africa")
+
+
+
+q28_region_total <- q28_region_1 %>%
+  left_join(q28_region_2, by = "Source") %>%
+  left_join(q28_region_3, by = "Source") %>%
+  left_join(q28_region_4, by = "Source") %>%
+  left_join(q28_region_5, by = "Source") %>%
+  left_join(q28_region_6, by = "Source") %>%
+  left_join(q28_region_7, by = "Source")
+
+
+
+q28 <- loadWorkbook(archivo)
+addWorksheet(q28, sheetName = "q28_region")
+writeData(q28, sheet = "q28_region", x = q28_region_total)
+saveWorkbook(q28, archivo, overwrite = TRUE)
+
+####
 
 
 
