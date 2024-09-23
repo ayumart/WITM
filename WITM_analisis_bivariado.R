@@ -1126,26 +1126,6 @@ saveWorkbook(q14, archivo, overwrite = TRUE)
 
 #cruce por región
 
-q30_region<-base %>% 
-  filter(!is.na(q30_shift_priorities)) %>% 
-  group_by(q30_shift_priorities) %>% 
-  summarise(Total= n(),
-            "1. Latin America & the Caribbean"=sum(region_1==1),
-            "2. Western Europe & North America"=sum(region_2==1),
-            "3. Eastern, Southeast and Central Europe"=sum(region_3==1),
-            "4. Africa"= sum(region_4==1),
-            "5. Asia & the Pacific"=sum(region_5==1),
-            "6. Central Asia & Caucasus"=sum(region_6==1),
-            "7. South West Asia/Middle East & North Africa"=sum(region_7==1))
-
-
-
-q30 <- loadWorkbook(archivo)
-addWorksheet(q30, sheetName = "q30_region")
-writeData(q30, sheet = "q30_region", x = q30_region)
-saveWorkbook(q30, archivo, overwrite = TRUE)
-
-
 q14_2023_region <- base %>%
   filter(q13_ext_funding == "yes") %>%
   mutate(q14_funding_annual_budget_2023=case_when(
@@ -2183,7 +2163,345 @@ saveWorkbook(q16, archivo, overwrite = TRUE)
 
 #Cruce por q5
 
-names(base)
+# MULTIRATERAL
+q16_multirateral_2023_q5 <- datos %>% 
+  filter(q13_ext_funding == "yes" & q15_key_sources.multilateral_funders == 1) %>% 
+  group_by(q16_funding_source_2023_multilateral, q5) %>% 
+  summarise(n = n(), .groups = 'drop') %>%
+  mutate(Type = "Multirateral", Year = "2023") %>%
+  rename(Funding_Source = q16_funding_source_2023_multilateral)
+
+# BILATERAL
+q16_bilateral_2023_q5 <- datos %>% 
+  filter(q13_ext_funding == "yes" & q15_key_sources.bilateral_funders == 1) %>% 
+  group_by(q16_funding_source_2023_bilateral, q5) %>% 
+  summarise(n = n(), .groups = 'drop') %>%
+  mutate(Type = "Bilateral", Year = "2023") %>%
+  rename(Funding_Source = q16_funding_source_2023_bilateral)
+
+# PHILANTHROPIC
+q16_philanthropic_2023_q5 <- datos %>% 
+  filter(q13_ext_funding == "yes" & q15_key_sources.philanthropic_foundations == 1) %>% 
+  group_by(q16_funding_source_2023_philanthropic, q5) %>% 
+  summarise(n = n(), .groups = 'drop') %>%
+  mutate(Type = "Philanthropic", Year = "2023") %>%
+  rename(Funding_Source = q16_funding_source_2023_philanthropic)
+
+# FEMINIST
+q16_feminist_2023_q5 <- datos %>% 
+  filter(q13_ext_funding == "yes" & q15_key_sources.womens_feminist_funds == 1) %>% 
+  group_by(q16_funding_source_2023_feminist, q5) %>% 
+  summarise(n = n(), .groups = 'drop') %>%
+  mutate(Type = "Feminist", Year = "2023") %>%
+  rename(Funding_Source = q16_funding_source_2023_feminist)
+
+# PRIVATE
+q16_private_2023_q5 <- datos %>% 
+  filter(q13_ext_funding == "yes" & q15_key_sources.private_sector == 1) %>% 
+  group_by(q16_funding_source_2023_private, q5) %>% 
+  summarise(n = n(), .groups = 'drop') %>%
+  mutate(Type = "Private", Year = "2023") %>%
+  rename(Funding_Source = q16_funding_source_2023_private)
+
+# INGOS
+q16_ingos_2023_q5 <- datos %>% 
+  filter(q13_ext_funding == "yes" & q15_key_sources.ingos == 1) %>% 
+  group_by(q16_funding_source_2023_ingos, q5) %>% 
+  summarise(n = n(), .groups = 'drop') %>%
+  mutate(Type = "INGOS", Year = "2023") %>%
+  rename(Funding_Source = q16_funding_source_2023_ingos)
+
+# INDIVIDUAL
+q16_individual_2023_q5 <- datos %>% 
+  filter(q13_ext_funding == "yes" & q15_key_sources.individual_donors == 1) %>% 
+  group_by(q16_funding_source_2023_individual, q5) %>% 
+  summarise(n = n(), .groups = 'drop') %>%
+  mutate(Type = "Individual", Year = "2023") %>%
+  rename(Funding_Source = q16_funding_source_2023_individual)
+
+# GOVERMENT
+q16_goverment_2023_q5 <- datos %>% 
+  filter(q13_ext_funding == "yes" & q15_key_sources.national_local_goverment_or_bodies == 1) %>% 
+  group_by(q16_funding_source_2023_goverment, q5) %>% 
+  summarise(n = n(), .groups = 'drop') %>%
+  mutate(Type = "Goverment", Year = "2023") %>%
+  rename(Funding_Source = q16_funding_source_2023_goverment)
+
+# OTHER
+q16_other_2023_q5 <- datos %>% 
+  filter(q13_ext_funding == "yes" & q15_key_sources.98 == 1) %>% 
+  group_by(q16_funding_source_2023_other, q5) %>% 
+  summarise(n = n(), .groups = 'drop') %>%
+  mutate(Type = "Other", Year = "2023") %>%
+  rename(Funding_Source = q16_funding_source_2023_other)
+
+# Unir todos los dataframes en uno solo
+final_q16_2023 <- bind_rows(
+  q16_multirateral_2023_q5,
+  q16_bilateral_2023_q5,
+  q16_philanthropic_2023_q5,
+  q16_feminist_2023_q5,
+  q16_private_2023_q5,
+  q16_ingos_2023_q5,
+  q16_individual_2023_q5,
+  q16_goverment_2023_q5,
+  q16_other_2023_q5
+)
+
+# Reorganizar las columnas
+final_q16_2023 <- final_q16_2023 %>%
+  select(Funding_Source, q5, n, Type, Year)
+
+# Crear un cuadro prolijo para final_q16_2023
+final_q16_2023_wide <- final_q16_2023 %>%
+  pivot_wider(names_from =Type, values_from = n, values_fill = list(n = NA)) %>% 
+  select(-"Year")
+
+
+
+#2022
+# MULTIRATERAL
+q16_multirateral_2022_q5 <- datos %>% 
+  filter(q13_ext_funding == "yes" & q15_key_sources.multilateral_funders == 1) %>% 
+  group_by(q16_funding_source_2022_multilateral, q5) %>% 
+  summarise(n = n(), .groups = 'drop') %>%
+  mutate(Type = "Multirateral", Year = "2022") %>%
+  rename(Funding_Source = q16_funding_source_2022_multilateral)
+
+# BILATERAL
+q16_bilateral_2022_q5 <- datos %>% 
+  filter(q13_ext_funding == "yes" & q15_key_sources.bilateral_funders == 1) %>% 
+  group_by(q16_funding_source_2022_bilateral, q5) %>% 
+  summarise(n = n(), .groups = 'drop') %>%
+  mutate(Type = "Bilateral", Year = "2022") %>%
+  rename(Funding_Source = q16_funding_source_2022_bilateral)
+
+# PHILANTHROPIC
+q16_philanthropic_2022_q5 <- datos %>% 
+  filter(q13_ext_funding == "yes" & q15_key_sources.philanthropic_foundations == 1) %>% 
+  group_by(q16_funding_source_2022_philanthropic, q5) %>% 
+  summarise(n = n(), .groups = 'drop') %>%
+  mutate(Type = "Philanthropic", Year = "2022") %>%
+  rename(Funding_Source = q16_funding_source_2022_philanthropic)
+
+# FEMINIST
+q16_feminist_2022_q5 <- datos %>% 
+  filter(q13_ext_funding == "yes" & q15_key_sources.womens_feminist_funds == 1) %>% 
+  group_by(q16_funding_source_2022_feminist, q5) %>% 
+  summarise(n = n(), .groups = 'drop') %>%
+  mutate(Type = "Feminist", Year = "2022") %>%
+  rename(Funding_Source = q16_funding_source_2022_feminist)
+
+# PRIVATE
+q16_private_2022_q5 <- datos %>% 
+  filter(q13_ext_funding == "yes" & q15_key_sources.private_sector == 1) %>% 
+  group_by(q16_funding_source_2022_private, q5) %>% 
+  summarise(n = n(), .groups = 'drop') %>%
+  mutate(Type = "Private", Year = "2022") %>%
+  rename(Funding_Source = q16_funding_source_2022_private)
+
+# INGOS
+q16_ingos_2022_q5 <- datos %>% 
+  filter(q13_ext_funding == "yes" & q15_key_sources.ingos == 1) %>% 
+  group_by(q16_funding_source_2022_ingos, q5) %>% 
+  summarise(n = n(), .groups = 'drop') %>%
+  mutate(Type = "INGOS", Year = "2022") %>%
+  rename(Funding_Source = q16_funding_source_2022_ingos)
+
+# INDIVIDUAL
+q16_individual_2022_q5 <- datos %>% 
+  filter(q13_ext_funding == "yes" & q15_key_sources.individual_donors == 1) %>% 
+  group_by(q16_funding_source_2022_individual, q5) %>% 
+  summarise(n = n(), .groups = 'drop') %>%
+  mutate(Type = "Individual", Year = "2022") %>%
+  rename(Funding_Source = q16_funding_source_2022_individual)
+
+# GOVERMENT
+q16_goverment_2022_q5 <- datos %>% 
+  filter(q13_ext_funding == "yes" & q15_key_sources.national_local_goverment_or_bodies == 1) %>% 
+  group_by(q16_funding_source_2022_goverment, q5) %>% 
+  summarise(n = n(), .groups = 'drop') %>%
+  mutate(Type = "Goverment", Year = "2022") %>%
+  rename(Funding_Source = q16_funding_source_2022_goverment)
+
+# OTHER
+q16_other_2022_q5 <- datos %>% 
+  filter(q13_ext_funding == "yes" & q15_key_sources.98 == 1) %>% 
+  group_by(q16_funding_source_2022_other, q5) %>% 
+  summarise(n = n(), .groups = 'drop') %>%
+  mutate(Type = "Other", Year = "2022") %>%
+  rename(Funding_Source = q16_funding_source_2022_other)
+
+# Unir todos los dataframes en uno solo
+final_q16_2022 <- bind_rows(
+  q16_multirateral_2022_q5,
+  q16_bilateral_2022_q5,
+  q16_philanthropic_2022_q5,
+  q16_feminist_2022_q5,
+  q16_private_2022_q5,
+  q16_ingos_2022_q5,
+  q16_individual_2022_q5,
+  q16_goverment_2022_q5,
+  q16_other_2022_q5
+)
+
+# Reorganizar las columnas
+final_q16_2022 <- final_q16_2022 %>%
+  select(Funding_Source, q5, n, Type, Year)
+
+# Crear un cuadro prolijo para final_q16_2023
+final_q16_2022_wide <- final_q16_2022 %>%
+  pivot_wider(names_from =Type, values_from = n, values_fill = list(n = NA)) %>% 
+  select(-"Year")
+
+
+#2021
+# MULTIRATERAL
+q16_multirateral_2021_q5 <- datos %>% 
+  filter(q13_ext_funding == "yes" & q15_key_sources.multilateral_funders == 1) %>% 
+  group_by(q16_funding_source_2021_multilateral, q5) %>% 
+  summarise(n = n(), .groups = 'drop') %>%
+  mutate(Type = "Multirateral", Year = "2021") %>%
+  rename(Funding_Source = q16_funding_source_2021_multilateral)
+
+# BILATERAL
+q16_bilateral_2021_q5 <- datos %>% 
+  filter(q13_ext_funding == "yes" & q15_key_sources.bilateral_funders == 1) %>% 
+  group_by(q16_funding_source_2021_bilateral, q5) %>% 
+  summarise(n = n(), .groups = 'drop') %>%
+  mutate(Type = "Bilateral", Year = "2021") %>%
+  rename(Funding_Source = q16_funding_source_2021_bilateral)
+
+# PHILANTHROPIC
+q16_philanthropic_2021_q5 <- datos %>% 
+  filter(q13_ext_funding == "yes" & q15_key_sources.philanthropic_foundations == 1) %>% 
+  group_by(q16_funding_source_2021_philanthropic, q5) %>% 
+  summarise(n = n(), .groups = 'drop') %>%
+  mutate(Type = "Philanthropic", Year = "2021") %>%
+  rename(Funding_Source = q16_funding_source_2021_philanthropic)
+
+# FEMINIST
+q16_feminist_2021_q5 <- datos %>% 
+  filter(q13_ext_funding == "yes" & q15_key_sources.womens_feminist_funds == 1) %>% 
+  group_by(q16_funding_source_2021_feminist, q5) %>% 
+  summarise(n = n(), .groups = 'drop') %>%
+  mutate(Type = "Feminist", Year = "2021") %>%
+  rename(Funding_Source = q16_funding_source_2021_feminist)
+
+# PRIVATE
+q16_private_2021_q5 <- datos %>% 
+  filter(q13_ext_funding == "yes" & q15_key_sources.private_sector == 1) %>% 
+  group_by(q16_funding_source_2021_private, q5) %>% 
+  summarise(n = n(), .groups = 'drop') %>%
+  mutate(Type = "Private", Year = "2021") %>%
+  rename(Funding_Source = q16_funding_source_2021_private)
+
+# INGOS
+q16_ingos_2021_q5 <- datos %>% 
+  filter(q13_ext_funding == "yes" & q15_key_sources.ingos == 1) %>% 
+  group_by(q16_funding_source_2021_ingos, q5) %>% 
+  summarise(n = n(), .groups = 'drop') %>%
+  mutate(Type = "INGOS", Year = "2021") %>%
+  rename(Funding_Source = q16_funding_source_2021_ingos)
+
+# INDIVIDUAL
+q16_individual_2021_q5 <- datos %>% 
+  filter(q13_ext_funding == "yes" & q15_key_sources.individual_donors == 1) %>% 
+  group_by(q16_funding_source_2021_individual, q5) %>% 
+  summarise(n = n(), .groups = 'drop') %>%
+  mutate(Type = "Individual", Year = "2021") %>%
+  rename(Funding_Source = q16_funding_source_2021_individual)
+
+# GOVERMENT
+q16_goverment_2021_q5 <- datos %>% 
+  filter(q13_ext_funding == "yes" & q15_key_sources.national_local_goverment_or_bodies == 1) %>% 
+  group_by(q16_funding_source_2021_goverment, q5) %>% 
+  summarise(n = n(), .groups = 'drop') %>%
+  mutate(Type = "Goverment", Year = "2021") %>%
+  rename(Funding_Source = q16_funding_source_2021_goverment)
+
+# OTHER
+q16_other_2021_q5 <- datos %>% 
+  filter(q13_ext_funding == "yes" & q15_key_sources.98 == 1) %>% 
+  group_by(q16_funding_source_2021_other, q5) %>% 
+  summarise(n = n(), .groups = 'drop') %>%
+  mutate(Type = "Other", Year = "2021") %>%
+  rename(Funding_Source = q16_funding_source_2021_other)
+
+# Unir todos los dataframes en uno solo
+final_q16_2021 <- bind_rows(
+  q16_multirateral_2021_q5,
+  q16_bilateral_2021_q5,
+  q16_philanthropic_2021_q5,
+  q16_feminist_2021_q5,
+  q16_private_2021_q5,
+  q16_ingos_2021_q5,
+  q16_individual_2021_q5,
+  q16_goverment_2021_q5,
+  q16_other_2021_q5
+)
+
+# Reorganizar las columnas
+final_q16_2021 <- final_q16_2021 %>%
+  select(Funding_Source, q5, n, Type, Year)
+
+# Crear un cuadro prolijo para final_q16_2021
+final_q16_2021_wide <- final_q16_2021 %>%
+  pivot_wider(names_from =Type, values_from = n, values_fill = list(n = NA)) %>% 
+  select(-"Year")
+
+
+
+# Unir los dataframes para 2021, 2022 y 2023
+final_q16_all <- bind_rows(
+  final_q16_2021,
+  final_q16_2022,
+  final_q16_2023
+)
+
+# Revisar el resultado final
+final_q16_all <- final_q16_all %>%
+  arrange(Year, Funding_Source) # Opcional: ordenar por año y fuente de financiamiento
+
+# Calcular la media de n por Funding_Source y q5, manteniendo las categorías de q16
+mean_funding_source_q5 <- final_q16_all %>%
+  group_by(Funding_Source, q5, Type) %>%
+  summarise(mean_n = round(mean(n, na.rm = TRUE)), .groups = 'drop')
+
+# Convertir el cuadro a un formato más visual
+mean_funding_source_q5_wide <- mean_funding_source_q5 %>%
+  pivot_wider(names_from = Type, values_from = mean_n, values_fill = list(mean_n = NA))
+
+
+q16 <- loadWorkbook(archivo)
+addWorksheet(q16, sheetName = "q16_q5_media")
+writeData(q16, sheet = "q16_q5_media", x = mean_funding_source_q5_wide)
+saveWorkbook(q16, archivo, overwrite = TRUE)
+
+# Crear hoja para las tablas anuales
+addWorksheet(q16, sheetName = "q16_q5")
+# Escribir las tablas en la misma hoja con espacios
+# Tabla para 2021
+writeData(q16, "q16_q5", "Table for 2021", startRow = 1, startCol = 1)
+writeData(q16, "q16_q5", final_q16_2021_wide, startRow = 2, startCol = 1, withFilter = TRUE)
+# Espacio entre tablas
+writeData(q16, "q16_q5", "", startRow = nrow(final_q16_2021_wide) + 3, startCol = 1)
+# Tabla para 2022
+writeData(q16, "q16_q5", "Table for 2022", startRow = nrow(final_q16_2021_wide) + 4, startCol = 1)
+writeData(q16, "q16_q5", final_q16_2022_wide, startRow = nrow(final_q16_2021_wide) + 5, startCol = 1, withFilter = TRUE)
+# Espacio entre tablas
+writeData(q16, "q16_q5", "", startRow = nrow(final_q16_2021_wide) + nrow(final_q16_2022_wide) + 6, startCol = 1)
+# Tabla para 2023
+writeData(q16, "q16_q5", "Table for 2023", startRow = nrow(final_q16_2021_wide) + nrow(final_q16_2022_wide) + 7, startCol = 1)
+writeData(q16, "q16_q5", final_q16_2023_wide, startRow = nrow(final_q16_2021_wide) + nrow(final_q16_2022_wide) + 8, startCol = 1, withFilter = TRUE)
+
+# Guardar el archivo
+saveWorkbook(q16, archivo, overwrite = TRUE)
+
+#############################################################################
+
+
+
 
 ############################################################################
 
