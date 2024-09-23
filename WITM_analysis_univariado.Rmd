@@ -955,7 +955,6 @@ q10_2021<-base %>%
   filter(q9_year_formation<2022) %>% 
   group_by(q10_budget_grp_2021) %>% 
   summarise(n=n()) %>% 
-  mutate(Percentage=round((n/sum(n))*100,1)) %>% 
   rename("Annual_budget"=q10_budget_grp_2021) %>% 
   mutate(Year=2021)
 
@@ -963,7 +962,6 @@ q10_2022<-base %>%
   filter(q9_year_formation<2023) %>% 
   group_by(q10_budget_grp_2022) %>% 
   summarise(n=n()) %>% 
-  mutate(Percentage=round((n/sum(n))*100,1)) %>% 
   rename("Annual_budget"=q10_budget_grp_2022) %>% 
   mutate(Year=2022)
 
@@ -971,7 +969,6 @@ q10_2023<-base %>%
   filter(!is.na(q10_budget_year_2023)) %>% 
   group_by(q10_budget_grp_2023) %>% 
   summarise(n=n()) %>% 
-  mutate(Percentage=round((n/sum(n))*100,1)) %>% 
   rename("Annual_budget"=q10_budget_grp_2023) %>% 
   mutate(Year=2023)
 
@@ -982,7 +979,7 @@ q10_grouped <- bind_rows(q10_2021, q10_2022, q10_2023)
 q10_grouped<-q10_grouped %>% arrange(Annual_budget)
 # Crear un nuevo data frame con los resultados
 q10_grouped <- q10_grouped %>%
-  pivot_wider(names_from = Year, values_from = c(n, Percentage)) %>% 
+  pivot_wider(names_from = Year, values_from = c(n)) 
   select(1,5:7)
 
 
