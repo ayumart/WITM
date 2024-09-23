@@ -139,6 +139,7 @@ witm<-witm %>%
 #                q4_forms_organizing.religious_ethnic_minority_rights==1 ) ~1, TRUE ~0)) %>% 
   
   
+<<<<<<< HEAD
   # mutate(q4_grouped_focus=case_when
   #        (
   #          (
@@ -155,6 +156,37 @@ witm<-witm %>%
   #              q4_forms_organizing.harm_reduction==1 |
   #              q4_forms_organizing.pleasure_bodily_care==1) ~1, TRUE ~0)) 
   # 
+=======
+  mutate(q4_grouped_focus=case_when
+         (
+           (
+             q4_forms_organizing.climate_justice==1 |
+               q4_forms_organizing.countering_anti_gender==1 |
+               q4_forms_organizing.anti_militarization==1 |
+               q4_forms_organizing.holistic_safety_protection_collective_care==1 |
+               q4_forms_organizing.resisting_war_on_drugs==1 |
+               q4_forms_organizing.economic_justice==1 |
+               q4_forms_organizing.crisis_response==1 |
+               q4_forms_organizing.digital_rights==1 |
+               q4_forms_organizing.racial_justice==1 |
+               q4_forms_organizing.information_media_freedom==1 |
+               q4_forms_organizing.harm_reduction==1 |
+               q4_forms_organizing.pleasure_bodily_care==1) ~1, TRUE ~0)) 
+
+
+#último pedido de agregación
+base<-base %>% 
+  mutate(q4_awid_LGBTIQ=case_when(q4_forms_organizing.lesbian_bisexual_queer_rights==1 | q4_forms_organizing.trans_non_binary_rights==1 |
+                                    q4_forms_organizing.intersex_rights==1 ~1, TRUE ~0)) %>% 
+  mutate(q4_awid_young=case_when(q4_forms_organizing.young_feminists==1 | q4_forms_organizing.girls_movements==1 ~1, TRUE ~0)) %>%
+  mutate(q4_awid_sex=case_when(q4_forms_organizing.sex_workers_rights==1 ~1, TRUE ~0)) %>%
+  mutate(q4_awid_nin=case_when(q4_forms_organizing.religious_ethnic_minority_rights==1 |q4_forms_organizing.anti_caste==1~1, TRUE ~0)) %>%
+  mutate(q4_awid_climate=case_when(q4_forms_organizing.climate_justice ==1 ~1, TRUE ~0)) %>%
+  mutate(q4_awid_antig=case_when(q4_forms_organizing.countering_anti_gender==1 ~1, TRUE ~0)) %>%
+  mutate(q4_awid_crisis=case_when(q4_forms_organizing.anti_militarization==1 | q4_forms_organizing.crisis_response==1 ~1, TRUE ~0)) %>%
+  mutate(q4_awid_harm=case_when(q4_forms_organizing.harm_reduction==1 |q4_forms_organizing.resisting_war_on_drugs==1  ~1, TRUE ~0))
+
+>>>>>>> a6e270c2bcaa3a33cbd76d50fc30eea4ca460245
 
 
 
