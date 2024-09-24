@@ -21,6 +21,12 @@ rm(list = ls())
 #witm <- read.csv("Data/WITM_final_cleaned_08_sept.csv")
 witm <- read.csv("Data/WITM_cleaned_09232024.csv")
 
+
+qry<-witm %>%
+  group_by(q1_description) %>% 
+  summarise(Count=n())
+qry
+
 source(file="WITM_variables_include.R") 
 
 
@@ -3439,24 +3445,24 @@ q21_2021 <- q21_core_2021 %>%
 #########
 #AYE ESTO NO ME ANDA pero no se bien que queres hacer
 
-# Unir los dataframes de 2021, 2022 y 2023
-q21_total <- q21_core_2021 %>%
-  full_join(q21_core_2022, by = "Core") %>%
-  full_join(q21_core_2023, by = "Core") %>%
-  full_join(q21_project_2021, by = "Project") %>%
-  full_join(q21_project_2022, by = "Project") %>%
-  full_join(q21_project_2023, by = "Project") %>%
-  full_join(q21_emergency_2021, by = "Emergency") %>%
-  full_join(q21_emergency_2022, by = "Emergency") %>%
-  full_join(q21_emergency_2023, by = "Emergency")
-
-# Calcular la media de los totales para cada categoría
-q21_means <- q21_total %>%
-  summarise(
-    Core_mean = mean(c(total_2021, total_2022, total_2023), na.rm = TRUE),
-    Project_mean = mean(c(total_project_2021, total_project_2022, total_project_2023), na.rm = TRUE),
-    Emergency_mean = mean(c(total_emergency_2021, total_emergency_2022, total_emergency_2023), na.rm = TRUE)
-  )
+# # Unir los dataframes de 2021, 2022 y 2023
+# q21_total <- q21_core_2021 %>%
+#   full_join(q21_core_2022, by = "Core") %>%
+#   full_join(q21_core_2023, by = "Core") %>%
+#   full_join(q21_project_2021, by = "Project") %>%
+#   full_join(q21_project_2022, by = "Project") %>%
+#   full_join(q21_project_2023, by = "Project") %>%
+#   full_join(q21_emergency_2021, by = "Emergency") %>%
+#   full_join(q21_emergency_2022, by = "Emergency") %>%
+#   full_join(q21_emergency_2023, by = "Emergency")
+# 
+# # Calcular la media de los totales para cada categoría
+# q21_means <- q21_total %>%
+#   summarise(
+#     Core_mean = mean(c(total_2021, total_2022, total_2023), na.rm = TRUE),
+#     Project_mean = mean(c(total_project_2021, total_project_2022, total_project_2023), na.rm = TRUE),
+#     Emergency_mean = mean(c(total_emergency_2021, total_emergency_2022, total_emergency_2023), na.rm = TRUE)
+#   )
 
 
 

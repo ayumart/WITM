@@ -285,6 +285,9 @@ _____
 **Spotlight themes/groups**
 
 ```{r type_grouped2, echo=F, message=F, warning=F}
+
+
+
 q4_agrup<-base %>%
   filter(!is.na(q4_forms_organizing)) %>%
   summarise(Total= round(n(),0),
@@ -304,30 +307,17 @@ q4_agrup<-base %>%
     "Countering anti-gender & anti-rights " = round(antig / Total * 100, 1),
     "Disability"  = round(disab / Total * 100, 1),
     "Harm reduction + resisting the war on drugs" = round(harm / Total * 100, 1)) %>% 
-  select(1,11:17)
+  select(1,10:17)
 
-q4_agrup<-q4_agrup%>% 
-  pivot_longer(cols = 2:8,
-               names_to = "Types",
-               values_to = "Percentage") %>% 
-  select(2:3) %>% 
-  arrange(desc(Percentage))
+q4_agrup
+# q4_agrup<-q4_agrup%>% 
+#   pivot_longer(cols = 2:8,
+#                names_to = "Types",
+#                values_to = "Percentage") %>% 
+#   select(2:3) %>% 
+#   arrange(desc(Percentage))
 
 write.xlsx2(as.data.frame(q4_agrup), "cuadros\\univariate_1.xlsx", row.names = FALSE, sheetName ="q4_agrup",append = TRUE)  
-
-ggplot(q4_agrup, aes(x = reorder(Types, Percentage), y = Percentage, fill=Types)) +
-  geom_bar(stat = "identity") +
-  geom_text(aes(label = sprintf("%.1f%%", Percentage)), hjust=-0.02, vjust = 0.5, size = 3.2) +
-  labs(title = "Forms of organizing",
-       x = " ",
-       y = "Percentage") +
-  scale_y_continuous(expand = expansion(mult = c(0, 0.1)))+
-  theme_minimal() +
-  theme(legend.position = "none",
-        panel.grid.major.x = element_blank(), # Eliminar líneas de la cuadrícula vertical
-        panel.grid.minor.x = element_blank() # Eliminar líneas de la cuadrícula vertical menores
-  )+
-  coord_flip()
 
 
 ```
@@ -881,7 +871,8 @@ q8<-base %>%
   mutate(Percentage=round((Count/sum(Count))*100,1)) %>% 
   rename("Region"=1, "Country"=2)
 
-write.xlsx2(as.data.frame(q8), "cuadros\\univariate_1.xlsx", row.names = FALSE, sheetName ="q8",append = TRUE)  
+q8
+write.xlsx2(as.data.frame(q8), "Cuadros\\univariate_2.xlsx", row.names = FALSE, sheetName ="q8_country",append = TRUE)  
 
 
 knitr::kable(q8) %>% 
