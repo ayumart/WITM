@@ -54,11 +54,11 @@ rm(list = ls())
 # OPEN CSV file
 #witm <- read.csv2("Data/WITM_csv_last.csv")
 
-witm <- read.csv("Data/WITM_final_cleaned_10_sept.csv")
+witm <- read.csv("Data/WITM_cleaned_09232024.csv")
 
 source(file="WITM_variables.R") 
 
-base<-witm
+
 
 archivo <- "cuadros/univariado.xlsx"
 
@@ -1047,7 +1047,7 @@ Q10. What was the annual budget for your group, organization and/or movement in 
 
 ```{r q10, echo=F, message=F, warning=F}
 
-rm(list=setdiff(ls(), "base"))
+
 
 #names(base)
 
@@ -2428,33 +2428,6 @@ knitr::kable(q21_2021_final) %>%
 
 
 
-```{r excel20, eval=F, echo=F, message=F, warning=F}
-
-
-#Convertir campos vacíos de la variable q20 en NA
- base <- base %>%
-  mutate(q20_loss_impact = na_if(q20_loss_impact, ""))
- 
-q20b <- base %>%
-  filter(q19_lose_funding!=1 & !is.na(q20_loss_impact)) %>%
-  summarise(
-    Total = (round(n(),0)),
-    "No big impact"=sum(q20_loss_impact.no_impact==1, na.rm=TRUE),
-    "Staff reduction"=sum(q20_loss_impact.staff_fired==1, na.rm = TRUE),
-    "Activity reduction"=sum(q20_loss_impact.activity_reduction==1, na.rm = TRUE),
-    "Discontinuation of programs or projects"=sum(q20_loss_impact.cut_programs==1, na.rm = TRUE),
-    "Staff faced a salary gap"=sum(q20_loss_impact.cut_staff_salary==1, na.rm = TRUE),
-    "Other"=sum(q20_loss_impact.98==1, na.rm=TRUE)) %>% 
-    pivot_longer(cols = everything(),
-               names_to = "Source",
-               values_to = "N")
-
-
-q20_d <- loadWorkbook(archivo)
-addWorksheet(q20_d, sheetName = "q20")
-writeData(q20_d, sheet = "q20", x = q20b)
-saveWorkbook(q20_d, archivo, overwrite = TRUE)
-```
 
 
 **--Reading help -----------------------------------------------------------------------**
@@ -4052,8 +4025,7 @@ q45<-base %>%
   summarise(Total=n()) %>% 
   mutate(Percentage=round((Total/sum(Total))*100,1)) %>% 
   arrange(desc(Percentage)) %>% 
-  rename("Previous response" = q45_previous_response) %>% 
-  mutate(Etiqueta = paste(`Previous response`, "\n", Percentage,"%"))
+  rename("Previous response" = q45_previous_response) 
 
 
 #knitr::kable(q38) %>% 
@@ -4069,8 +4041,20 @@ ggplot(q45, aes(x = "", y = Percentage, fill = `Previous response`)) +
   theme(legend.position = "none") + # Eliminar leyenda
   theme(plot.title = element_text(hjust = 0.5)) # Centrar título
 
+
 ```
+
+```{r excel45, eval=F, echo=F, message=F, warning=F}
+
+q45_d <- loadWorkbook(archivo)
+addWorksheet(q45_d, sheetName = "q45")
+writeData(q45_d, sheet = "q45", x = q45)
+saveWorkbook(q45_d, archivo, overwrite = TRUE)
+```
+
 _____
+
+
 
 
 
@@ -4100,7 +4084,13 @@ knitr::kable(q46) %>%
 
 ```
 
+```{r excel46, eval=F, echo=F, message=F, warning=F}
 
+q46_d <- loadWorkbook(archivo)
+addWorksheet(q46_d, sheetName = "q46")
+writeData(q46_d, sheet = "q46", x = q46)
+saveWorkbook(q46_d, archivo, overwrite = TRUE)
+```
 _____
 
 *Q47. Would you be open to AWID contacting you about next steps in the WITM research, including the interview?
@@ -4125,4 +4115,13 @@ knitr::kable(q47) %>%
   kable_minimal()
 
 
+```
+
+
+```{r excel47, eval=F, echo=F, message=F, warning=F}
+
+q47_d <- loadWorkbook(archivo)
+addWorksheet(q47_d, sheetName = "q47")
+writeData(q47_d, sheet = "q47", x = q47)
+saveWorkbook(q47_d, archivo, overwrite = TRUE)
 ```
