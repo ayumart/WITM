@@ -173,14 +173,23 @@ q6q5<-base %>%
           "transnationally_focused"="Transnationally",
          "globally_focused"="Global"
          ) ) %>%
-  select(q5_registered,Scope=q6_geo_scope,percentage)
+  select(q5_registered,Scope=q6_geo_scope,n,percentage)
 
 #q6q5
-qry_w<-q6q5 %>% pivot_wider(names_from = Scope, values_from = percentage) %>%
- mutate(q5_registered=recode(q5_registered, "98"="Other", "n_registered"="No registered", "y_registered"="Registered"))
+qry_w<-q6q5  %>%
+  select(q5_registered,Scope,percentage) %>% 
+  pivot_wider(names_from = Scope, values_from = percentage)
 qry_w
 
 write.xlsx2(as.data.frame(qry_w), "cuadros\\section_1.xlsx", row.names = FALSE, sheetName ="scop_by_reg",append = TRUE)    
+
+#q6q5
+qry_w<-q6q5  %>%
+  select(q5_registered,Scope,n) %>% 
+  pivot_wider(names_from = Scope, values_from = n)
+qry_w
+
+write.xlsx2(as.data.frame(qry_w), "cuadros\\section_1.xlsx", row.names = FALSE, sheetName ="scop_by_reg_abs",append = TRUE)    
 
 
 knitr::kable(qry_w) %>% 
@@ -196,7 +205,7 @@ knitr::kable(qry_w) %>%
 
 This is made now only for Locally and National organisations
 
-```{r region_q5, echo=F, message=F, warning=F}
+```{r, echo=F, message=F, warning=F}
 
 
 # 
@@ -212,7 +221,7 @@ reg_1 <- base %>%
             "7. South West Asia/Middle East & North Africa"=sum(region_7==1))
 
 reg_1
-write.xlsx2(as.data.frame(reg_1), "cuadros\\section_2.xlsx", row.names = FALSE, sheetName ="region_by_reg",append = TRUE)    
+write.xlsx2(as.data.frame(reg_1), "cuadros\\section_1.xlsx", row.names = FALSE, sheetName ="region_by_reg",append = TRUE)    
 
 
 knitr::kable(t(reg_1)) %>% 
@@ -220,7 +229,7 @@ knitr::kable(t(reg_1)) %>%
 
 ```
 
-```{r region_q5, echo=F, message=F, warning=F}
+```{r , echo=F, message=F, warning=F}
 
 
 # 
@@ -236,7 +245,7 @@ reg_2 <- base %>%
             "7. South West Asia/Middle East & North Africa"=sum(region_7==1))
 
 reg_2
-write.xlsx2(as.data.frame(reg_2), "cuadros\\section_2.xlsx", row.names = FALSE, sheetName ="region_by_scope",append = TRUE)    
+write.xlsx2(as.data.frame(reg_2), "cuadros\\section_1.xlsx", row.names = FALSE, sheetName ="region_by_scope",append = TRUE)    
 
 
 knitr::kable(t(reg_2)) %>% 
@@ -248,7 +257,7 @@ knitr::kable(t(reg_2)) %>%
 
 
 
-```{r region_q5, echo=F, message=F, warning=F}
+```{r , echo=F, message=F, warning=F}
 
 
 # 
@@ -264,7 +273,7 @@ reg_2 <- base %>%
             "7. South West Asia/Middle East & North Africa"=sum(region_7==1))
 
 reg_2
-write.xlsx2(as.data.frame(reg_2), "cuadros\\section_2.xlsx", row.names = FALSE, sheetName ="region_by_year",append = TRUE)    
+write.xlsx2(as.data.frame(reg_2), "cuadros\\section_1.xlsx", row.names = FALSE, sheetName ="region_by_year",append = TRUE)    
 
 
 knitr::kable(t(reg_2)) %>% 
@@ -293,7 +302,7 @@ q8<-base %>%
 qry_w<-q8 %>% pivot_wider(names_from = q9_year_formation_agrup, values_from = percentage) %>%
  mutate(q5_registered=recode(q5_registered, "98"="Other", "n_registered"="No registered", "y_registered"="Registered"))
 
-write.xlsx2(as.data.frame(qry_w), "cuadros\\section_2.xlsx", row.names = FALSE, sheetName ="year_by_reg",append = TRUE)    
+write.xlsx2(as.data.frame(qry_w), "cuadros\\section_1.xlsx", row.names = FALSE, sheetName ="year_by_reg",append = TRUE)    
 
 
 knitr::kable(qry_w) %>% 
@@ -340,7 +349,7 @@ q8
 qry_w<-q8 %>% pivot_wider(names_from = q9_year_formation_agrup, values_from = percentage)
        
  
-write.xlsx2(as.data.frame(qry_w), "cuadros\\section_2.xlsx", row.names = FALSE, sheetName ="year_by_scope",append = TRUE)    
+write.xlsx2(as.data.frame(qry_w), "cuadros\\section_1.xlsx", row.names = FALSE, sheetName ="year_by_scope",append = TRUE)    
 
 
 knitr::kable(qry_w) %>% 

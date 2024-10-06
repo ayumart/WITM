@@ -306,8 +306,8 @@ q4_agrup<-base %>%
     "Climate and environmental justice " = round(climate/ Total * 100, 1),
     "Countering anti-gender & anti-rights " = round(antig / Total * 100, 1),
     "Disability"  = round(disab / Total * 100, 1),
-    "Harm reduction + resisting the war on drugs" = round(harm / Total * 100, 1)) %>% 
-  select(1,10:17)
+    "Harm reduction + resisting the war on drugs" = round(harm / Total * 100, 1)) 
+#%>% select(1,10:17)
 
 q4_agrup
 # q4_agrup<-q4_agrup%>% 
@@ -2080,23 +2080,40 @@ q21_total <- q21_2023 %>%
 
   q21_total2<-q21_total %>% 
     pivot_wider(.,names_from = c("Type"), values_from = "Percentage")
+q21_2023_final
 
+    
+
+  
+  
 ```
 
 *2023*
 ```{r q21_2023, echo=F, message=F, warning=F}
+
+
+write.xlsx2(as.data.frame(q21_2023_final), "cuadros\\q21.xlsx", row.names = FALSE, sheetName ="q21_2023_final",append = TRUE)  
+
 knitr::kable(q21_2023_final) %>% 
   kable_minimal()
 ```
 
 *2022*
 ```{r q21_2022, echo=F, message=F, warning=F}
+
+
+write.xlsx2(as.data.frame(q21_2022_final), "cuadros\\q21.xlsx", row.names = FALSE, sheetName ="q21_2022_final",append = TRUE)  
+
 knitr::kable(q21_2022_final) %>% 
   kable_minimal()
 ```
 
 *2021*
 ```{r q21_2021, echo=F, message=F, warning=F}
+
+
+write.xlsx2(as.data.frame(q21_2021_final), "cuadros\\q21.xlsx", row.names = FALSE, sheetName ="q21_2021_final",append = TRUE)  
+
 knitr::kable(q21_2021_final) %>% 
   kable_minimal()
 ```
@@ -2141,6 +2158,10 @@ q22<-base %>%
     "More than 5 years"), ordered = TRUE)) %>%
   arrange(desc(q22)) %>%
   rename("q22_var" = q22)
+
+q22
+
+write.xlsx2(as.data.frame(q22), "cuadros\\q21.xlsx", row.names = FALSE, sheetName ="q22",append = TRUE) 
 
 #creación del gráfico
 ggplot(q22, aes(x = q22_var, y = Percentage, fill=q22_var)) +
