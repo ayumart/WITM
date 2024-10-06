@@ -1,0 +1,357 @@
+---
+title: "WITM"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+#WITM Analysis - section 1 - v2
+
+```{r setup, include=FALSE, echo=F}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+
+```{r library, echo=F, message=F, warning=F}
+
+#Library upload
+
+library(tidyverse)
+library(readxl)
+library(janitor)
+library(dplyr)
+library(writexl)
+library(eph)
+library(openxlsx)
+library(rmarkdown)
+library(knitr)
+library(kableExtra)
+
+library(readr)
+library(xlsx)
+
+rm(list = ls())
+
+```
+
+**-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-**
+
+This report filters only people who answered Q0=yes (i.e. who agree to answer the survey) and does not filter on question q1.
+
+```{r upload, echo=T, message=F, warning=F}
+
+# OPEN CSV file
+witm <- read.csv("Data/WITM_cleaned_09232024.csv")
+
+source(file="WITM_variables_include.R") 
+
+base<-witm
+```
+___
+
+
+
+___
+##CROSSTABS 
+
+
+**AWID FOCUS SUBJECTS BY REGISTRATION**
+
+
+A crosstabulation (bivariate) of the combination of registration and subject of the organisation 
+
+
+```{r}
+
+total<-base %>%
+  count(q4_forms_organizing) %>% 
+  summarise(n=sum(n))
+
+total<-total$n
+
+
+q4_1 <- base %>%
+  group_by(q5_registered) %>% 
+  summarise(Total = n(),
+            LGTBIQ= sum(q4_awid_LGBTIQ==1),
+            Young= sum(q4_awid_young==1),
+            Sex_workers=sum(q4_awid_sex==1),
+            Anti_caste=sum(q4_awid_anticaste==1),
+            Climate=sum(q4_awid_climate==1),
+            Countering_anti=sum(q4_awid_antigender==1),
+            Harm_reduction=sum(q4_awid_harm==1),
+            Disability_rights=sum(q4_awid_disability==1)) 
+
+
+write.xlsx2(as.data.frame(q4_1), "cuadros\\section_1.xlsx", row.names = FALSE, sheetName ="q4_1",append = TRUE)    
+
+q4_1
+
+
+```
+
+
+
+
+
+**-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-**
+
+
+**SUBJECTS GROUPED BY SCOPE**
+
+
+```{r}
+
+q4_2 <- base %>%
+  group_by(q6_geo_scope) %>% 
+  summarise(Total = n(),
+            LGTBIQ= sum(q4_awid_LGBTIQ==1),
+            Young= sum(q4_awid_young==1),
+            Sex_workers=sum(q4_awid_sex==1),
+            Anti_caste=sum(q4_awid_anticaste==1),
+            Climate=sum(q4_awid_climate==1),
+            Countering_anti=sum(q4_awid_antigender==1),
+            Harm_reduction=sum(q4_awid_harm==1),
+            Disability_rights=sum(q4_awid_disability==1)) 
+
+
+write.xlsx2(as.data.frame(q4_2), "cuadros\\section_1.xlsx", row.names = FALSE, sheetName ="q4 scope",append = TRUE)    
+
+q4_2
+
+
+```
+
+**SUBJECTS GROUPED BY YEAR OF FORMATION**
+
+
+
+```{r}
+
+q4_3 <- base %>%
+  group_by(q9_year_formation_agrup) %>% 
+  summarise(Total = n(),
+            LGTBIQ= sum(q4_awid_LGBTIQ==1),
+            Young= sum(q4_awid_young==1),
+            Sex_workers=sum(q4_awid_sex==1),
+            Anti_caste=sum(q4_awid_anticaste==1),
+            Climate=sum(q4_awid_climate==1),
+            Countering_anti=sum(q4_awid_antigender==1),
+            Harm_reduction=sum(q4_awid_harm==1),
+            Disability_rights=sum(q4_awid_disability==1)) 
+
+
+write.xlsx2(as.data.frame(q4_3), "cuadros\\section_1.xlsx", row.names = FALSE, sheetName ="q4 year",append = TRUE)    
+
+q4_3
+
+
+```
+
+**-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-**
+
+**Scope by registration**
+
+
+A crosstabulation (bivariate) of the combination of registered and scope
+
+```{r}
+
+##borrar las variables para evitar problemas
+#rm(list=setdiff(ls(), "base"))
+
+q6q5<-base %>%
+  filter(!is.na(q6_geo_scope) & q6_geo_scope!="" & !is.na(q5_registered) & q5_registered!="") %>%
+  group_by(q6_geo_scope,q5_registered)%>%
+  summarise(n=n()) %>%
+  mutate(percentage=round((n/sum(n))*100,1))%>%
+  arrange(desc(n)) %>% 
+  mutate(q6_geo_scope=recode(q6_geo_scope,
+          "locally_focused"="Locally",
+         "nationally_focused"="Nationally" ,
+         "diaspora_and_or_exile"="Diaspora",
+         "regionally_focused"= "Regionally",
+          "transnationally_focused"="Transnationally",
+         "globally_focused"="Global"
+         ) ) %>%
+  select(q5_registered,Scope=q6_geo_scope,percentage)
+
+#q6q5
+qry_w<-q6q5 %>% pivot_wider(names_from = Scope, values_from = percentage) %>%
+ mutate(q5_registered=recode(q5_registered, "98"="Other", "n_registered"="No registered", "y_registered"="Registered"))
+qry_w
+
+write.xlsx2(as.data.frame(qry_w), "cuadros\\section_1.xlsx", row.names = FALSE, sheetName ="scop_by_reg",append = TRUE)    
+
+
+knitr::kable(qry_w) %>% 
+  kable_minimal()
+
+
+```
+
+
+**-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-**
+
+**Region by register**
+
+This is made now only for Locally and National organisations
+
+```{r region_q5, echo=F, message=F, warning=F}
+
+
+# 
+reg_1 <- base %>%
+  group_by(q5_registered) %>% 
+  summarise(Total= n(),
+            "1. Latin America & the Caribbean"=sum(region_1==1),
+            "2. Western Europe & North America"=sum(region_2==1),
+            "3. Eastern, Southeast and Central Europe"=sum(region_3==1),
+            "4. Africa"= sum(region_4==1),
+            "5. Asia & the Pacific"=sum(region_5==1),
+            "6. Central Asia & Caucasus"=sum(region_6==1),
+            "7. South West Asia/Middle East & North Africa"=sum(region_7==1))
+
+reg_1
+write.xlsx2(as.data.frame(reg_1), "cuadros\\section_2.xlsx", row.names = FALSE, sheetName ="region_by_reg",append = TRUE)    
+
+
+knitr::kable(t(reg_1)) %>% 
+  kable_minimal()
+
+```
+
+```{r region_q5, echo=F, message=F, warning=F}
+
+
+# 
+reg_2 <- base %>%
+  group_by(q6_geo_scope) %>% 
+  summarise(Total= n(),
+            "1. Latin America & the Caribbean"=sum(region_1==1),
+            "2. Western Europe & North America"=sum(region_2==1),
+            "3. Eastern, Southeast and Central Europe"=sum(region_3==1),
+            "4. Africa"= sum(region_4==1),
+            "5. Asia & the Pacific"=sum(region_5==1),
+            "6. Central Asia & Caucasus"=sum(region_6==1),
+            "7. South West Asia/Middle East & North Africa"=sum(region_7==1))
+
+reg_2
+write.xlsx2(as.data.frame(reg_2), "cuadros\\section_2.xlsx", row.names = FALSE, sheetName ="region_by_scope",append = TRUE)    
+
+
+knitr::kable(t(reg_2)) %>% 
+  kable_minimal()
+
+```
+
+
+
+
+
+```{r region_q5, echo=F, message=F, warning=F}
+
+
+# 
+reg_2 <- base %>%
+  group_by(q9_year_formation_agrup) %>% 
+  summarise(Total= n(),
+            "1. Latin America & the Caribbean"=sum(region_1==1),
+            "2. Western Europe & North America"=sum(region_2==1),
+            "3. Eastern, Southeast and Central Europe"=sum(region_3==1),
+            "4. Africa"= sum(region_4==1),
+            "5. Asia & the Pacific"=sum(region_5==1),
+            "6. Central Asia & Caucasus"=sum(region_6==1),
+            "7. South West Asia/Middle East & North Africa"=sum(region_7==1))
+
+reg_2
+write.xlsx2(as.data.frame(reg_2), "cuadros\\section_2.xlsx", row.names = FALSE, sheetName ="region_by_year",append = TRUE)    
+
+
+knitr::kable(t(reg_2)) %>% 
+  kable_minimal()
+
+```
+___
+
+**-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-**
+
+**Year of formation & Register**
+
+
+```{r year_register, echo=F, message=F, warning=F}
+
+
+
+q8<-base %>% 
+  filter(!is.na(q9_year_formation_agrup) & !is.na(q5_registered) & q5_registered!="98" & q5_registered!="") %>% 
+  group_by(q9_year_formation_agrup,q5_registered) %>% 
+  summarise(n=n()) %>% 
+  mutate(percentage=round((n/sum(n))*100,1)) %>%
+  select(q9_year_formation_agrup,q5_registered,percentage)
+
+
+qry_w<-q8 %>% pivot_wider(names_from = q9_year_formation_agrup, values_from = percentage) %>%
+ mutate(q5_registered=recode(q5_registered, "98"="Other", "n_registered"="No registered", "y_registered"="Registered"))
+
+write.xlsx2(as.data.frame(qry_w), "cuadros\\section_2.xlsx", row.names = FALSE, sheetName ="year_by_reg",append = TRUE)    
+
+
+knitr::kable(qry_w) %>% 
+  kable_minimal()
+
+
+
+```
+
+
+**-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-**
+
+**Year by Gegraphically Scope**
+
+
+
+```{r year_q6, echo=F, message=F, warning=F}
+
+#rm(list=setdiff(ls(), "base"))
+
+qry<-base %>%
+    group_by(q6_geo_scope) %>%
+  summarise(n=n())
+
+qry
+
+q8<-base %>% 
+  filter(!is.na(q9_year_formation_agrup) & !is.na(q6_geo_scope)) %>% 
+  group_by(q6_geo_scope,q9_year_formation_agrup) %>% 
+  summarise(n=n()) %>% 
+  mutate(percentage=round((n/sum(n))*100,1)) %>%
+  mutate(q6_geo_scope=recode(q6_geo_scope,
+     "locally_focused"="Locally",
+         "nationally_focused"="Nationally" ,
+         "diaspora_and_or_exile"="Work from diaspora, refuge and/or exile",
+         "regionally_focused"= "Regionally",
+         "transnationally_focused"="Transnationally",
+         "globally_focused"="Global")) %>%
+  select(q9_year_formation_agrup,q6_geo_scope,percentage)
+
+
+q8
+
+qry_w<-q8 %>% pivot_wider(names_from = q9_year_formation_agrup, values_from = percentage)
+       
+ 
+write.xlsx2(as.data.frame(qry_w), "cuadros\\section_2.xlsx", row.names = FALSE, sheetName ="year_by_scope",append = TRUE)    
+
+
+knitr::kable(qry_w) %>% 
+  kable_minimal()
+
+
+
+```
+
+
+
+
+
+

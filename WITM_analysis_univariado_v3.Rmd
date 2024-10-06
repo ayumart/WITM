@@ -43,6 +43,10 @@ library(kableExtra)
 
 library(readr)
 
+library(xlsx)
+
+
+library(tidyr)
 
 rm(list = ls())
 ```
@@ -52,20 +56,23 @@ rm(list = ls())
 ```{r upload, echo=F, message=F, warning=F}
 
 # OPEN CSV file
-#witm <- read.csv2("Data/WITM_csv_last.csv")
 
-witm <- read.csv("Data/WITM_final_cleaned_08_sept.csv")
-
-source(file="WITM_variables.R") 
-
+# witm <- read.csv("Data/WITM_final_cleaned_10_sept.csv")
+# 
+# source(file="WITM_variables.R") 
 
 
+witm <- read.csv("Data/WITM_cleaned_09232024.csv")
+
+source(file="WITM_variables_include.R") 
+
+base<-witm
 ```
 
 
 
 ```{r date, echo=F, message=F, warning=F}
-answers_by_date<-base  %>% 
+answers_by_date<-witm  %>% 
   group_by(date) %>%  
   summarise(qt=n())
 
@@ -77,34 +84,12 @@ ggplot(answers_by_date, aes(x =  as.POSIXct(date), y=qt)) +
   theme_bw(base_size = 12)+  
   scale_x_datetime(breaks=scales::breaks_pretty(8))+
   geom_text(aes(label = signif(qt)), nudge_y = 3)
+
+
+
+write.xlsx2(as.data.frame(answers_by_date), "cuadros\\univariate_1.xlsx", row.names = FALSE, sheetName ="answers_by_date",append = TRUE)    
+
 ```
-
-
-
-**-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-**
-
-
-
-**Consent**
-
-Q1. I consent to take the WITM survey on behalf of my group, organization or movement.
-```{r consent, echo=F, message=F, warning=F}
-q0<-base %>%
-  group_by(q0_consent) %>% 
-  summarise(Count=n()) %>% 
-  mutate(Percentage=round((Count/sum(Count))*100,1)) %>% 
-  rename("Consent"=q0_consent)
-
-#knitr::kable(q0) %>% 
-#  kable_minimal()
-```
-
-
-```{r, echo=F, message=F, warning=F}
-
-print(paste("Number of final answers:",q0$Count))
-```
-
 
 
 
@@ -119,16 +104,21 @@ print(paste("Number of final answers:",q0$Count))
 Q2. Which of the following statements best describes your group, organization and/or movement?
 
 ```{r info, echo=F, message=F, warning=F}
+
+
+
 q1<-base %>%
-  group_by(q1_description) %>% 
-  mutate(q1_description=forcats::fct_recode(as_factor(q1_description),
-                                            "a.Primary focus of all our work" = "primary_focus",
-                                            "b.Specific project(s)" = "specific_projects",
-                                            "c.Other" = "98")) %>%
+  group_by(q2_description) %>% 
+  mutate(q2_description=forcats::fct_recode(as_factor(q2_description),
+                                                     "Primary focus of all our work" = "primary_focus",
+                                            "Specific project(s)" = "specific_projects",
+                                            "Other" = "98")) %>%
   summarise(Count=n()) %>% 
   mutate(Percentage=round((Count/sum(Count))*100,1)) %>% 
-  arrange(desc(q1_description)) %>% 
-  rename("Description"=q1_description)
+  arrange(desc(q2_description)) %>% 
+  rename("Description"=q2_description)
+
+write.xlsx2(as.data.frame(q1), "cuadros\\univariate_1.xlsx", row.names = FALSE, sheetName ="q2_description",append = TRUE)    
 
 
 ggplot(q1, aes(x = reorder(Description, -Percentage), y = Percentage, fill=Description)) +
@@ -156,15 +146,10 @@ Q3. The name of your group, organization and/or movement
 
 ```{r name1, echo=F, message=F, warning=F}
 
-n_temp<-sum(base$q2_name=="")
+n_temp<-sum(base$q3_name=="")
 print(paste("The number of organizations that did not answer their name is:",n_temp))
 
 ```
-**--Reading help-----------------------------------------------------------------------**
-
-Very interesting that almost all organizations responded with their name despite the fact that the possibility of not responding is informed and underlined.
-
-**------------------------------------------------------------------------------------------------**
 
 ____
 
@@ -233,6 +218,8 @@ q4<-q4_select%>%
   rename("Organization type"=q4)
 
 
+write.xlsx2(as.data.frame(q4), "cuadros\\univariate_1.xlsx", row.names = FALSE, sheetName ="q4",append = TRUE)    
+
 
 knitr::kable(q4) %>% 
   kable_minimal()
@@ -262,13 +249,16 @@ This variable is constructed by recognizing the organizations that work on one o
 ```{r type_grouped, echo=F, message=F, warning=F}
 
 q4_focus<-base %>%
-  filter( q4_grouped_feminist!="98") %>%
+  filter(q4_awid_focus!="98" | !is.na(q4_awid_focus)) %>%
   group_by(q4_awid_focus) %>%
   summarise(Count=n()) %>%
   mutate(Percentage=round((Count/sum(Count))*100,1)) %>%
-  mutate(q4_awid_focus=recode(q4_awid_focus,"1"="Specific AWID subjects","0"="Other subjects")) 
+  mutate(q4_awid_focus=recode(q4_awid_focus,"1"="Specific AWID subjects","0"="Other subjects"))
   #rename("Organization type"=q4_awid_focus)
   #arrange(desc("Organization type"))
+
+
+write.xlsx2(as.data.frame(q4_focus), "cuadros\\univariate_1.xlsx", row.names = FALSE, sheetName ="q4_focus",append = TRUE)    
 
 
 #knitr::kable(q4_focus) %>% 
@@ -287,59 +277,47 @@ ggplot(q4_focus, aes(x = reorder(q4_awid_focus, -Percentage), y = Percentage, fi
         panel.grid.minor.x = element_blank() # Eliminar líneas de la cuadrícula vertical menores
   )
 
-
-
 ```
 
-
-____
-
+_____
 
 
-** Forms by organizing grouped by spotlight themes/groups**
+**Spotlight themes/groups**
 
 ```{r type_grouped2, echo=F, message=F, warning=F}
+
+
+
 q4_agrup<-base %>%
   filter(!is.na(q4_forms_organizing)) %>%
   summarise(Total= round(n(),0),
     lgbtiq = sum(q4_awid_LGBTIQ == 1, na.rm = TRUE),
     young = sum(q4_awid_young == 1, na.rm = TRUE),
     sex = sum(q4_awid_sex == 1, na.rm = TRUE),
-    nin = sum(q4_awid_nin == 1, na.rm = TRUE),
+    anticaste = sum(q4_awid_anticaste == 1, na.rm = TRUE),
     climate = sum(q4_awid_climate == 1, na.rm = TRUE),
-    antig = sum(q4_awid_antig == 1, na.rm = TRUE),
-    crisis = sum(q4_awid_crisis == 1, na.rm = TRUE),
+    antig = sum(q4_awid_antigender == 1, na.rm = TRUE),
     harm = sum(q4_awid_harm == 1, na.rm = TRUE),
+    disab = sum(q4_awid_disability == 1, na.rm = TRUE),
     "LBQTI+" = round(lgbtiq/ Total * 100, 1),
     "Young feminist and Girl's movements" = round(young / Total * 100, 1),
     "Sex workers rights" = round(sex / Total * 100, 1),
-    "Religious & ethnic minority rights + anti-caste"  = round(nin / Total * 100, 1),
+    "Anti-caste"  = round(anticaste / Total * 100, 1),
     "Climate and environmental justice " = round(climate/ Total * 100, 1),
     "Countering anti-gender & anti-rights " = round(antig / Total * 100, 1),
-    "Anti-militarization and peace + crisis response"  = round(crisis / Total * 100, 1),
+    "Disability"  = round(disab / Total * 100, 1),
     "Harm reduction + resisting the war on drugs" = round(harm / Total * 100, 1)) %>% 
-  select(1,11:17)
+  select(1,10:17)
 
-q4_agrup<-q4_agrup%>% 
-  pivot_longer(cols = 2:8,
-               names_to = "Types",
-               values_to = "Percentage") %>% 
-  select(2:3) %>% 
-  arrange(desc(Percentage))
+q4_agrup
+# q4_agrup<-q4_agrup%>% 
+#   pivot_longer(cols = 2:8,
+#                names_to = "Types",
+#                values_to = "Percentage") %>% 
+#   select(2:3) %>% 
+#   arrange(desc(Percentage))
 
-ggplot(q4_agrup, aes(x = reorder(Types, Percentage), y = Percentage, fill=Types)) +
-  geom_bar(stat = "identity") +
-  geom_text(aes(label = sprintf("%.1f%%", Percentage)), hjust=-0.02, vjust = 0.5, size = 3.2) +
-  labs(title = "Forms of organizing",
-       x = " ",
-       y = "Percentage") +
-  scale_y_continuous(expand = expansion(mult = c(0, 0.1)))+
-  theme_minimal() +
-  theme(legend.position = "none",
-        axis.text.x = element_text(),  # Mantiene las etiquetas del eje x y ajusta la rotación
-        panel.grid.major = element_blank(),  # Elimina la cuadrícula mayor
-        panel.grid.minor = element_blank())+
-  coord_flip()
+write.xlsx2(as.data.frame(q4_agrup), "cuadros\\univariate_1.xlsx", row.names = FALSE, sheetName ="q4_agrup",append = TRUE)  
 
 
 ```
@@ -375,6 +353,7 @@ q5<-base %>%
 #knitr::kable(q5) %>% 
 #  kable_minimal()
 
+write.xlsx2(as.data.frame(q5), "cuadros\\univariate_1.xlsx", row.names = FALSE, sheetName ="q5",append = TRUE)  
 
 #Crear el gráfico
 ggplot(q5, aes(x = reorder(Register, -Percentage), y = Percentage, fill=Register)) +
@@ -392,7 +371,6 @@ ggplot(q5, aes(x = reorder(Register, -Percentage), y = Percentage, fill=Register
 
 
 ```
-
 
 ____
 
@@ -419,6 +397,7 @@ q6<-base %>%
   arrange(desc(Percentage)) %>% 
   rename("Scope"=q6_var)
 
+write.xlsx2(as.data.frame(q6), "cuadros\\univariate_1.xlsx", row.names = FALSE, sheetName ="q6_scope",append = TRUE)  
 
 
 #knitr::kable(q6) %>% 
@@ -441,11 +420,6 @@ ggplot(q6, aes(x = reorder(Scope, -Percentage), y = Percentage, fill=Scope)) +
 
 ```
 
-**--Reading help-----------------------------------------------------------------------**
-
-The sample is very interesting because most of the organizations are national or local (80%). 
-
-**------------------------------------------------------------------------------------------------**
 
 ____
 
@@ -454,11 +428,11 @@ ____
 
 Q7. Indicate in which region(s) your group, organization and/or movement works
 
+*Reading: 35.7% of the organizations work in África.
+Organizations working locally, regionally or globally were consolidated.*
 
 
 ```{r region, echo=F, message=F, warning=F}
-
-
 
 
 q7_a<-base %>% 
@@ -525,21 +499,19 @@ q7_final <- q7_a %>% left_join(q7_b, by = "q7") %>%
   select(-n.x,-n.y, "Region"=q7) %>%
   mutate(Percentage=round((Count/total)*100,1)) %>% 
   arrange(desc(Percentage)) 
+
+write.xlsx2(as.data.frame(q7_final), "cuadros\\univariate_1.xlsx", row.names = FALSE, sheetName ="q7_region",append = TRUE)  
+
   
 knitr::kable(q7_final) %>% 
   kable_minimal()
-
-
-```
-
-```{r region2, echo=F, message=F, warning=F}
 
 #########################################################################################
 
 
 ##crear gráfico
 
-base<-base %>% 
+base1<-base %>% 
   #Convertir campos vacíos de la variable q7 en NA
   mutate(q7_region_one = na_if(q7_region_one, ""),
                   q7_region_multiple = na_if(q7_region_multiple, "")) %>%
@@ -571,18 +543,29 @@ base<-base %>%
 
 
 
+
 # Resumir datos por región
 region_summary <- base %>%
   # Contar el número de registros para cada región
-  summarise(AFRICA = sum(AFRICA, na.rm = TRUE),
-    LATINAMERICA = sum(LATINAMERICA, na.rm = TRUE),
-    NORTHAMERICA = sum(NORTHAMERICA, na.rm = TRUE),
-    ASIA = sum(ASIA, na.rm = TRUE),
-    OCEANIA = sum(OCEANIA, na.rm = TRUE),
-    EUROPE = sum(EUROPE, na.rm = TRUE)
-  ) %>%
+   summarise(Total= n(),
+            "1. Latin America & the Caribbean"=sum(region_1==1),
+            "2. Western Europe & North America"=sum(region_2==1),
+            "3. Eastern, Southeast and Central Europe"=sum(region_3==1),
+            "4. Africa"= sum(region_4==1),
+            "5. Asia & the Pacific"=sum(region_5==1),
+            "6. Central Asia & Caucasus"=sum(region_6==1),
+            "7. South West Asia/Middle East & North Africa"=sum(region_7==1))%>% 
+  # summarise(AFRICA = sum(AFRICA, na.rm = TRUE),
+  #   LATINAMERICA = sum(LATINAMERICA, na.rm = TRUE),
+  #   NORTHAMERICA = sum(NORTHAMERICA, na.rm = TRUE),
+  #   ASIA = sum(ASIA, na.rm = TRUE),
+  #   OCEANIA = sum(OCEANIA, na.rm = TRUE),
+  #   EUROPE = sum(EUROPE, na.rm = TRUE)
+  # ) %>%
   pivot_longer(cols = everything(), names_to = "Region", values_to = "Count") %>%
   mutate(Percentage = round((Count / sum(Count)) * 100, 1))
+
+write.xlsx2(as.data.frame(region_summary), "cuadros\\univariate_1.xlsx", row.names = FALSE, sheetName ="region_summary",append = TRUE)  
 
 
 #Crear el gráfico
@@ -598,9 +581,10 @@ ggplot(region_summary, aes(x = reorder(Region, -Percentage), y = Percentage, fil
         panel.grid.minor.x = element_blank() # Eliminar líneas de la cuadrícula vertical menores
   )
 
-
-
 ```
+
+
+
 
 
 ```{r q6, eval=F, echo=F, message=F, warning=F}
@@ -887,6 +871,10 @@ q8<-base %>%
   mutate(Percentage=round((Count/sum(Count))*100,1)) %>% 
   rename("Region"=1, "Country"=2)
 
+q8
+write.xlsx2(as.data.frame(q8), "Cuadros\\univariate_2.xlsx", row.names = FALSE, sheetName ="q8_country",append = TRUE)  
+
+
 knitr::kable(q8) %>% 
   kable_minimal()
 
@@ -900,6 +888,7 @@ ____
 
 Q9. What year was your group, organization and/ or movement formed?
 
+*Reading: 33.7% of the respondent organizations were formed between the years 2015 and 2020, while around 15.6% were formed from the year 2021 onwards*
 
 ```{r year, echo=F, message=F, warning=F}
 
@@ -910,6 +899,7 @@ q9<-base %>%
   mutate(Percentage=round((total/sum(total))*100,1)) %>% 
   arrange(q9_year_formation_agrup) 
 
+write.xlsx2(as.data.frame(q9), "cuadros\\univariate_1.xlsx", row.names = FALSE, sheetName ="q9_year",append = TRUE)  
 
 knitr::kable(q9) %>% 
   kable_minimal()
@@ -930,6 +920,8 @@ ggplot(q9, aes(x = q9_year_formation_agrup, y = Percentage, fill = q9_year_forma
 
 ```
 
+
+
 **-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-**
 
 
@@ -946,10 +938,6 @@ Q10. What was the annual budget for your group, organization and/or movement in 
 
 
 ```{r q10, echo=F, message=F, warning=F}
-
-rm(list=setdiff(ls(), "base"))
-
-#names(base)
 
 q10_2021<-base %>% 
   filter(q9_year_formation<2022) %>% 
@@ -990,15 +978,6 @@ knitr::kable(q10_grouped) %>%
   kable_minimal() #imprime cuadro
 ```
 
-
-**--Reading help -----------------------------------------------------------------------**
-
-
-This grouping maintains interesting proportions respecting the way the question was asked. Only the highest amounts are grouped together.
-
-We suggest using the year 2023 as a crossover variable for other questions as it accounts for size.
-
-**------------------------------------------------------------------------------------------------**
 
 ____
 
@@ -1042,6 +1021,8 @@ ggplot(q11, aes(x = q11_covid_incidence, y = Percentage, fill = q11_covid_incide
   )
 
 ```
+
+
 
 **-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-**
 
@@ -1638,6 +1619,7 @@ q18<-q18 %>%
   arrange(desc(Percentage))
 ```
 
+_____
 
 
 *Reception of new funding between 2021 and 2023*
@@ -1655,6 +1637,8 @@ ggplot(q18a, aes(x = Source, y = Percentage, fill=Source)) +
   theme(legend.position = "none")
 
 ```
+
+_____
 
 
 *Source of new funding*
@@ -1760,11 +1744,6 @@ q19_yes<-q19_yes %>%
 
 
 
-**--Reading help -----------------------------------------------------------------------**
-
-It is noted that `r q19a1`% of organizations reported losing funding from new donors between 2021 and 2023. Among these organizations, the greatest loss came from INGOs, followed by philanthropic donors.
-
-**------------------------------------------------------------------------------------------------**
 
 
 
@@ -1875,12 +1854,6 @@ q201 <- base %>%
 ```
 
 
-
-**--Reading help -----------------------------------------------------------------------**
-
-The greatest impact of the reduction in funding between 2021 and 2023, as observed among the organizations that responded to the survey, is seen in the decrease in their activities, with a Percentage of `r q201`%, followed by a reduction in staff. It is noteworthy that the loss of funding has not had a significant impact on the discontinuation of programs or projects.
-
-**------------------------------------------------------------------------------------------------**
 
 ```{r data44, echo=F, message=F, warning=F}
 knitr::kable(q20) %>% 
@@ -2128,12 +2101,6 @@ knitr::kable(q21_2021_final) %>%
   kable_minimal()
 ```
 
-**--Reading help -----------------------------------------------------------------------**
-
-
-
-**------------------------------------------------------------------------------------------------**
-
 
 ____
 
@@ -2262,6 +2229,7 @@ q23_other<-base %>%
   summarise(n()) %>% 
   select("Specific context"=1)
 
+
 knitr::kable(q23_other) %>% 
   kable_minimal()
 
@@ -2318,7 +2286,6 @@ ggplot(q25, aes(x = reorder(q25_recode, -Percentage), y = Percentage, fill=q25_r
 ____
 
 
-
 Q26. Did this funding come from a funder who had not supported your group, organization and/or movement before 2021? If yes, please select which type of funder
 
 ```{r q26, echo=F, message=F, warning=F}
@@ -2347,11 +2314,6 @@ q26_general<-q26_general %>%
 knitr::kable(q26_general) %>% 
   kable_minimal()
 ```
-
-
-____
-
-
 
 *Source counter anti-rights and anti-gender trends funding*
 
@@ -2397,10 +2359,9 @@ ggplot(q26_yes, aes(x = reorder(Source, -Percentage), y = Percentage, fill=Sourc
        y = "Percentage") +
   theme_minimal() +
   theme(legend.position = "none",
-  panel.grid.major.x = element_blank(), # Elimina líneas de la cuadrícula vertical
-    panel.grid.minor.x = element_blank(), # Elimina líneas de la cuadrícula vertical menores
-    panel.grid.major.y = element_blank(), # Elimina líneas de la cuadrícula horizontal
-    panel.grid.minor.y = element_blank())
+        panel.grid.major.x = element_blank(), # Eliminar líneas de la cuadrícula vertical
+        panel.grid.minor.x = element_blank() # Eliminar líneas de la cuadrícula vertical menores
+  )
 
 
 ```
@@ -2460,10 +2421,9 @@ ggplot(q27, aes(x = reorder(Source, Percentage), y = Percentage, fill=Source)) +
   scale_y_continuous(expand = expansion(mult = c(0, 0.1)))+
   theme_minimal() +
   theme(legend.position = "none",
-  panel.grid.major.x = element_blank(), # Elimina líneas de la cuadrícula vertical
-    panel.grid.minor.x = element_blank(), # Elimina líneas de la cuadrícula vertical menores
-    panel.grid.major.y = element_blank(), # Elimina líneas de la cuadrícula horizontal
-    panel.grid.minor.y = element_blank())+
+        panel.grid.major.x = element_blank(), # Eliminar líneas de la cuadrícula vertical
+        panel.grid.minor.x = element_blank() # Eliminar líneas de la cuadrícula vertical menores
+  )+
   coord_flip()
 
 
@@ -2533,10 +2493,9 @@ ggplot(q28, aes(x = reorder(Source, Percentage), y = Percentage, fill=Source)) +
   scale_y_continuous(expand = expansion(mult = c(0, 0.1)))+
   theme_minimal() +
   theme(legend.position = "none",
-  panel.grid.major.x = element_blank(), # Elimina líneas de la cuadrícula vertical
-    panel.grid.minor.x = element_blank(), # Elimina líneas de la cuadrícula vertical menores
-    panel.grid.major.y = element_blank(), # Elimina líneas de la cuadrícula horizontal
-    panel.grid.minor.y = element_blank())+
+        panel.grid.major.x = element_blank(), # Eliminar líneas de la cuadrícula vertical
+        panel.grid.minor.x = element_blank() # Eliminar líneas de la cuadrícula vertical menores
+  )+
   coord_flip()
 
 
@@ -2612,10 +2571,10 @@ ggplot(q30, aes(x = reorder(q30_shift_priorities, -Percentage), y = Percentage, 
        y = "Percentage") +
   theme_minimal() +
   theme(legend.position = "none",
-  panel.grid.major.x = element_blank(), # Elimina líneas de la cuadrícula vertical
-    panel.grid.minor.x = element_blank(), # Elimina líneas de la cuadrícula vertical menores
-    panel.grid.major.y = element_blank(), # Elimina líneas de la cuadrícula horizontal
-    panel.grid.minor.y = element_blank())
+        panel.grid.major.x = element_blank(), # Eliminar líneas de la cuadrícula vertical
+        panel.grid.minor.x = element_blank() # Eliminar líneas de la cuadrícula vertical menores
+  )
+
 
 ```
 
@@ -2677,10 +2636,9 @@ ggplot(q31, aes(x = reorder(Practices, Percentage), y = Percentage, fill=Practic
   scale_y_continuous(expand = expansion(mult = c(0, 0.1)))+
   theme_minimal() +
   theme(legend.position = "none",
-  panel.grid.major.x = element_blank(), # Elimina líneas de la cuadrícula vertical
-    panel.grid.minor.x = element_blank(), # Elimina líneas de la cuadrícula vertical menores
-    panel.grid.major.y = element_blank(), # Elimina líneas de la cuadrícula horizontal
-    panel.grid.minor.y = element_blank())+
+        panel.grid.major.x = element_blank(), # Eliminar líneas de la cuadrícula vertical
+        panel.grid.minor.x = element_blank() # Eliminar líneas de la cuadrícula vertical menores
+  )+
   coord_flip()
 
 ```
@@ -2896,10 +2854,8 @@ ggplot(q33, aes(x = reorder(Support, Percentage), y = Percentage, fill = Support
   scale_x_discrete(expand = expansion(mult = c(0.1, 0.15))) + # Ajusta la expansión para el eje x
   theme_minimal() +
   theme(legend.position = "none",
-  panel.grid.major.x = element_blank(), # Elimina líneas de la cuadrícula vertical
-    panel.grid.minor.x = element_blank(), # Elimina líneas de la cuadrícula vertical menores
-    panel.grid.major.y = element_blank(), # Elimina líneas de la cuadrícula horizontal
-    panel.grid.minor.y = element_blank()) +
+        panel.grid.major.x = element_blank(),
+        panel.grid.minor.x = element_blank()) +
   coord_flip()
 
 
@@ -2983,10 +2939,7 @@ ggplot(q36_long, aes(x = q36, y = Percentage, fill = Year)) +
   coord_flip()
 
 ```
-
-
 _____
-
 
 
 *Q37. If your external funding were to end immediately, how many months could your group, organization and/or movement operate using only savings and reserves?
@@ -3090,11 +3043,6 @@ knitr::kable(q39_general) %>%
 ```
 
 
-____
-
-
-
-
 ```{r q39a, echo=F, message=F, warning=F}
 
 q39<-base %>%
@@ -3136,10 +3084,8 @@ ggplot(q39, aes(x = reorder(Benefits, Percentage), y = Percentage, fill = Benefi
   scale_x_discrete(expand = expansion(mult = c(0.1, 0.15))) + # Ajusta la expansión para el eje x
   theme_minimal() +
   theme(legend.position = "none",
-  panel.grid.major.x = element_blank(), # Elimina líneas de la cuadrícula vertical
-    panel.grid.minor.x = element_blank(), # Elimina líneas de la cuadrícula vertical menores
-    panel.grid.major.y = element_blank(), # Elimina líneas de la cuadrícula horizontal
-    panel.grid.minor.y = element_blank()) + # Elimina líneas de la cuadrícula horizontal menores 
+        panel.grid.major.x = element_blank(),
+        panel.grid.minor.x = element_blank()) +
   coord_flip()
 
 
@@ -3206,10 +3152,10 @@ ggplot(q41, aes(x = reorder(q41_sufficient_income, Percentage), y = Percentage, 
   scale_x_discrete(expand = expansion(mult = c(0.1, 0.15))) + # Ajusta la expansión para el eje x
   theme_minimal() +
   theme(legend.position = "none",
-  panel.grid.major.x = element_blank(), # Elimina líneas de la cuadrícula vertical
-    panel.grid.minor.x = element_blank(), # Elimina líneas de la cuadrícula vertical menores
-    panel.grid.major.y = element_blank(), # Elimina líneas de la cuadrícula horizontal
-    panel.grid.minor.y = element_blank())
+        panel.grid.major.x = element_blank(),
+        panel.grid.minor.x = element_blank()) +
+  coord_flip()
+
 
 ```
 
