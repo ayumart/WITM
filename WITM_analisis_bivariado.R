@@ -6112,14 +6112,12 @@ q38_q4agrup <- witm %>%
     q38_closing_risk=="not_sure" ~ "Not sure",
     TRUE ~ NA)) %>% 
   filter(!is.na(q38_closing_risk)) %>% 
-  group_by(q38_closing_risk) %>% 
-  group_by(q13_ext_funding, q4_awid_focus) %>% 
-  summarise(n = n(), .groups = 'drop') %>% 
-  rename("External funding" = q13_ext_funding)
+  group_by(q38_closing_risk, q4_awid_focus) %>% 
+  summarise(n = n(), .groups = 'drop')
 
-q13_q4agrup <- q13_q4agrup %>%
+q38_q4agrup <- q38_q4agrup %>%
   pivot_wider(names_from = q4_awid_focus, values_from = n, values_fill = list(n = 0)) %>%
-  arrange(`External funding`)
+  arrange(q38_closing_risk)
 
 
 write.xlsx(q38_q4agrup, file = archivo, sheetName="q38_q4agrup")
@@ -6128,9 +6126,14 @@ write.xlsx(q38_q4agrup, file = archivo, sheetName="q38_q4agrup")
 #cruce por q4
 
 
-q13_q4 <- witm %>%
-  filter( !is.na(q13_ext_funding) & !is.na(q4_forms_organizing)) %>%
-  group_by(q13_ext_funding ) %>% 
+q38_q4 <- witm %>%
+  mutate(q38_closing_risk=case_when(
+    q38_closing_risk=="yes" ~ "Yes",
+    q38_closing_risk=="no" ~ "No",
+    q38_closing_risk=="not_sure" ~ "Not sure",
+    TRUE ~ NA)) %>% 
+  filter(!is.na(q38_closing_risk)) %>% 
+  group_by(q38_closing_risk) %>% 
   summarise(Total = n(),
             LGTBIQ= sum(q4_awid_LGBTIQ==1),
             Young= sum(q4_awid_young==1),
@@ -6142,10 +6145,10 @@ q13_q4 <- witm %>%
             Disability_rights=sum(q4_awid_disability==1))  
 
 
-q13 <- loadWorkbook(archivo)
-addWorksheet(q13, sheetName = "q13_q4")
-writeData(q13, sheet = "q13_q4", x = q13_q4)
-saveWorkbook(q13, archivo, overwrite = TRUE)
+q38 <- loadWorkbook(archivo)
+addWorksheet(q38, sheetName = "q38_q4")
+writeData(q38, sheet = "q38_q4", x = q38_q4)
+saveWorkbook(q38, archivo, overwrite = TRUE)
 
 
 #cruce por región: q7
@@ -6153,19 +6156,16 @@ saveWorkbook(q13, archivo, overwrite = TRUE)
 
 #Convertir campos vacíos de la variable q46 en NA
 witm <- witm %>%
-  mutate(q46_language = na_if(q46_language, ""))
+  mutate(q38_closing_risk = na_if(q38_closing_risk, ""))
 
-q46_region<-witm %>% 
-  mutate(q46_language=case_when(
-    q46_language=="arabic" ~ "Arabic",
-    q46_language=="english" ~ "English",
-    q46_language=="french" ~ "French",
-    q46_language=="portuguese" ~ "Portuguese",
-    q46_language=="russian" ~ "Russian",
-    q46_language=="spanish" ~ "Spanish",
+q38_region<-witm %>% 
+  mutate(q38_closing_risk=case_when(
+    q38_closing_risk=="yes" ~ "Yes",
+    q38_closing_risk=="no" ~ "No",
+    q38_closing_risk=="not_sure" ~ "Not sure",
     TRUE ~ NA)) %>% 
-  filter(!is.na(q46_language)) %>% 
-  group_by(q46_language) %>% 
+  filter(!is.na(q38_closing_risk)) %>% 
+  group_by(q38_closing_risk) %>% 
   summarise(Total= n(),
             "1. Latin America & the Caribbean"=sum(region_1==1),
             "2. Western Europe & North America"=sum(region_2==1),
@@ -6177,10 +6177,10 @@ q46_region<-witm %>%
 
 
 
-q37 <- loadWorkbook(archivo)
-addWorksheet(q37, sheetName = "q46_region")
-writeData(q37, sheet = "q46_region", x = q46_region)
-saveWorkbook(q37, archivo, overwrite = TRUE)
+q38 <- loadWorkbook(archivo)
+addWorksheet(q38, sheetName = "q38_region")
+writeData(q38, sheet = "q38_region", x = q38_region)
+saveWorkbook(q38, archivo, overwrite = TRUE)
 
 
 
@@ -6375,6 +6375,175 @@ q40_region<-witm %>%
 
 write.xlsx(q40_region, file = archivo, sheetName="q40_region")
 
+
+#########################################################################
+
+archivo <- "cuadros/q41.xlsx"
+
+#ANÁLISIS Q41
+
+
+
+#cruce por q4agrup
+
+
+# Crear q41_q4agrup
+q41_q4agrup <- witm %>%
+  mutate(q4_awid_focus=recode(q4_awid_focus,"1"="Specific AWID subjects","0"="Other subjects")) %>% 
+  mutate(q41_sufficient_income=case_when(
+    q41_sufficient_income=="sufficient" ~ "(a) It was sufficient",
+    q41_sufficient_income=="barely_sufficient" ~ "(b) It was barely sufficient",
+    q41_sufficient_income=="not_sufficient" ~ "(c) It was not sufficient",
+    q41_sufficient_income=="98" ~ "(d) Other",
+    TRUE ~ NA)) %>%
+  filter(!is.na(q41_sufficient_income)) %>% 
+  group_by(q41_sufficient_income, q4_awid_focus) %>% 
+  summarise(n = n(), .groups = 'drop')
+
+q41_q4agrup <- q41_q4agrup %>%
+  pivot_wider(names_from = q4_awid_focus, values_from = n, values_fill = list(n = 0)) %>%
+  arrange(q41_sufficient_income)
+
+
+write.xlsx(q41_q4agrup, file = archivo, sheetName="q41_q4agrup")
+
+
+#cruce por q4
+
+
+q41_q4 <- witm %>%
+  mutate(q41_sufficient_income=case_when(
+    q41_sufficient_income=="sufficient" ~ "(a) It was sufficient",
+    q41_sufficient_income=="barely_sufficient" ~ "(b) It was barely sufficient",
+    q41_sufficient_income=="not_sufficient" ~ "(c) It was not sufficient",
+    q41_sufficient_income=="98" ~ "(d) Other",
+    TRUE ~ NA)) %>%
+  filter(!is.na(q41_sufficient_income)) %>% 
+  group_by(q41_sufficient_income) %>% 
+  summarise(Total = n(),
+            LGTBIQ= sum(q4_awid_LGBTIQ==1),
+            Young= sum(q4_awid_young==1),
+            Sex_workers=sum(q4_awid_sex==1),
+            Anti_caste=sum(q4_awid_anticaste==1),
+            Climate=sum(q4_awid_climate==1),
+            Countering_anti=sum(q4_awid_antigender==1),
+            Harm_reduction=sum(q4_awid_harm==1),
+            Disability_rights=sum(q4_awid_disability==1))  
+
+
+q41 <- loadWorkbook(archivo)
+addWorksheet(q41, sheetName = "q41_q4")
+writeData(q41, sheet = "q41_q4", x = q41_q4)
+saveWorkbook(q41, archivo, overwrite = TRUE)
+
+
+#cruce por región: q7
+
+
+#Convertir campos vacíos de la variable q46 en NA
+witm <- witm %>%
+  mutate(q41_sufficient_income = na_if(q41_sufficient_income, ""))
+
+q41_region<-witm %>% 
+  mutate(q41_sufficient_income=case_when(
+    q41_sufficient_income=="sufficient" ~ "(a) It was sufficient",
+    q41_sufficient_income=="barely_sufficient" ~ "(b) It was barely sufficient",
+    q41_sufficient_income=="not_sufficient" ~ "(c) It was not sufficient",
+    q41_sufficient_income=="98" ~ "(d) Other",
+    TRUE ~ NA)) %>%
+  filter(!is.na(q41_sufficient_income)) %>% 
+  group_by(q41_sufficient_income) %>% 
+  summarise(Total= n(),
+            "1. Latin America & the Caribbean"=sum(region_1==1),
+            "2. Western Europe & North America"=sum(region_2==1),
+            "3. Eastern, Southeast and Central Europe"=sum(region_3==1),
+            "4. Africa"= sum(region_4==1),
+            "5. Asia & the Pacific"=sum(region_5==1),
+            "6. Central Asia & Caucasus"=sum(region_6==1),
+            "7. South West Asia/Middle East & North Africa"=sum(region_7==1))
+
+
+
+q41 <- loadWorkbook(archivo)
+addWorksheet(q41, sheetName = "q41_region")
+writeData(q41, sheet = "q41_region", x = q41_region)
+saveWorkbook(q41, archivo, overwrite = TRUE)
+
+##########################################################################
+
+
+archivo <- "cuadros/q42.xlsx"
+
+#ANÁLISIS Q42
+
+unique(witm$q42_aspirational_budget)
+
+#cruce por q4agrup
+
+
+# Crear q41_q4agrup
+q42_q4agrup <- witm %>%
+  mutate(q4_awid_focus=recode(q4_awid_focus,"1"="Specific AWID subjects","0"="Other subjects")) %>% 
+  filter(!is.na(q42_aspirational_budget)) %>% 
+  group_by(q42_aspirational_budget, q4_awid_focus) %>% 
+  summarise(n = n(), .groups = 'drop')
+
+q42_q4agrup <- q42_q4agrup %>%
+  pivot_wider(names_from = q4_awid_focus, values_from = n, values_fill = list(n = 0)) %>%
+  arrange(q42_aspirational_budget)
+
+
+write.xlsx(q42_q4agrup, file = archivo, sheetName="q42_q4agrup")
+
+
+#cruce por q4
+
+
+q42_q4 <- witm %>%
+  filter(!is.na(q42_aspirational_budget)) %>% 
+  group_by(q42_aspirational_budget) %>% 
+  summarise(Total = n(),
+            LGTBIQ= sum(q4_awid_LGBTIQ==1),
+            Young= sum(q4_awid_young==1),
+            Sex_workers=sum(q4_awid_sex==1),
+            Anti_caste=sum(q4_awid_anticaste==1),
+            Climate=sum(q4_awid_climate==1),
+            Countering_anti=sum(q4_awid_antigender==1),
+            Harm_reduction=sum(q4_awid_harm==1),
+            Disability_rights=sum(q4_awid_disability==1))  
+
+
+q42 <- loadWorkbook(archivo)
+addWorksheet(q42, sheetName = "q42_q4")
+writeData(q42, sheet = "q42_q4", x = q42_q4)
+saveWorkbook(q42, archivo, overwrite = TRUE)
+
+
+#cruce por región: q7
+
+
+#Convertir campos vacíos de la variable q46 en NA
+witm <- witm %>%
+  mutate(q42_aspirational_budget = na_if(q42_aspirational_budget, ""))
+
+q42_region<-witm %>% 
+  filter(!is.na(q42_aspirational_budget)) %>% 
+  group_by(q42_aspirational_budget) %>%  
+  summarise(Total= n(),
+            "1. Latin America & the Caribbean"=sum(region_1==1),
+            "2. Western Europe & North America"=sum(region_2==1),
+            "3. Eastern, Southeast and Central Europe"=sum(region_3==1),
+            "4. Africa"= sum(region_4==1),
+            "5. Asia & the Pacific"=sum(region_5==1),
+            "6. Central Asia & Caucasus"=sum(region_6==1),
+            "7. South West Asia/Middle East & North Africa"=sum(region_7==1))
+
+
+
+q42 <- loadWorkbook(archivo)
+addWorksheet(q42, sheetName = "q42_region")
+writeData(q42, sheet = "q42_region", x = q42_region)
+saveWorkbook(q42, archivo, overwrite = TRUE)
 
 ##########################################################################
 
