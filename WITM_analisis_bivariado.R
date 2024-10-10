@@ -18,8 +18,7 @@ rm(list = ls())
 
 # OPEN CSV file
 
-#witm <- read.csv("Data/WITM_final_cleaned_08_sept.csv")
-witm <- read.csv("Data/WITM_cleaned_09232024.csv")
+witm <- read.csv("Data/WITM_FINAL_10102024.csv")
 
 
 qry<-witm %>%
@@ -27,9 +26,9 @@ qry<-witm %>%
   summarise(Count=n())
 qry
 
-source(file="WITM_variables_include.R") 
 
 
+  
 
 
 ##############################################################################
@@ -141,11 +140,11 @@ addWorksheet(q10, sheetName = "q10_q4agrup_media")
 writeData(q10, sheet = "q10_q4agrup_media", x = q10_media_table)
 saveWorkbook(q10, archivo, overwrite = TRUE)
 
-##Aye esto me da error pero no se que se queria
-# q10 <- loadWorkbook(archivo)
-# addWorksheet(q10, sheetName = "q4_agrup")
-# writeData(q10, sheet = "q4_agrup", x = q4_agrup)
-# saveWorkbook(q10, archivo, overwrite = TRUE)
+
+ q10 <- loadWorkbook(archivo)
+ addWorksheet(q10, sheetName = "q4_agrup")
+ writeData(q10, sheet = "q4_agrup", x = q10_grouped_q4agrup)
+ saveWorkbook(q10, archivo, overwrite = TRUE)
 
 
 ###
@@ -536,6 +535,54 @@ saveWorkbook(q10, archivo, overwrite = TRUE)
 
 
 ##############################################################################
+
+#ANÁLISIS DE LA Q11
+
+archivo <- "cuadros/cuadros2.xlsx"
+
+base<-witm
+q11<-base %>%
+  filter(!is.na(q11_covid_incidence) & q11_covid_incidence!="not_applicable" & q11_covid_incidence!="")%>%
+  group_by(q11_covid_incidence) %>% 
+  mutate(q11_covid_incidence= case_when(
+    q11_covid_incidence=="grown_substantially" ~ "1 Grow substantively",
+    q11_covid_incidence=="grown_slightly" ~ "2 Grow slightly",
+    q11_covid_incidence=="stayed_the_same" ~ "3 Stay the same",
+    q11_covid_incidence=="decreased_slightly" ~ "4 Decrease slightly",
+    q11_covid_incidence=="decreased_substantially" ~ "5 Decrease substantially",
+    # q11_covid_incidence=="not_applicable" ~ NA,
+    TRUE ~ NA)) %>%  
+  summarise(Count=n()) %>% 
+  mutate(Percentage=round((Count/sum(Count))*100,1)) %>% 
+  arrange(q11_covid_incidence) 
+
+
+#cruce por región: q7
+
+q11_region<-witm %>% 
+  mutate(q11_covid_incidence= case_when(
+  q11_covid_incidence=="grown_substantially" ~ "1 Grow substantively",
+  q11_covid_incidence=="grown_slightly" ~ "2 Grow slightly",
+  q11_covid_incidence=="stayed_the_same" ~ "3 Stay the same",
+  q11_covid_incidence=="decreased_slightly" ~ "4 Decrease slightly",
+  q11_covid_incidence=="decreased_substantially" ~ "5 Decrease substantially",
+  # q11_covid_incidence=="not_applicable" ~ NA,
+  TRUE ~ NA)) %>%  
+  filter(!is.na(q11_covid_incidence)) %>% 
+  group_by(q11_covid_incidence) %>% 
+  summarise(Total= n(),
+            "1. Latin America & the Caribbean"=sum(region_1==1),
+            "2. Western Europe & North America"=sum(region_2==1),
+            "3. Eastern, Southeast and Central Europe"=sum(region_3==1),
+            "4. Africa"= sum(region_4==1),
+            "5. Asia & the Pacific"=sum(region_5==1),
+            "6. Central Asia & Caucasus"=sum(region_6==1),
+            "7. South West Asia/Middle East & North Africa"=sum(region_7==1))
+
+write.xlsx(q11_region, file = archivo, sheetName="q11_region")
+
+#################################################################################
+
 
 # ANÁLISIS DE LA q13
 
@@ -1133,26 +1180,6 @@ saveWorkbook(q14, archivo, overwrite = TRUE)
 ######
 
 #cruce por región
-
-q30_region<-witm %>% 
-  filter(!is.na(q30_shift_priorities)) %>% 
-  group_by(q30_shift_priorities) %>% 
-  summarise(Total= n(),
-            "1. Latin America & the Caribbean"=sum(region_1==1),
-            "2. Western Europe & North America"=sum(region_2==1),
-            "3. Eastern, Southeast and Central Europe"=sum(region_3==1),
-            "4. Africa"= sum(region_4==1),
-            "5. Asia & the Pacific"=sum(region_5==1),
-            "6. Central Asia & Caucasus"=sum(region_6==1),
-            "7. South West Asia/Middle East & North Africa"=sum(region_7==1))
-
-
-
-q30 <- loadWorkbook(archivo)
-addWorksheet(q30, sheetName = "q30_region")
-writeData(q30, sheet = "q30_region", x = q30_region)
-saveWorkbook(q30, archivo, overwrite = TRUE)
-
 
 q14_2023_region <- witm %>%
   filter(q13_ext_funding == "yes") %>%
@@ -3307,6 +3334,455 @@ saveWorkbook(q19, archivo, overwrite = TRUE)
 
 #############################################################################
 
+#ANÁLISIS Q20
+
+
+archivo <- "cuadros/q20_loss_impact.xlsx"
+
+#Convertir campos vacíos de la variable q20 en NA
+witm <- witm%>%
+  mutate(q20_loss_impact = na_if(q20_loss_impact, ""))
+
+q20 <- witm %>%
+  filter(q19_lose_funding!=1 & !is.na(q20_loss_impact)) %>%
+  summarise(
+    Total = (round(n(),0)),
+    "No big impact"=sum(q20_loss_impact.no_impact==1, na.rm=TRUE),
+    "Staff reduction"=sum(q20_loss_impact.staff_fired==1, na.rm = TRUE),
+    "Activity reduction"=sum(q20_loss_impact.activity_reduction==1, na.rm = TRUE),
+    "Discontinuation of programs or projects"=sum(q20_loss_impact.cut_programs==1, na.rm = TRUE),
+    "Staff faced a salary gap"=sum(q20_loss_impact.cut_staff_salary==1, na.rm = TRUE),
+    "Other"=sum(q20_loss_impact.98==1, na.rm=TRUE)) %>% 
+  pivot_longer(cols = everything(),
+               names_to = "Source",
+               values_to = "N")
+
+write.xlsx(q20, file = archivo, sheetName="q20")
+
+
+###
+
+#Cruce por q4
+
+q20_q4agrup <-witm %>%
+  mutate(q4_awid_focus=recode(q4_awid_focus,"1"="Specific AWID subjects","0"="Other subjects")) %>% 
+  filter(q19_lose_funding!=1 & !is.na(q20_loss_impact)) %>% 
+  group_by(q4_awid_focus) %>% 
+  summarise(Total = (round(n(),0)),
+            "No big impact"=sum(q20_loss_impact.no_impact==1, na.rm=TRUE),
+            "Staff reduction"=sum(q20_loss_impact.staff_fired==1, na.rm = TRUE),
+            "Activity reduction"=sum(q20_loss_impact.activity_reduction==1, na.rm = TRUE),
+            "Discontinuation of programs or projects"=sum(q20_loss_impact.cut_programs==1, na.rm = TRUE),
+            "Staff faced a salary gap"=sum(q20_loss_impact.cut_staff_salary==1, na.rm = TRUE),
+            "Other"=sum(q20_loss_impact.98==1, na.rm=TRUE))
+
+
+
+q20 <- loadWorkbook(archivo)
+addWorksheet(q20, sheetName = "q20_q4agrup")
+writeData(q20, sheet = "q20_q4agrup", x = q20_q4agrup)
+saveWorkbook(q20, archivo, overwrite = TRUE)
+
+
+#Cruce por q4
+
+
+q20_q4a <- witm %>%
+  filter(q19_lose_funding!=1 & !is.na(q20_loss_impact) & q4_awid_LGBTIQ==1) %>%
+  summarise(Total = (round(n(),0)),
+            "No big impact"=sum(q20_loss_impact.no_impact==1, na.rm=TRUE),
+            "Staff reduction"=sum(q20_loss_impact.staff_fired==1, na.rm = TRUE),
+            "Activity reduction"=sum(q20_loss_impact.activity_reduction==1, na.rm = TRUE),
+            "Discontinuation of programs or projects"=sum(q20_loss_impact.cut_programs==1, na.rm = TRUE),
+            "Staff faced a salary gap"=sum(q20_loss_impact.cut_staff_salary==1, na.rm = TRUE),
+            "Other"=sum(q20_loss_impact.98==1, na.rm=TRUE)) %>% 
+  pivot_longer(cols = everything(),
+               names_to = "Source",
+               values_to = "LGBTIQ")
+
+q20_q4b <- witm %>%
+  filter(q19_lose_funding!=1 & !is.na(q20_loss_impact) & q4_awid_young==1) %>%
+  summarise(Total = (round(n(),0)),
+            "No big impact"=sum(q20_loss_impact.no_impact==1, na.rm=TRUE),
+            "Staff reduction"=sum(q20_loss_impact.staff_fired==1, na.rm = TRUE),
+            "Activity reduction"=sum(q20_loss_impact.activity_reduction==1, na.rm = TRUE),
+            "Discontinuation of programs or projects"=sum(q20_loss_impact.cut_programs==1, na.rm = TRUE),
+            "Staff faced a salary gap"=sum(q20_loss_impact.cut_staff_salary==1, na.rm = TRUE),
+            "Other"=sum(q20_loss_impact.98==1, na.rm=TRUE)) %>% 
+  pivot_longer(cols = everything(),
+               names_to = "Source",
+               values_to = "Young")
+
+q20_q4c <- witm %>%
+  filter(q19_lose_funding!=1 & !is.na(q20_loss_impact) & q4_awid_sex==1) %>%
+  summarise(Total = (round(n(),0)),
+            "No big impact"=sum(q20_loss_impact.no_impact==1, na.rm=TRUE),
+            "Staff reduction"=sum(q20_loss_impact.staff_fired==1, na.rm = TRUE),
+            "Activity reduction"=sum(q20_loss_impact.activity_reduction==1, na.rm = TRUE),
+            "Discontinuation of programs or projects"=sum(q20_loss_impact.cut_programs==1, na.rm = TRUE),
+            "Staff faced a salary gap"=sum(q20_loss_impact.cut_staff_salary==1, na.rm = TRUE),
+            "Other"=sum(q20_loss_impact.98==1, na.rm=TRUE)) %>% 
+  pivot_longer(cols = everything(),
+               names_to = "Source",
+               values_to = "Sex workers")
+
+q20_q4d <- witm %>%
+  filter(q19_lose_funding!=1 & !is.na(q20_loss_impact) & q4_awid_anticaste==1) %>%
+  summarise(Total = (round(n(),0)),
+            "No big impact"=sum(q20_loss_impact.no_impact==1, na.rm=TRUE),
+            "Staff reduction"=sum(q20_loss_impact.staff_fired==1, na.rm = TRUE),
+            "Activity reduction"=sum(q20_loss_impact.activity_reduction==1, na.rm = TRUE),
+            "Discontinuation of programs or projects"=sum(q20_loss_impact.cut_programs==1, na.rm = TRUE),
+            "Staff faced a salary gap"=sum(q20_loss_impact.cut_staff_salary==1, na.rm = TRUE),
+            "Other"=sum(q20_loss_impact.98==1, na.rm=TRUE)) %>%  
+  pivot_longer(cols = everything(),
+               names_to = "Source",
+               values_to = "Anticaste")
+
+q20_q4e <- witm %>%
+  filter(q19_lose_funding!=1 & !is.na(q20_loss_impact) & q4_awid_climate==1) %>%
+  summarise(Total = (round(n(),0)),
+            "No big impact"=sum(q20_loss_impact.no_impact==1, na.rm=TRUE),
+            "Staff reduction"=sum(q20_loss_impact.staff_fired==1, na.rm = TRUE),
+            "Activity reduction"=sum(q20_loss_impact.activity_reduction==1, na.rm = TRUE),
+            "Discontinuation of programs or projects"=sum(q20_loss_impact.cut_programs==1, na.rm = TRUE),
+            "Staff faced a salary gap"=sum(q20_loss_impact.cut_staff_salary==1, na.rm = TRUE),
+            "Other"=sum(q20_loss_impact.98==1, na.rm=TRUE)) %>% 
+  pivot_longer(cols = everything(),
+               names_to = "Source",
+               values_to = "Climate")
+
+q20_q4f <- witm %>%
+  filter(q19_lose_funding!=1 & !is.na(q20_loss_impact)  & q4_awid_antigender==1) %>%
+  summarise(Total = (round(n(),0)),
+            "No big impact"=sum(q20_loss_impact.no_impact==1, na.rm=TRUE),
+            "Staff reduction"=sum(q20_loss_impact.staff_fired==1, na.rm = TRUE),
+            "Activity reduction"=sum(q20_loss_impact.activity_reduction==1, na.rm = TRUE),
+            "Discontinuation of programs or projects"=sum(q20_loss_impact.cut_programs==1, na.rm = TRUE),
+            "Staff faced a salary gap"=sum(q20_loss_impact.cut_staff_salary==1, na.rm = TRUE),
+            "Other"=sum(q20_loss_impact.98==1, na.rm=TRUE)) %>% 
+  pivot_longer(cols = everything(),
+               names_to = "Source",
+               values_to = "Countering anti-gender & anti-rights")
+
+q20_q4g <- witm %>%
+  filter(q19_lose_funding!=1 & !is.na(q20_loss_impact)  & q4_awid_harm==1) %>%
+  summarise(Total = (round(n(),0)),
+            "No big impact"=sum(q20_loss_impact.no_impact==1, na.rm=TRUE),
+            "Staff reduction"=sum(q20_loss_impact.staff_fired==1, na.rm = TRUE),
+            "Activity reduction"=sum(q20_loss_impact.activity_reduction==1, na.rm = TRUE),
+            "Discontinuation of programs or projects"=sum(q20_loss_impact.cut_programs==1, na.rm = TRUE),
+            "Staff faced a salary gap"=sum(q20_loss_impact.cut_staff_salary==1, na.rm = TRUE),
+            "Other"=sum(q20_loss_impact.98==1, na.rm=TRUE)) %>% 
+  pivot_longer(cols = everything(),
+               names_to = "Source",
+               values_to = "Harm reduction")
+
+q20_q4h <- witm %>%
+  filter(q19_lose_funding!=1 & !is.na(q20_loss_impact)  & q4_awid_disability==1) %>%
+  summarise(Total = (round(n(),0)),
+            "No big impact"=sum(q20_loss_impact.no_impact==1, na.rm=TRUE),
+            "Staff reduction"=sum(q20_loss_impact.staff_fired==1, na.rm = TRUE),
+            "Activity reduction"=sum(q20_loss_impact.activity_reduction==1, na.rm = TRUE),
+            "Discontinuation of programs or projects"=sum(q20_loss_impact.cut_programs==1, na.rm = TRUE),
+            "Staff faced a salary gap"=sum(q20_loss_impact.cut_staff_salary==1, na.rm = TRUE),
+            "Other"=sum(q20_loss_impact.98==1, na.rm=TRUE)) %>% 
+  pivot_longer(cols = everything(),
+               names_to = "Source",
+               values_to = "Disability rights")
+
+q20_q4_total <- q20_q4a %>%
+  left_join(q20_q4b, by = "Source") %>%
+  left_join(q20_q4c, by = "Source") %>%
+  left_join(q20_q4d, by = "Source") %>%
+  left_join(q20_q4e, by = "Source") %>%
+  left_join(q20_q4f, by = "Source") %>%
+  left_join(q20_q4g, by = "Source") %>%
+  left_join(q20_q4h, by = "Source")
+
+
+
+q20 <- loadWorkbook(archivo)
+addWorksheet(q20, sheetName = "q20_q4_total")
+writeData(q20, sheet = "q20_q4_total", x = q20_q4_total)
+saveWorkbook(q20, archivo, overwrite = TRUE)
+
+
+#Cruce por la q5
+
+
+
+q20_q5 <-witm %>%
+  filter(q19_lose_funding!=1 & !is.na(q20_loss_impact)) %>% 
+  group_by(q5) %>% 
+  summarise(Total = (round(n(),0)),
+            "No big impact"=sum(q20_loss_impact.no_impact==1, na.rm=TRUE),
+            "Staff reduction"=sum(q20_loss_impact.staff_fired==1, na.rm = TRUE),
+            "Activity reduction"=sum(q20_loss_impact.activity_reduction==1, na.rm = TRUE),
+            "Discontinuation of programs or projects"=sum(q20_loss_impact.cut_programs==1, na.rm = TRUE),
+            "Staff faced a salary gap"=sum(q20_loss_impact.cut_staff_salary==1, na.rm = TRUE),
+            "Other"=sum(q20_loss_impact.98==1, na.rm=TRUE))
+
+
+
+q20 <- loadWorkbook(archivo)
+addWorksheet(q20, sheetName = "q20_q5")
+writeData(q20, sheet = "q20_q5", x = q20_q5)
+saveWorkbook(q20, archivo, overwrite = TRUE)
+
+###
+
+#Cruce por q6
+
+
+q20_q6 <-witm %>% 
+  filter(q19_lose_funding!=1 & !is.na(q20_loss_impact)) %>% 
+  group_by(q6) %>% 
+  summarise(Total = (round(n(),0)),
+            "No big impact"=sum(q20_loss_impact.no_impact==1, na.rm=TRUE),
+            "Staff reduction"=sum(q20_loss_impact.staff_fired==1, na.rm = TRUE),
+            "Activity reduction"=sum(q20_loss_impact.activity_reduction==1, na.rm = TRUE),
+            "Discontinuation of programs or projects"=sum(q20_loss_impact.cut_programs==1, na.rm = TRUE),
+            "Staff faced a salary gap"=sum(q20_loss_impact.cut_staff_salary==1, na.rm = TRUE),
+            "Other"=sum(q20_loss_impact.98==1, na.rm=TRUE))
+
+
+
+q20 <- loadWorkbook(archivo)
+addWorksheet(q20, sheetName = "q20_q6")
+writeData(q20, sheet = "q20_q6", x = q20_q6)
+saveWorkbook(q20, archivo, overwrite = TRUE)
+
+###
+
+#Cruce por region:q7
+
+
+
+q20_region_1 <- witm %>%
+  filter(q19_lose_funding!=1 & !is.na(q20_loss_impact) & region_1==1) %>%
+  summarise(Total = (round(n(),0)),
+            "No big impact"=sum(q20_loss_impact.no_impact==1, na.rm=TRUE),
+            "Staff reduction"=sum(q20_loss_impact.staff_fired==1, na.rm = TRUE),
+            "Activity reduction"=sum(q20_loss_impact.activity_reduction==1, na.rm = TRUE),
+            "Discontinuation of programs or projects"=sum(q20_loss_impact.cut_programs==1, na.rm = TRUE),
+            "Staff faced a salary gap"=sum(q20_loss_impact.cut_staff_salary==1, na.rm = TRUE),
+            "Other"=sum(q20_loss_impact.98==1, na.rm=TRUE)) %>% 
+  pivot_longer(cols = everything(),
+               names_to = "Source",
+               values_to = "1. Latin America & the Caribbean")
+
+q20_region_2 <- witm %>%
+  filter(q19_lose_funding!=1 & !is.na(q20_loss_impact)  & region_2==1) %>%
+  summarise(Total = (round(n(),0)),
+            "No big impact"=sum(q20_loss_impact.no_impact==1, na.rm=TRUE),
+            "Staff reduction"=sum(q20_loss_impact.staff_fired==1, na.rm = TRUE),
+            "Activity reduction"=sum(q20_loss_impact.activity_reduction==1, na.rm = TRUE),
+            "Discontinuation of programs or projects"=sum(q20_loss_impact.cut_programs==1, na.rm = TRUE),
+            "Staff faced a salary gap"=sum(q20_loss_impact.cut_staff_salary==1, na.rm = TRUE),
+            "Other"=sum(q20_loss_impact.98==1, na.rm=TRUE)) %>% 
+  pivot_longer(cols = everything(),
+               names_to = "Source",
+               values_to = "2. Western Europe & North America")
+
+
+
+
+
+q20_region_3 <- witm %>%
+  filter(q19_lose_funding!=1 & !is.na(q20_loss_impact)  & region_3==1) %>%
+  summarise(Total = (round(n(),0)),
+            "No big impact"=sum(q20_loss_impact.no_impact==1, na.rm=TRUE),
+            "Staff reduction"=sum(q20_loss_impact.staff_fired==1, na.rm = TRUE),
+            "Activity reduction"=sum(q20_loss_impact.activity_reduction==1, na.rm = TRUE),
+            "Discontinuation of programs or projects"=sum(q20_loss_impact.cut_programs==1, na.rm = TRUE),
+            "Staff faced a salary gap"=sum(q20_loss_impact.cut_staff_salary==1, na.rm = TRUE),
+            "Other"=sum(q20_loss_impact.98==1, na.rm=TRUE)) %>%  
+  pivot_longer(cols = everything(),
+               names_to = "Source",
+               values_to = "3. Eastern, Southeast and Central Europe")
+
+q20_region_4 <- witm %>%
+  filter( q19_lose_funding!=1 & !is.na(q20_loss_impact) & region_4==1) %>%
+  summarise(Total = (round(n(),0)),
+            "No big impact"=sum(q20_loss_impact.no_impact==1, na.rm=TRUE),
+            "Staff reduction"=sum(q20_loss_impact.staff_fired==1, na.rm = TRUE),
+            "Activity reduction"=sum(q20_loss_impact.activity_reduction==1, na.rm = TRUE),
+            "Discontinuation of programs or projects"=sum(q20_loss_impact.cut_programs==1, na.rm = TRUE),
+            "Staff faced a salary gap"=sum(q20_loss_impact.cut_staff_salary==1, na.rm = TRUE),
+            "Other"=sum(q20_loss_impact.98==1, na.rm=TRUE)) %>% 
+  pivot_longer(cols = everything(),
+               names_to = "Source",
+               values_to = "4. Africa")
+
+
+q20_region_5 <- witm %>%
+  filter( q19_lose_funding!=1 & !is.na(q20_loss_impact) & region_5==1) %>%
+  summarise(Total = (round(n(),0)),
+            "No big impact"=sum(q20_loss_impact.no_impact==1, na.rm=TRUE),
+            "Staff reduction"=sum(q20_loss_impact.staff_fired==1, na.rm = TRUE),
+            "Activity reduction"=sum(q20_loss_impact.activity_reduction==1, na.rm = TRUE),
+            "Discontinuation of programs or projects"=sum(q20_loss_impact.cut_programs==1, na.rm = TRUE),
+            "Staff faced a salary gap"=sum(q20_loss_impact.cut_staff_salary==1, na.rm = TRUE),
+            "Other"=sum(q20_loss_impact.98==1, na.rm=TRUE)) %>% 
+  pivot_longer(cols = everything(),
+               names_to = "Source",
+               values_to = "5. Asia & the Pacific")
+
+
+q20_region_6 <- witm %>%
+  filter( q19_lose_funding!=1 & !is.na(q20_loss_impact) & region_6==1) %>%
+  summarise(Total = (round(n(),0)),
+            "No big impact"=sum(q20_loss_impact.no_impact==1, na.rm=TRUE),
+            "Staff reduction"=sum(q20_loss_impact.staff_fired==1, na.rm = TRUE),
+            "Activity reduction"=sum(q20_loss_impact.activity_reduction==1, na.rm = TRUE),
+            "Discontinuation of programs or projects"=sum(q20_loss_impact.cut_programs==1, na.rm = TRUE),
+            "Staff faced a salary gap"=sum(q20_loss_impact.cut_staff_salary==1, na.rm = TRUE),
+            "Other"=sum(q20_loss_impact.98==1, na.rm=TRUE)) %>% 
+  pivot_longer(cols = everything(),
+               names_to = "Source",
+               values_to = "6. Central Asia & Caucasus")
+
+q20_region_7 <- witm %>%
+  filter( q19_lose_funding!=1 & !is.na(q20_loss_impact) & region_7==1) %>%
+  summarise(Total = (round(n(),0)),
+            "No big impact"=sum(q20_loss_impact.no_impact==1, na.rm=TRUE),
+            "Staff reduction"=sum(q20_loss_impact.staff_fired==1, na.rm = TRUE),
+            "Activity reduction"=sum(q20_loss_impact.activity_reduction==1, na.rm = TRUE),
+            "Discontinuation of programs or projects"=sum(q20_loss_impact.cut_programs==1, na.rm = TRUE),
+            "Staff faced a salary gap"=sum(q20_loss_impact.cut_staff_salary==1, na.rm = TRUE),
+            "Other"=sum(q20_loss_impact.98==1, na.rm=TRUE)) %>% 
+  pivot_longer(cols = everything(),
+               names_to = "Source",
+               values_to = "7. South West Asia/Middle East & North Africa")
+
+
+
+q20_region_total <- q20_region_1 %>%
+  left_join(q20_region_2, by = "Source") %>%
+  left_join(q20_region_3, by = "Source") %>%
+  left_join(q20_region_4, by = "Source") %>%
+  left_join(q20_region_5, by = "Source") %>%
+  left_join(q20_region_6, by = "Source") %>%
+  left_join(q20_region_7, by = "Source")
+
+
+
+q20 <- loadWorkbook(archivo)
+addWorksheet(q20, sheetName = "q20_region")
+writeData(q20, sheet = "q20_region", x = q20_region_total)
+saveWorkbook(q20, archivo, overwrite = TRUE)
+
+
+###
+
+#Cruce por q9
+
+q20_q9 <- witm %>%
+  filter(q19_lose_funding!=1 & !is.na(q20_loss_impact)) %>%
+  group_by(q9_year_formation_agrup) %>% 
+  summarise(Total = (round(n(),0)),
+            "No big impact"=sum(q20_loss_impact.no_impact==1, na.rm=TRUE),
+            "Staff reduction"=sum(q20_loss_impact.staff_fired==1, na.rm = TRUE),
+            "Activity reduction"=sum(q20_loss_impact.activity_reduction==1, na.rm = TRUE),
+            "Discontinuation of programs or projects"=sum(q20_loss_impact.cut_programs==1, na.rm = TRUE),
+            "Staff faced a salary gap"=sum(q20_loss_impact.cut_staff_salary==1, na.rm = TRUE),
+            "Other"=sum(q20_loss_impact.98==1, na.rm=TRUE))
+
+
+q20 <- loadWorkbook(archivo)
+addWorksheet(q20, sheetName = "q20_q9")
+writeData(q20, sheet = "q20q9", x = q20_q9)
+saveWorkbook(q20, archivo, overwrite = TRUE)
+
+###
+
+#Cruce por q10
+
+# Crear q10_2021_q19
+q10_2021_q20 <- witm %>% 
+  filter(q9_year_formation < 2022 & q19_lose_funding!=1 & !is.na(q20_loss_impact)) %>% 
+  group_by(q10_budget_grp_2021) %>% 
+  summarise(Total = (round(n(),0)),
+            "No big impact"=sum(q20_loss_impact.no_impact==1, na.rm=TRUE),
+            "Staff reduction"=sum(q20_loss_impact.staff_fired==1, na.rm = TRUE),
+            "Activity reduction"=sum(q20_loss_impact.activity_reduction==1, na.rm = TRUE),
+            "Discontinuation of programs or projects"=sum(q20_loss_impact.cut_programs==1, na.rm = TRUE),
+            "Staff faced a salary gap"=sum(q20_loss_impact.cut_staff_salary==1, na.rm = TRUE),
+            "Other"=sum(q20_loss_impact.98==1, na.rm=TRUE)) %>%   
+  rename(Annual_budget = q10_budget_grp_2021) %>% 
+  mutate(Year = 2021)
+
+# Crear q10_2022_q19
+q10_2022_q20 <- witm %>% 
+  filter(q9_year_formation < 2023 & q19_lose_funding!=1 & !is.na(q20_loss_impact)) %>% 
+  group_by(q10_budget_grp_2022) %>% 
+  summarise(Total = (round(n(),0)),
+            "No big impact"=sum(q20_loss_impact.no_impact==1, na.rm=TRUE),
+            "Staff reduction"=sum(q20_loss_impact.staff_fired==1, na.rm = TRUE),
+            "Activity reduction"=sum(q20_loss_impact.activity_reduction==1, na.rm = TRUE),
+            "Discontinuation of programs or projects"=sum(q20_loss_impact.cut_programs==1, na.rm = TRUE),
+            "Staff faced a salary gap"=sum(q20_loss_impact.cut_staff_salary==1, na.rm = TRUE),
+            "Other"=sum(q20_loss_impact.98==1, na.rm=TRUE)) %>%   
+  rename(Annual_budget = q10_budget_grp_2022) %>% 
+  mutate(Year = 2022)
+
+# Crear q10_2023_q19
+q10_2023_q20 <- witm %>% 
+  filter(!is.na(q10_budget_year_2023) & q19_lose_funding!=1 & !is.na(q20_loss_impact)) %>%
+  group_by(q10_budget_grp_2023) %>% 
+  summarise(Total = (round(n(),0)),
+            "No big impact"=sum(q20_loss_impact.no_impact==1, na.rm=TRUE),
+            "Staff reduction"=sum(q20_loss_impact.staff_fired==1, na.rm = TRUE),
+            "Activity reduction"=sum(q20_loss_impact.activity_reduction==1, na.rm = TRUE),
+            "Discontinuation of programs or projects"=sum(q20_loss_impact.cut_programs==1, na.rm = TRUE),
+            "Staff faced a salary gap"=sum(q20_loss_impact.cut_staff_salary==1, na.rm = TRUE),
+            "Other"=sum(q20_loss_impact.98==1, na.rm=TRUE)) %>%  
+  rename(Annual_budget = q10_budget_grp_2023) %>% 
+  mutate(Year = 2023)
+
+
+
+
+# Unir los dataframes
+q10_grouped_q20 <- bind_rows(q10_2021_q20, q10_2022_q20, q10_2023_q20)
+
+# Calcular la media entre los años para cada categoría de q15, agrupando por las categorías de q10
+final_means_q20 <- q10_grouped_q20 %>%
+  group_by(Annual_budget) %>%  # Agrupando por la categoría de q10
+  summarise(
+    Total = round(mean(Total, na.rm = TRUE), 0),
+    `No big impact` = round(mean(`No big impact`, na.rm = TRUE), 0),
+    `Staff reduction` = round(mean(`Staff reduction`, na.rm = TRUE), 0),
+    `Activity reduction` = round(mean(`Activity reduction`, na.rm = TRUE), 0),
+    `Discontinuation of programs or projects` = round(mean(`Discontinuation of programs or projects`, na.rm = TRUE), 0),
+    `Staff faced a salary gap` = round(mean(`Staff faced a salary gap`, na.rm = TRUE), 0),
+    `Other` = round(mean(`Other`, na.rm = TRUE), 0)
+  )
+
+
+
+q20 <- loadWorkbook(archivo)
+addWorksheet(q20, sheetName = "q20_q10")
+# Escribir las tablas en la misma hoja
+writeData(q20, "q20_q10", "Table for 2021", startRow = 1, startCol = 1)
+writeData(q20, "q20_q10", q10_2021_q20, startRow = 2, startCol = 1, withFilter = TRUE)
+# Agregar un espacio entre tablas
+writeData(q20, "q20_q10", "Table for 2022", startRow = nrow(q10_2021_q20) + 4, startCol = 1)
+writeData(q20, "q20_q10", q10_2022_q20, startRow = nrow(q10_2021_q20) + 5, startCol = 1, withFilter = TRUE)
+# Agregar otro espacio
+writeData(q20, "q20_q10", "Table for 2023", startRow = nrow(q10_2021_q20) + nrow(q10_2022_q20) + 8, startCol = 1)
+writeData(q20, "q20_q10", q10_2023_q20, startRow = nrow(q10_2021_q20) + nrow(q10_2022_q20) + 9, startCol = 1, withFilter = TRUE)
+saveWorkbook(q20, archivo, overwrite = TRUE)
+
+
+q20 <- loadWorkbook(archivo)
+addWorksheet(q20, sheetName = "q20_q10_media")
+writeData(q20, sheet = "q20_q10_media", x = final_means_q20)
+saveWorkbook(q20, archivo, overwrite = TRUE)
+
+
+############################################################################
 #ANÁLISIS Q21
 
 archivo <- "cuadros/q21_types_funding.xlsx"
@@ -4279,6 +4755,238 @@ writeData(q28, sheet = "q28_q10_media", x = final_means_q28)
 saveWorkbook(q28, archivo, overwrite = TRUE)
 
 
+################################################################################
+
+#ANÁLISIS DE LA q29
+
+archivo <- "cuadros/q29_autonomous_resources.xlsx"
+
+
+#Convertir campos vacíos de la variable q13 en NA
+base <- base %>%
+  mutate(q29_reliance_aut_resoursing = na_if(q29_reliance_aut_resoursing, ""))
+
+
+q29<-base %>%
+  filter(!is.na(q29_reliance_aut_resoursing) & q29_reliance_aut_resoursing!="not_applicable") %>% 
+  mutate(q29_recod= case_when(
+    q29_reliance_aut_resoursing=="grown_substantively" ~ "(a) Grew substantively",
+    q29_reliance_aut_resoursing=="grown_slightly" ~ "(b) Grew slightly",
+    q29_reliance_aut_resoursing=="stayed_same" ~ "(c) Stayed the same",
+    q29_reliance_aut_resoursing=="decreased_slightly" ~ "(d) Decreased slightly",
+    q29_reliance_aut_resoursing=="decreased_substantially" ~ "(e) Decreased substantially",
+    TRUE ~ NA)) %>% 
+  group_by(q29_recod) %>% 
+  summarise(Count=n()) %>% 
+  mutate(Percentage=round((Count/sum(Count))*100,1)) %>% 
+  arrange(q29_recod) %>%   
+  rename("Change"=q29_recod)
+
+
+
+write.xlsx(q29, file = archivo, sheetName="q29")
+
+
+###
+
+
+# Cuce por q4
+q29_q4agrup <- witm %>% 
+  mutate(q4_awid_focus=recode(q4_awid_focus,"1"="Specific AWID subjects","0"="Other subjects")) %>%
+  filter(!is.na(q29_reliance_aut_resoursing) & q29_reliance_aut_resoursing!="not_applicable") %>% 
+  group_by(q29_reliance_aut_resoursing, q4_awid_focus) %>% 
+  summarise(n = n(), .groups = 'drop') %>% 
+  rename("Change" = q29_reliance_aut_resoursing)
+
+q29_q4agrup <- q29_q4agrup %>%
+  pivot_wider(names_from = q4_awid_focus, values_from = n, values_fill = list(n = 0)) %>%
+  arrange(`Change`)
+
+
+q29 <- loadWorkbook(archivo)
+addWorksheet(q29, sheetName = "q29_q4agrup") 
+writeData(q29, sheet = "q29_q4agrup", x = q29_q4agrup)
+saveWorkbook(q29, archivo, overwrite = TRUE)
+
+
+
+#cruce por q4
+
+
+q29_q4 <- witm %>%
+  filter( !is.na(q29_reliance_aut_resoursing) & q29_reliance_aut_resoursing!="not_applicable" & !is.na(q4_forms_organizing)) %>%
+  group_by(q29_reliance_aut_resoursing) %>% 
+  summarise(Total = n(),
+            LGTBIQ= sum(q4_awid_LGBTIQ==1),
+            Young= sum(q4_awid_young==1),
+            Sex_workers=sum(q4_awid_sex==1),
+            Anti_caste=sum(q4_awid_anticaste==1),
+            Climate=sum(q4_awid_climate==1),
+            Countering_anti=sum(q4_awid_antigender==1),
+            Harm_reduction=sum(q4_awid_harm==1),
+            Disability_rights=sum(q4_awid_disability==1))  
+
+
+q29 <- loadWorkbook(archivo)
+addWorksheet(q29, sheetName = "q29_q4")
+writeData(q29, sheet = "q29_q4", x = q29_q4)
+saveWorkbook(q29, archivo, overwrite = TRUE)
+
+
+
+#CRUCE POR q5
+
+
+q29_q5 <- witm %>% 
+  filter(!is.na(q29_reliance_aut_resoursing) & q29_reliance_aut_resoursing!="not_applicable") %>% 
+  group_by(q29_reliance_aut_resoursing, q5) %>% 
+  summarise(n = n(), .groups = 'drop') %>% 
+  rename("Change" = q29_reliance_aut_resoursing)
+
+q29_q5 <- q29_q5 %>%
+  pivot_wider(names_from = q5, values_from = n, values_fill = list(n = 0)) %>%
+  arrange(`Change`)
+
+
+q29 <- loadWorkbook(archivo)
+addWorksheet(q29, sheetName = "q29_q5")
+writeData(q29, sheet = "q29_q5", x = q29_q5)
+saveWorkbook(q29, archivo, overwrite = TRUE)
+
+
+
+#######
+
+#CRUCE POR q6
+
+q29_q6 <- witm %>% 
+  filter(!is.na(q29_reliance_aut_resoursing) & q29_reliance_aut_resoursing!="not_applicable") %>% 
+  group_by(q29_reliance_aut_resoursing, q6) %>% 
+  summarise(n = n(), .groups = 'drop') %>% 
+  rename("Change" = q29_reliance_aut_resoursing)
+
+q29_q6 <- q29_q6 %>%
+  pivot_wider(names_from = q6, values_from = n, values_fill = list(n = 0)) %>%
+  arrange(`Change`)
+
+
+q29 <- loadWorkbook(archivo)
+addWorksheet(q29, sheetName = "q29_q6")
+writeData(q29, sheet = "q29_q6", x = q29_q6)
+saveWorkbook(q29, archivo, overwrite = TRUE)
+###
+
+
+#cruce por región: q7
+
+q29_region<-witm %>% 
+  filter(!is.na(q29_reliance_aut_resoursing) & q29_reliance_aut_resoursing!="not_applicable") %>% 
+  group_by(q29_reliance_aut_resoursing) %>% 
+  summarise(Total= n(),
+            "1. Latin America & the Caribbean"=sum(region_1==1),
+            "2. Western Europe & North America"=sum(region_2==1),
+            "3. Eastern, Southeast and Central Europe"=sum(region_3==1),
+            "4. Africa"= sum(region_4==1),
+            "5. Asia & the Pacific"=sum(region_5==1),
+            "6. Central Asia & Caucasus"=sum(region_6==1),
+            "7. South West Asia/Middle East & North Africa"=sum(region_7==1))
+
+
+
+q29 <- loadWorkbook(archivo)
+addWorksheet(q29, sheetName = "q29_region")
+writeData(q29, sheet = "q29_region", x = q29_region)
+saveWorkbook(q29, archivo, overwrite = TRUE)
+
+#####
+
+#CRUCE POR q9
+
+q29_q9 <- witm %>% 
+  filter(!is.na(q29_reliance_aut_resoursing) & q29_reliance_aut_resoursing!="not_applicable") %>% 
+  group_by(q29_reliance_aut_resoursing, q9_year_formation_agrup) %>% 
+  summarise(n = n(), .groups = 'drop') %>% 
+  rename("Change" = q29_reliance_aut_resoursing)
+
+q29_q9 <- q29_q9 %>%
+  pivot_wider(names_from = q9_year_formation_agrup, values_from = n, values_fill = list(n = 0)) %>%
+  arrange(`Change`)
+
+q29 <- loadWorkbook(archivo)
+addWorksheet(q29, sheetName = "q29_q9")
+writeData(q29, sheet = "q29_q9", x = q29_q9)
+saveWorkbook(q29, archivo, overwrite = TRUE)
+
+
+
+###
+
+#CRUCE POR q10
+
+# Crear q10_2021_q29
+q10_2021_q29 <- witm %>% 
+  filter(q9_year_formation < 2022 & !is.na(q29_reliance_aut_resoursing) & q29_reliance_aut_resoursing!="not_applicable") %>% 
+  group_by(q10_budget_grp_2021, q29_reliance_aut_resoursing) %>% 
+  summarise(n = n(), .groups = 'drop') %>% 
+  rename(Annual_budget = q10_budget_grp_2021) %>% 
+  mutate(Year = 2021)
+
+# Crear q10_2022_q30
+q10_2022_q29 <- witm %>% 
+  filter(q9_year_formation < 2023 & !is.na(q29_reliance_aut_resoursing) & q29_reliance_aut_resoursing!="not_applicable") %>% 
+  group_by(q10_budget_grp_2022, q29_reliance_aut_resoursing) %>% 
+  summarise(n = n(), .groups = 'drop') %>% 
+  rename(Annual_budget = q10_budget_grp_2022) %>% 
+  mutate(Year = 2022)
+
+# Crear q10_2023_q30
+q10_2023_q29 <- witm %>% 
+  filter(!is.na(q10_budget_year_2023) & !is.na(q29_reliance_aut_resoursing) & q29_reliance_aut_resoursing!="not_applicable") %>%
+  group_by(q10_budget_grp_2023, q29_reliance_aut_resoursing) %>% 
+  summarise(n = n(), .groups = 'drop') %>% 
+  rename(Annual_budget = q10_budget_grp_2023) %>% 
+  mutate(Year = 2023)
+
+
+# Unir los dataframes
+q10_grouped_q29 <- bind_rows(q10_2021_q29, q10_2022_q29, q10_2023_q29)
+
+
+# Crear la tabla de doble entrada con años como filas
+q10_table <- q10_grouped_q29 %>%
+  group_by(Year, Annual_budget, q29_reliance_aut_resoursing) %>%
+  summarise(Total = sum(n), .groups = 'drop') %>%
+  pivot_wider(names_from = q29_reliance_aut_resoursing, values_from = Total, values_fill = list(Total = 0)) %>%
+  arrange(Year, Annual_budget)  # Opcional: ordenar por año y presupuesto
+
+# Crear la tabla de doble entrada
+q10_tableb <- q10_grouped_q29 %>%
+  pivot_wider(names_from = Year, values_from = n, values_fill = list(n = 0))
+
+# Calcular la media por cada categoría de Annual_budget
+q10_tableb <- q10_tableb %>%
+  rowwise() %>%
+  mutate(Media = round(mean(c_across(c(`2021`, `2022`, `2023`)), na.rm = TRUE), 0)) %>%
+  ungroup()  # Desagrupar después de la operación
+
+# Seleccionar solo las columnas de interés para la tabla final
+q10_media_table <- q10_tableb %>%
+  select(Annual_budget, q29_reliance_aut_resoursing, Media) %>%
+  pivot_wider(names_from = q29_reliance_aut_resoursing, values_from = Media, values_fill = list(Media = 0))
+
+q29 <- loadWorkbook(archivo)
+addWorksheet(q29, sheetName = "q29_q10")
+writeData(q29, sheet = "q29_q10", x = q10_table)
+saveWorkbook(q29, archivo, overwrite = TRUE)
+
+q29<- loadWorkbook(archivo)
+addWorksheet(q29, sheetName = "q29_q10_media")
+writeData(q29, sheet = "q29_q10_media", x = q10_media_table)
+saveWorkbook(q29, archivo, overwrite = TRUE)
+
+
+
+
 
 ################################################################################
 
@@ -4490,4 +5198,595 @@ q30<- loadWorkbook(archivo)
 addWorksheet(q30, sheetName = "q30_q10_media")
 writeData(q30, sheet = "q30_q10_media", x = q10_media_table)
 saveWorkbook(q30, archivo, overwrite = TRUE)
+
+##############################################################################
+
+
+
+
+
+
+#ANÁLISIS DE LA q36
+
+archivo <- "cuadros/q36_ustainability.xlsx"
+
+
+q36_2025 <- base %>%
+  mutate(q36_2025=case_when(
+    q36_budget_security_2025=="0" ~ "0 Zero",
+    q36_budget_security_2025=="10" | q36_budget_security_2025=="20"  ~ "1 Lower than 30%",
+    q36_budget_security_2025=="30" | q36_budget_security_2025=="40" ~ "2 Between 30% and 40%",
+    q36_budget_security_2025=="50" | q36_budget_security_2025=="60" ~ "3 Between 50% and 60%",
+    q36_budget_security_2025=="70" | q36_budget_security_2025=="80" ~ "4 Between 70% and 80%",
+    q36_budget_security_2025=="90" | q36_budget_security_2025=="100"~ "5 Higher than 80%",
+    TRUE ~ NA)) %>% 
+  group_by(q36_2025) %>% 
+  summarise("2025" = n()) %>%
+  select("q36"=1, 2)   # Elimina la columna total_count si no es necesaria
+
+q36_2026 <- base %>%
+  mutate(q36_2026=case_when(
+    q36_budget_security_2026=="0" ~ "0 Zero",
+    q36_budget_security_2026=="10" | q36_budget_security_2026=="20"  ~ "1 Lower than 30%",
+    q36_budget_security_2026=="30" | q36_budget_security_2026=="40" ~ "2 Between 30% and 40%",
+    q36_budget_security_2026=="50" | q36_budget_security_2026=="60" ~ "3 Between 50% and 60%",
+    q36_budget_security_2026=="70" | q36_budget_security_2026=="80" ~ "4 Between 70% and 80%",
+    q36_budget_security_2026=="90" | q36_budget_security_2026=="100"~ "5 Higher than 80%",
+    TRUE ~ NA)) %>% 
+  group_by(q36_2026) %>% 
+  summarise("2026" = n()) %>%
+  select("q36"=1, 2)   # Elimina la columna total_count si no es necesaria
+
+
+#Unir los dataframes
+q36_combined <- q36_2025 %>%
+  full_join(q36_2026, by = "q36")
+
+write.xlsx(q36_combined, file = archivo, sheetName="q36")
+
+###
+
+
+#CRUCE POR q4agrup
+
+q36_2026_q4agrup <- witm %>%
+  mutate(q36_2026=case_when(
+    q36_budget_security_2026=="0" ~ "0 Zero",
+    q36_budget_security_2026=="10" | q36_budget_security_2026=="20"  ~ "1 Lower than 30%",
+    q36_budget_security_2026=="30" | q36_budget_security_2026=="40" ~ "2 Between 30% and 40%",
+    q36_budget_security_2026=="50" | q36_budget_security_2026=="60" ~ "3 Between 50% and 60%",
+    q36_budget_security_2026=="70" | q36_budget_security_2026=="80" ~ "4 Between 70% and 80%",
+    q36_budget_security_2026=="90" | q36_budget_security_2026=="100"~ "5 Higher than 80%",
+    TRUE ~ NA)) %>% 
+  mutate(q4_awid_focus=recode(q4_awid_focus,"1"="Specific AWID subjects","0"="Other subjects")) %>% 
+  group_by(q36_2026, q4_awid_focus) %>% 
+  summarise(n = n(), .groups = 'drop') %>% 
+  rename("q36"=1) %>% 
+  mutate(Year = 2026)
+
+q36_2025_q4agrup <- witm %>%
+  mutate(q36_2025=case_when(
+    q36_budget_security_2025=="0" ~ "0 Zero",
+    q36_budget_security_2025=="10" | q36_budget_security_2025=="20"  ~ "1 Lower than 30%",
+    q36_budget_security_2025=="30" | q36_budget_security_2025=="40" ~ "2 Between 30% and 40%",
+    q36_budget_security_2025=="50" | q36_budget_security_2025=="60" ~ "3 Between 50% and 60%",
+    q36_budget_security_2025=="70" | q36_budget_security_2025=="80" ~ "4 Between 70% and 80%",
+    q36_budget_security_2025=="90" | q36_budget_security_2025=="100"~ "5 Higher than 80%",
+    TRUE ~ NA))  %>% 
+  mutate(q4_awid_focus=recode(q4_awid_focus,"1"="Specific AWID subjects","0"="Other subjects")) %>% 
+  group_by(q36_2025, q4_awid_focus) %>% 
+  summarise(n = n(), .groups = 'drop') %>% 
+  rename("q36"=1) %>% 
+  mutate(Year = 2025)
+
+# Unir los dataframes
+q36_q4agrup <- bind_rows(q36_2025_q4agrup, q36_2026_q4agrup)
+
+
+
+# Crear la tabla de doble entrada
+q36_table <- q36_q4agrup %>%
+  pivot_wider(names_from = Year, values_from = n, values_fill = list(n = 0)) %>%
+  arrange(q36)  # Opcional: ordenar por la columna de "q14"
+
+# Crear la tabla de doble entrada con q14 y q5
+q36_table <- q36_q4agrup %>%
+  group_by(Year, q36, q4_awid_focus) %>%
+  summarise(n = sum(n), .groups = 'drop') %>%
+  pivot_wider(names_from = q36, values_from = n, values_fill = list(n = 0)) %>%
+  arrange(Year, q4_awid_focus)  # Opcional: ordenar por el año y q5
+
+q36 <- loadWorkbook(archivo)
+addWorksheet(q36, sheetName = "q36_q4agrup")
+writeData(q36, sheet = "q36_q4agrup", x = q36_table)
+saveWorkbook(q36, archivo, overwrite = TRUE)
+
+####
+
+
+#cruce por q4
+mutate(q36_2025=case_when(
+  q36_budget_security_2025=="0" ~ "0 Zero",
+  q36_budget_security_2025=="10" | q36_budget_security_2025=="20"  ~ "1 Lower than 30%",
+  q36_budget_security_2025=="30" | q36_budget_security_2025=="40" ~ "2 Between 30% and 40%",
+  q36_budget_security_2025=="50" | q36_budget_security_2025=="60" ~ "3 Between 50% and 60%",
+  q36_budget_security_2025=="70" | q36_budget_security_2025=="80" ~ "4 Between 70% and 80%",
+  q36_budget_security_2025=="90" | q36_budget_security_2025=="100"~ "5 Higher than 80%",
+  TRUE ~ NA))  %>% 
+  mutate(q4_awid_focus=recode(q4_awid_focus,"1"="Specific AWID subjects","0"="Other subjects")) %>% 
+  group_by(q36_2025, q4_awid_focus) %>% 
+  summarise(n = n(), .groups = 'drop') %>% 
+  rename("q36"=1) %>% 
+  mutate(Year = 2025)
+
+
+q36_2025_q4 <- witm %>%
+  mutate(q36_2025=case_when(
+    q36_budget_security_2025=="0" ~ "0 Zero",
+    q36_budget_security_2025=="10" | q36_budget_security_2025=="20"  ~ "1 Lower than 30%",
+    q36_budget_security_2025=="30" | q36_budget_security_2025=="40" ~ "2 Between 30% and 40%",
+    q36_budget_security_2025=="50" | q36_budget_security_2025=="60" ~ "3 Between 50% and 60%",
+    q36_budget_security_2025=="70" | q36_budget_security_2025=="80" ~ "4 Between 70% and 80%",
+    q36_budget_security_2025=="90" | q36_budget_security_2025=="100"~ "5 Higher than 80%",
+    TRUE ~ NA))  %>%
+  group_by(q36_2025) %>% 
+  summarise(Total = n(),
+            LGTBIQ= sum(q4_awid_LGBTIQ==1),
+            Young= sum(q4_awid_young==1),
+            Sex_workers=sum(q4_awid_sex==1),
+            Anti_caste=sum(q4_awid_anticaste==1),
+            Climate=sum(q4_awid_climate==1),
+            Countering_anti=sum(q4_awid_antigender==1),
+            Harm_reduction=sum(q4_awid_harm==1),
+            Disability_rights=sum(q4_awid_disability==1)) %>% 
+  rename("q14"=1) %>% 
+  mutate(Year=2023)
+
+
+q36_2026_q4 <- witm %>%
+  filter(q13_ext_funding == "yes" & q9_year_formation<2023) %>%
+  mutate(q14_funding_annual_budget_2022=case_when(
+    q14_funding_annual_budget_2022=="0" ~ "0 Zero",
+    q14_funding_annual_budget_2022=="10" | q14_funding_annual_budget_2022=="20"  ~ "1 Lower than 30%",
+    q14_funding_annual_budget_2022=="30" | q14_funding_annual_budget_2022=="40" ~ "2 Between 30% and 40%",
+    q14_funding_annual_budget_2022=="50" | q14_funding_annual_budget_2022=="60" ~ "3 Between 50% and 60%",
+    q14_funding_annual_budget_2022=="70" | q14_funding_annual_budget_2022=="80" ~ "4 Between 70% and 80%",
+    q14_funding_annual_budget_2022=="90" | q14_funding_annual_budget_2022=="100"~ "5 Higher than 80%",
+    TRUE ~ NA)) %>% 
+  group_by(q14_funding_annual_budget_2022) %>% 
+  summarise(Total = n(),
+            LGTBIQ= sum(q4_awid_LGBTIQ==1),
+            Young= sum(q4_awid_young==1),
+            Sex_workers=sum(q4_awid_sex==1),
+            Anti_caste=sum(q4_awid_anticaste==1),
+            Climate=sum(q4_awid_climate==1),
+            Countering_anti=sum(q4_awid_antigender==1),
+            Harm_reduction=sum(q4_awid_harm==1),
+            Disability_rights=sum(q4_awid_disability==1)) %>% 
+  rename("q14"=1) %>% 
+  mutate(Year=2022)
+
+
+
+q14_2021_q4 <- witm %>%
+  filter(q13_ext_funding == "yes" & q9_year_formation<2022) %>%
+  mutate(q14_funding_annual_budget_2021=case_when(
+    q14_funding_annual_budget_2021=="0" ~ "0 Zero",
+    q14_funding_annual_budget_2021=="10" | q14_funding_annual_budget_2021=="20"  ~ "1 Lower than 30%",
+    q14_funding_annual_budget_2021=="30" | q14_funding_annual_budget_2021=="40" ~ "2 Between 30% and 40%",
+    q14_funding_annual_budget_2021=="50" | q14_funding_annual_budget_2021=="60" ~ "3 Between 50% and 60%",
+    q14_funding_annual_budget_2021=="70" | q14_funding_annual_budget_2021=="80" ~ "4 Between 70% and 80%",
+    q14_funding_annual_budget_2021=="90" | q14_funding_annual_budget_2021=="100"~ "5 Higher than 80%",
+    TRUE ~ NA)) %>% 
+  group_by(q14_funding_annual_budget_2021) %>% 
+  summarise(Total = n(),
+            LGTBIQ= sum(q4_awid_LGBTIQ==1),
+            Young= sum(q4_awid_young==1),
+            Sex_workers=sum(q4_awid_sex==1),
+            Anti_caste=sum(q4_awid_anticaste==1),
+            Climate=sum(q4_awid_climate==1),
+            Countering_anti=sum(q4_awid_antigender==1),
+            Harm_reduction=sum(q4_awid_harm==1),
+            Disability_rights=sum(q4_awid_disability==1)) %>% 
+  rename("q14"=1) %>% 
+  mutate(Year=2021)
+
+q14_unificada<-bind_rows(q14_2021_q4, q14_2022_q4, q14_2023_q4)
+
+
+
+q14 <- loadWorkbook(archivo)
+addWorksheet(q14, sheetName = "q14_q4")
+# Escribir las tablas en la misma hoja
+writeData(q14, "q14_q4", "Table for 2021", startRow = 1, startCol = 1)
+writeData(q14, "q14_q4", q14_2021_q4, startRow = 2, startCol = 1, withFilter = TRUE)
+# Agregar un espacio entre tablas
+writeData(q14, "q14_q4", "Table for 2022", startRow = nrow(q14_2021_q4) + 4, startCol = 1)
+writeData(q14, "q14_q4", q14_2022_q4, startRow = nrow(q14_2021_q4) + 5, startCol = 1, withFilter = TRUE)
+# Agregar otro espacio
+writeData(q14, "q14_q4", "Table for 2023", startRow = nrow(q14_2021_q4) + nrow(q14_2022_q4) + 8, startCol = 1)
+writeData(q14, "q14_q4", q14_2023_q4, startRow = nrow(q14_2021_q4) + nrow(q14_2022_q4) + 9, startCol = 1, withFilter = TRUE)
+saveWorkbook(q14, archivo, overwrite = TRUE)
+
+
+###
+
+#CRUCE POR q5
+
+q14_2023_q5 <- witm %>%
+  filter(q13_ext_funding == "yes") %>%
+  mutate(q14_funding_annual_budget_2023=case_when(
+    q14_funding_annual_budget_2023=="0" ~ "0 Zero",
+    q14_funding_annual_budget_2023=="10" | q14_funding_annual_budget_2023=="20"  ~ "1 Lower than 30%",
+    q14_funding_annual_budget_2023=="30" | q14_funding_annual_budget_2023=="40" ~ "2 Between 30% and 40%",
+    q14_funding_annual_budget_2023=="50" | q14_funding_annual_budget_2023=="60" ~ "3 Between 50% and 60%",
+    q14_funding_annual_budget_2023=="70" | q14_funding_annual_budget_2023=="80" ~ "4 Between 70% and 80%",
+    q14_funding_annual_budget_2023=="90" | q14_funding_annual_budget_2023=="100"~ "5 Higher than 80%",
+    TRUE ~ NA)) %>% 
+  group_by(q14_funding_annual_budget_2023, q5) %>% 
+  summarise(n = n(), .groups = 'drop') %>% 
+  rename("q14"=1) %>% 
+  mutate(Year = 2023)
+
+q14_2022_q5 <- witm %>%
+  filter(q13_ext_funding == "yes" & q9_year_formation<2023) %>%
+  mutate(q14_funding_annual_budget_2022=case_when(
+    q14_funding_annual_budget_2022=="0" ~ "0 Zero",
+    q14_funding_annual_budget_2022=="10" | q14_funding_annual_budget_2022=="20"  ~ "1 Lower than 30%",
+    q14_funding_annual_budget_2022=="30" | q14_funding_annual_budget_2022=="40" ~ "2 Between 30% and 40%",
+    q14_funding_annual_budget_2022=="50" | q14_funding_annual_budget_2022=="60" ~ "3 Between 50% and 60%",
+    q14_funding_annual_budget_2022=="70" | q14_funding_annual_budget_2022=="80" ~ "4 Between 70% and 80%",
+    q14_funding_annual_budget_2022=="90" | q14_funding_annual_budget_2022=="100"~ "5 Higher than 80%",
+    TRUE ~ NA)) %>% 
+  group_by(q14_funding_annual_budget_2022, q5) %>% 
+  summarise(n = n(), .groups = 'drop') %>% 
+  rename("q14"=1) %>% 
+  mutate(Year = 2022)
+
+
+q14_2021_q5 <- witm %>%
+  filter(q13_ext_funding == "yes" & q9_year_formation<2022) %>%
+  mutate(q14_funding_annual_budget_2021=case_when(
+    q14_funding_annual_budget_2021=="0" ~ "0 Zero",
+    q14_funding_annual_budget_2021=="10" | q14_funding_annual_budget_2021=="20"  ~ "1 Lower than 30%",
+    q14_funding_annual_budget_2021=="30" | q14_funding_annual_budget_2021=="40" ~ "2 Between 30% and 40%",
+    q14_funding_annual_budget_2021=="50" | q14_funding_annual_budget_2021=="60" ~ "3 Between 50% and 60%",
+    q14_funding_annual_budget_2021=="70" | q14_funding_annual_budget_2021=="80" ~ "4 Between 70% and 80%",
+    q14_funding_annual_budget_2021=="90" | q14_funding_annual_budget_2021=="100"~ "5 Higher than 80%",
+    TRUE ~ NA)) %>% 
+  group_by(q14_funding_annual_budget_2021, q5) %>% 
+  summarise(n = n(), .groups = 'drop') %>% 
+  rename("q14"=1) %>% 
+  mutate(Year = 2021)
+
+
+
+
+# Unir los dataframes
+q14_grouped_q5 <- bind_rows(q14_2021_q5, q14_2022_q5, q14_2023_q5)
+
+
+
+# Crear la tabla de doble entrada
+q14_table <- q14_grouped_q5 %>%
+  pivot_wider(names_from = Year, values_from = n, values_fill = list(n = 0)) %>%
+  arrange(q14)  # Opcional: ordenar por la columna de "q14"
+
+# Crear la tabla de doble entrada con q14 y q5
+q14_table <- q14_grouped_q5 %>%
+  group_by(Year, q14, q5) %>%
+  summarise(n = sum(n), .groups = 'drop') %>%
+  pivot_wider(names_from = q14, values_from = n, values_fill = list(n = 0)) %>%
+  arrange(Year, q5)  # Opcional: ordenar por el año y q5
+
+q14 <- loadWorkbook(archivo)
+addWorksheet(q14, sheetName = "q14_q5")
+writeData(q14, sheet = "q14_q5", x = q14_table)
+saveWorkbook(q14, archivo, overwrite = TRUE)
+
+###
+
+#CRUCE POR q6
+
+
+q14_2023_q6 <- witm %>%
+  filter(q13_ext_funding == "yes") %>%
+  mutate(q14_funding_annual_budget_2023=case_when(
+    q14_funding_annual_budget_2023=="0" ~ "0 Zero",
+    q14_funding_annual_budget_2023=="10" | q14_funding_annual_budget_2023=="20"  ~ "1 Lower than 30%",
+    q14_funding_annual_budget_2023=="30" | q14_funding_annual_budget_2023=="40" ~ "2 Between 30% and 40%",
+    q14_funding_annual_budget_2023=="50" | q14_funding_annual_budget_2023=="60" ~ "3 Between 50% and 60%",
+    q14_funding_annual_budget_2023=="70" | q14_funding_annual_budget_2023=="80" ~ "4 Between 70% and 80%",
+    q14_funding_annual_budget_2023=="90" | q14_funding_annual_budget_2023=="100"~ "5 Higher than 80%",
+    TRUE ~ NA)) %>% 
+  group_by(q14_funding_annual_budget_2023, q6) %>% 
+  summarise(n = n(), .groups = 'drop') %>% 
+  rename("q14"=1) %>% 
+  mutate(Year = 2023)
+
+q14_2022_q6 <- witm %>%
+  filter(q13_ext_funding == "yes" & q9_year_formation<2023) %>%
+  mutate(q14_funding_annual_budget_2022=case_when(
+    q14_funding_annual_budget_2022=="0" ~ "0 Zero",
+    q14_funding_annual_budget_2022=="10" | q14_funding_annual_budget_2022=="20"  ~ "1 Lower than 30%",
+    q14_funding_annual_budget_2022=="30" | q14_funding_annual_budget_2022=="40" ~ "2 Between 30% and 40%",
+    q14_funding_annual_budget_2022=="50" | q14_funding_annual_budget_2022=="60" ~ "3 Between 50% and 60%",
+    q14_funding_annual_budget_2022=="70" | q14_funding_annual_budget_2022=="80" ~ "4 Between 70% and 80%",
+    q14_funding_annual_budget_2022=="90" | q14_funding_annual_budget_2022=="100"~ "5 Higher than 80%",
+    TRUE ~ NA)) %>% 
+  group_by(q14_funding_annual_budget_2022, q6) %>% 
+  summarise(n = n(), .groups = 'drop') %>% 
+  rename("q14"=1) %>% 
+  mutate(Year = 2022)
+
+
+q14_2021_q6 <- witm %>%
+  filter(q13_ext_funding == "yes" & q9_year_formation<2022) %>%
+  mutate(q14_funding_annual_budget_2021=case_when(
+    q14_funding_annual_budget_2021=="0" ~ "0 Zero",
+    q14_funding_annual_budget_2021=="10" | q14_funding_annual_budget_2021=="20"  ~ "1 Lower than 30%",
+    q14_funding_annual_budget_2021=="30" | q14_funding_annual_budget_2021=="40" ~ "2 Between 30% and 40%",
+    q14_funding_annual_budget_2021=="50" | q14_funding_annual_budget_2021=="60" ~ "3 Between 50% and 60%",
+    q14_funding_annual_budget_2021=="70" | q14_funding_annual_budget_2021=="80" ~ "4 Between 70% and 80%",
+    q14_funding_annual_budget_2021=="90" | q14_funding_annual_budget_2021=="100"~ "5 Higher than 80%",
+    TRUE ~ NA)) %>% 
+  group_by(q14_funding_annual_budget_2021, q6) %>% 
+  summarise(n = n(), .groups = 'drop') %>% 
+  rename("q14"=1) %>% 
+  mutate(Year = 2021)
+
+
+# Unir los dataframes
+q14_grouped_q6 <- bind_rows(q14_2021_q6, q14_2022_q6, q14_2023_q6)
+
+
+# Crear la tabla de doble entrada con q14 y q5
+q14_table <- q14_grouped_q6 %>%
+  group_by(Year, q14, q6) %>%
+  summarise(n = sum(n), .groups = 'drop') %>%
+  pivot_wider(names_from = q14, values_from = n, values_fill = list(n = 0)) %>%
+  arrange(Year, q6)  # Opcional: ordenar por el año y q5
+
+q14 <- loadWorkbook(archivo)
+addWorksheet(q14, sheetName = "q14_q6")
+writeData(q14, sheet = "q14_q6", x = q14_table)
+saveWorkbook(q14, archivo, overwrite = TRUE)
+
+######
+
+#cruce por región
+
+q14_2023_region <- witm %>%
+  filter(q13_ext_funding == "yes") %>%
+  mutate(q14_funding_annual_budget_2023=case_when(
+    q14_funding_annual_budget_2023=="0" ~ "0 Zero",
+    q14_funding_annual_budget_2023=="10" | q14_funding_annual_budget_2023=="20"  ~ "1 Lower than 30%",
+    q14_funding_annual_budget_2023=="30" | q14_funding_annual_budget_2023=="40" ~ "2 Between 30% and 40%",
+    q14_funding_annual_budget_2023=="50" | q14_funding_annual_budget_2023=="60" ~ "3 Between 50% and 60%",
+    q14_funding_annual_budget_2023=="70" | q14_funding_annual_budget_2023=="80" ~ "4 Between 70% and 80%",
+    q14_funding_annual_budget_2023=="90" | q14_funding_annual_budget_2023=="100"~ "5 Higher than 80%",
+    TRUE ~ NA)) %>% 
+  group_by(q14_funding_annual_budget_2023) %>% 
+  summarise(Total= n(),
+            "1. Latin America & the Caribbean"=sum(region_1==1),
+            "2. Western Europe & North America"=sum(region_2==1),
+            "3. Eastern, Southeast and Central Europe"=sum(region_3==1),
+            "4. Africa"= sum(region_4==1),
+            "5. Asia & the Pacific"=sum(region_5==1),
+            "6. Central Asia & Caucasus"=sum(region_6==1),
+            "7. South West Asia/Middle East & North Africa"=sum(region_7==1)) %>% 
+  rename("q14"=1) %>% 
+  mutate(Year=2023)
+
+
+q14_2022_region <- witm %>%
+  filter(q13_ext_funding == "yes" & q9_year_formation<2023) %>%
+  mutate(q14_funding_annual_budget_2022=case_when(
+    q14_funding_annual_budget_2022=="0" ~ "0 Zero",
+    q14_funding_annual_budget_2022=="10" | q14_funding_annual_budget_2022=="20"  ~ "1 Lower than 30%",
+    q14_funding_annual_budget_2022=="30" | q14_funding_annual_budget_2022=="40" ~ "2 Between 30% and 40%",
+    q14_funding_annual_budget_2022=="50" | q14_funding_annual_budget_2022=="60" ~ "3 Between 50% and 60%",
+    q14_funding_annual_budget_2022=="70" | q14_funding_annual_budget_2022=="80" ~ "4 Between 70% and 80%",
+    q14_funding_annual_budget_2022=="90" | q14_funding_annual_budget_2022=="100"~ "5 Higher than 80%",
+    TRUE ~ NA)) %>% 
+  group_by(q14_funding_annual_budget_2022) %>% 
+  summarise(Total= n(),
+            "1. Latin America & the Caribbean"=sum(region_1==1),
+            "2. Western Europe & North America"=sum(region_2==1),
+            "3. Eastern, Southeast and Central Europe"=sum(region_3==1),
+            "4. Africa"= sum(region_4==1),
+            "5. Asia & the Pacific"=sum(region_5==1),
+            "6. Central Asia & Caucasus"=sum(region_6==1),
+            "7. South West Asia/Middle East & North Africa"=sum(region_7==1)) %>% 
+  rename("q14"=1) %>% 
+  mutate(Year=2022)
+
+
+
+q14_2021_region <- witm %>%
+  filter(q13_ext_funding == "yes" & q9_year_formation<2022) %>%
+  mutate(q14_funding_annual_budget_2021=case_when(
+    q14_funding_annual_budget_2021=="0" ~ "0 Zero",
+    q14_funding_annual_budget_2021=="10" | q14_funding_annual_budget_2021=="20"  ~ "1 Lower than 30%",
+    q14_funding_annual_budget_2021=="30" | q14_funding_annual_budget_2021=="40" ~ "2 Between 30% and 40%",
+    q14_funding_annual_budget_2021=="50" | q14_funding_annual_budget_2021=="60" ~ "3 Between 50% and 60%",
+    q14_funding_annual_budget_2021=="70" | q14_funding_annual_budget_2021=="80" ~ "4 Between 70% and 80%",
+    q14_funding_annual_budget_2021=="90" | q14_funding_annual_budget_2021=="100"~ "5 Higher than 80%",
+    TRUE ~ NA)) %>% 
+  group_by(q14_funding_annual_budget_2021) %>% 
+  summarise(Total= n(),
+            "1. Latin America & the Caribbean"=sum(region_1==1),
+            "2. Western Europe & North America"=sum(region_2==1),
+            "3. Eastern, Southeast and Central Europe"=sum(region_3==1),
+            "4. Africa"= sum(region_4==1),
+            "5. Asia & the Pacific"=sum(region_5==1),
+            "6. Central Asia & Caucasus"=sum(region_6==1),
+            "7. South West Asia/Middle East & North Africa"=sum(region_7==1)) %>% 
+  rename("q14"=1) %>% 
+  mutate(Year=2021)
+
+q14_region_unificada<-bind_rows(q14_2021_region, q14_2022_region, q14_2023_region)
+
+
+
+q14 <- loadWorkbook(archivo)
+addWorksheet(q14, sheetName = "q14_region")
+# Escribir las tablas en la misma hoja
+writeData(q14, "q14_region", "Table for 2021", startRow = 1, startCol = 1)
+writeData(q14, "q14_region", q14_2021_region, startRow = 2, startCol = 1, withFilter = TRUE)
+# Agregar un espacio entre tablas
+writeData(q14, "q14_region", "Table for 2022", startRow = nrow(q14_2021_region) + 4, startCol = 1)
+writeData(q14, "q14_region", q14_2022_region, startRow = nrow(q14_2021_region) + 5, startCol = 1, withFilter = TRUE)
+# Agregar otro espacio
+writeData(q14, "q14_region", "Table for 2023", startRow = nrow(q14_2021_region) + nrow(q14_2022_region) + 8, startCol = 1)
+writeData(q14, "q14_region", q14_2023_region, startRow = nrow(q14_2021_region) + nrow(q14_2022_region) + 9, startCol = 1, withFilter = TRUE)
+saveWorkbook(q14, archivo, overwrite = TRUE)
+
+
+######
+
+#CRUCE POR q9
+
+q14_2023_q9 <- witm %>%
+  filter(q13_ext_funding == "yes") %>%
+  mutate(q14_funding_annual_budget_2023=case_when(
+    q14_funding_annual_budget_2023=="0" ~ "0 Zero",
+    q14_funding_annual_budget_2023=="10" | q14_funding_annual_budget_2023=="20"  ~ "1 Lower than 30%",
+    q14_funding_annual_budget_2023=="30" | q14_funding_annual_budget_2023=="40" ~ "2 Between 30% and 40%",
+    q14_funding_annual_budget_2023=="50" | q14_funding_annual_budget_2023=="60" ~ "3 Between 50% and 60%",
+    q14_funding_annual_budget_2023=="70" | q14_funding_annual_budget_2023=="80" ~ "4 Between 70% and 80%",
+    q14_funding_annual_budget_2023=="90" | q14_funding_annual_budget_2023=="100"~ "5 Higher than 80%",
+    TRUE ~ NA)) %>% 
+  group_by(q14_funding_annual_budget_2023, q9_year_formation_agrup) %>% 
+  summarise(n = n(), .groups = 'drop') %>% 
+  rename("q14"=1) %>% 
+  mutate(Year = 2023)
+
+q14_2022_q9 <- witm %>%
+  filter(q13_ext_funding == "yes" & q9_year_formation<2023) %>%
+  mutate(q14_funding_annual_budget_2022=case_when(
+    q14_funding_annual_budget_2022=="0" ~ "0 Zero",
+    q14_funding_annual_budget_2022=="10" | q14_funding_annual_budget_2022=="20"  ~ "1 Lower than 30%",
+    q14_funding_annual_budget_2022=="30" | q14_funding_annual_budget_2022=="40" ~ "2 Between 30% and 40%",
+    q14_funding_annual_budget_2022=="50" | q14_funding_annual_budget_2022=="60" ~ "3 Between 50% and 60%",
+    q14_funding_annual_budget_2022=="70" | q14_funding_annual_budget_2022=="80" ~ "4 Between 70% and 80%",
+    q14_funding_annual_budget_2022=="90" | q14_funding_annual_budget_2022=="100"~ "5 Higher than 80%",
+    TRUE ~ NA)) %>% 
+  group_by(q14_funding_annual_budget_2022, q9_year_formation_agrup) %>% 
+  summarise(n = n(), .groups = 'drop') %>% 
+  rename("q14"=1) %>% 
+  mutate(Year = 2022)
+
+
+q14_2021_q9 <- witm %>%
+  filter(q13_ext_funding == "yes" & q9_year_formation<2022) %>%
+  mutate(q14_funding_annual_budget_2021=case_when(
+    q14_funding_annual_budget_2021=="0" ~ "0 Zero",
+    q14_funding_annual_budget_2021=="10" | q14_funding_annual_budget_2021=="20"  ~ "1 Lower than 30%",
+    q14_funding_annual_budget_2021=="30" | q14_funding_annual_budget_2021=="40" ~ "2 Between 30% and 40%",
+    q14_funding_annual_budget_2021=="50" | q14_funding_annual_budget_2021=="60" ~ "3 Between 50% and 60%",
+    q14_funding_annual_budget_2021=="70" | q14_funding_annual_budget_2021=="80" ~ "4 Between 70% and 80%",
+    q14_funding_annual_budget_2021=="90" | q14_funding_annual_budget_2021=="100"~ "5 Higher than 80%",
+    TRUE ~ NA)) %>% 
+  group_by(q14_funding_annual_budget_2021, q9_year_formation_agrup) %>% 
+  summarise(n = n(), .groups = 'drop') %>% 
+  rename("q14"=1) %>% 
+  mutate(Year = 2021)
+
+
+# Unir los dataframes
+q14_grouped_q9 <- bind_rows(q14_2021_q9, q14_2022_q9, q14_2023_q9)
+
+
+# Crear la tabla de doble entrada con q14 y q5
+q14_table <- q14_grouped_q9 %>%
+  group_by(Year, q14, q9_year_formation_agrup) %>%
+  summarise(n = sum(n), .groups = 'drop') %>%
+  pivot_wider(names_from = q14, values_from = n, values_fill = list(n = 0)) %>%
+  arrange(Year, q9_year_formation_agrup)  # Opcional: ordenar por el año y q5
+
+q14 <- loadWorkbook(archivo)
+addWorksheet(q14, sheetName = "q14_q9")
+writeData(q14, sheet = "q14_q9", x = q14_table)
+saveWorkbook(q14, archivo, overwrite = TRUE)
+
+### 
+# CRUCE POR q10
+
+
+
+q14_2021_q10 <- witm %>%
+  filter(q13_ext_funding == "yes" & q9_year_formation<2022) %>%
+  mutate(q14_funding_annual_budget_2021=case_when(
+    q14_funding_annual_budget_2021=="0" ~ "0 Zero",
+    q14_funding_annual_budget_2021=="10" | q14_funding_annual_budget_2021=="20"  ~ "1 Lower than 30%",
+    q14_funding_annual_budget_2021=="30" | q14_funding_annual_budget_2021=="40" ~ "2 Between 30% and 40%",
+    q14_funding_annual_budget_2021=="50" | q14_funding_annual_budget_2021=="60" ~ "3 Between 50% and 60%",
+    q14_funding_annual_budget_2021=="70" | q14_funding_annual_budget_2021=="80" ~ "4 Between 70% and 80%",
+    q14_funding_annual_budget_2021=="90" | q14_funding_annual_budget_2021=="100"~ "5 Higher than 80%",
+    TRUE ~ NA)) %>% 
+  group_by(q14_funding_annual_budget_2021, q10_budget_grp_2021) %>% 
+  summarise(n = n(), .groups = 'drop') %>% 
+  rename("q14"=1)
+
+# Crear la tabla de doble entrada
+q14_table_2021 <- q14_2021_q10 %>%
+  pivot_wider(names_from = q14, values_from = n, values_fill = list(n = 0)) %>%
+  arrange(q10_budget_grp_2021)  # Opcional: ordenar por grupo de presupuesto  
+
+
+q14_2022_q10 <- witm %>%
+  filter(q13_ext_funding == "yes" & q9_year_formation<2023) %>%
+  mutate(q14_funding_annual_budget_2022=case_when(
+    q14_funding_annual_budget_2022=="0" ~ "0 Zero",
+    q14_funding_annual_budget_2022=="10" | q14_funding_annual_budget_2022=="20"  ~ "1 Lower than 30%",
+    q14_funding_annual_budget_2022=="30" | q14_funding_annual_budget_2022=="40" ~ "2 Between 30% and 40%",
+    q14_funding_annual_budget_2022=="50" | q14_funding_annual_budget_2022=="60" ~ "3 Between 50% and 60%",
+    q14_funding_annual_budget_2022=="70" | q14_funding_annual_budget_2022=="80" ~ "4 Between 70% and 80%",
+    q14_funding_annual_budget_2022=="90" | q14_funding_annual_budget_2022=="100"~ "5 Higher than 80%",
+    TRUE ~ NA)) %>% 
+  group_by(q14_funding_annual_budget_2022, q10_budget_grp_2022) %>% 
+  summarise(n = n(), .groups = 'drop') %>% 
+  rename("q14"=1) 
+
+# Crear la tabla de doble entrada
+q14_table_2022 <- q14_2022_q10 %>%
+  pivot_wider(names_from = q14, values_from = n, values_fill = list(n = 0)) %>%
+  arrange(q10_budget_grp_2022)  # Opcional: ordenar por grupo de presupuesto  
+
+
+
+q14_2023_q10 <- witm %>%
+  filter(q13_ext_funding == "yes") %>%
+  mutate(q14_funding_annual_budget_2023=case_when(
+    q14_funding_annual_budget_2023=="0" ~ "0 Zero",
+    q14_funding_annual_budget_2023=="10" | q14_funding_annual_budget_2023=="20"  ~ "1 Lower than 30%",
+    q14_funding_annual_budget_2023=="30" | q14_funding_annual_budget_2023=="40" ~ "2 Between 30% and 40%",
+    q14_funding_annual_budget_2023=="50" | q14_funding_annual_budget_2023=="60" ~ "3 Between 50% and 60%",
+    q14_funding_annual_budget_2023=="70" | q14_funding_annual_budget_2023=="80" ~ "4 Between 70% and 80%",
+    q14_funding_annual_budget_2023=="90" | q14_funding_annual_budget_2023=="100"~ "5 Higher than 80%",
+    TRUE ~ NA)) %>% 
+  group_by(q14_funding_annual_budget_2023, q10_budget_grp_2023) %>% 
+  summarise(n = n(), .groups = 'drop') %>% 
+  rename("q14"=1) 
+
+# Crear la tabla de doble entrada
+q14_table_2023 <- q14_2023_q10 %>%
+  pivot_wider(names_from = q14, values_from = n, values_fill = list(n = 0)) %>%
+  arrange(q10_budget_grp_2023)  # Opcional: ordenar por grupo de presupuesto  
+
+
+
+q14 <- loadWorkbook(archivo)
+addWorksheet(q14, sheetName = "q14_q10")
+# Escribir las tablas en la misma hoja
+writeData(q14, "q14_q10", "Table for 2021", startRow = 1, startCol = 1)
+writeData(q14, "q14_q10", q14_table_2021, startRow = 2, startCol = 1, withFilter = TRUE)
+# Agregar un espacio entre tablas
+writeData(q14, "q14_q10", "Table for 2022", startRow = nrow(q14_table_2021) + 4, startCol = 1)
+writeData(q14, "q14_q10", q14_table_2022, startRow = nrow(q14_table_2021) + 5, startCol = 1, withFilter = TRUE)
+# Agregar otro espacio
+writeData(q14, "q14_q10", "Table for 2023", startRow = nrow(q14_table_2021) + nrow(q14_table_2022) + 8, startCol = 1)
+writeData(q14, "q14_q10", q14_table_2023, startRow = nrow(q14_table_2021) + nrow(q14_table_2022) + 9, startCol = 1, withFilter = TRUE)
+saveWorkbook(q14, archivo, overwrite = TRUE)
 

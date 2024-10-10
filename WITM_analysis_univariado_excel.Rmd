@@ -696,7 +696,7 @@ saveWorkbook(q7_region, archivo, overwrite = TRUE)
  base <- base %>%
   mutate(q8_country = na_if(q8_country, ""))
 
-base<-base %>% 
+q8<-base %>% 
   filter(q6_geo_scope=="locally_focused"| q6_geo_scope=="nationally_focused") %>% 
   mutate(q7_region_one=forcats::fct_recode(as_factor(q7_region_one),
                                                      "South America" = "samerica",
@@ -964,7 +964,7 @@ base<-base %>%
                               "Other North Africa"="country_other18"))
 
 
-q8<-base %>% 
+q8<-q8 %>% 
   filter(q6_geo_scope=="locally_focused"| q6_geo_scope=="nationally_focused") %>% 
   group_by(q7_region_one, q8_country) %>% 
   summarise(Count=n()) %>% 
@@ -1077,11 +1077,12 @@ q10_grouped <- bind_rows(q10_2021, q10_2022, q10_2023)
 
 #q10_total
 q10_grouped<-q10_grouped %>% arrange(Annual_budget)
-# Crear un nuevo data frame con los resultados
-q10_grouped <- q10_grouped %>%
-  pivot_wider(names_from = Year, values_from = c(n)) 
-  select(1,5:7)
 
+
+# Pivotar los datos para tener años como columnas
+q10_pivot <- q10_grouped %>%
+  pivot_wider(names_from = Year, values_from = n, values_fill = 0) %>%
+  arrange(Annual_budget)
 
 knitr::kable(q10_grouped) %>% 
   kable_minimal() #imprime cuadro
@@ -1208,10 +1209,13 @@ ____
 Q14. Please indicate the percentage of external funding in your total annual budget for each year:
 
 
-```{r funding, echo=F, message=F, warning=F}
-q14_2023 <- base %>%
-  filter(q13_ext_funding == "yes" & q14_funding_annual_budget_2023 > 0) %>%
+```{r excel14, eval=F, echo=F, message=F, warning=F}
+
+
+q14_2023 <- witm %>%
+  filter(q13_ext_funding == "yes") %>%
   mutate(q14_funding_annual_budget_2023=case_when(
+    q14_funding_annual_budget_2023=="0" ~ "0 Zero",
     q14_funding_annual_budget_2023=="10" | q14_funding_annual_budget_2023=="20"  ~ "1 Lower than 30%",
     q14_funding_annual_budget_2023=="30" | q14_funding_annual_budget_2023=="40" ~ "2 Between 30% and 40%",
     q14_funding_annual_budget_2023=="50" | q14_funding_annual_budget_2023=="60" ~ "3 Between 50% and 60%",
@@ -1219,16 +1223,15 @@ q14_2023 <- base %>%
     q14_funding_annual_budget_2023=="90" | q14_funding_annual_budget_2023=="100"~ "5 Higher than 80%",
     TRUE ~ NA)) %>% 
   group_by(q14_funding_annual_budget_2023) %>% 
-  summarise(Count = n()) %>%
-  mutate(Total = sum(Count),  # Calcula el total de conteos
-         "2023" = round((Count / Total) * 100, 1)) %>%   # Calcula el porcentaje
-  select("q14"=1, 4)   # Elimina la columna total_count si no es necesaria
+  summarise("2023" = n())%>% 
+  rename("q14"=1)
 
 
 
-q14_2022 <- base %>%
-  filter(q13_ext_funding == "yes" & q14_funding_annual_budget_2022 > 0) %>%
+q14_2022 <- witm %>%
+  filter(q13_ext_funding == "yes" & q9_year_formation<2023) %>%
   mutate(q14_funding_annual_budget_2022=case_when(
+    q14_funding_annual_budget_2022=="0" ~ "0 Zero",
     q14_funding_annual_budget_2022=="10" | q14_funding_annual_budget_2022=="20"  ~ "1 Lower than 30%",
     q14_funding_annual_budget_2022=="30" | q14_funding_annual_budget_2022=="40" ~ "2 Between 30% and 40%",
     q14_funding_annual_budget_2022=="50" | q14_funding_annual_budget_2022=="60" ~ "3 Between 50% and 60%",
@@ -1236,14 +1239,13 @@ q14_2022 <- base %>%
     q14_funding_annual_budget_2022=="90" | q14_funding_annual_budget_2022=="100"~ "5 Higher than 80%",
     TRUE ~ NA)) %>% 
   group_by(q14_funding_annual_budget_2022) %>% 
-  summarise(Count = n()) %>%
-  mutate(Total = sum(Count),  # Calcula el total de conteos
-         "2022" = round((Count / Total) * 100, 1)) %>%  # Calcula el porcentaje
-  select("q14"=1, 4)    # Elimina la columna total_count si no es necesaria
+  summarise("2022" = n()) %>% 
+  rename("q14"=1)
 
-q14_2021 <- base %>%
-  filter(q13_ext_funding == "yes" & q14_funding_annual_budget_2021 > 0) %>%
+q14_2021 <- witm %>%
+  filter(q13_ext_funding == "yes" & q9_year_formation<2022) %>%
   mutate(q14_funding_annual_budget_2021=case_when(
+    q14_funding_annual_budget_2021=="0" ~ "0 Zero",
     q14_funding_annual_budget_2021=="10" | q14_funding_annual_budget_2021=="20"  ~ "1 Lower than 30%",
     q14_funding_annual_budget_2021=="30" | q14_funding_annual_budget_2021=="40" ~ "2 Between 30% and 40%",
     q14_funding_annual_budget_2021=="50" | q14_funding_annual_budget_2021=="60" ~ "3 Between 50% and 60%",
@@ -1251,11 +1253,8 @@ q14_2021 <- base %>%
     q14_funding_annual_budget_2021=="90" | q14_funding_annual_budget_2021=="100"~ "5 Higher than 80%",
     TRUE ~ NA)) %>% 
   group_by(q14_funding_annual_budget_2021) %>% 
-  summarise(Count = n()) %>%
-  mutate(Total = sum(Count),  # Calcula el total de conteos
-         "2021" = round((Count / Total) * 100, 1)) %>%  # Calcula el porcentaje
-  select("q14"=1, 4)    # Elimina la columna total_count si no es necesaria
-
+  summarise("2021" = n())%>% 
+  rename("q14"=1)
 
 #Unir los dataframes
 q14_combined <- q14_2021 %>%
@@ -1266,95 +1265,10 @@ q14_grouped<-q14_combined %>%
   rename("Percentage of External Funding in Total Annual Budget"=q14)
 
 
-knitr::kable(q14_grouped) %>% 
-    kable_minimal() #imprime cuadro
-
-# Transformar los datos a formato largo
-q14_long <- q14_combined %>%
-  pivot_longer(cols = starts_with("20"), names_to = "Year", values_to = "Percentage") %>%
-  mutate(Year = factor(Year, levels = c("2021", "2022", "2023")))  # Ordenar los años
-
-# Crear el gráfico
-ggplot(q14_long, aes(x = q14, y = Percentage, fill = Year)) +
-  geom_bar(stat = "identity", position = "dodge") +
-  geom_text(aes(label = Percentage), 
-            position = position_dodge(width = 0.9), 
-            vjust = 0.5,   # Ajusta la posición vertical de las etiquetas dentro de las barras
-            hjust = 0.0,   # Centra horizontalmente las etiquetas
-            size = 3.2) + # Ajusta el tamaño del texto de las etiquetas
-  labs(
-    title = "Percentage of External Funding in Total Annual Budget by Year",
-    x = NULL,  # Elimina el título del eje x
-    y = "Percentage (%)",
-    fill = "Year") +
-  theme_minimal() +
-  theme(
-    axis.text.x = element_text(),  # Mantiene las etiquetas del eje x y ajusta la rotación
-    panel.grid.major = element_blank(),  # Elimina la cuadrícula mayor
-    panel.grid.minor = element_blank()   # Elimina la cuadrícula menor
-  )+
-  coord_flip()
-
-
-```
-
-```{r excel14, eval=F, echo=F, message=F, warning=F}
-
-q14_2023b <- base %>%
-  filter(q13_ext_funding == "yes" & q14_funding_annual_budget_2023 > 0) %>%
-  mutate(q14_funding_annual_budget_2023=case_when(
-    q14_funding_annual_budget_2023=="10" | q14_funding_annual_budget_2023=="20"  ~ "1 Lower than 30%",
-    q14_funding_annual_budget_2023=="30" | q14_funding_annual_budget_2023=="40" ~ "2 Between 30% and 40%",
-    q14_funding_annual_budget_2023=="50" | q14_funding_annual_budget_2023=="60" ~ "3 Between 50% and 60%",
-    q14_funding_annual_budget_2023=="70" | q14_funding_annual_budget_2023=="80" ~ "4 Between 70% and 80%",
-    q14_funding_annual_budget_2023=="90" | q14_funding_annual_budget_2023=="100"~ "5 Higher than 80%",
-    TRUE ~ NA)) %>% 
-  group_by(q14_funding_annual_budget_2023) %>% 
-  summarise("2023" = n()) %>% 
-  rename("q14"=1)
-
-
-
-q14_2022b <- base %>%
-  filter(q13_ext_funding == "yes" & q14_funding_annual_budget_2022 > 0) %>%
-  mutate(q14_funding_annual_budget_2022=case_when(
-    q14_funding_annual_budget_2022=="10" | q14_funding_annual_budget_2022=="20"  ~ "1 Lower than 30%",
-    q14_funding_annual_budget_2022=="30" | q14_funding_annual_budget_2022=="40" ~ "2 Between 30% and 40%",
-    q14_funding_annual_budget_2022=="50" | q14_funding_annual_budget_2022=="60" ~ "3 Between 50% and 60%",
-    q14_funding_annual_budget_2022=="70" | q14_funding_annual_budget_2022=="80" ~ "4 Between 70% and 80%",
-    q14_funding_annual_budget_2022=="90" | q14_funding_annual_budget_2022=="100"~ "5 Higher than 80%",
-    TRUE ~ NA)) %>% 
-  group_by(q14_funding_annual_budget_2022) %>% 
-  summarise("2022" = n())  %>% 
-  rename("q14"=1)
-
-q14_2021b <- base %>%
-  filter(q13_ext_funding == "yes" & q14_funding_annual_budget_2021 > 0) %>%
-  mutate(q14_funding_annual_budget_2021=case_when(
-    q14_funding_annual_budget_2021=="10" | q14_funding_annual_budget_2021=="20"  ~ "1 Lower than 30%",
-    q14_funding_annual_budget_2021=="30" | q14_funding_annual_budget_2021=="40" ~ "2 Between 30% and 40%",
-    q14_funding_annual_budget_2021=="50" | q14_funding_annual_budget_2021=="60" ~ "3 Between 50% and 60%",
-    q14_funding_annual_budget_2021=="70" | q14_funding_annual_budget_2021=="80" ~ "4 Between 70% and 80%",
-    q14_funding_annual_budget_2021=="90" | q14_funding_annual_budget_2021=="100"~ "5 Higher than 80%",
-    TRUE ~ NA)) %>% 
-  group_by(q14_funding_annual_budget_2021) %>% 
-  summarise("2021" = n())  %>% 
-  rename("q14"=1)
-
-
-#Unir los dataframes
-q14_combinedb <- q14_2021b %>%
-  full_join(q14_2022b, by = "q14") %>%
-  full_join(q14_2023b, by = "q14")
-
-q14_groupedb<-q14_combinedb %>% 
-  rename("Percentage of External Funding in Total Annual Budget"=q14)
-
-
 
 q14_d <- loadWorkbook(archivo)
 addWorksheet(q14_d, sheetName = "q14")
-writeData(q14_d, sheet = "q14", x = q14_groupedb)
+writeData(q14_d, sheet = "q14", x = q14_grouped)
 saveWorkbook(q14_d, archivo, overwrite = TRUE)
 ```
 
