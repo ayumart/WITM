@@ -6471,7 +6471,7 @@ q39_region_5 <- witm %>%
             Other = sum(q39_employment_conditions.98== 1, na.rm = TRUE)) %>% 
   pivot_longer(cols = everything(),
                names_to = "Source",
-               values_to = "4. Africa")
+               values_to = "5. Asia & the Pacific")
 
 
 q39_region_6 <- witm %>%
