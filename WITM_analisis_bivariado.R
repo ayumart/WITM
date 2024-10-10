@@ -7041,6 +7041,96 @@ write.xlsx(q21_core_total, file = archivo, sheetName="q21")
 
 
 
+#cruce por región: q7
+
+
+# Crear la tabla para 2021
+q21_region_2021 <- witm %>% 
+  mutate(q21_core = case_when(
+    q21_types_funding_2021_core < 30 ~ "1 Less than 30%",
+    q21_types_funding_2021_core >= 30 ~ "2 30% or more",
+    TRUE ~ NA_character_)) %>% 
+  filter(!is.na(q21_types_funding_2021_core)) %>% 
+  group_by(q21_core) %>% 
+  summarise(Total = n(),
+            "1. Latin America & the Caribbean" = sum(region_1 == 1),
+            "2. Western Europe & North America" = sum(region_2 == 1),
+            "3. Eastern, Southeast and Central Europe" = sum(region_3 == 1),
+            "4. Africa" = sum(region_4 == 1),
+            "5. Asia & the Pacific" = sum(region_5 == 1),
+            "6. Central Asia & Caucasus" = sum(region_6 == 1),
+            "7. South West Asia/Middle East & North Africa" = sum(region_7 == 1),
+            .groups = 'drop') %>%
+  mutate(Year = 2021)  # Añadir columna de año aquí
+
+# Crear la tabla para 2022
+q21_region_2022 <- witm %>% 
+  mutate(q21_core = case_when(
+    q21_types_funding_2022_core < 30 ~ "1 Less than 30%",
+    q21_types_funding_2022_core >= 30 ~ "2 30% or more",
+    TRUE ~ NA_character_)) %>% 
+  filter(!is.na(q21_types_funding_2022_core)) %>% 
+  group_by(q21_core) %>% 
+  summarise(Total = n(),
+            "1. Latin America & the Caribbean" = sum(region_1 == 1),
+            "2. Western Europe & North America" = sum(region_2 == 1),
+            "3. Eastern, Southeast and Central Europe" = sum(region_3 == 1),
+            "4. Africa" = sum(region_4 == 1),
+            "5. Asia & the Pacific" = sum(region_5 == 1),
+            "6. Central Asia & Caucasus" = sum(region_6 == 1),
+            "7. South West Asia/Middle East & North Africa" = sum(region_7 == 1),
+            .groups = 'drop') %>%
+  mutate(Year = 2022)  # Añadir columna de año aquí
+
+# Crear la tabla para 2023
+q21_region_2023 <- witm %>% 
+  mutate(q21_core = case_when(
+    q21_types_funding_2023_core < 30 ~ "1 Less than 30%",
+    q21_types_funding_2023_core >= 30 ~ "2 30% or more",
+    TRUE ~ NA_character_)) %>% 
+  filter(!is.na(q21_types_funding_2023_core)) %>% 
+  group_by(q21_core) %>% 
+  summarise(Total = n(),
+            "1. Latin America & the Caribbean" = sum(region_1 == 1),
+            "2. Western Europe & North America" = sum(region_2 == 1),
+            "3. Eastern, Southeast and Central Europe" = sum(region_3 == 1),
+            "4. Africa" = sum(region_4 == 1),
+            "5. Asia & the Pacific" = sum(region_5 == 1),
+            "6. Central Asia & Caucasus" = sum(region_6 == 1),
+            "7. South West Asia/Middle East & North Africa" = sum(region_7 == 1),
+            .groups = 'drop') %>%
+  mutate(Year = 2023)  # Añadir columna de año aquí
+
+# Unir las tablas para 2021, 2022 y 2023
+q21_combined <- bind_rows(
+  q21_region_2021,
+  q21_region_2022,
+  q21_region_2023
+)
+
+# Reordenar las columnas para que quede más prolijo
+q21_combined <- q21_combined %>% 
+  select(Year, q21_core, Total, 
+         `1. Latin America & the Caribbean`,
+         `2. Western Europe & North America`,
+         `3. Eastern, Southeast and Central Europe`,
+         `4. Africa`,
+         `5. Asia & the Pacific`,
+         `6. Central Asia & Caucasus`,
+         `7. South West Asia/Middle East & North Africa`)
+
+
+
+
+q21 <- loadWorkbook(archivo)
+addWorksheet(q21, sheetName = "q21_region")
+writeData(q21, sheet = "q21_region", x = q21_combined)
+saveWorkbook(q21, archivo, overwrite = TRUE)
+
+
+
+
+
 #CRUCE POR q10
 
 witm <- witm %>% 
