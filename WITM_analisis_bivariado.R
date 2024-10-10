@@ -3931,6 +3931,188 @@ q21_2021 <- q21_core_2021 %>%
 #   )
 
 
+#############################################################################
+
+
+archivo <- "cuadros/q22.xlsx"
+
+#ANÁLISIS Q22
+
+
+#cruce por q4agrup
+
+
+# Crear q41_q4agrup
+q22_q4agrup <- witm %>%
+  mutate(q4_awid_focus=recode(q4_awid_focus,"1"="Specific AWID subjects","0"="Other subjects")) %>% 
+  mutate(q22=case_when(
+    q22_grant_duration=="less_than_3_months" ~ "Less than 3 months",
+    q22_grant_duration=="between_3_and_6_months" ~ "Between 3-6 months",
+    q22_grant_duration=="between_6_and_12_months" ~ "Between 6-12 months",
+    q22_grant_duration=="between_12_and_18_months" ~ "Between 12-18 months",
+    q22_grant_duration=="between_18_and_24_months"~"Between 18-24 months",
+    q22_grant_duration=="between_2_and_3_years"~"Between 2-3 years",
+    q22_grant_duration=="between_3_and_5_years"~"Between 3-5 years",
+    q22_grant_duration=="more_than_5_years"~"More than 5 years",
+    TRUE ~ NA)) %>% 
+  filter(!is.na(q22_grant_duration)) %>% 
+  group_by(q22, q4_awid_focus) %>% 
+  summarise(n = n(), .groups = 'drop')
+
+q22_q4agrup <- q22_q4agrup %>%
+  pivot_wider(names_from = q4_awid_focus, values_from = n, values_fill = list(n = 0)) %>%
+  arrange(q22)
+
+
+write.xlsx(q22_q4agrup, file = archivo, sheetName="q22_q4agrup")
+
+
+#cruce por q4
+
+
+q22_q4 <- witm %>%
+  mutate(q22=case_when(
+    q22_grant_duration=="less_than_3_months" ~ "Less than 3 months",
+    q22_grant_duration=="between_3_and_6_months" ~ "Between 3-6 months",
+    q22_grant_duration=="between_6_and_12_months" ~ "Between 6-12 months",
+    q22_grant_duration=="between_12_and_18_months" ~ "Between 12-18 months",
+    q22_grant_duration=="between_18_and_24_months"~"Between 18-24 months",
+    q22_grant_duration=="between_2_and_3_years"~"Between 2-3 years",
+    q22_grant_duration=="between_3_and_5_years"~"Between 3-5 years",
+    q22_grant_duration=="more_than_5_years"~"More than 5 years",
+    TRUE ~ NA)) %>% 
+  filter(!is.na(q22_grant_duration)) %>% 
+  group_by(q22) %>% 
+  summarise(Total = n(),
+            LGTBIQ= sum(q4_awid_LGBTIQ==1),
+            Young= sum(q4_awid_young==1),
+            Sex_workers=sum(q4_awid_sex==1),
+            Anti_caste=sum(q4_awid_anticaste==1),
+            Climate=sum(q4_awid_climate==1),
+            Countering_anti=sum(q4_awid_antigender==1),
+            Harm_reduction=sum(q4_awid_harm==1),
+            Disability_rights=sum(q4_awid_disability==1))  
+
+
+q22 <- loadWorkbook(archivo)
+addWorksheet(q22, sheetName = "q22_q4")
+writeData(q22, sheet = "q22_q4", x = q22_q4)
+saveWorkbook(q22, archivo, overwrite = TRUE)
+
+
+#cruce por región: q7
+
+
+#Convertir campos vacíos de la variable q22 en NA
+witm <- witm %>%
+  mutate(q22_grant_duration = na_if(q22_grant_duration, ""))
+
+q22_region<-witm %>% 
+  mutate(q22=case_when(
+    q22_grant_duration=="less_than_3_months" ~ "Less than 3 months",
+    q22_grant_duration=="between_3_and_6_months" ~ "Between 3-6 months",
+    q22_grant_duration=="between_6_and_12_months" ~ "Between 6-12 months",
+    q22_grant_duration=="between_12_and_18_months" ~ "Between 12-18 months",
+    q22_grant_duration=="between_18_and_24_months"~"Between 18-24 months",
+    q22_grant_duration=="between_2_and_3_years"~"Between 2-3 years",
+    q22_grant_duration=="between_3_and_5_years"~"Between 3-5 years",
+    q22_grant_duration=="more_than_5_years"~"More than 5 years",
+    TRUE ~ NA)) %>% 
+  filter(!is.na(q22_grant_duration)) %>% 
+  group_by(q22) %>% 
+  summarise(Total= n(),
+            "1. Latin America & the Caribbean"=sum(region_1==1),
+            "2. Western Europe & North America"=sum(region_2==1),
+            "3. Eastern, Southeast and Central Europe"=sum(region_3==1),
+            "4. Africa"= sum(region_4==1),
+            "5. Asia & the Pacific"=sum(region_5==1),
+            "6. Central Asia & Caucasus"=sum(region_6==1),
+            "7. South West Asia/Middle East & North Africa"=sum(region_7==1))
+
+
+
+q22 <- loadWorkbook(archivo)
+addWorksheet(q22, sheetName = "q22_region")
+writeData(q22, sheet = "q22_region", x = q22_region)
+saveWorkbook(q22, archivo, overwrite = TRUE)
+
+#######
+
+#CRUCE POR q10
+
+witm<-witm %>% 
+  mutate(q22=case_when(
+    q22_grant_duration=="less_than_3_months" ~ "Less than 3 months",
+    q22_grant_duration=="between_3_and_6_months" ~ "Between 3-6 months",
+    q22_grant_duration=="between_6_and_12_months" ~ "Between 6-12 months",
+    q22_grant_duration=="between_12_and_18_months" ~ "Between 12-18 months",
+    q22_grant_duration=="between_18_and_24_months"~"Between 18-24 months",
+    q22_grant_duration=="between_2_and_3_years"~"Between 2-3 years",
+    q22_grant_duration=="between_3_and_5_years"~"Between 3-5 years",
+    q22_grant_duration=="more_than_5_years"~"More than 5 years",
+    TRUE ~ NA))
+
+# Crear q10_2021_q22
+q10_2021_q22 <- witm %>% 
+  filter(q9_year_formation < 2022 & !is.na(q22)) %>% 
+  group_by(q10_budget_grp_2021, q22) %>% 
+  summarise(n = n(), .groups = 'drop') %>% 
+  rename(Annual_budget = q10_budget_grp_2021) %>% 
+  mutate(Year = 2021)
+
+# Crear q10_2022_q22
+q10_2022_q22 <- witm %>% 
+  filter(q9_year_formation < 2023 & !is.na(q22)) %>% 
+  group_by(q10_budget_grp_2022, q22) %>% 
+  summarise(n = n(), .groups = 'drop') %>% 
+  rename(Annual_budget = q10_budget_grp_2022) %>% 
+  mutate(Year = 2022)
+
+# Crear q10_2023_q22
+q10_2023_q22 <- witm %>% 
+  filter(!is.na(q10_budget_year_2023) & !is.na(q22)) %>%
+  group_by(q10_budget_grp_2023, q22) %>% 
+  summarise(n = n(), .groups = 'drop') %>% 
+  rename(Annual_budget = q10_budget_grp_2023) %>% 
+  mutate(Year = 2023)
+
+
+# Unir los dataframes
+q10_grouped_q22 <- bind_rows(q10_2021_q22, q10_2022_q22, q10_2023_q22)
+
+
+# Crear la tabla de doble entrada con años como filas
+q10_table <- q10_grouped_q22 %>%
+  group_by(Year, Annual_budget, q22) %>%
+  summarise(Total = sum(n), .groups = 'drop') %>%
+  pivot_wider(names_from = q22, values_from = Total, values_fill = list(Total = 0)) %>%
+  arrange(Year, Annual_budget)  # Opcional: ordenar por año y presupuesto
+
+# Crear la tabla de doble entrada
+q10_tableb <- q10_grouped_q22 %>%
+  pivot_wider(names_from = Year, values_from = n, values_fill = list(n = 0))
+
+# Calcular la media por cada categoría de Annual_budget
+q10_tableb <- q10_tableb %>%
+  rowwise() %>%
+  mutate(Media = round(mean(c_across(c(`2021`, `2022`, `2023`)), na.rm = TRUE), 0)) %>%
+  ungroup()  # Desagrupar después de la operación
+
+# Seleccionar solo las columnas de interés para la tabla final
+q10_media_table <- q10_tableb %>%
+  select(Annual_budget, q22, Media) %>%
+  pivot_wider(names_from = q22, values_from = Media, values_fill = list(Media = 0))
+
+q22<- loadWorkbook(archivo)
+addWorksheet(q22, sheetName = "q22_q10")
+writeData(q22, sheet = "q22_q10", x = q10_tableb)
+saveWorkbook(q22, archivo, overwrite = TRUE)
+
+q22 <- loadWorkbook(archivo)
+addWorksheet(q22, sheetName = "q22_q10_media")
+writeData(q22, sheet = "q22_q10_media", x = q10_media_table)
+saveWorkbook(q22, archivo, overwrite = TRUE)
+
 
 
 
@@ -6063,6 +6245,9 @@ archivo <- "cuadros/q37.xlsx"
 
 #cruce por región: q7
 
+q37<-witm %>% 
+  group_by(q37_operate_savings) %>% 
+  summarise(n())
 
 #Convertir campos vacíos de la variable q37 en NA
 witm <- witm %>%
@@ -6070,14 +6255,13 @@ witm <- witm %>%
 
 q37_region<-witm %>% 
   mutate(q37_operate_savings=case_when(
-  q37_operate_savings=="no_saving_reserves" ~ "We have no savings or reserves",
+  q37_operate_savings=="no_savings_reserves" ~ "We have no savings or reserves",
   q37_operate_savings=="0_3_months" ~ "Up to 3 months",
   q37_operate_savings=="3_6_months" ~ "3-6 months",
   q37_operate_savings=="6_12_months" ~ "6-12 months",
   q37_operate_savings=="12_24_months" ~ "12-24 months",
   q37_operate_savings=="over_24_months" ~ "Over 24 months",
   TRUE ~ NA)) %>% 
-  filter(!is.na(q37_operate_savings)) %>%
   group_by(q37_operate_savings) %>% 
   summarise(Total= n(),
             "1. Latin America & the Caribbean"=sum(region_1==1),
@@ -6763,9 +6947,6 @@ saveWorkbook(q45, archivo, overwrite = TRUE)
 ##############################################################################
 
 
-
-# ANÁLISIS DE LA q45
-
 archivo <- "cuadros/q46.xlsx"
 
 #ANÁLISIS Q46
@@ -6804,3 +6985,328 @@ write.xlsx(q46_region, file = archivo, sheetName="q46_region")
 
 
 ##########################################################################
+
+
+archivo <- "cuadros/q21.xlsx"
+
+
+##q21
+
+###2023
+
+q21_core_2023<-witm %>% 
+  mutate(q21_core_2023=case_when(
+    q21_types_funding_2023_core<30 ~"1 Less than 30%",
+    q21_types_funding_2023_core>29 ~ "2 30% or more",
+    TRUE ~ NA)) %>% 
+  filter(!is.na(q21_types_funding_2023_core)) %>% 
+  group_by(q21_core_2023) %>% 
+  summarise("2023"=n()) %>% 
+  rename("q21_core"=1)
+
+
+###2022
+
+
+q21_core_2022<-witm %>% 
+  mutate(q21_core_2022=case_when(
+    q21_types_funding_2022_core<30 ~"1 Less than 30%",
+    q21_types_funding_2022_core>29 ~ "2 30% or more",
+    is.na(q21_types_funding_2022_core) ~ NA)) %>% 
+  filter(!is.na(q21_types_funding_2022_core)) %>% 
+  group_by(q21_core_2022) %>% 
+  summarise("2022"=n())%>% 
+  rename("q21_core"=1)
+
+###2021
+
+q21_core_2021<-witm %>% 
+  mutate(q21_core_2021=case_when(
+    q21_types_funding_2021_core<30 ~"1 Less than 30%",
+    q21_types_funding_2021_core>29 ~ "2 30% or more",
+    is.na(q21_types_funding_2021_core) ~ NA)) %>% 
+  filter(!is.na(q21_types_funding_2021_core)) %>% 
+  group_by(q21_core_2021) %>% 
+  summarise("2021"=n()) %>% 
+  rename("q21_core"=1)
+
+
+
+#Unir los dataframes
+q21_core_total <- q21_core_2023 %>%
+  full_join(q21_core_2022, by = "q21_core") %>%
+  full_join(q21_core_2021, by = "q21_core")
+
+write.xlsx(q21_core_total, file = archivo, sheetName="q21")
+
+
+
+#cruce por región: q7
+
+
+# Crear la tabla para 2021
+q21_region_2021 <- witm %>% 
+  mutate(q21_core = case_when(
+    q21_types_funding_2021_core < 30 ~ "1 Less than 30%",
+    q21_types_funding_2021_core >= 30 ~ "2 30% or more",
+    TRUE ~ NA_character_)) %>% 
+  filter(!is.na(q21_types_funding_2021_core)) %>% 
+  group_by(q21_core) %>% 
+  summarise(Total = n(),
+            "1. Latin America & the Caribbean" = sum(region_1 == 1),
+            "2. Western Europe & North America" = sum(region_2 == 1),
+            "3. Eastern, Southeast and Central Europe" = sum(region_3 == 1),
+            "4. Africa" = sum(region_4 == 1),
+            "5. Asia & the Pacific" = sum(region_5 == 1),
+            "6. Central Asia & Caucasus" = sum(region_6 == 1),
+            "7. South West Asia/Middle East & North Africa" = sum(region_7 == 1),
+            .groups = 'drop') %>%
+  mutate(Year = 2021)  # Añadir columna de año aquí
+
+# Crear la tabla para 2022
+q21_region_2022 <- witm %>% 
+  mutate(q21_core = case_when(
+    q21_types_funding_2022_core < 30 ~ "1 Less than 30%",
+    q21_types_funding_2022_core >= 30 ~ "2 30% or more",
+    TRUE ~ NA_character_)) %>% 
+  filter(!is.na(q21_types_funding_2022_core)) %>% 
+  group_by(q21_core) %>% 
+  summarise(Total = n(),
+            "1. Latin America & the Caribbean" = sum(region_1 == 1),
+            "2. Western Europe & North America" = sum(region_2 == 1),
+            "3. Eastern, Southeast and Central Europe" = sum(region_3 == 1),
+            "4. Africa" = sum(region_4 == 1),
+            "5. Asia & the Pacific" = sum(region_5 == 1),
+            "6. Central Asia & Caucasus" = sum(region_6 == 1),
+            "7. South West Asia/Middle East & North Africa" = sum(region_7 == 1),
+            .groups = 'drop') %>%
+  mutate(Year = 2022)  # Añadir columna de año aquí
+
+# Crear la tabla para 2023
+q21_region_2023 <- witm %>% 
+  mutate(q21_core = case_when(
+    q21_types_funding_2023_core < 30 ~ "1 Less than 30%",
+    q21_types_funding_2023_core >= 30 ~ "2 30% or more",
+    TRUE ~ NA_character_)) %>% 
+  filter(!is.na(q21_types_funding_2023_core)) %>% 
+  group_by(q21_core) %>% 
+  summarise(Total = n(),
+            "1. Latin America & the Caribbean" = sum(region_1 == 1),
+            "2. Western Europe & North America" = sum(region_2 == 1),
+            "3. Eastern, Southeast and Central Europe" = sum(region_3 == 1),
+            "4. Africa" = sum(region_4 == 1),
+            "5. Asia & the Pacific" = sum(region_5 == 1),
+            "6. Central Asia & Caucasus" = sum(region_6 == 1),
+            "7. South West Asia/Middle East & North Africa" = sum(region_7 == 1),
+            .groups = 'drop') %>%
+  mutate(Year = 2023)  # Añadir columna de año aquí
+
+# Unir las tablas para 2021, 2022 y 2023
+q21_combined <- bind_rows(
+  q21_region_2021,
+  q21_region_2022,
+  q21_region_2023
+)
+
+# Reordenar las columnas para que quede más prolijo
+q21_combined <- q21_combined %>% 
+  select(Year, q21_core, Total, 
+         `1. Latin America & the Caribbean`,
+         `2. Western Europe & North America`,
+         `3. Eastern, Southeast and Central Europe`,
+         `4. Africa`,
+         `5. Asia & the Pacific`,
+         `6. Central Asia & Caucasus`,
+         `7. South West Asia/Middle East & North Africa`)
+
+
+
+
+q21 <- loadWorkbook(archivo)
+addWorksheet(q21, sheetName = "q21_region")
+writeData(q21, sheet = "q21_region", x = q21_combined)
+saveWorkbook(q21, archivo, overwrite = TRUE)
+
+
+
+
+
+#CRUCE POR q10
+
+
+# Crear q10_2021_q21
+q10_2021_q21 <- witm %>% 
+  mutate(q21_core_2021=case_when(
+    q21_types_funding_2021_core<30 ~"1 Less than 30%",
+    q21_types_funding_2021_core>29 ~ "2 30% or more",
+    TRUE ~ NA)) %>% 
+  filter(q9_year_formation < 2022 & !is.na(q21_core_2021)) %>% 
+  group_by(q10_budget_grp_2021, q21_core_2021) %>% 
+  summarise(n = n(), .groups = 'drop') %>% 
+  rename(Annual_budget = q10_budget_grp_2021) %>% 
+  mutate(Year = 2021)
+
+# Crear q10_2021_q21
+q10_2021_q21b <- witm %>% 
+  mutate(q21_core_2022=case_when(
+    q21_types_funding_2022_core<30 ~"1 Less than 30%",
+    q21_types_funding_2022_core>29 ~ "2 30% or more",
+    TRUE ~ NA)) %>% 
+  filter(q9_year_formation < 2022 & !is.na(q21_core_2022)) %>% 
+  group_by(q10_budget_grp_2021, q21_core_2022) %>% 
+  summarise(n = n(), .groups = 'drop') %>% 
+  rename(Annual_budget = q10_budget_grp_2021) %>% 
+  mutate(Year = 2021)
+
+
+# Crear q10_2022_q45
+q10_2022_q45 <- witm %>% 
+  filter(q9_year_formation < 2023) %>% 
+  group_by(q10_budget_grp_2022, q45_previous_response) %>% 
+  summarise(n = n(), .groups = 'drop') %>% 
+  rename(Annual_budget = q10_budget_grp_2022) %>% 
+  mutate(Year = 2022)
+
+# Crear q10_2023_q45
+q10_2023_q45 <- witm %>% 
+  filter(!is.na(q10_budget_year_2023)) %>%
+  group_by(q10_budget_grp_2023, q45_previous_response) %>% 
+  summarise(n = n(), .groups = 'drop') %>% 
+  rename(Annual_budget = q10_budget_grp_2023) %>% 
+  mutate(Year = 2023)
+
+
+# Unir los dataframes
+q10_grouped_q45 <- bind_rows(q10_2021_q45, q10_2022_q45, q10_2023_q45)
+
+
+# Crear la tabla de doble entrada con años como filas
+q10_table <- q10_grouped_q45 %>%
+  group_by(Year, Annual_budget, q45_previous_response) %>%
+  summarise(Total = sum(n), .groups = 'drop') %>%
+  pivot_wider(names_from = q45_previous_response, values_from = Total, values_fill = list(Total = 0)) %>%
+  arrange(Year, Annual_budget)  # Opcional: ordenar por año y presupuesto
+
+# Crear la tabla de doble entrada
+q10_tableb <- q10_grouped_q45 %>%
+  pivot_wider(names_from = Year, values_from = n, values_fill = list(n = 0))
+
+# Calcular la media por cada categoría de Annual_budget
+q10_tableb <- q10_tableb %>%
+  rowwise() %>%
+  mutate(Media = round(mean(c_across(c(`2021`, `2022`, `2023`)), na.rm = TRUE), 0)) %>%
+  ungroup()  # Desagrupar después de la operación
+
+# Seleccionar solo las columnas de interés para la tabla final
+q10_media_table <- q10_tableb %>%
+  select(Annual_budget, q45_previous_response, Media) %>%
+  pivot_wider(names_from = q45_previous_response, values_from = Media, values_fill = list(Media = 0))
+
+q45<- loadWorkbook(archivo)
+addWorksheet(q45, sheetName = "q45_q10")
+writeData(q45, sheet = "q45_q10", x = q10_tableb)
+saveWorkbook(q45, archivo, overwrite = TRUE)
+
+q45 <- loadWorkbook(archivo)
+addWorksheet(q45, sheetName = "q45_q10_media")
+writeData(q45, sheet = "q45_q10_media", x = q10_media_table)
+saveWorkbook(q45, archivo, overwrite = TRUE)
+
+##########################
+
+
+
+
+archivo <- "cuadros/q15_funds_type.xlsx"
+
+#Convertir campos vacíos de la variable q15 en NA
+witm <- witm %>%
+  mutate(q15_key_sources = na_if(q15_key_sources, ""))
+
+
+q15 <- witm %>%
+  filter( !is.na(q15_key_sources)) %>%
+  summarise(Total = n(),
+            Multirateral = sum(q15_key_sources.multilateral_funders == 1),
+            Bilateral = sum(q15_key_sources.bilateral_funders == 1),
+            Philanthropic = sum(q15_key_sources.philanthropic_foundations == 1),
+            Womens = sum(q15_key_sources.womens_feminist_funds == 1),
+            Private = sum(q15_key_sources.private_sector == 1),
+            Ingos = sum(q15_key_sources.ingos == 1),
+            Individual = sum(q15_key_sources.individual_donors == 1),
+            Goverments = sum(q15_key_sources.national_local_goverment_or_bodies == 1),
+            Other = sum(q15_key_sources.98 == 1)) %>% 
+  pivot_longer(cols = everything(),
+               names_to = "Source",
+               values_to = "N")
+
+
+write.xlsx(q15, file = archivo, sheetName="q15")
+
+###
+
+#ANÁLISIS Q15/Q16
+
+archivo <- "cuadros/q16.xlsx"
+
+q15_selections_summary <- witm %>%
+  filter(!is.na(q15_key_sources)) %>%  # Filtrar datos no nulos
+  rowwise() %>%  # Evaluar por filas
+  mutate(total_selections = sum(c_across(starts_with("q15_key_sources.")) == 1, na.rm = TRUE)) %>%  # Contar selecciones por fila
+  ungroup() %>%
+  mutate(selection_category = case_when(
+    total_selections == 1 ~ "1 option",
+    total_selections == 2 ~ "2 opions",
+    total_selections == 3 ~ "3 options",
+    total_selections>=4 ~ "4 or more options"
+  )) %>%
+  group_by(selection_category) %>%  # Agrupar por categoría de selección
+  summarise(N = n())  # Contar cuántos están en cada categoría
+  
+
+write.xlsx(q15_selections_summary, file = archivo, sheetName="q15_cant")
+
+# Generar tabla con el total de respuestas y el porcentaje de fondos feministas >= 50%
+feminist_funding_table <- witm %>%
+  filter(q13_ext_funding == "yes") %>%  
+  summarise(
+    N_2023 = sum(q16_funding_source_2023_feminist >= 50, na.rm = TRUE),
+    Total_2023 = sum(!is.na(q16_funding_source_2023_feminist)),
+    N_2022 = sum(q16_funding_source_2022_feminist >= 50, na.rm = TRUE),
+    Total_2022 = sum(!is.na(q16_funding_source_2022_feminist)),
+    N_2021 = sum(q16_funding_source_2021_feminist >= 50, na.rm = TRUE),
+    Total_2021 = sum(!is.na(q16_funding_source_2021_feminist))
+  ) %>%
+  pivot_longer(
+    cols = everything(),
+    names_to = c("Year", ".value"),
+    names_pattern = "(.+)_(\\d+)"
+  )
+
+
+q16 <- loadWorkbook(archivo)
+addWorksheet(q16, sheetName = "q16_50percent")
+writeData(q16, sheet = "q16_50percent", x = feminist_funding_table)
+saveWorkbook(q16, archivo, overwrite = TRUE)
+
+# Generar tabla con el total de respuestas y el porcentaje de fondos feministas >= 30%
+feminist_funding_table2 <- witm %>%
+  filter(q13_ext_funding == "yes") %>%  
+  summarise(
+    N_2023 = sum(q16_funding_source_2023_feminist >= 30, na.rm = TRUE),
+    Total_2023 = sum(!is.na(q16_funding_source_2023_feminist)),
+    N_2022 = sum(q16_funding_source_2022_feminist >= 30, na.rm = TRUE),
+    Total_2022 = sum(!is.na(q16_funding_source_2022_feminist)),
+    N_2021 = sum(q16_funding_source_2021_feminist >= 30, na.rm = TRUE),
+    Total_2021 = sum(!is.na(q16_funding_source_2021_feminist))
+  ) %>%
+  pivot_longer(
+    cols = everything(),
+    names_to = c("Year", ".value"),
+    names_pattern = "(.+)_(\\d+)"
+  )
+  
+q16 <- loadWorkbook(archivo)
+addWorksheet(q16, sheetName = "q16_30percent")
+writeData(q16, sheet = "q16_30percent", x = feminist_funding_table2)
+saveWorkbook(q16, archivo, overwrite = TRUE)
