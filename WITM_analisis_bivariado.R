@@ -7133,28 +7133,31 @@ saveWorkbook(q21, archivo, overwrite = TRUE)
 
 #CRUCE POR q10
 
-witm <- witm %>% 
-  mutate(q21_core_average = round(rowMeans(select(., q21_types_funding_2021_core, q21_types_funding_2022_core, q21_types_funding_2023_core), na.rm = TRUE)),0) %>% 
-  
-  mutate(q21_project_average = round(rowMeans(select(., q21_types_funding_2021_project, q21_types_funding_2022_project, q21_types_funding_2023_project), na.rm = TRUE)),0) %>%
-  
-  mutate(q21_emergency_average = round(rowMeans(select(., q21_types_funding_2021_emergency, q21_types_funding_2022_emergency, q21_types_funding_2023_emergency), na.rm = TRUE)),0)
 
-q21_mean_core<-witm %>% 
-  mutate(q21_mean_core=case_when(
-    q21_core_average <30 ~"1 Less than 30%",
-    q21_core_average >29 ~ "2 30% or more",
-    is.na(q21_core_average ) ~ NA)) %>% 
-  group_by(q21_core_average ) %>% 
-  summarise(n())
-
-# Crear q10_2021_q45
-q10_2021_q45 <- witm %>% 
-  filter(q9_year_formation < 2022) %>% 
-  group_by(q10_budget_grp_2021, q45_previous_response) %>% 
+# Crear q10_2021_q21
+q10_2021_q21 <- witm %>% 
+  mutate(q21_core_2021=case_when(
+    q21_types_funding_2021_core<30 ~"1 Less than 30%",
+    q21_types_funding_2021_core>29 ~ "2 30% or more",
+    TRUE ~ NA)) %>% 
+  filter(q9_year_formation < 2022 & !is.na(q21_core_2021)) %>% 
+  group_by(q10_budget_grp_2021, q21_core_2021) %>% 
   summarise(n = n(), .groups = 'drop') %>% 
   rename(Annual_budget = q10_budget_grp_2021) %>% 
   mutate(Year = 2021)
+
+# Crear q10_2021_q21
+q10_2021_q21b <- witm %>% 
+  mutate(q21_core_2022=case_when(
+    q21_types_funding_2022_core<30 ~"1 Less than 30%",
+    q21_types_funding_2022_core>29 ~ "2 30% or more",
+    TRUE ~ NA)) %>% 
+  filter(q9_year_formation < 2022 & !is.na(q21_core_2022)) %>% 
+  group_by(q10_budget_grp_2021, q21_core_2022) %>% 
+  summarise(n = n(), .groups = 'drop') %>% 
+  rename(Annual_budget = q10_budget_grp_2021) %>% 
+  mutate(Year = 2021)
+
 
 # Crear q10_2022_q45
 q10_2022_q45 <- witm %>% 
@@ -7209,3 +7212,101 @@ addWorksheet(q45, sheetName = "q45_q10_media")
 writeData(q45, sheet = "q45_q10_media", x = q10_media_table)
 saveWorkbook(q45, archivo, overwrite = TRUE)
 
+##########################
+
+
+
+
+archivo <- "cuadros/q15_funds_type.xlsx"
+
+#Convertir campos vacíos de la variable q15 en NA
+witm <- witm %>%
+  mutate(q15_key_sources = na_if(q15_key_sources, ""))
+
+
+q15 <- witm %>%
+  filter( !is.na(q15_key_sources)) %>%
+  summarise(Total = n(),
+            Multirateral = sum(q15_key_sources.multilateral_funders == 1),
+            Bilateral = sum(q15_key_sources.bilateral_funders == 1),
+            Philanthropic = sum(q15_key_sources.philanthropic_foundations == 1),
+            Womens = sum(q15_key_sources.womens_feminist_funds == 1),
+            Private = sum(q15_key_sources.private_sector == 1),
+            Ingos = sum(q15_key_sources.ingos == 1),
+            Individual = sum(q15_key_sources.individual_donors == 1),
+            Goverments = sum(q15_key_sources.national_local_goverment_or_bodies == 1),
+            Other = sum(q15_key_sources.98 == 1)) %>% 
+  pivot_longer(cols = everything(),
+               names_to = "Source",
+               values_to = "N")
+
+
+write.xlsx(q15, file = archivo, sheetName="q15")
+
+###
+
+#ANÁLISIS Q15/Q16
+
+archivo <- "cuadros/q16.xlsx"
+
+q15_selections_summary <- witm %>%
+  filter(!is.na(q15_key_sources)) %>%  # Filtrar datos no nulos
+  rowwise() %>%  # Evaluar por filas
+  mutate(total_selections = sum(c_across(starts_with("q15_key_sources.")) == 1, na.rm = TRUE)) %>%  # Contar selecciones por fila
+  ungroup() %>%
+  mutate(selection_category = case_when(
+    total_selections == 1 ~ "1 option",
+    total_selections == 2 ~ "2 opions",
+    total_selections == 3 ~ "3 options",
+    total_selections>=4 ~ "4 or more options"
+  )) %>%
+  group_by(selection_category) %>%  # Agrupar por categoría de selección
+  summarise(N = n())  # Contar cuántos están en cada categoría
+  
+
+write.xlsx(q15_selections_summary, file = archivo, sheetName="q15_cant")
+
+# Generar tabla con el total de respuestas y el porcentaje de fondos feministas >= 50%
+feminist_funding_table <- witm %>%
+  filter(q13_ext_funding == "yes") %>%  
+  summarise(
+    N_2023 = sum(q16_funding_source_2023_feminist >= 50, na.rm = TRUE),
+    Total_2023 = sum(!is.na(q16_funding_source_2023_feminist)),
+    N_2022 = sum(q16_funding_source_2022_feminist >= 50, na.rm = TRUE),
+    Total_2022 = sum(!is.na(q16_funding_source_2022_feminist)),
+    N_2021 = sum(q16_funding_source_2021_feminist >= 50, na.rm = TRUE),
+    Total_2021 = sum(!is.na(q16_funding_source_2021_feminist))
+  ) %>%
+  pivot_longer(
+    cols = everything(),
+    names_to = c("Year", ".value"),
+    names_pattern = "(.+)_(\\d+)"
+  )
+
+
+q16 <- loadWorkbook(archivo)
+addWorksheet(q16, sheetName = "q16_50percent")
+writeData(q16, sheet = "q16_50percent", x = feminist_funding_table)
+saveWorkbook(q16, archivo, overwrite = TRUE)
+
+# Generar tabla con el total de respuestas y el porcentaje de fondos feministas >= 30%
+feminist_funding_table2 <- witm %>%
+  filter(q13_ext_funding == "yes") %>%  
+  summarise(
+    N_2023 = sum(q16_funding_source_2023_feminist >= 30, na.rm = TRUE),
+    Total_2023 = sum(!is.na(q16_funding_source_2023_feminist)),
+    N_2022 = sum(q16_funding_source_2022_feminist >= 30, na.rm = TRUE),
+    Total_2022 = sum(!is.na(q16_funding_source_2022_feminist)),
+    N_2021 = sum(q16_funding_source_2021_feminist >= 30, na.rm = TRUE),
+    Total_2021 = sum(!is.na(q16_funding_source_2021_feminist))
+  ) %>%
+  pivot_longer(
+    cols = everything(),
+    names_to = c("Year", ".value"),
+    names_pattern = "(.+)_(\\d+)"
+  )
+  
+q16 <- loadWorkbook(archivo)
+addWorksheet(q16, sheetName = "q16_30percent")
+writeData(q16, sheet = "q16_30percent", x = feminist_funding_table2)
+saveWorkbook(q16, archivo, overwrite = TRUE)
