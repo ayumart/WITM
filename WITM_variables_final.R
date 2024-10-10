@@ -299,6 +299,17 @@ witm <- witm %>%
   ))
 
 
+#q21 promedio
+
+witm <- witm %>% 
+  mutate(q21_core_average = round(rowMeans(select(., q21_types_funding_2021_core, q21_types_funding_2022_core, q21_types_funding_2023_core), na.rm = TRUE)),0) %>% 
+  
+  mutate(q21_project_average = round(rowMeans(select(., q21_types_funding_2021_project, q21_types_funding_2022_project, q21_types_funding_2023_project), na.rm = TRUE)),0) %>%
+  
+  mutate(q21_emergency_average = round(rowMeans(select(., q21_types_funding_2021_emergency, q21_types_funding_2022_emergency, q21_types_funding_2023_emergency), na.rm = TRUE)),0)
+
+
+
 #guardo base con nuevas variables
 write.csv2(witm, file = "Data/WITM_FINAL_10102024.csv", row.names = FALSE)
 

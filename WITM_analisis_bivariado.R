@@ -6245,6 +6245,9 @@ archivo <- "cuadros/q37.xlsx"
 
 #cruce por región: q7
 
+q37<-witm %>% 
+  group_by(q37_operate_savings) %>% 
+  summarise(n())
 
 #Convertir campos vacíos de la variable q37 en NA
 witm <- witm %>%
@@ -6252,14 +6255,13 @@ witm <- witm %>%
 
 q37_region<-witm %>% 
   mutate(q37_operate_savings=case_when(
-  q37_operate_savings=="no_saving_reserves" ~ "We have no savings or reserves",
+  q37_operate_savings=="no_savings_reserves" ~ "We have no savings or reserves",
   q37_operate_savings=="0_3_months" ~ "Up to 3 months",
   q37_operate_savings=="3_6_months" ~ "3-6 months",
   q37_operate_savings=="6_12_months" ~ "6-12 months",
   q37_operate_savings=="12_24_months" ~ "12-24 months",
   q37_operate_savings=="over_24_months" ~ "Over 24 months",
   TRUE ~ NA)) %>% 
-  filter(!is.na(q37_operate_savings)) %>%
   group_by(q37_operate_savings) %>% 
   summarise(Total= n(),
             "1. Latin America & the Caribbean"=sum(region_1==1),
@@ -6983,3 +6985,137 @@ write.xlsx(q46_region, file = archivo, sheetName="q46_region")
 
 
 ##########################################################################
+
+
+archivo <- "cuadros/q21.xlsx"
+
+
+##q21
+
+###2023
+
+q21_core_2023<-witm %>% 
+  mutate(q21_core_2023=case_when(
+    q21_types_funding_2023_core<30 ~"1 Less than 30%",
+    q21_types_funding_2023_core>29 ~ "2 30% or more",
+    TRUE ~ NA)) %>% 
+  filter(!is.na(q21_types_funding_2023_core)) %>% 
+  group_by(q21_core_2023) %>% 
+  summarise("2023"=n()) %>% 
+  rename("q21_core"=1)
+
+
+###2022
+
+
+q21_core_2022<-witm %>% 
+  mutate(q21_core_2022=case_when(
+    q21_types_funding_2022_core<30 ~"1 Less than 30%",
+    q21_types_funding_2022_core>29 ~ "2 30% or more",
+    is.na(q21_types_funding_2022_core) ~ NA)) %>% 
+  filter(!is.na(q21_types_funding_2022_core)) %>% 
+  group_by(q21_core_2022) %>% 
+  summarise("2022"=n())%>% 
+  rename("q21_core"=1)
+
+###2021
+
+q21_core_2021<-witm %>% 
+  mutate(q21_core_2021=case_when(
+    q21_types_funding_2021_core<30 ~"1 Less than 30%",
+    q21_types_funding_2021_core>29 ~ "2 30% or more",
+    is.na(q21_types_funding_2021_core) ~ NA)) %>% 
+  filter(!is.na(q21_types_funding_2021_core)) %>% 
+  group_by(q21_core_2021) %>% 
+  summarise("2021"=n()) %>% 
+  rename("q21_core"=1)
+
+
+
+#Unir los dataframes
+q21_core_total <- q21_core_2023 %>%
+  full_join(q21_core_2022, by = "q21_core") %>%
+  full_join(q21_core_2021, by = "q21_core")
+
+write.xlsx(q21_core_total, file = archivo, sheetName="q21")
+
+
+
+#CRUCE POR q10
+
+witm <- witm %>% 
+  mutate(q21_core_average = round(rowMeans(select(., q21_types_funding_2021_core, q21_types_funding_2022_core, q21_types_funding_2023_core), na.rm = TRUE)),0) %>% 
+  
+  mutate(q21_project_average = round(rowMeans(select(., q21_types_funding_2021_project, q21_types_funding_2022_project, q21_types_funding_2023_project), na.rm = TRUE)),0) %>%
+  
+  mutate(q21_emergency_average = round(rowMeans(select(., q21_types_funding_2021_emergency, q21_types_funding_2022_emergency, q21_types_funding_2023_emergency), na.rm = TRUE)),0)
+
+q21_mean_core<-witm %>% 
+  mutate(q21_mean_core=case_when(
+    q21_core_average <30 ~"1 Less than 30%",
+    q21_core_average >29 ~ "2 30% or more",
+    is.na(q21_core_average ) ~ NA)) %>% 
+  group_by(q21_core_average ) %>% 
+  summarise(n())
+
+# Crear q10_2021_q45
+q10_2021_q45 <- witm %>% 
+  filter(q9_year_formation < 2022) %>% 
+  group_by(q10_budget_grp_2021, q45_previous_response) %>% 
+  summarise(n = n(), .groups = 'drop') %>% 
+  rename(Annual_budget = q10_budget_grp_2021) %>% 
+  mutate(Year = 2021)
+
+# Crear q10_2022_q45
+q10_2022_q45 <- witm %>% 
+  filter(q9_year_formation < 2023) %>% 
+  group_by(q10_budget_grp_2022, q45_previous_response) %>% 
+  summarise(n = n(), .groups = 'drop') %>% 
+  rename(Annual_budget = q10_budget_grp_2022) %>% 
+  mutate(Year = 2022)
+
+# Crear q10_2023_q45
+q10_2023_q45 <- witm %>% 
+  filter(!is.na(q10_budget_year_2023)) %>%
+  group_by(q10_budget_grp_2023, q45_previous_response) %>% 
+  summarise(n = n(), .groups = 'drop') %>% 
+  rename(Annual_budget = q10_budget_grp_2023) %>% 
+  mutate(Year = 2023)
+
+
+# Unir los dataframes
+q10_grouped_q45 <- bind_rows(q10_2021_q45, q10_2022_q45, q10_2023_q45)
+
+
+# Crear la tabla de doble entrada con años como filas
+q10_table <- q10_grouped_q45 %>%
+  group_by(Year, Annual_budget, q45_previous_response) %>%
+  summarise(Total = sum(n), .groups = 'drop') %>%
+  pivot_wider(names_from = q45_previous_response, values_from = Total, values_fill = list(Total = 0)) %>%
+  arrange(Year, Annual_budget)  # Opcional: ordenar por año y presupuesto
+
+# Crear la tabla de doble entrada
+q10_tableb <- q10_grouped_q45 %>%
+  pivot_wider(names_from = Year, values_from = n, values_fill = list(n = 0))
+
+# Calcular la media por cada categoría de Annual_budget
+q10_tableb <- q10_tableb %>%
+  rowwise() %>%
+  mutate(Media = round(mean(c_across(c(`2021`, `2022`, `2023`)), na.rm = TRUE), 0)) %>%
+  ungroup()  # Desagrupar después de la operación
+
+# Seleccionar solo las columnas de interés para la tabla final
+q10_media_table <- q10_tableb %>%
+  select(Annual_budget, q45_previous_response, Media) %>%
+  pivot_wider(names_from = q45_previous_response, values_from = Media, values_fill = list(Media = 0))
+
+q45<- loadWorkbook(archivo)
+addWorksheet(q45, sheetName = "q45_q10")
+writeData(q45, sheet = "q45_q10", x = q10_tableb)
+saveWorkbook(q45, archivo, overwrite = TRUE)
+
+q45 <- loadWorkbook(archivo)
+addWorksheet(q45, sheetName = "q45_q10_media")
+writeData(q45, sheet = "q45_q10_media", x = q10_media_table)
+saveWorkbook(q45, archivo, overwrite = TRUE)
+
