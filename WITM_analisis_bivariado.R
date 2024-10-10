@@ -528,7 +528,7 @@ saveWorkbook(q10, archivo, overwrite = TRUE)
 
 #ANÁLISIS DE LA Q11
 
-archivo <- "cuadros/cuadros2.xlsx"
+archivo <- "cuadros/q11.xlsx"
 
 base<-witm
 q11<-base %>%
@@ -4156,7 +4156,7 @@ saveWorkbook(q25, archivo, overwrite = TRUE)
 
 ###############################################################################
 
-archivo <- "cuadros/cuadros2.xlsx"
+archivo <- "cuadros/q26.xlsx"
 
 
 #Cruce por region:q7
@@ -4308,18 +4308,12 @@ q26_region_total <- q26_region_1 %>%
 
 
 
-q26 <- loadWorkbook(archivo)
-addWorksheet(q26, sheetName = "q26_region")
-writeData(q26, sheet = "q26_region", x = q26_region_total)
-saveWorkbook(q26, archivo, overwrite = TRUE)
+write.xlsx(q26_region_total, file = archivo, sheetName="q26_region")
 
-
-q26_d <- loadWorkbook(archivo)
-addWorksheet(q26_d, sheetName = "q26")
-writeData(q26_d, sheet = "q26", x = q26b)
-saveWorkbook(q26_d, archivo, overwrite = TRUE)
 
 ###############################################################################
+
+archivo <- "cuadros/q27.xlsx"
 
 
 
@@ -4470,11 +4464,7 @@ q27_region_total <- q27_region_1 %>%
 
 
 
-q26 <- loadWorkbook(archivo)
-addWorksheet(q26, sheetName = "q27_region")
-writeData(q26, sheet = "q27_region", x = q27_region_total)
-saveWorkbook(q26, archivo, overwrite = TRUE)
-
+write.xlsx(q27_region_total, file = archivo, sheetName="q27_region")
 
 
 ################################################################################
@@ -6064,7 +6054,9 @@ saveWorkbook(q36, archivo, overwrite = TRUE)
 
 # ANÁLISIS DE LA q37
 
-archivo <- "cuadros/cuadros2.xlsx"
+
+
+archivo <- "cuadros/q37.xlsx"
 
 
 
@@ -6098,13 +6090,11 @@ q37_region<-witm %>%
 
 
 
-q37 <- loadWorkbook(archivo)
-addWorksheet(q37, sheetName = "q37_region")
-writeData(q37, sheet = "q37_region", x = q37_region)
-saveWorkbook(q37, archivo, overwrite = TRUE)
+write.xlsx(q37_region, file = archivo, sheetName="q37_region")
+
 #########################################################################
 
-
+archivo <- "cuadros/q38.xlsx"
 
 #ANÁLISIS Q38
 
@@ -6132,10 +6122,7 @@ q13_q4agrup <- q13_q4agrup %>%
   arrange(`External funding`)
 
 
-q13 <- loadWorkbook(archivo)
-addWorksheet(q13, sheetName = "q13_q4agrup")
-writeData(q13, sheet = "q13_q4agrup", x = q13_q4agrup)
-saveWorkbook(q13, archivo, overwrite = TRUE)
+write.xlsx(q38_q4agrup, file = archivo, sheetName="q38_q4agrup")
 
 
 #cruce por q4
@@ -6198,6 +6185,10 @@ saveWorkbook(q37, archivo, overwrite = TRUE)
 
 
 ##########################################################################
+
+
+
+archivo <- "cuadros/q39.xlsx"
 
 
 #Convertir campos vacíos de la variable q39 en NA
@@ -6344,18 +6335,14 @@ q39_region_total <- q39_region_1 %>%
   left_join(q39_region_7, by = "Source")
 
 
-
-q26 <- loadWorkbook(archivo)
-addWorksheet(q26, sheetName = "q39_region")
-writeData(q26, sheet = "q39_region", x = q39_region_total)
-saveWorkbook(q26, archivo, overwrite = TRUE)
-
+write.xlsx(q39_region_total, file = archivo, sheetName="q39_region")
 
 
 ##########################################################################
 
 #ANÁLISIS Q40
 
+archivo <- "cuadros/q40.xlsx"
 
 #cruce por región: q7
 
@@ -6386,10 +6373,7 @@ q40_region<-witm %>%
 
 
 
-q37 <- loadWorkbook(archivo)
-addWorksheet(q37, sheetName = "q40_region")
-writeData(q37, sheet = "q40_region", x = q40_region)
-saveWorkbook(q37, archivo, overwrite = TRUE)
+write.xlsx(q40_region, file = archivo, sheetName="q40_region")
 
 
 ##########################################################################
@@ -6609,6 +6593,12 @@ writeData(q45, sheet = "q45_q10_media", x = q10_media_table)
 saveWorkbook(q45, archivo, overwrite = TRUE)
 ##############################################################################
 
+
+
+# ANÁLISIS DE LA q45
+
+archivo <- "cuadros/q46.xlsx"
+
 #ANÁLISIS Q46
 
 
@@ -6641,7 +6631,7 @@ q46_region<-witm %>%
 
 
 
-q37 <- loadWorkbook(archivo)
-addWorksheet(q37, sheetName = "q46_region")
-writeData(q37, sheet = "q46_region", x = q46_region)
-saveWorkbook(q37, archivo, overwrite = TRUE)
+write.xlsx(q46_region, file = archivo, sheetName="q46_region")
+
+
+##########################################################################
