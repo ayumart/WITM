@@ -4153,6 +4153,330 @@ addWorksheet(q25, sheetName = "q25_q10_media")
 writeData(q25, sheet = "q25_q10_media", x = q10_media_table)
 saveWorkbook(q25, archivo, overwrite = TRUE)
 
+
+###############################################################################
+
+archivo <- "cuadros/cuadros2.xlsx"
+
+
+#Cruce por region:q7
+
+
+
+q26_region_1 <- witm %>%
+  filter(!is.na(q26_new_counter_funder) & region_1==1) %>%
+  summarise(Total= round(n(),0),
+            Multilateral = sum(q26_new_counter_funder.multilateral_funders == 1, na.rm = TRUE),
+            Bilateral = sum(q26_new_counter_funder.bilateral_funders == 1, na.rm = TRUE),
+            Philanthropic = sum(q26_new_counter_funder.philanthropic_foundations == 1, na.rm = TRUE),
+            Feminist = sum(q26_new_counter_funder.womens_feminist_funds == 1, na.rm = TRUE),
+            Private = sum(q26_new_counter_funder.private_sector == 1, na.rm = TRUE),
+            INGOS = sum(q26_new_counter_funder.INGOs == 1, na.rm = TRUE),
+            Individual = sum(q26_new_counter_funder.individual_donors == 1, na.rm = TRUE),
+            Goverment = sum(q26_new_counter_funder.national_local_goverment_or_bodies== 1, na.rm = TRUE),
+            Other = sum(q26_new_counter_funder.98== 1, na.rm = TRUE),
+            No=sum(q26_new_counter_funder.no==1, na.rm=TRUE),
+            Not_sure=sum(q26_new_counter_funder.99==1, na.rm=TRUE)) %>% 
+  pivot_longer(cols = everything(),
+               names_to = "Source",
+               values_to = "1. Latin America & the Caribbean")
+
+
+q26_region_2 <- witm %>%
+  filter(!is.na(q26_new_counter_funder) & region_2==1) %>%
+  summarise(Total= round(n(),0),
+            Multilateral = sum(q26_new_counter_funder.multilateral_funders == 1, na.rm = TRUE),
+            Bilateral = sum(q26_new_counter_funder.bilateral_funders == 1, na.rm = TRUE),
+            Philanthropic = sum(q26_new_counter_funder.philanthropic_foundations == 1, na.rm = TRUE),
+            Feminist = sum(q26_new_counter_funder.womens_feminist_funds == 1, na.rm = TRUE),
+            Private = sum(q26_new_counter_funder.private_sector == 1, na.rm = TRUE),
+            INGOS = sum(q26_new_counter_funder.INGOs == 1, na.rm = TRUE),
+            Individual = sum(q26_new_counter_funder.individual_donors == 1, na.rm = TRUE),
+            Goverment = sum(q26_new_counter_funder.national_local_goverment_or_bodies== 1, na.rm = TRUE),
+            Other = sum(q26_new_counter_funder.98== 1, na.rm = TRUE),
+            No=sum(q26_new_counter_funder.no==1, na.rm=TRUE),
+            Not_sure=sum(q26_new_counter_funder.99==1, na.rm=TRUE)) %>% 
+  pivot_longer(cols = everything(),
+               names_to = "Source",
+               values_to = "2. Western Europe & North America")
+
+
+
+
+
+q26_region_3 <- witm %>%
+  filter(!is.na(q26_new_counter_funder) & region_3==1) %>%
+  summarise(Total= round(n(),0),
+            Multilateral = sum(q26_new_counter_funder.multilateral_funders == 1, na.rm = TRUE),
+            Bilateral = sum(q26_new_counter_funder.bilateral_funders == 1, na.rm = TRUE),
+            Philanthropic = sum(q26_new_counter_funder.philanthropic_foundations == 1, na.rm = TRUE),
+            Feminist = sum(q26_new_counter_funder.womens_feminist_funds == 1, na.rm = TRUE),
+            Private = sum(q26_new_counter_funder.private_sector == 1, na.rm = TRUE),
+            INGOS = sum(q26_new_counter_funder.INGOs == 1, na.rm = TRUE),
+            Individual = sum(q26_new_counter_funder.individual_donors == 1, na.rm = TRUE),
+            Goverment = sum(q26_new_counter_funder.national_local_goverment_or_bodies== 1, na.rm = TRUE),
+            Other = sum(q26_new_counter_funder.98== 1, na.rm = TRUE),
+            No=sum(q26_new_counter_funder.no==1, na.rm=TRUE),
+            Not_sure=sum(q26_new_counter_funder.99==1, na.rm=TRUE)) %>%  
+  pivot_longer(cols = everything(),
+               names_to = "Source",
+               values_to = "3. Eastern, Southeast and Central Europe")
+
+q26_region_4 <- witm %>%
+  filter(!is.na(q26_new_counter_funder) & region_4==1) %>%
+  summarise(Total= round(n(),0),
+            Multilateral = sum(q26_new_counter_funder.multilateral_funders == 1, na.rm = TRUE),
+            Bilateral = sum(q26_new_counter_funder.bilateral_funders == 1, na.rm = TRUE),
+            Philanthropic = sum(q26_new_counter_funder.philanthropic_foundations == 1, na.rm = TRUE),
+            Feminist = sum(q26_new_counter_funder.womens_feminist_funds == 1, na.rm = TRUE),
+            Private = sum(q26_new_counter_funder.private_sector == 1, na.rm = TRUE),
+            INGOS = sum(q26_new_counter_funder.INGOs == 1, na.rm = TRUE),
+            Individual = sum(q26_new_counter_funder.individual_donors == 1, na.rm = TRUE),
+            Goverment = sum(q26_new_counter_funder.national_local_goverment_or_bodies== 1, na.rm = TRUE),
+            Other = sum(q26_new_counter_funder.98== 1, na.rm = TRUE),
+            No=sum(q26_new_counter_funder.no==1, na.rm=TRUE),
+            Not_sure=sum(q26_new_counter_funder.99==1, na.rm=TRUE)) %>% 
+  pivot_longer(cols = everything(),
+               names_to = "Source",
+               values_to = "4. Africa")
+
+
+q26_region_5 <- witm %>%
+  filter(!is.na(q26_new_counter_funder) & region_5==1) %>%
+  summarise(Total= round(n(),0),
+            Multilateral = sum(q26_new_counter_funder.multilateral_funders == 1, na.rm = TRUE),
+            Bilateral = sum(q26_new_counter_funder.bilateral_funders == 1, na.rm = TRUE),
+            Philanthropic = sum(q26_new_counter_funder.philanthropic_foundations == 1, na.rm = TRUE),
+            Feminist = sum(q26_new_counter_funder.womens_feminist_funds == 1, na.rm = TRUE),
+            Private = sum(q26_new_counter_funder.private_sector == 1, na.rm = TRUE),
+            INGOS = sum(q26_new_counter_funder.INGOs == 1, na.rm = TRUE),
+            Individual = sum(q26_new_counter_funder.individual_donors == 1, na.rm = TRUE),
+            Goverment = sum(q26_new_counter_funder.national_local_goverment_or_bodies== 1, na.rm = TRUE),
+            Other = sum(q26_new_counter_funder.98== 1, na.rm = TRUE),
+            No=sum(q26_new_counter_funder.no==1, na.rm=TRUE),
+            Not_sure=sum(q26_new_counter_funder.99==1, na.rm=TRUE)) %>% 
+  pivot_longer(cols = everything(),
+               names_to = "Source",
+               values_to = "5. Asia & the Pacific")
+
+
+q26_region_6 <- witm %>%
+  filter(!is.na(q26_new_counter_funder) & region_6==1) %>%
+  summarise(Total= round(n(),0),
+            Multilateral = sum(q26_new_counter_funder.multilateral_funders == 1, na.rm = TRUE),
+            Bilateral = sum(q26_new_counter_funder.bilateral_funders == 1, na.rm = TRUE),
+            Philanthropic = sum(q26_new_counter_funder.philanthropic_foundations == 1, na.rm = TRUE),
+            Feminist = sum(q26_new_counter_funder.womens_feminist_funds == 1, na.rm = TRUE),
+            Private = sum(q26_new_counter_funder.private_sector == 1, na.rm = TRUE),
+            INGOS = sum(q26_new_counter_funder.INGOs == 1, na.rm = TRUE),
+            Individual = sum(q26_new_counter_funder.individual_donors == 1, na.rm = TRUE),
+            Goverment = sum(q26_new_counter_funder.national_local_goverment_or_bodies== 1, na.rm = TRUE),
+            Other = sum(q26_new_counter_funder.98== 1, na.rm = TRUE),
+            No=sum(q26_new_counter_funder.no==1, na.rm=TRUE),
+            Not_sure=sum(q26_new_counter_funder.99==1, na.rm=TRUE)) %>% 
+  pivot_longer(cols = everything(),
+               names_to = "Source",
+               values_to = "6. Central Asia & Caucasus")
+
+q26_region_7 <- witm %>%
+  filter(!is.na(q26_new_counter_funder) & region_6==1) %>%
+  summarise(Total= round(n(),0),
+            Multilateral = sum(q26_new_counter_funder.multilateral_funders == 1, na.rm = TRUE),
+            Bilateral = sum(q26_new_counter_funder.bilateral_funders == 1, na.rm = TRUE),
+            Philanthropic = sum(q26_new_counter_funder.philanthropic_foundations == 1, na.rm = TRUE),
+            Feminist = sum(q26_new_counter_funder.womens_feminist_funds == 1, na.rm = TRUE),
+            Private = sum(q26_new_counter_funder.private_sector == 1, na.rm = TRUE),
+            INGOS = sum(q26_new_counter_funder.INGOs == 1, na.rm = TRUE),
+            Individual = sum(q26_new_counter_funder.individual_donors == 1, na.rm = TRUE),
+            Goverment = sum(q26_new_counter_funder.national_local_goverment_or_bodies== 1, na.rm = TRUE),
+            Other = sum(q26_new_counter_funder.98== 1, na.rm = TRUE),
+            No=sum(q26_new_counter_funder.no==1, na.rm=TRUE),
+            Not_sure=sum(q26_new_counter_funder.99==1, na.rm=TRUE)) %>% 
+  pivot_longer(cols = everything(),
+               names_to = "Source",
+               values_to = "7. South West Asia/Middle East & North Africa")
+
+
+
+q26_region_total <- q26_region_1 %>%
+  left_join(q26_region_2, by = "Source") %>%
+  left_join(q26_region_3, by = "Source") %>%
+  left_join(q26_region_4, by = "Source") %>%
+  left_join(q26_region_5, by = "Source") %>%
+  left_join(q26_region_6, by = "Source") %>%
+  left_join(q26_region_7, by = "Source")
+
+
+
+q26 <- loadWorkbook(archivo)
+addWorksheet(q26, sheetName = "q26_region")
+writeData(q26, sheet = "q26_region", x = q26_region_total)
+saveWorkbook(q26, archivo, overwrite = TRUE)
+
+
+q26_d <- loadWorkbook(archivo)
+addWorksheet(q26_d, sheetName = "q26")
+writeData(q26_d, sheet = "q26", x = q26b)
+saveWorkbook(q26_d, archivo, overwrite = TRUE)
+
+###############################################################################
+
+
+
+#Convertir campos vacíos de la variable q27 en NA
+base <- base %>%
+  mutate(q27_work_to_counter = na_if(q27_work_to_counter, ""))
+
+
+#Cruce por region:q7
+
+
+
+q27_region_1 <- witm %>%
+  filter(q25_counter_anti=="yes" & !is.na(q27_work_to_counter) & region_1==1) %>%
+  summarise(Total= round(n(),0),
+            "Movement building" = sum(q27_work_to_counter.movement_building == 1, na.rm = TRUE),
+            "Narrative work" = sum(q27_work_to_counter.narrative_work == 1, na.rm = TRUE),
+            "Legal action and reform" = sum(q27_work_to_counter.legal_action_reform == 1, na.rm = TRUE),
+            "Research & knowledge building" = sum(q27_work_to_counter.research_knowledge_building == 1, na.rm = TRUE),
+            "Responding to civic space crackdown/ urgent response work" = sum(q27_work_to_counter.civic_crackdown_response == 1, na.rm = TRUE),
+            "Advocacy & campaigns" = sum(q27_work_to_counter.advocacy_campaigns == 1, na.rm = TRUE),
+            "Protests & public mobilization" = sum(q27_work_to_counter.protests_mobilization == 1, na.rm = TRUE),
+            "Cross-movement mobilizing and alliance building" = sum(q27_work_to_counter.cross_movement_alliance_building== 1, na.rm = TRUE),
+            "Holistic safety and protection of activists at risk" = sum(q27_work_to_counter.safety_protection_activists== 1, na.rm = TRUE),
+            Other = sum(q27_work_to_counter.98== 1, na.rm = TRUE)) %>% 
+  pivot_longer(cols = everything(),
+               names_to = "Source",
+               values_to = "1. Latin America & the Caribbean")
+
+
+q27_region_2 <- witm %>%
+  filter(q25_counter_anti=="yes" & !is.na(q27_work_to_counter) & region_2==1) %>%
+  summarise(Total= round(n(),0),
+            "Movement building" = sum(q27_work_to_counter.movement_building == 1, na.rm = TRUE),
+            "Narrative work" = sum(q27_work_to_counter.narrative_work == 1, na.rm = TRUE),
+            "Legal action and reform" = sum(q27_work_to_counter.legal_action_reform == 1, na.rm = TRUE),
+            "Research & knowledge building" = sum(q27_work_to_counter.research_knowledge_building == 1, na.rm = TRUE),
+            "Responding to civic space crackdown/ urgent response work" = sum(q27_work_to_counter.civic_crackdown_response == 1, na.rm = TRUE),
+            "Advocacy & campaigns" = sum(q27_work_to_counter.advocacy_campaigns == 1, na.rm = TRUE),
+            "Protests & public mobilization" = sum(q27_work_to_counter.protests_mobilization == 1, na.rm = TRUE),
+            "Cross-movement mobilizing and alliance building" = sum(q27_work_to_counter.cross_movement_alliance_building== 1, na.rm = TRUE),
+            "Holistic safety and protection of activists at risk" = sum(q27_work_to_counter.safety_protection_activists== 1, na.rm = TRUE),
+            Other = sum(q27_work_to_counter.98== 1, na.rm = TRUE)) %>% 
+  pivot_longer(cols = everything(),
+               names_to = "Source",
+               values_to = "2. Western Europe & North America")
+
+
+
+
+
+q27_region_3 <- witm %>%
+  filter(q25_counter_anti=="yes" & !is.na(q27_work_to_counter) & region_3==1) %>%
+  summarise(Total= round(n(),0),
+            "Movement building" = sum(q27_work_to_counter.movement_building == 1, na.rm = TRUE),
+            "Narrative work" = sum(q27_work_to_counter.narrative_work == 1, na.rm = TRUE),
+            "Legal action and reform" = sum(q27_work_to_counter.legal_action_reform == 1, na.rm = TRUE),
+            "Research & knowledge building" = sum(q27_work_to_counter.research_knowledge_building == 1, na.rm = TRUE),
+            "Responding to civic space crackdown/ urgent response work" = sum(q27_work_to_counter.civic_crackdown_response == 1, na.rm = TRUE),
+            "Advocacy & campaigns" = sum(q27_work_to_counter.advocacy_campaigns == 1, na.rm = TRUE),
+            "Protests & public mobilization" = sum(q27_work_to_counter.protests_mobilization == 1, na.rm = TRUE),
+            "Cross-movement mobilizing and alliance building" = sum(q27_work_to_counter.cross_movement_alliance_building== 1, na.rm = TRUE),
+            "Holistic safety and protection of activists at risk" = sum(q27_work_to_counter.safety_protection_activists== 1, na.rm = TRUE),
+            Other = sum(q27_work_to_counter.98== 1, na.rm = TRUE)) %>% 
+  pivot_longer(cols = everything(),
+               names_to = "Source",
+               values_to = "3. Eastern, Southeast and Central Europe")
+
+q27_region_4 <- witm %>%
+  filter(q25_counter_anti=="yes" & !is.na(q27_work_to_counter) & region_4==1) %>%
+  summarise(Total= round(n(),0),
+            "Movement building" = sum(q27_work_to_counter.movement_building == 1, na.rm = TRUE),
+            "Narrative work" = sum(q27_work_to_counter.narrative_work == 1, na.rm = TRUE),
+            "Legal action and reform" = sum(q27_work_to_counter.legal_action_reform == 1, na.rm = TRUE),
+            "Research & knowledge building" = sum(q27_work_to_counter.research_knowledge_building == 1, na.rm = TRUE),
+            "Responding to civic space crackdown/ urgent response work" = sum(q27_work_to_counter.civic_crackdown_response == 1, na.rm = TRUE),
+            "Advocacy & campaigns" = sum(q27_work_to_counter.advocacy_campaigns == 1, na.rm = TRUE),
+            "Protests & public mobilization" = sum(q27_work_to_counter.protests_mobilization == 1, na.rm = TRUE),
+            "Cross-movement mobilizing and alliance building" = sum(q27_work_to_counter.cross_movement_alliance_building== 1, na.rm = TRUE),
+            "Holistic safety and protection of activists at risk" = sum(q27_work_to_counter.safety_protection_activists== 1, na.rm = TRUE),
+            Other = sum(q27_work_to_counter.98== 1, na.rm = TRUE)) %>% 
+  pivot_longer(cols = everything(),
+               names_to = "Source",
+               values_to = "4. Africa")
+
+
+q27_region_5 <- witm %>%
+  filter(q25_counter_anti=="yes" & !is.na(q27_work_to_counter) & region_5==1) %>%
+  summarise(Total= round(n(),0),
+            "Movement building" = sum(q27_work_to_counter.movement_building == 1, na.rm = TRUE),
+            "Narrative work" = sum(q27_work_to_counter.narrative_work == 1, na.rm = TRUE),
+            "Legal action and reform" = sum(q27_work_to_counter.legal_action_reform == 1, na.rm = TRUE),
+            "Research & knowledge building" = sum(q27_work_to_counter.research_knowledge_building == 1, na.rm = TRUE),
+            "Responding to civic space crackdown/ urgent response work" = sum(q27_work_to_counter.civic_crackdown_response == 1, na.rm = TRUE),
+            "Advocacy & campaigns" = sum(q27_work_to_counter.advocacy_campaigns == 1, na.rm = TRUE),
+            "Protests & public mobilization" = sum(q27_work_to_counter.protests_mobilization == 1, na.rm = TRUE),
+            "Cross-movement mobilizing and alliance building" = sum(q27_work_to_counter.cross_movement_alliance_building== 1, na.rm = TRUE),
+            "Holistic safety and protection of activists at risk" = sum(q27_work_to_counter.safety_protection_activists== 1, na.rm = TRUE),
+            Other = sum(q27_work_to_counter.98== 1, na.rm = TRUE)) %>% 
+  pivot_longer(cols = everything(),
+               names_to = "Source",
+               values_to = "5. Asia & the Pacific")
+
+
+q27_region_6 <- witm %>%
+  filter(q25_counter_anti=="yes" & !is.na(q27_work_to_counter) & region_6==1) %>%
+  summarise(Total= round(n(),0),
+            "Movement building" = sum(q27_work_to_counter.movement_building == 1, na.rm = TRUE),
+            "Narrative work" = sum(q27_work_to_counter.narrative_work == 1, na.rm = TRUE),
+            "Legal action and reform" = sum(q27_work_to_counter.legal_action_reform == 1, na.rm = TRUE),
+            "Research & knowledge building" = sum(q27_work_to_counter.research_knowledge_building == 1, na.rm = TRUE),
+            "Responding to civic space crackdown/ urgent response work" = sum(q27_work_to_counter.civic_crackdown_response == 1, na.rm = TRUE),
+            "Advocacy & campaigns" = sum(q27_work_to_counter.advocacy_campaigns == 1, na.rm = TRUE),
+            "Protests & public mobilization" = sum(q27_work_to_counter.protests_mobilization == 1, na.rm = TRUE),
+            "Cross-movement mobilizing and alliance building" = sum(q27_work_to_counter.cross_movement_alliance_building== 1, na.rm = TRUE),
+            "Holistic safety and protection of activists at risk" = sum(q27_work_to_counter.safety_protection_activists== 1, na.rm = TRUE),
+            Other = sum(q27_work_to_counter.98== 1, na.rm = TRUE)) %>% 
+  pivot_longer(cols = everything(),
+               names_to = "Source",
+               values_to = "6. Central Asia & Caucasus")
+
+q27_region_7 <- witm %>%
+  filter(q25_counter_anti=="yes" & !is.na(q27_work_to_counter) & region_7==1) %>%
+  summarise(Total= round(n(),0),
+            "Movement building" = sum(q27_work_to_counter.movement_building == 1, na.rm = TRUE),
+            "Narrative work" = sum(q27_work_to_counter.narrative_work == 1, na.rm = TRUE),
+            "Legal action and reform" = sum(q27_work_to_counter.legal_action_reform == 1, na.rm = TRUE),
+            "Research & knowledge building" = sum(q27_work_to_counter.research_knowledge_building == 1, na.rm = TRUE),
+            "Responding to civic space crackdown/ urgent response work" = sum(q27_work_to_counter.civic_crackdown_response == 1, na.rm = TRUE),
+            "Advocacy & campaigns" = sum(q27_work_to_counter.advocacy_campaigns == 1, na.rm = TRUE),
+            "Protests & public mobilization" = sum(q27_work_to_counter.protests_mobilization == 1, na.rm = TRUE),
+            "Cross-movement mobilizing and alliance building" = sum(q27_work_to_counter.cross_movement_alliance_building== 1, na.rm = TRUE),
+            "Holistic safety and protection of activists at risk" = sum(q27_work_to_counter.safety_protection_activists== 1, na.rm = TRUE),
+            Other = sum(q27_work_to_counter.98== 1, na.rm = TRUE)) %>% 
+  pivot_longer(cols = everything(),
+               names_to = "Source",
+               values_to = "7. South West Asia/Middle East & North Africa")
+
+
+
+q27_region_total <- q27_region_1 %>%
+  left_join(q27_region_2, by = "Source") %>%
+  left_join(q27_region_3, by = "Source") %>%
+  left_join(q27_region_4, by = "Source") %>%
+  left_join(q27_region_5, by = "Source") %>%
+  left_join(q27_region_6, by = "Source") %>%
+  left_join(q27_region_7, by = "Source")
+
+
+
+q26 <- loadWorkbook(archivo)
+addWorksheet(q26, sheetName = "q27_region")
+writeData(q26, sheet = "q27_region", x = q27_region_total)
+saveWorkbook(q26, archivo, overwrite = TRUE)
+
+
+
 ################################################################################
 
 #ANÁLISIS DE LA Q28
@@ -5735,9 +6059,247 @@ writeData(q36, "q36_q10", "Table for 2023", startRow = nrow(q36_grouped_q10_2021
 writeData(q36, "q36_q10", q36_grouped_q10_2023_wide, startRow = nrow(q36_grouped_q10_2022_wide) + nrow(q36_grouped_q10_2022_wide) + 9, startCol = 1, withFilter = TRUE)
 saveWorkbook(q36, archivo, overwrite = TRUE)
 
+##########################################################################
+
+
+# ANÁLISIS DE LA q37
+
+archivo <- "cuadros/cuadros2.xlsx"
+
+
+
+
+#cruce por región: q7
+
+
+#Convertir campos vacíos de la variable q37 en NA
+witm <- witm %>%
+  mutate(q37_operate_savings = na_if(q37_operate_savings, ""))
+
+q37_region<-witm %>% 
+  mutate(q37_operate_savings=case_when(
+  q37_operate_savings=="no_saving_reserves" ~ "We have no savings or reserves",
+  q37_operate_savings=="0_3_months" ~ "Up to 3 months",
+  q37_operate_savings=="3_6_months" ~ "3-6 months",
+  q37_operate_savings=="6_12_months" ~ "6-12 months",
+  q37_operate_savings=="12_24_months" ~ "12-24 months",
+  q37_operate_savings=="over_24_months" ~ "Over 24 months",
+  TRUE ~ NA)) %>% 
+  filter(!is.na(q37_operate_savings)) %>%
+  group_by(q37_operate_savings) %>% 
+  summarise(Total= n(),
+            "1. Latin America & the Caribbean"=sum(region_1==1),
+            "2. Western Europe & North America"=sum(region_2==1),
+            "3. Eastern, Southeast and Central Europe"=sum(region_3==1),
+            "4. Africa"= sum(region_4==1),
+            "5. Asia & the Pacific"=sum(region_5==1),
+            "6. Central Asia & Caucasus"=sum(region_6==1),
+            "7. South West Asia/Middle East & North Africa"=sum(region_7==1))
+
+
+
+q37 <- loadWorkbook(archivo)
+addWorksheet(q37, sheetName = "q37_region")
+writeData(q37, sheet = "q37_region", x = q37_region)
+saveWorkbook(q37, archivo, overwrite = TRUE)
+
 
 ##########################################################################
 
+
+#Convertir campos vacíos de la variable q39 en NA
+witm <- witm %>%
+  mutate(q39_employment_conditions = na_if(q39_employment_conditions, ""))
+
+
+#Cruce por region:q7
+
+q39_region_1 <- witm %>%
+  filter(!is.na(q39_employment_conditions) & region_1==1) %>%
+  summarise(Total= round(n(),0),
+            None= sum(q39_employment_conditions.none==1, na.rm=TRUE),
+            "Permanent and/or longer term contracts (12 months +)"  = sum(q39_employment_conditions.permanent_long_term_contracts == 1, na.rm = TRUE),
+            "Competitive salary" = sum(q39_employment_conditions.competitive_salary == 1, na.rm = TRUE),
+            "Paid leave" = sum(q39_employment_conditions.paid_leave == 1, na.rm = TRUE),
+            "Life insurance" = sum(q39_employment_conditions.life_insurance == 1, na.rm = TRUE),
+            "Pension or gratuity" = sum(q39_employment_conditions.pension_gratuity == 1, na.rm = TRUE),
+            "Health insurance" = sum(q39_employment_conditions.health_insurance == 1, na.rm = TRUE),
+            "Flexible work arrangements" = sum(q39_employment_conditions.flexible_work_arrangements == 1, na.rm = TRUE),
+            "Administrative support " = sum(q39_employment_conditions.administrative_support== 1, na.rm = TRUE),
+            Other = sum(q39_employment_conditions.98== 1, na.rm = TRUE)) %>% 
+  pivot_longer(cols = everything(),
+               names_to = "Source",
+               values_to = "1. Latin America & the Caribbean")
+
+
+q39_region_2 <- witm %>%
+  filter(!is.na(q39_employment_conditions) & region_2==1) %>%
+  summarise(Total= round(n(),0),
+            None= sum(q39_employment_conditions.none==1, na.rm=TRUE),
+            "Permanent and/or longer term contracts (12 months +)"  = sum(q39_employment_conditions.permanent_long_term_contracts == 1, na.rm = TRUE),
+            "Competitive salary" = sum(q39_employment_conditions.competitive_salary == 1, na.rm = TRUE),
+            "Paid leave" = sum(q39_employment_conditions.paid_leave == 1, na.rm = TRUE),
+            "Life insurance" = sum(q39_employment_conditions.life_insurance == 1, na.rm = TRUE),
+            "Pension or gratuity" = sum(q39_employment_conditions.pension_gratuity == 1, na.rm = TRUE),
+            "Health insurance" = sum(q39_employment_conditions.health_insurance == 1, na.rm = TRUE),
+            "Flexible work arrangements" = sum(q39_employment_conditions.flexible_work_arrangements == 1, na.rm = TRUE),
+            "Administrative support " = sum(q39_employment_conditions.administrative_support== 1, na.rm = TRUE),
+            Other = sum(q39_employment_conditions.98== 1, na.rm = TRUE)) %>% 
+  pivot_longer(cols = everything(),
+               names_to = "Source",
+               values_to = "2. Western Europe & North America")
+
+
+
+
+
+q39_region_3 <- witm %>%
+  filter(!is.na(q39_employment_conditions) & region_3==1) %>%
+  summarise(Total= round(n(),0),
+            None= sum(q39_employment_conditions.none==1, na.rm=TRUE),
+            "Permanent and/or longer term contracts (12 months +)"  = sum(q39_employment_conditions.permanent_long_term_contracts == 1, na.rm = TRUE),
+            "Competitive salary" = sum(q39_employment_conditions.competitive_salary == 1, na.rm = TRUE),
+            "Paid leave" = sum(q39_employment_conditions.paid_leave == 1, na.rm = TRUE),
+            "Life insurance" = sum(q39_employment_conditions.life_insurance == 1, na.rm = TRUE),
+            "Pension or gratuity" = sum(q39_employment_conditions.pension_gratuity == 1, na.rm = TRUE),
+            "Health insurance" = sum(q39_employment_conditions.health_insurance == 1, na.rm = TRUE),
+            "Flexible work arrangements" = sum(q39_employment_conditions.flexible_work_arrangements == 1, na.rm = TRUE),
+            "Administrative support " = sum(q39_employment_conditions.administrative_support== 1, na.rm = TRUE),
+            Other = sum(q39_employment_conditions.98== 1, na.rm = TRUE)) %>% 
+  pivot_longer(cols = everything(),
+               names_to = "Source",
+               values_to = "3. Eastern, Southeast and Central Europe")
+
+q39_region_4 <- witm %>%
+  filter(!is.na(q39_employment_conditions) & region_4==1) %>%
+  summarise(Total= round(n(),0),
+            None= sum(q39_employment_conditions.none==1, na.rm=TRUE),
+            "Permanent and/or longer term contracts (12 months +)"  = sum(q39_employment_conditions.permanent_long_term_contracts == 1, na.rm = TRUE),
+            "Competitive salary" = sum(q39_employment_conditions.competitive_salary == 1, na.rm = TRUE),
+            "Paid leave" = sum(q39_employment_conditions.paid_leave == 1, na.rm = TRUE),
+            "Life insurance" = sum(q39_employment_conditions.life_insurance == 1, na.rm = TRUE),
+            "Pension or gratuity" = sum(q39_employment_conditions.pension_gratuity == 1, na.rm = TRUE),
+            "Health insurance" = sum(q39_employment_conditions.health_insurance == 1, na.rm = TRUE),
+            "Flexible work arrangements" = sum(q39_employment_conditions.flexible_work_arrangements == 1, na.rm = TRUE),
+            "Administrative support " = sum(q39_employment_conditions.administrative_support== 1, na.rm = TRUE),
+            Other = sum(q39_employment_conditions.98== 1, na.rm = TRUE)) %>% 
+  pivot_longer(cols = everything(),
+               names_to = "Source",
+               values_to = "4. Africa")
+
+
+q39_region_5 <- witm %>%
+  filter(!is.na(q39_employment_conditions) & region_5==1) %>%
+  summarise(Total= round(n(),0),
+            None= sum(q39_employment_conditions.none==1, na.rm=TRUE),
+            "Permanent and/or longer term contracts (12 months +)"  = sum(q39_employment_conditions.permanent_long_term_contracts == 1, na.rm = TRUE),
+            "Competitive salary" = sum(q39_employment_conditions.competitive_salary == 1, na.rm = TRUE),
+            "Paid leave" = sum(q39_employment_conditions.paid_leave == 1, na.rm = TRUE),
+            "Life insurance" = sum(q39_employment_conditions.life_insurance == 1, na.rm = TRUE),
+            "Pension or gratuity" = sum(q39_employment_conditions.pension_gratuity == 1, na.rm = TRUE),
+            "Health insurance" = sum(q39_employment_conditions.health_insurance == 1, na.rm = TRUE),
+            "Flexible work arrangements" = sum(q39_employment_conditions.flexible_work_arrangements == 1, na.rm = TRUE),
+            "Administrative support " = sum(q39_employment_conditions.administrative_support== 1, na.rm = TRUE),
+            Other = sum(q39_employment_conditions.98== 1, na.rm = TRUE)) %>% 
+  pivot_longer(cols = everything(),
+               names_to = "Source",
+               values_to = "4. Africa")
+
+
+q39_region_6 <- witm %>%
+  filter(!is.na(q39_employment_conditions) & region_6==1) %>%
+  summarise(Total= round(n(),0),
+            None= sum(q39_employment_conditions.none==1, na.rm=TRUE),
+            "Permanent and/or longer term contracts (12 months +)"  = sum(q39_employment_conditions.permanent_long_term_contracts == 1, na.rm = TRUE),
+            "Competitive salary" = sum(q39_employment_conditions.competitive_salary == 1, na.rm = TRUE),
+            "Paid leave" = sum(q39_employment_conditions.paid_leave == 1, na.rm = TRUE),
+            "Life insurance" = sum(q39_employment_conditions.life_insurance == 1, na.rm = TRUE),
+            "Pension or gratuity" = sum(q39_employment_conditions.pension_gratuity == 1, na.rm = TRUE),
+            "Health insurance" = sum(q39_employment_conditions.health_insurance == 1, na.rm = TRUE),
+            "Flexible work arrangements" = sum(q39_employment_conditions.flexible_work_arrangements == 1, na.rm = TRUE),
+            "Administrative support " = sum(q39_employment_conditions.administrative_support== 1, na.rm = TRUE),
+            Other = sum(q39_employment_conditions.98== 1, na.rm = TRUE)) %>% 
+  pivot_longer(cols = everything(),
+               names_to = "Source",
+               values_to = "6. Central Asia & Caucasus")
+
+q39_region_7 <- witm %>%
+  filter(!is.na(q39_employment_conditions) & region_7==1) %>%
+  summarise(Total= round(n(),0),
+            None= sum(q39_employment_conditions.none==1, na.rm=TRUE),
+            "Permanent and/or longer term contracts (12 months +)"  = sum(q39_employment_conditions.permanent_long_term_contracts == 1, na.rm = TRUE),
+            "Competitive salary" = sum(q39_employment_conditions.competitive_salary == 1, na.rm = TRUE),
+            "Paid leave" = sum(q39_employment_conditions.paid_leave == 1, na.rm = TRUE),
+            "Life insurance" = sum(q39_employment_conditions.life_insurance == 1, na.rm = TRUE),
+            "Pension or gratuity" = sum(q39_employment_conditions.pension_gratuity == 1, na.rm = TRUE),
+            "Health insurance" = sum(q39_employment_conditions.health_insurance == 1, na.rm = TRUE),
+            "Flexible work arrangements" = sum(q39_employment_conditions.flexible_work_arrangements == 1, na.rm = TRUE),
+            "Administrative support " = sum(q39_employment_conditions.administrative_support== 1, na.rm = TRUE),
+            Other = sum(q39_employment_conditions.98== 1, na.rm = TRUE)) %>% 
+  pivot_longer(cols = everything(),
+               names_to = "Source",
+               values_to = "7. South West Asia/Middle East & North Africa")
+
+
+
+q39_region_total <- q39_region_1 %>%
+  left_join(q39_region_2, by = "Source") %>%
+  left_join(q39_region_3, by = "Source") %>%
+  left_join(q39_region_4, by = "Source") %>%
+  left_join(q39_region_5, by = "Source") %>%
+  left_join(q39_region_6, by = "Source") %>%
+  left_join(q39_region_7, by = "Source")
+
+
+
+q26 <- loadWorkbook(archivo)
+addWorksheet(q26, sheetName = "q39_region")
+writeData(q26, sheet = "q39_region", x = q39_region_total)
+saveWorkbook(q26, archivo, overwrite = TRUE)
+
+
+
+##########################################################################
+
+#ANÁLISIS Q40
+
+
+#cruce por región: q7
+
+
+#Convertir campos vacíos de la variable q37 en NA
+witm <- witm %>%
+  mutate(q40_staff_employed = na_if(q40_staff_employed, ""))
+
+q40_region<-witm %>% 
+  mutate(q40_staff_employed=case_when(
+    q40_staff_employed=="voluntary_work" ~ "None, this work is voluntary",
+    q40_staff_employed=="one_person_dedicated" ~ "1 person",
+    q40_staff_employed=="two_to_three_staff" ~ "2-3 staff",
+    q40_staff_employed=="three_to_five_staff" ~ "3-5 staff",
+    q40_staff_employed=="all_staff_work_on_areas" ~ "All our staff",
+    q40_staff_employed=="98" ~ "Other",
+    TRUE ~ NA)) %>%
+  filter(!is.na(q40_staff_employed)) %>% 
+  group_by(q40_staff_employed) %>% 
+  summarise(Total= n(),
+            "1. Latin America & the Caribbean"=sum(region_1==1),
+            "2. Western Europe & North America"=sum(region_2==1),
+            "3. Eastern, Southeast and Central Europe"=sum(region_3==1),
+            "4. Africa"= sum(region_4==1),
+            "5. Asia & the Pacific"=sum(region_5==1),
+            "6. Central Asia & Caucasus"=sum(region_6==1),
+            "7. South West Asia/Middle East & North Africa"=sum(region_7==1))
+
+
+
+q37 <- loadWorkbook(archivo)
+addWorksheet(q37, sheetName = "q40_region")
+writeData(q37, sheet = "q40_region", x = q40_region)
+saveWorkbook(q37, archivo, overwrite = TRUE)
+
+
+##########################################################################
 
 # ANÁLISIS DE LA q45
 
@@ -5892,7 +6454,7 @@ saveWorkbook(q45, archivo, overwrite = TRUE)
 
 #CRUCE POR q10
 
-# Crear q10_2021_q13
+# Crear q10_2021_q45
 q10_2021_q45 <- witm %>% 
   filter(q9_year_formation < 2022) %>% 
   group_by(q10_budget_grp_2021, q45_previous_response) %>% 
@@ -5954,3 +6516,39 @@ writeData(q45, sheet = "q45_q10_media", x = q10_media_table)
 saveWorkbook(q45, archivo, overwrite = TRUE)
 ##############################################################################
 
+#ANÁLISIS Q46
+
+
+#cruce por región: q7
+
+
+#Convertir campos vacíos de la variable q46 en NA
+witm <- witm %>%
+  mutate(q46_language = na_if(q46_language, ""))
+
+q46_region<-witm %>% 
+  mutate(q46_language=case_when(
+    q46_language=="arabic" ~ "Arabic",
+    q46_language=="english" ~ "English",
+    q46_language=="french" ~ "French",
+    q46_language=="portuguese" ~ "Portuguese",
+    q46_language=="russian" ~ "Russian",
+    q46_language=="spanish" ~ "Spanish",
+    TRUE ~ NA)) %>% 
+  filter(!is.na(q46_language)) %>% 
+  group_by(q46_language) %>% 
+  summarise(Total= n(),
+            "1. Latin America & the Caribbean"=sum(region_1==1),
+            "2. Western Europe & North America"=sum(region_2==1),
+            "3. Eastern, Southeast and Central Europe"=sum(region_3==1),
+            "4. Africa"= sum(region_4==1),
+            "5. Asia & the Pacific"=sum(region_5==1),
+            "6. Central Asia & Caucasus"=sum(region_6==1),
+            "7. South West Asia/Middle East & North Africa"=sum(region_7==1))
+
+
+
+q37 <- loadWorkbook(archivo)
+addWorksheet(q37, sheetName = "q46_region")
+writeData(q37, sheet = "q46_region", x = q46_region)
+saveWorkbook(q37, archivo, overwrite = TRUE)
