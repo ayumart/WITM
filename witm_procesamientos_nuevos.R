@@ -19,7 +19,7 @@ rm(list = ls())
 # OPEN CSV file
 
 witm <- read.csv("Data/WITM_FINAL_10102024_V2.csv", header=T, sep=",")
-
+names(witm)
 
 #convierto dato vacío en NA
 witm <- witm %>%
@@ -85,13 +85,15 @@ categorias <- c("(a) Zero budget", "(b) <5000", "(c) 5001-10000", "(d) 10001-300
                 "(k) 2000001 - 4000000", "(l) > 4000001")
 
 #valores_representativos <- c(0, 2500, 7500, 20000, 40000, 75000, 175000, 375000, 
-                             750000, 1500000, 3000000, 4500000)
+#                             750000, 1500000, 3000000, 4500000)
 
-valores_representativos <- c(0, 1500, 5000, 10000, 30000, 50000, 100000, 250000, 
-                             500000, 1000000, 2000000, 4000000)
+valores_representativos <- c(0, 5000, 10000, 30000, 50000, 100000, 250000, 500000, 
+                             1000000, 2000000, 4000000, 4500000)
 
 # Crear un data frame que relacione categorías con valores representativos
 valores_df <- data.frame(categoria = categorias, valor_representativo = valores_representativos)
+
+
 
 # Añadir la columna de valores representativos a los data frames de cada año mediante una unión
 q10_2021 <- q10_2021 %>%
@@ -412,4 +414,438 @@ resultado0 <- witm%>%
     total_casos = n(),
     casos_con_brecha = sum(brecha ==0, na.rm = TRUE),
     porcentaje_brecha = (casos_con_brecha / total_casos) * 100
+  )
+
+
+##############################
+
+
+#VERSIÓN PROMEDIO DE LA MEDIANA
+
+# Añadir la columna de valores representativos a los data frames de cada año mediante una unión
+q10_2021 <- q10_2021 %>%
+  left_join(data.frame(categoria = categorias, valor_representativo = valores_representativos), by = c("q10_ORIGINAL_2021" = "categoria"))
+
+q10_2022 <- q10_2022 %>%
+  left_join(data.frame(categoria = categorias, valor_representativo = valores_representativos), by = c("q10_ORIGINAL_2022" = "categoria"))
+
+q10_2023 <- q10_2023 %>%
+  left_join(data.frame(categoria = categorias, valor_representativo = valores_representativos), by = c("q10_ORIGINAL_2023" = "categoria"))
+
+# Filtrar las categorías (c) y (d) para cada año
+q10_2021_cd <- q10_2021 %>% filter(q10_ORIGINAL_2021 %in% c("(c) 5001-10000", "(d) 10001-30000"))
+q10_2022_cd <- q10_2022 %>% filter(q10_ORIGINAL_2022 %in% c("(c) 5001-10000", "(d) 10001-30000"))
+q10_2023_cd <- q10_2023 %>% filter(q10_ORIGINAL_2023 %in% c("(c) 5001-10000", "(d) 10001-30000"))
+
+# Calcular el promedio ponderado de presupuesto para las categorías (c) y (d) de cada año
+promedio_2021_cd <- round(sum(q10_2021_cd$frecuencia * q10_2021_cd$valor_representativo, na.rm = TRUE) / sum(q10_2021_cd$frecuencia, na.rm = TRUE), 0)
+promedio_2022_cd <- round(sum(q10_2022_cd$frecuencia * q10_2022_cd$valor_representativo, na.rm = TRUE) / sum(q10_2022_cd$frecuencia, na.rm = TRUE), 0)
+promedio_2023_cd <- round(sum(q10_2023_cd$frecuencia * q10_2023_cd$valor_representativo, na.rm = TRUE) / sum(q10_2023_cd$frecuencia, na.rm = TRUE), 0)
+
+# Mostrar los resultados
+promedio_2021_cd
+promedio_2022_cd
+promedio_2023_cd
+
+
+##REGIÓN
+
+# Cálculo de frecuencias y promedio para el año 2021
+Q10_2021_region <- witm %>% 
+  filter(!is.na(q10_ORIGINAL_2021)) %>% 
+  group_by(q10_ORIGINAL_2021) %>%
+  summarise(
+    Total = n(),
+    "1. Latin America & the Caribbean" = sum(region_1 == 1),
+    "2. Western Europe & North America" = sum(region_2 == 1),
+    "3. Eastern, Southeast and Central Europe" = sum(region_3 == 1),
+    "4. Africa" = sum(region_4 == 1),
+    "5. Asia & the Pacific" = sum(region_5 == 1),
+    "6. Central Asia & Caucasus" = sum(region_6 == 1),
+    "7. South West Asia/Middle East & North Africa" = sum(region_7 == 1)
+  ) %>% 
+  left_join(valores_df, by = c("q10_ORIGINAL_2021" = "categoria"))
+
+# Filtrar solo las categorías (c) y (d)
+Q10_2021_region_cd <- Q10_2021_region %>% filter(q10_ORIGINAL_2021 %in% c("(c) 5001-10000", "(d) 10001-30000"))
+
+# Calcular el promedio ponderado de presupuesto para cada región
+promedios_2021_region <- Q10_2021_region_cd %>%
+  summarise(
+    across(
+      starts_with("1.") | starts_with("2.") | starts_with("3.") | 
+        starts_with("4.") | starts_with("5.") | starts_with("6.") | 
+        starts_with("7."), 
+      ~ round(sum(. * valor_representativo, na.rm = TRUE) / sum(., na.rm = TRUE), 0),
+      .names = "Promedio_{col}"
+    )
+  )
+
+# Cálculo de frecuencias y promedio para el año 2022
+Q10_2022_region <- witm %>% 
+  filter(!is.na(q10_ORIGINAL_2022)) %>% 
+  group_by(q10_ORIGINAL_2022) %>%
+  summarise(
+    Total = n(),
+    "1. Latin America & the Caribbean" = sum(region_1 == 1),
+    "2. Western Europe & North America" = sum(region_2 == 1),
+    "3. Eastern, Southeast and Central Europe" = sum(region_3 == 1),
+    "4. Africa" = sum(region_4 == 1),
+    "5. Asia & the Pacific" = sum(region_5 == 1),
+    "6. Central Asia & Caucasus" = sum(region_6 == 1),
+    "7. South West Asia/Middle East & North Africa" = sum(region_7 == 1)
+  ) %>% 
+  left_join(valores_df, by = c("q10_ORIGINAL_2022" = "categoria"))
+
+# Filtrar solo las categorías (c) y (d)
+Q10_2022_region_cd <- Q10_2022_region %>% filter(q10_ORIGINAL_2022 %in% c("(c) 5001-10000", "(d) 10001-30000"))
+
+# Calcular el promedio ponderado de presupuesto para cada región
+promedios_2022_region <- Q10_2022_region_cd %>%
+  summarise(
+    across(
+      starts_with("1.") | starts_with("2.") | starts_with("3.") | 
+        starts_with("4.") | starts_with("5.") | starts_with("6.") | 
+        starts_with("7."), 
+      ~ round(sum(. * valor_representativo, na.rm = TRUE) / sum(., na.rm = TRUE), 0),
+      .names = "Promedio_{col}"
+    )
+  )
+
+# Cálculo de frecuencias y promedio para el año 2023
+Q10_2023_region <- witm %>% 
+  filter(!is.na(q10_ORIGINAL_2023)) %>% 
+  group_by(q10_ORIGINAL_2023) %>%
+  summarise(
+    Total = n(),
+    "1. Latin America & the Caribbean" = sum(region_1 == 1),
+    "2. Western Europe & North America" = sum(region_2 == 1),
+    "3. Eastern, Southeast and Central Europe" = sum(region_3 == 1),
+    "4. Africa" = sum(region_4 == 1),
+    "5. Asia & the Pacific" = sum(region_5 == 1),
+    "6. Central Asia & Caucasus" = sum(region_6 == 1),
+    "7. South West Asia/Middle East & North Africa" = sum(region_7 == 1)
+  ) %>% 
+  left_join(valores_df, by = c("q10_ORIGINAL_2023" = "categoria"))
+
+# Filtrar solo las categorías (c) y (d)
+Q10_2023_region_cd <- Q10_2023_region %>% filter(q10_ORIGINAL_2023 %in% c("(c) 5001-10000", "(d) 10001-30000"))
+
+# Calcular el promedio ponderado de presupuesto para cada región
+promedios_2023_region <- Q10_2023_region_cd %>%
+  summarise(
+    across(
+      starts_with("1.") | starts_with("2.") | starts_with("3.") | 
+        starts_with("4.") | starts_with("5.") | starts_with("6.") | 
+        starts_with("7."), 
+      ~ round(sum(. * valor_representativo, na.rm = TRUE) / sum(., na.rm = TRUE), 0),
+      .names = "Promedio_{col}"
+    )
+  )
+
+# Agregar la columna de Año a cada tabla de resultados
+promedios_2021_region$Año <- "2021"
+promedios_2022_region$Año <- "2022"
+promedios_2023_region$Año <- "2023"
+
+# Unir las tablas en una sola tabla de resultados
+promedios_totales_region <- bind_rows(promedios_2021_region, promedios_2022_region, promedios_2023_region)
+
+# Reorganizar la tabla para que la columna "Año" esté al inicio
+promedios_totales_region <- promedios_totales_region %>%
+  select(Año, everything())
+
+
+###
+
+#REGISTRO
+
+
+
+# Cálculo de frecuencias y promedio para el año 2021
+Q10_2021 <- witm %>% 
+  filter(!is.na(q10_ORIGINAL_2021), !is.na(q5)) %>%  # Filtrar NA en q5 también
+  group_by(q10_ORIGINAL_2021, q5) %>%  
+  summarise(
+    Total = n(),
+    .groups = 'drop'
+  ) %>% 
+  left_join(valores_df, by = c("q10_ORIGINAL_2021" = "categoria"))
+
+# Filtrar solo las categorías (c) y (d)
+Q10_2021_cd <- Q10_2021 %>% filter(q10_ORIGINAL_2021 %in% c("(c) 5001-10000", "(d) 10001-30000"))
+
+# Calcular el promedio ponderado de presupuesto para cada grupo de q5
+promedios_2021 <- Q10_2021_cd %>%
+  summarise(
+    Promedio_Presupuesto = round(sum(Total * valor_representativo, na.rm = TRUE) / 
+                                   sum(Total, na.rm = TRUE), 0),
+    .by = "q5"
+  )
+
+# Cálculo de frecuencias y promedio para el año 2022
+Q10_2022 <- witm %>% 
+  filter(!is.na(q10_ORIGINAL_2022), !is.na(q5)) %>% 
+  group_by(q10_ORIGINAL_2022, q5) %>% 
+  summarise(
+    Total = n(),
+    .groups = 'drop'
+  ) %>% 
+  left_join(valores_df, by = c("q10_ORIGINAL_2022" = "categoria"))
+
+# Filtrar solo las categorías (c) y (d)
+Q10_2022_cd <- Q10_2022 %>% filter(q10_ORIGINAL_2022 %in% c("(c) 5001-10000", "(d) 10001-30000"))
+
+# Calcular el promedio ponderado de presupuesto para cada grupo de q5
+promedios_2022 <- Q10_2022_cd %>%
+  summarise(
+    Promedio_Presupuesto = round(sum(Total * valor_representativo, na.rm = TRUE) / 
+                                   sum(Total, na.rm = TRUE), 0),
+    .by = "q5"
+  )
+
+# Cálculo de frecuencias y promedio para el año 2023
+Q10_2023 <- witm %>% 
+  filter(!is.na(q10_ORIGINAL_2023), !is.na(q5)) %>% 
+  group_by(q10_ORIGINAL_2023, q5) %>% 
+  summarise(
+    Total = n(),
+    .groups = 'drop'
+  ) %>% 
+  left_join(valores_df, by = c("q10_ORIGINAL_2023" = "categoria"))
+
+# Filtrar solo las categorías (c) y (d)
+Q10_2023_cd <- Q10_2023 %>% filter(q10_ORIGINAL_2023 %in% c("(c) 5001-10000", "(d) 10001-30000"))
+
+# Calcular el promedio ponderado de presupuesto para cada grupo de q5
+promedios_2023 <- Q10_2023_cd %>%
+  summarise(
+    Promedio_Presupuesto = round(sum(Total * valor_representativo, na.rm = TRUE) / 
+                                   sum(Total, na.rm = TRUE), 0),
+    .by = "q5"
+  )
+
+# Agregar la columna de Año a cada tabla de resultados
+promedios_2021$Año <- "2021"
+promedios_2022$Año <- "2022"
+promedios_2023$Año <- "2023"
+
+# Unir las tablas en una sola tabla de resultados
+promedios_totales <- bind_rows(promedios_2021, promedios_2022, promedios_2023)
+
+# Reorganizar la tabla para que los años estén en las filas y las categorías de q5 en las columnas
+promedios_final <- promedios_totales %>%
+  pivot_wider(names_from = q5, values_from = Promedio_Presupuesto, 
+              values_fill = list(Promedio_Presupuesto = NA)) # Rellenar con NA si no hay datos
+
+
+
+####
+
+# Definir las categorías y sus valores representativos
+categorias <- c("(a) Zero budget", "(b) <5000", "(c) 5001-10000", "(d) 10001-30000",
+                "(e) 30001 -50000", "(f) 50001 - 100000", "(g) 100001 - 250000",
+                "(h) 250001 - 500000", "(i) 500001 - 1000000", "(j) 1000001 - 2000000",
+                "(k) 2000001 - 4000000", "(l) > 4000001")
+
+valores_representativos <- c(0, 5000, 10000, 30000, 50000, 100000, 250000, 500000, 
+                             1000000, 2000000, 4000000, 4500000)
+
+# Crear un data frame para asociar categorías con valores
+categorias_df <- data.frame(categorias, valores_representativos)
+
+# Calcular la frecuencia de organizaciones y la suma de presupuestos por región
+frecuencias_region <- witm %>%
+  mutate(presupuesto_numerico = case_when(
+    q10_ORIGINAL_2023 == "(a) Zero budget" ~ valores_representativos[1],
+    q10_ORIGINAL_2023 == "(b) <5000" ~ valores_representativos[2],
+    q10_ORIGINAL_2023 == "(c) 5001-10000" ~ valores_representativos[3],
+    q10_ORIGINAL_2023 == "(d) 10001-30000" ~ valores_representativos[4],
+    q10_ORIGINAL_2023 == "(e) 30001 -50000" ~ valores_representativos[5],
+    q10_ORIGINAL_2023 == "(f) 50001 - 100000" ~ valores_representativos[6],
+    q10_ORIGINAL_2023 == "(g) 100001 - 250000" ~ valores_representativos[7],
+    q10_ORIGINAL_2023 == "(h) 250001 - 500000" ~ valores_representativos[8],
+    q10_ORIGINAL_2023 == "(i) 500001 - 1000000" ~ valores_representativos[9],
+    q10_ORIGINAL_2023 == "(j) 1000001 - 2000000" ~ valores_representativos[10],
+    q10_ORIGINAL_2023 == "(k) 2000001 - 4000000" ~ valores_representativos[11],
+    q10_ORIGINAL_2023 == "(l) > 4000001" ~ valores_representativos[12],
+    TRUE ~ NA_real_
+  )) %>%
+  group_by(q10_ORIGINAL_2023) %>% 
+  summarise(
+    "Total Organizations" = n(),
+    "Total Budget" = sum(presupuesto_numerico, na.rm = TRUE),
+    "1. South America" = sum(replace_na(samerica, 0) == 1),
+    "2. Central America & Mexico" = sum(replace_na(camerica, 0) == 1),
+    "3. North America" = sum(replace_na(namerica, 0) == 1),
+    "4. Caribbean" = sum(replace_na(caribbean, 0) == 1),
+    "5. South Asia" = sum(replace_na(sasia, 0) == 1),
+    "6. Southeast Asia" = sum(replace_na(seasia, 0) == 1),
+    "7. East Asia" = sum(replace_na(easia, 0) == 1),
+    "8. The Pacific" = sum(replace_na(pacific, 0) == 1),
+    "9. South West Asia/Middle East" = sum(replace_na(swasiamiddleeast, 0) == 1),
+    "10. Central Asia & Caucasus" = sum(replace_na(casia, 0) == 1),
+    "11. Eastern Europe, Southeast Europe and Central Europe" = sum(replace_na(caucasuseurope, 0) == 1),
+    "12. Western Europe" = sum(replace_na(weurope, 0) == 1),
+    "13. West Africa" = sum(replace_na(wafrica, 0) == 1),
+    "14. East Africa" = sum(replace_na(eafrica, 0) == 1),
+    "15. Southern Africa" = sum(replace_na(safrica, 0) == 1),
+    "16. Central Africa" = sum(replace_na(cafrica, 0) == 1),
+    "17. North Africa" = sum(replace_na(nafrica, 0) == 1)
+  ) %>%
+  mutate(Year = 2023)
+
+mutate(result = ifelse(score >= 60, "Aprobado", "Reprobado"))
+
+#nueva variable region 2011
+
+witm<-witm %>% 
+  mutate("1. Latin America"=ifelse((samerica=1 | camerica==1), 1,0),
+         "2. Caribbean"= ifelse(caribbean==1,1,0),
+         "3. Western Europe"=ifelse(weurope==1,1,0),
+         "4. North America"=ifelse(namerica==1,1,0),
+         "5. South Central, Eeastern Europe"=ifelse(caucasuseurope==1,1,0),
+         "6. Sub Saharan Africa"= ifelse((eafrica==1 | wafrica==1 | cafrica==1 | safrica==1),1,0),
+         "7. South and South East Asia"=ifelse((sasia==1 | seasia==1),1,0),
+         "8. Pacific"=ifelse(pacific==1,1,0),
+         "9. Eastern Asia"=ifelse(easia==1,1,0),
+         "10. Central Asia y Cuacasus"=ifelse(casia==1,1,0),
+         "11. MENA"=ifelse((swasiamiddleeast==1 | nafrica==1),1,0)
+         ) 
+  
+
+###
+
+# Crear un vector con los valores representativos
+valores_representativos <- c(0, 5000, 10000, 30000, 50000, 100000, 250000, 500000, 
+                             1000000, 2000000, 4000000, 4500000)
+
+# Calcular la frecuencia de organizaciones y la suma de presupuestos por región
+frecuencias_region <- witm %>%
+  mutate(presupuesto_numerico = case_when(
+    q10_ORIGINAL_2023 == "(a) Zero budget" ~ valores_representativos[1],
+    q10_ORIGINAL_2023 == "(b) <5000" ~ valores_representativos[2],
+    q10_ORIGINAL_2023 == "(c) 5001-10000" ~ valores_representativos[3],
+    q10_ORIGINAL_2023 == "(d) 10001-30000" ~ valores_representativos[4],
+    q10_ORIGINAL_2023 == "(e) 30001 -50000" ~ valores_representativos[5],
+    q10_ORIGINAL_2023 == "(f) 50001 - 100000" ~ valores_representativos[6],
+    q10_ORIGINAL_2023 == "(g) 100001 - 250000" ~ valores_representativos[7],
+    q10_ORIGINAL_2023 == "(h) 250001 - 500000" ~ valores_representativos[8],
+    q10_ORIGINAL_2023 == "(i) 500001 - 1000000" ~ valores_representativos[9],
+    q10_ORIGINAL_2023 == "(j) 1000001 - 2000000" ~ valores_representativos[10],
+    q10_ORIGINAL_2023 == "(k) 2000001 - 4000000" ~ valores_representativos[11],
+    q10_ORIGINAL_2023 == "(l) > 4000001" ~ valores_representativos[12],
+    TRUE ~ NA_real_
+  )) %>%
+  group_by(q10_ORIGINAL_2023) %>%
+  summarise(
+    "Total Organizations" = n(),
+    "Total Budget" = sum(presupuesto_numerico, na.rm = TRUE),
+    "1. Latin America" = sum(replace_na(samerica, 0) == 1),
+    "2. Caribbean" = sum(replace_na(caribbean, 0) == 1),
+    "3. Western Europe" = sum(replace_na(weurope, 0) == 1),
+    "4. North America" = sum(replace_na(namerica, 0) == 1),
+    "5. South Central, Eastern Europe" = sum(replace_na(caucasuseurope, 0) == 1),
+    "6. Sub Saharan Africa" = sum(replace_na(safrica, 0) + replace_na(eafrica, 0) + replace_na(wafrica, 0) + replace_na(cafrica, 0)),
+    "7. South and South East Asia" = sum(replace_na(sasia, 0) + replace_na(seasia, 0)),
+    "8. Pacific" = sum(replace_na(pacific, 0) == 1),
+    "9. Eastern Asia" = sum(replace_na(easia, 0) == 1),
+    "10. Central Asia y Caucasus" = sum(replace_na(casia, 0) == 1),
+    "11. MENA" = sum(replace_na(swasiamiddleeast, 0) + replace_na(nafrica, 0))
+  ) %>%
+  mutate(Year = 2023)
+
+
+###
+
+# Crear un vector con los valores representativos
+valores_representativos <- c(0, 5000, 10000, 30000, 50000, 100000, 250000, 500000, 
+                             1000000, 2000000, 4000000, 4500000)
+
+# Calcular la frecuencia de organizaciones y la suma de presupuestos por región
+resultados_region <- witm %>%
+  mutate(presupuesto_numerico = case_when(
+    q10_ORIGINAL_2023 == "(a) Zero budget" ~ valores_representativos[1],
+    q10_ORIGINAL_2023 == "(b) <5000" ~ valores_representativos[2],
+    q10_ORIGINAL_2023 == "(c) 5001-10000" ~ valores_representativos[3],
+    q10_ORIGINAL_2023 == "(d) 10001-30000" ~ valores_representativos[4],
+    q10_ORIGINAL_2023 == "(e) 30001 -50000" ~ valores_representativos[5],
+    q10_ORIGINAL_2023 == "(f) 50001 - 100000" ~ valores_representativos[6],
+    q10_ORIGINAL_2023 == "(g) 100001 - 250000" ~ valores_representativos[7],
+    q10_ORIGINAL_2023 == "(h) 250001 - 500000" ~ valores_representativos[8],
+    q10_ORIGINAL_2023 == "(i) 500001 - 1000000" ~ valores_representativos[9],
+    q10_ORIGINAL_2023 == "(j) 1000001 - 2000000" ~ valores_representativos[10],
+    q10_ORIGINAL_2023 == "(k) 2000001 - 4000000" ~ valores_representativos[11],
+    q10_ORIGINAL_2023 == "(l) > 4000001" ~ valores_representativos[12],
+    TRUE ~ NA_real_
+  )) %>%
+  # Agrupar y resumir los datos
+  group_by(q10_ORIGINAL_2023) %>%
+  summarise(
+    "Total Organizations" = n(),
+    "Total Budget" = sum(presupuesto_numerico, na.rm = TRUE),
+    "1. Latin America" = sum(replace_na(samerica, 0) + replace_na(camerica, 0) == 1),
+    "2. Caribbean" = sum(replace_na(caribbean, 0)  == 1),
+    "3. Western Europe" = sum(replace_na(weurope, 0) == 1),
+    "4. North America" = sum(replace_na(namerica, 0) == 1),
+    "5. South Central, Eastern Europe" = sum(replace_na(caucasuseurope, 0) == 1),
+    "6. Sub Saharan Africa" = sum(replace_na(safrica, 0) + replace_na(eafrica, 0) + replace_na(wafrica, 0) + replace_na(cafrica, 0)),
+    "7. South and South East Asia" = sum(replace_na(sasia, 0) + replace_na(seasia, 0)),
+    "8. Pacific" = sum(replace_na(pacific, 0) == 1),
+    "9. Eastern Asia" = sum(replace_na(easia, 0) == 1),
+    "10. Central Asia y Caucasus" = sum(replace_na(casia, 0) == 1),
+    "11. MENA" = sum(replace_na(swasiamiddleeast, 0) + replace_na(nafrica, 0)),
+    .groups = "drop"
+  ) 
+
+
+witm<-witm %>% 
+  mutate("1. Latin America"=ifelse((samerica=1 | camerica==1), 1,0),
+         "2. Caribbean"= ifelse(caribbean==1,1,0),
+         "3. Western Europe"=ifelse(weurope==1,1,0),
+         "4. North America"=ifelse(namerica==1,1,0),
+         "5. South Central, Eeastern Europe"=ifelse(caucasuseurope==1,1,0),
+         "6. Sub Saharan Africa"= ifelse((eafrica==1 | wafrica==1 | cafrica==1 | safrica==1),1,0),
+         "7. South and South East Asia"=ifelse((sasia==1 | seasia==1),1,0),
+         "8. Pacific"=ifelse(pacific==1,1,0),
+         "9. Eastern Asia"=ifelse(easia==1,1,0),
+         "10. Central Asia y Cuacasus"=ifelse(casia==1,1,0),
+         "11. MENA"=ifelse((swasiamiddleeast==1 | nafrica==1),1,0)
+  ) 
+
+####
+
+# Filtrar y calcular frecuencias para cada año y para organizaciones registradas/no registradas
+q10_2021 <- witm %>%
+  filter(!is.na(q10_ORIGINAL_2021), !is.na(q5)) %>%
+  group_by(q10_ORIGINAL_2021, q5) %>%
+  summarise(frecuencia = n(), .groups = 'drop') %>%
+  mutate(año = 2021, 
+         q10 = q10_ORIGINAL_2021) %>%
+  select(año, q5, q10, frecuencia)
+
+q10_2022 <- witm %>%
+  filter(!is.na(q10_ORIGINAL_2022), !is.na(q5)) %>%
+  group_by(q10_ORIGINAL_2022, q5) %>%
+  summarise(frecuencia = n(), .groups = 'drop') %>%
+  mutate(año = 2022, 
+         q10 = q10_ORIGINAL_2022) %>%
+  select(año, q5, q10, frecuencia)
+
+q10_2023 <- witm %>%
+  filter(!is.na(q10_ORIGINAL_2023), !is.na(q5)) %>%
+  group_by(q10_ORIGINAL_2023, q5) %>%
+  summarise(frecuencia = n(), .groups = 'drop') %>%
+  mutate(año = 2023, 
+         q10 = q10_ORIGINAL_2023) %>%
+  select(año, q5, q10, frecuencia)
+
+# Combinar los resultados de los tres años en un solo dataframe
+resultados_totales <- bind_rows(q10_2021, q10_2022, q10_2023)
+# Crear la tabla de doble entrada
+tabla_doble_entrada <- resultados_totales %>%
+  pivot_wider(
+    names_from = q5,  # Convertir q5 en columnas
+    values_from = frecuencia,  # Usar la frecuencia como valores
+    values_fill = list(frecuencia = 0)  # Rellenar con 0 donde no hay datos
   )
