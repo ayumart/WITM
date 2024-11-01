@@ -19,7 +19,6 @@ rm(list = ls())
 # OPEN CSV file
 
 witm <- read.csv("Data/WITM_FINAL_10102024_V2.csv", header=T, sep=",")
-unique(witm$q10_ORIGINAL_2021)
 
 
 #convierto dato vacío en NA
@@ -85,8 +84,11 @@ categorias <- c("(a) Zero budget", "(b) <5000", "(c) 5001-10000", "(d) 10001-300
                 "(h) 250001 - 500000", "(i) 500001 - 1000000", "(j) 1000001 - 2000000",
                 "(k) 2000001 - 4000000", "(l) > 4000001")
 
-valores_representativos <- c(0, 2500, 7500, 20000, 40000, 75000, 175000, 375000, 
+#valores_representativos <- c(0, 2500, 7500, 20000, 40000, 75000, 175000, 375000, 
                              750000, 1500000, 3000000, 4500000)
+
+valores_representativos <- c(0, 1500, 5000, 10000, 30000, 50000, 100000, 250000, 
+                             500000, 1000000, 2000000, 4000000)
 
 # Crear un data frame que relacione categorías con valores representativos
 valores_df <- data.frame(categoria = categorias, valor_representativo = valores_representativos)
@@ -235,8 +237,6 @@ categorias <- c("(a) Zero budget", "(b) <5000", "(c) 5001-10000", "(d) 10001-300
                 "(h) 250001 - 500000", "(i) 500001 - 1000000", "(j) 1000001 - 2000000",
                 "(k) 2000001 - 4000000", "(l) > 4000001")
 
-valores_representativos <- c(0, 2500, 7500, 20000, 40000, 75000, 175000, 375000, 
-                             750000, 1500000, 3000000, 4500000)
 
 # Crear un data frame que relacione categorías con valores representativos
 valores_df <- data.frame(categoria = categorias, valor_representativo = valores_representativos)
@@ -289,8 +289,6 @@ promedios_totales <- promedios_totales %>% select(Año, q5, Promedio_Presupuesto
 tabla_girada <- promedios_totales %>%
   pivot_wider(names_from = q5, values_from = Promedio_Presupuesto)
 
-
-unique(witm$q42_aspirational_budget)
 
 
 ####
