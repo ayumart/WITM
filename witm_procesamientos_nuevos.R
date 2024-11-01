@@ -296,19 +296,21 @@ unique(witm$q42_aspirational_budget)
 ####
 
 
-witm<-witm %>% 
-  mutate(q42=case_when(
-    q42_aspirational_budget == "(a) Zero budget" ~ "(a) Zero budget",
-    q42_aspirational_budget == "(b) < 5,000" ~ "(b) <5000",
-    q42_aspirational_budget == "(c) 5,001 - 10,000" ~ "(c) 5001-10000",
-    q42_aspirational_budget == "(d) 10,001 - 30,000" ~ "(d) 10001-30000",
-    q42_aspirational_budget == "(e) 30,001 - 50,000" ~ "(e) 30001 -50000",
-    q42_aspirational_budget == "(f) 50,001 - 100,000" ~ "(f) 50001 - 100000",
-    q42_aspirational_budget == "(g) 100,001 - 500,000" ~ "(g) 100001 - 250000", # Verificar si esto es correcto
-    q42_aspirational_budget == "(h) 500,001 - 1,000,000" ~ "(h) 250001 - 500000",
-    q42_aspirational_budget == "(i) > 1,000,000" ~ "(i) 500001 - 1000000", # Verificar si esta categoría es correcta
-    TRUE ~ NA_character_  # Asignar NA a valores que no coincidan
-    )) %>% 
+witm<- witm%>%
+  mutate(q42 = case_when(
+    q42_ORIGINAL == "zero_budget" ~ "(a) Zero budget",
+    q42_ORIGINAL == "<5000" ~ "(b) <5000",
+    q42_ORIGINAL == "<10000" ~ "(c) 5001-10000",
+    q42_ORIGINAL == "<30000" ~ "(d) 10001-30000",
+    q42_ORIGINAL == "<50000" ~ "(e) 30001 -50000",
+    q42_ORIGINAL == "<100000" ~ "(f) 50001 - 100000",
+    q42_ORIGINAL == "<250000" ~ "(g) 100001 - 250000",
+    q42_ORIGINAL == "<500000" ~ "(h) 250001 - 500000",
+    q42_ORIGINAL == "<1000000" ~ "(i) 500001 - 1000000",
+    q42_ORIGINAL == "between_2m_and_4m_usd" ~ "(k) 2000001 - 4000000",
+    q42_ORIGINAL == "greater_than_4m_usd" ~ "(l) > 4000001",
+    TRUE ~ NA_character_  # Valor NA para casos que no coincidan
+  )) %>% 
   mutate(
     q42_rev = case_when(
       q42 == "(a) Zero budget" ~ 0,
@@ -361,9 +363,7 @@ brecha_resumen <- witm %>%
     brecha_total = sum(brecha, na.rm = TRUE)     # Suma total de la brecha
   )
 
-# Asegúrate de que q42_rev y q10_2023_rev sean numéricas
-witm$q42_rev <- as.numeric(as.character(witm$q42_rev))
-witm$q10_2023_rev <- as.numeric(as.character(witm$q10_2023_rev))
+
 
 # Calcular la brecha entre q42_rev y q10_2023_rev para cada región
 brecha_region <- witm %>%
@@ -380,9 +380,38 @@ brecha_region <- witm %>%
 
 
 # Calcular la brecha media entre q42_rev y q10_2023_rev para cada nivel de registro (q5)
+
 brecha_media_registro <- witm %>%
   filter(!is.na(q42_aspirational_budget) & !is.na(q10_ORIGINAL_2023) & !is.na(q5)) %>% 
   group_by(q5) %>%
-  summarise(
-    Brecha_Media = mean(q42_rev - q10_2023_rev, na.rm = TRUE)
+  summarise(Brecha_Media = mean(q42_rev - q10_2023_rev, na.rm = TRUE))
+    
+    
+ ###
+
+# Calcular el porcentaje de casos con brecha > 200000 por región
+resultado <- witm%>%
+  filter(!is.na(q10_ORIGINAL_2023) & !is.na(q42_aspirational_budget)) %>% 
+  summarize(
+    total_casos = n(),
+    casos_con_brecha = sum(brecha > 200000, na.rm = TRUE),
+    porcentaje_brecha = (casos_con_brecha / total_casos) * 100
+  )
+
+# Calcular el porcentaje de casos con brecha > 100000 por región
+resultado2 <- witm%>%
+  filter(!is.na(q10_ORIGINAL_2023) & !is.na(q42_aspirational_budget)) %>% 
+  summarize(
+    total_casos = n(),
+    casos_con_brecha = sum(brecha > 100000, na.rm = TRUE),
+    porcentaje_brecha = (casos_con_brecha / total_casos) * 100
+  )
+
+# Calcular el porcentaje de casos con brecha > 100000 por región
+resultado0 <- witm%>%
+  filter(!is.na(q10_ORIGINAL_2023) & !is.na(q42_aspirational_budget)) %>% 
+  summarize(
+    total_casos = n(),
+    casos_con_brecha = sum(brecha ==0, na.rm = TRUE),
+    porcentaje_brecha = (casos_con_brecha / total_casos) * 100
   )
